@@ -1,0 +1,85 @@
+/*
+ ============================================================================
+ Name        : Merge_Sort_wo_recursion.c
+ Author      : Sin
+ Version     :
+ Copyright   : Your copyright notice
+ Description : Hello World in C, Ansi-style
+ ============================================================================
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void MergeSort(int a[], unsigned int n);
+
+int main(int argc, char * argv[]) {
+	unsigned int input_size = 0;
+
+	if (argc < 2) {
+		puts("Too few arguments.\n");
+		return EXIT_FAILURE;
+	}
+
+	printf("argc = %d.\n", argc);
+	for(int i = 1; i < argc; i++) {
+		input_size++;
+	}
+
+	printf("input size: %d.\n", input_size);
+
+	int array[input_size];
+	for(unsigned int i = 0; i < input_size; i++) {
+		array[i] = atoi(argv[1+i]);
+	}
+
+	printf("Array contents: \n");
+	for(unsigned int i = 0; i < input_size; i++) {
+		printf("%d, ", array[i]);
+	}
+	printf("\n");
+	printf("sorting...\n");
+
+	MergeSort(array, input_size);
+
+	printf("Array contents: \n");
+	for(unsigned int i = 0; i < input_size; i++) {
+		printf("%d, ", array[i]);
+	}
+	printf("\n");
+
+	return EXIT_SUCCESS;
+}
+
+void merge(int a[], int tmp[], unsigned int start, unsigned length) {
+	unsigned int left = start;
+	unsigned int right = start + length;
+
+	while ( (left < start + length) && (right < start + 2*length) ) {
+
+	}
+}
+
+void MergeSort(int a[], unsigned int n) {
+	int tmp[n];
+	unsigned int length = 1;
+	unsigned int start;
+	while (length < n) {
+
+		start = 0;
+		while (start < n) {
+			merge(a, tmp, start, length);
+
+			start += 2*length;
+		}
+
+		printf("stage: length = %d\n", length);
+		for(unsigned int i = 0; i < n; i++) {
+			printf("%d, ", a[i]);
+		}
+		printf("\n\n");
+
+		length = 2 * length;
+	}
+
+}

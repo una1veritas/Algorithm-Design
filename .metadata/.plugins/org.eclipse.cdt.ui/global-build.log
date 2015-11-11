@@ -1,0 +1,12 @@
+00:22:55 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+Building file: ../src/MergeSort_wo_recursion.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/MergeSort_wo_recursion.d" -MT"src/MergeSort_wo_recursion.d" -o "src/MergeSort_wo_recursion.o" "../src/MergeSort_wo_recursion.c"
+Finished building: ../src/MergeSort_wo_recursion.c
+ 
+Building target: MergeSort_wo_recursion
+Invoking: MacOS X C Linker
+gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o   
+Finished building target: MergeSort_wo_recursion
+ 

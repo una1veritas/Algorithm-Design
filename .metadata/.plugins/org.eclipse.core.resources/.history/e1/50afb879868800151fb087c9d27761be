@@ -1,0 +1,109 @@
+/*
+ ============================================================================
+ Name        : Merge_Sort_wo_recursion.c
+ Author      : Sin
+ Version     :
+ Copyright   : Your copyright notice
+ Description : Hello World in C, Ansi-style
+ ============================================================================
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MIN(x,y) ((x)<(y) ? (x) : (y))
+
+void MergeSort(int a[], unsigned int n);
+
+int main(int argc, char * argv[]) {
+	unsigned int input_size = 0;
+
+	if (argc < 2) {
+		puts("Too few arguments.\n");
+		return EXIT_FAILURE;
+	}
+
+	printf("argc = %d.\n", argc);
+	for(int i = 1; i < argc; i++) {
+		input_size++;
+	}
+
+	printf("input size: %d.\n", input_size);
+
+	int array[input_size];
+	for(unsigned int i = 0; i < input_size; i++) {
+		array[i] = atoi(argv[1+i]);
+	}
+
+	printf("Array contents: \n");
+	for(unsigned int i = 0; i < input_size; i++) {
+		printf("%d, ", array[i]);
+	}
+	printf("\n");
+	printf("sorting...\n");
+
+	MergeSort(array, input_size);
+
+	printf("Array contents: \n");
+	for(unsigned int i = 0; i < input_size; i++) {
+		printf("%d, ", array[i]);
+	}
+	printf("\n");
+
+	return EXIT_SUCCESS;
+}
+
+void MergeSort(int a[], unsigned int n) {
+	int tmp[n];
+	unsigned int length = 1;
+	unsigned int start, left, right, dst, end;
+	while (length < n) {
+
+		start = 0;
+		while (start < n) {
+
+			dst = 0;
+			left = start;
+			right = start + length;
+			end = MIN(start + 2 * length, n);
+			while ( 1 ) {
+				if ( (left < start + length) && (right < end) ) {
+					if ( a[left] < a[right] ) {
+						tmp[dst++] = a[left++];
+					} else {
+						tmp[dst++] = a[right++];
+					}
+				} else if ( left < start + length ) {
+					tmp[dst++] = a[left++];
+				} else if ( right < end ) {
+					tmp[dst++] = a[right++];
+				} else {
+					break;
+				}
+			}
+
+			printf("[");
+			for(int i = 0; i < dst; i++) {
+				printf("%d, ", tmp[i]);
+			}
+			printf("]\n");
+
+			// copy back
+			for(int i = 0; i < dst, t++) {
+				a[start + i] = tmp[i];
+			}
+
+			start += 2*length;
+		}
+
+
+		printf("stage: length = %d\n", length);
+		for(unsigned int i = 0; i < n; i++) {
+			printf("%d, ", a[i]);
+		}
+		printf("\n\n");
+
+		length = 2 * length;
+	}
+
+}
