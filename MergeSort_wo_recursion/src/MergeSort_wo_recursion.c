@@ -60,11 +60,11 @@ void MergeSort(int a[], unsigned int n) {
 	length = 1; // the length of merging sequences
 	while (length < n) {
 		start = 0; // the position of a pair of two sequences
-		while (start < n) {
+		while (start + length < n) {
 			dst = 0; // the index of a merge buffer
 			left = start;
 			right = start + length;
-			lend = MIN(start + length, n);
+			lend = start + length;
 			rend = MIN(start + 2 * length, n);
 			do {
 				if ( (left < lend) && (right < rend) ) {
