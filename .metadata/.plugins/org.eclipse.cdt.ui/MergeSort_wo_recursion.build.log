@@ -1,4 +1,4 @@
-00:22:55 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+11:23:55 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
 make all 
 Building file: ../src/MergeSort_wo_recursion.c
 Invoking: GCC C Compiler
@@ -11,5 +11,5 @@ gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o
 Finished building target: MergeSort_wo_recursion
  
 
-00:22:56 Build Finished (took 141ms)
+11:23:55 Build Finished (took 133ms)
 

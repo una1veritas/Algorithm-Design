@@ -108,7 +108,7 @@ void MergeSort(int a[], unsigned int n) {
  *
 	argc = 11.
 	input size: 10.
-	Input sequence:
+	Array contents:
 	3, 7, 9, 1, 10, 2, 6, 7, 3, 5,
 	sorting...
 
@@ -123,7 +123,7 @@ void MergeSort(int a[], unsigned int n) {
 
 	length = 8 to 16
 	: 1, 2, 3, 3, 5, 6, 7, 7, 9, 10,
-
-	Result:
+	Array contents:
 	1, 2, 3, 3, 5, 6, 7, 7, 9, 10,
+
  */

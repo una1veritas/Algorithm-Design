@@ -1,4 +1,98 @@
-00:22:55 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+11:18:50 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+Building file: ../src/MergeSort_wo_recursion.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/MergeSort_wo_recursion.d" -MT"src/MergeSort_wo_recursion.d" -o "src/MergeSort_wo_recursion.o" "../src/MergeSort_wo_recursion.c"
+Finished building: ../src/MergeSort_wo_recursion.c
+ 
+Building target: MergeSort_wo_recursion
+Invoking: MacOS X C Linker
+gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o   
+Finished building target: MergeSort_wo_recursion
+ 
+11:18:51 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+make: Nothing to be done for `all'.
+11:19:09 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+Building file: ../src/MergeSort_wo_recursion.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/MergeSort_wo_recursion.d" -MT"src/MergeSort_wo_recursion.d" -o "src/MergeSort_wo_recursion.o" "../src/MergeSort_wo_recursion.c"
+Finished building: ../src/MergeSort_wo_recursion.c
+ 
+Building target: MergeSort_wo_recursion
+Invoking: MacOS X C Linker
+gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o   
+Finished building target: MergeSort_wo_recursion
+ 
+11:19:41 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+Building file: ../src/MergeSort_wo_recursion.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/MergeSort_wo_recursion.d" -MT"src/MergeSort_wo_recursion.d" -o "src/MergeSort_wo_recursion.o" "../src/MergeSort_wo_recursion.c"
+Finished building: ../src/MergeSort_wo_recursion.c
+ 
+Building target: MergeSort_wo_recursion
+Invoking: MacOS X C Linker
+gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o   
+Finished building target: MergeSort_wo_recursion
+ 
+11:19:57 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+Building file: ../src/MergeSort_wo_recursion.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/MergeSort_wo_recursion.d" -MT"src/MergeSort_wo_recursion.d" -o "src/MergeSort_wo_recursion.o" "../src/MergeSort_wo_recursion.c"
+Finished building: ../src/MergeSort_wo_recursion.c
+ 
+Building target: MergeSort_wo_recursion
+Invoking: MacOS X C Linker
+gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o   
+Finished building target: MergeSort_wo_recursion
+ 
+11:20:45 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+Building file: ../src/MergeSort_wo_recursion.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/MergeSort_wo_recursion.d" -MT"src/MergeSort_wo_recursion.d" -o "src/MergeSort_wo_recursion.o" "../src/MergeSort_wo_recursion.c"
+Finished building: ../src/MergeSort_wo_recursion.c
+ 
+Building target: MergeSort_wo_recursion
+Invoking: MacOS X C Linker
+gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o   
+Finished building target: MergeSort_wo_recursion
+ 
+11:21:17 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+Building file: ../src/MergeSort_wo_recursion.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/MergeSort_wo_recursion.d" -MT"src/MergeSort_wo_recursion.d" -o "src/MergeSort_wo_recursion.o" "../src/MergeSort_wo_recursion.c"
+../src/MergeSort_wo_recursion.c:94:43: warning: data argument not used by format string [-Wformat-extra-args]
+                printf("\nlength = %d to &d\n", length, 2* length);
+                       ~~~~~~~~~~~~~~~~~~~~~~~          ^
+1 warning generated.
+Finished building: ../src/MergeSort_wo_recursion.c
+ 
+Building target: MergeSort_wo_recursion
+Invoking: MacOS X C Linker
+gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o   
+Finished building target: MergeSort_wo_recursion
+ 
+11:21:27 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+Building file: ../src/MergeSort_wo_recursion.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/MergeSort_wo_recursion.d" -MT"src/MergeSort_wo_recursion.d" -o "src/MergeSort_wo_recursion.o" "../src/MergeSort_wo_recursion.c"
+Finished building: ../src/MergeSort_wo_recursion.c
+ 
+Building target: MergeSort_wo_recursion
+Invoking: MacOS X C Linker
+gcc  -o "MergeSort_wo_recursion"  ./src/MergeSort_wo_recursion.o   
+Finished building target: MergeSort_wo_recursion
+ 
+11:22:00 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
+make all 
+make: Nothing to be done for `all'.
+11:23:55 **** Incremental Build of configuration Debug for project MergeSort_wo_recursion ****
 make all 
 Building file: ../src/MergeSort_wo_recursion.c
 Invoking: GCC C Compiler
