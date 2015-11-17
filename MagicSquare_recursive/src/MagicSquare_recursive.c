@@ -74,20 +74,7 @@ int checksquare(int sq[], int size) {
 }
 
 int rsearch(int sq[],int pos,int size) {
-	int tbl[size];
-	for(int i = 1; i <= size; i++) {
-		tbl[i-1] = 0;
-	}
-	for(int i = 0; i < pos; i++) {
-		tbl[sq[i]-1] = 1;
-	}
-	/*
-	for(int i = 1; i <= size; i++) {
-		if ( tbl[i-1] == 1 )
-		printf("%d, ",i);
-	}
-	printf("\n");
-	*/
+	int i;
 	if ( !(pos < size) ) {
 		// printf("pos = %d.\n",pos);
 		/*
@@ -100,9 +87,12 @@ int rsearch(int sq[],int pos,int size) {
 		// check
 		return checksquare(sq, size);
 	}
-	int x;
-	for(x = 1; x <= size; x++) {
-		if ( tbl[x-1] == 0 ) {
+	for(int x = 1; x <= size; x++) {
+		for(i = 0; i < pos; i++) {
+			if (sq[i] == x)
+				break;
+		}
+		if ( !(i < pos) ) {
 			sq[pos] = x;
 			if ( rsearch(sq, pos+1, size) )
 				return 1;
