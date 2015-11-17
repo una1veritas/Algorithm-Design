@@ -1,0 +1,32 @@
+Basalt:MagicSquare_recursive sin$ time ./Debug/MagicSquare_recursive 1
+!!!Hello World!!!
+rownum = 1
+| 1|
+---
+
+real	0m0.003s
+user	0m0.001s
+sys	0m0.001s
+Basalt:MagicSquare_recursive sin$ time ./Debug/MagicSquare_recursive 2
+!!!Hello World!!!
+rownum = 2
+Couldn't find any magic square.
+
+
+real	0m0.002s
+user	0m0.001s
+sys	0m0.001s
+Basalt:MagicSquare_recursive sin$ time ./Debug/MagicSquare_recursive 3
+!!!Hello World!!!
+rownum = 3
+| 1| 5| 9|
+---------
+| 6| 7| 2|
+---------
+| 8| 3| 4|
+---------
+
+real	0m0.006s
+user	0m0.004s
+sys	0m0.001s
+Basalt:MagicSquare_recursive sin$ 

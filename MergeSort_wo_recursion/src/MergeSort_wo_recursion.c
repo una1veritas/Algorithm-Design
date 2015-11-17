@@ -90,14 +90,14 @@ void MergeSort(int a[], unsigned int n) {
 			start += 2*length;
 		}
 
-		/* for observation */
+		/* for observation *
 		printf("\nlength = %d to %d\n", length, 2* length);
 		for(unsigned int i = 0; i < n; i++) {
 			if ( i % (2*length) == 0 ) printf(": ");
 			printf("%d, ", a[i]);
 		}
 		printf("\n");
-		/* */
+		* */
 
 		length = 2 * length;
 	}
