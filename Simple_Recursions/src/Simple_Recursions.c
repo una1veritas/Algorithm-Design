@@ -15,19 +15,15 @@ volatile long counter;
 
 long F(n) {
 	counter++;
-	if ( n == 0 )
-		return 0;
-	if ( n == 1 )
-		return 1;
+	if ( n == 0 ) return 0;
+	if ( n == 1 ) return 1;
 	return F(n-1) + F(n-2);
 }
 
 long H(n) {
 	counter++;
-	if ( n == 0 )
-		return 0;
-	if ( n == 1 )
-		return 1;
+	if ( n == 0 ) return 0;
+	if ( n == 1 ) return 1;
 	return H(n-1) + 1 + H(n-1);
 }
 
