@@ -1,0 +1,41 @@
+time ./Debug/Simple_Recursions 10
+Sequence:
+55 (177), 
+
+
+real	0m0.004s
+user	0m0.001s
+sys	0m0.002s
+Fomalhaut:Simple_Recursions sin$ time ./Debug/Simple_Recursions 20
+Sequence:
+6765 (21891), 
+
+
+real	0m0.006s
+user	0m0.002s
+sys	0m0.003s
+Fomalhaut:Simple_Recursions sin$ time ./Debug/Simple_Recursions 30
+Sequence:
+832040 (2692537), 
+
+
+real	0m0.019s
+user	0m0.014s
+sys	0m0.003s
+Fomalhaut:Simple_Recursions sin$ time ./Debug/Simple_Recursions 40
+Sequence:
+102334155 (331160281), 
+
+
+real	0m1.324s
+user	0m1.300s
+sys	0m0.012s
+Fomalhaut:Simple_Recursions sin$ time ./Debug/Simple_Recursions 50
+Sequence:
+12586269025 (40730022147), 
+
+
+real	2m45.114s
+user	2m43.348s
+sys	0m0.955s
+
