@@ -13,11 +13,11 @@
 double PI;
 typedef double complex cplx;
 
-void _fft(cplx buf[], cplx out[], int n, int step)
+void fft_dc(cplx buf[], cplx out[], int n, int step)
 {
 	if (step < n) {
-		_fft(out, buf, n, step * 2);
-		_fft(out + step, buf + step, n, step * 2);
+		fft_dc(out, buf, n, step * 2);
+		fft_dc(out + step, buf + step, n, step * 2);
 
 		for (int i = 0; i < n; i += 2 * step) {
 			cplx t = cexp(-I * PI * i / n) * out[i + step];
@@ -30,9 +30,29 @@ void _fft(cplx buf[], cplx out[], int n, int step)
 void fft(cplx buf[], int n)
 {
 	cplx out[n];
-	for (int i = 0; i < n; i++) out[i] = buf[i];
+	for (int i = 0; i < n; i++)
+		out[i] = buf[i];
 
-	_fft(buf, out, n, 1);
+	fft_dc(buf, out, n, 1);
+}
+
+void ifft(cplx buf[], int n)
+{
+	cplx out[n];
+	for (int i = 0; i < n; i++) {
+		out[i] = conj(buf[i]);
+		buf[i] = out[i];
+	}
+
+	fft_dc(buf, out, n, 1);
+
+	for (int i = 0; i < n; i++) {
+		cplx t = conj(buf[i]);
+		t = creal(t)/n + cimag(t)/n*I;
+		buf[i] = t;
+	}
+
+
 }
 
 
@@ -53,6 +73,8 @@ int main()
 	show("Data: ", buf);
 	fft(buf, 8);
 	show("\nFFT : ", buf);
+	ifft(buf, 8);
+	show("\nIFFT : ", buf);
 
 	return 0;
 }
