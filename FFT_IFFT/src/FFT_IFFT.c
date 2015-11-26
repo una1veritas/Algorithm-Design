@@ -90,6 +90,7 @@ void fft(complex *v, int n, complex *tmp) {
  [9]   Let v[m+N/2] = ve[m] - w*vo[m]
  */
 
+/* must be divided by N */
 void ifft(complex *v, int n, complex *tmp) {
 	if (n > 1) { /* otherwise, do nothing and return */
 		int k, m;
