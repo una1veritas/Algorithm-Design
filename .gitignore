@@ -2,3 +2,4 @@
 RemoteSystemsTempFiles
 
 *.o
+.cproject
