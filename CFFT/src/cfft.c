@@ -8,9 +8,6 @@
  ============================================================================
  */
 
-/*
- * #include <assert.h>
- */
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,24 +24,6 @@
 
 typedef double complex dcomplex;
 
-/* Print a vector of complexes as ordered pairs. */
-static void print_vector(const char *title, dcomplex *x, int n) {
-	int i;
-	printf("%s (dim=%d):\n", title, n);
-	for (i = 0; i < n; i++)
-		printf(" %5d ", i );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %5.2f,", creal(x[i]) );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %5.2f,", cimag(x[i]) );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %5.2f,", cabs(x[i]) );
-	printf("\n\n");
-	return;
-}
 
 /*
  fft(v,N):
@@ -61,10 +40,10 @@ static void print_vector(const char *title, dcomplex *x, int n) {
  */
 
 void fft(dcomplex *v, int n, dcomplex *tmp) {
-	if ( n == 0 ) /* do nothing and return */
+	if ( n <= 1 ) /* do nothing and return */
 		return;
 
-	// n > 1
+	// n >= 1
 	const int m = n >> 1;
 	dcomplex *v1, *v0;
 	v0 = tmp;
@@ -82,6 +61,78 @@ void fft(dcomplex *v, int n, dcomplex *tmp) {
 		v[i] = v0[i] + z;
 		v[i + m /* n / 2*/] = v0[i] - z;
 	}
+	return;
+}
+
+void mini_test(int n) {
+	const int N = 2*n;
+	int t[N];
+	int *src , *dst, * tmp;
+	//int m;
+
+	src = t; dst = t + n;
+	for(int i = 0; i < n; i++) {
+		src[i] = i;
+		dst[i] = 0;
+	}
+	printf("\n");
+
+	for(int m = n>>1; m > 0; m >>= 1) {
+		for(int head = 0; head < n; head += 2*m ) {
+			for(int i = 0; i < m; i++) {
+				dst[head+i] = src[head+2*i];
+				dst[head+m+i] = src[head+2*i+1];
+			}
+		}
+		tmp = src; src = dst; dst = tmp;
+	}
+
+	//printf("%d (%d), ", w, m);
+
+	printf("\n");
+	for(int i = 0; i < n; i++) {
+		printf("%d ", src[i]);
+	}
+	printf("\n");
+}
+
+
+void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
+	dcomplex *src, *dst, *tmp;
+	src = vec;
+	dst = scratch;
+	// n > 1
+	for(int m = (n>>1); m > 0; m >>= 1) {
+		for(int head = 0; head < n; head += (m<<1) ) {
+			for(int i = 0; i < m; i++) {
+				dst[head+i] = src[head+2*i];
+				dst[head+m+i] = src[head+2*i+1];
+			}
+		}
+		tmp = src; src = dst; dst = tmp;
+	}
+
+	for(int m = 1; m < n; m = (m<<1) ) {
+		for (int h = 0; h < n; h += (m<<1) ) {
+			for(int i = 0; i < m; i++) {
+				dcomplex w = cexp(- I * /* 2 * */ PI * i / ((double) m) /* n */);
+				dcomplex z = w * src[h + m + i];
+				dst[h + i] = src[h + i] + z;
+				dst[h + m + i] = src[h + i] - z;
+			}
+		}
+		tmp = src;
+		src = dst;
+		dst = tmp;
+	}
+
+	if ( vec != src ) {
+		printf("Whooa!\n");
+		for(int i = 0; i < n; i++) {
+			vec[i] = src[i]; ///sqrt(n);
+		}
+	}
+
 	return;
 }
 
@@ -121,14 +172,13 @@ void ifft(dcomplex *v, int n, dcomplex *tmp) {
 		v[i] = conj(v[i]);
 	}
 
-	fft(v, n, tmp);
+	fft_dp(v, n, tmp);
 
 	for (int i = 0; i < n; i++) {
 		dcomplex t = conj(v[i]);
-		t = creal(t)/((double)n) + (cimag(t)/((double)n))*I;
+		t = t/((double) n);
 		v[i] = t;
 	}
-
 	return;
 }
 
@@ -140,7 +190,7 @@ int get_values(int argc, char * argv[], int * n, dcomplex * v[]) {
 		return 0;
 	for ( t = 1; t < argc-1; t *= 2) {}
 	*n = (int) t;
-	*v = (dcomplex * )malloc(sizeof(dcomplex)*t);
+	*v = (dcomplex * )malloc(sizeof(dcomplex)* 2* t);
 	for(int i = 0; i < t; ++i) {
 		if ( i < argc - 1 ) {
 			f = atof(argv[i+1]);
@@ -152,6 +202,25 @@ int get_values(int argc, char * argv[], int * n, dcomplex * v[]) {
 	return 1;
 }
 
+/* Print a vector of complexes as ordered pairs. */
+static void print_vector(const char *title, dcomplex *x, int n) {
+	int i;
+	printf("%s (dim=%d):\n", title, n);
+	for (i = 0; i < n; i++)
+		printf(" %5d ", i );
+	putchar('\n');
+	for (i = 0; i < n; i++)
+		printf(" %5.2f,", creal(x[i]) );
+	putchar('\n');
+	for (i = 0; i < n; i++)
+		printf(" %5.2f,", cimag(x[i]) );
+	putchar('\n');
+	for (i = 0; i < n; i++)
+		printf(" %5.2f,", cabs(x[i]) );
+	printf("\n\n");
+	return;
+}
+
 int main(int argc, char * argv[]) {
 	int N;
 	dcomplex * v;
@@ -159,16 +228,15 @@ int main(int argc, char * argv[]) {
 	/* Get N and fill v[] with program inputs. */
 	if ( !get_values(argc, argv, &N, &v) )
 		exit(EXIT_FAILURE);
-	dcomplex scratch[N];
+
+	//mini_test(N);
 
 	/* FFT, iFFT of v[]: */
 	print_vector("Orig", v, N);
-	fft(v, N, scratch);
+	fft_dp(v, N, v+N);
 	print_vector(" FFT", v, N);
-	ifft(v, N, scratch);
+	ifft(v, N, v+N);
 	print_vector("iFFT", v, N);
-
-	free(v);
 
 	exit(EXIT_SUCCESS);
 }
