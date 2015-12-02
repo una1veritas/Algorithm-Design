@@ -126,11 +126,9 @@ void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
 		dst = tmp;
 	}
 
-	if ( vec != src ) {
-		printf("Whooa!\n");
-		for(int i = 0; i < n; i++) {
-			vec[i] = src[i]; ///sqrt(n);
-		}
+	const double sqrt_N = sqrt( ((double) n) );
+	for(int i = 0; i < n; i++) {
+		vec[i] = src[i] / sqrt_N;
 	}
 
 	return;
@@ -176,7 +174,7 @@ void ifft(dcomplex *v, int n, dcomplex *tmp) {
 
 	for (int i = 0; i < n; i++) {
 		dcomplex t = conj(v[i]);
-		t = t/((double) n);
+		//t = t/((double) n);
 		v[i] = t;
 	}
 	return;
