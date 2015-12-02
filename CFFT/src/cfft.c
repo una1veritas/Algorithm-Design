@@ -1,11 +1,15 @@
 /*
  ============================================================================
  Name        : cfft.c
- Author      : modified http://www.math.wustl.edu/~victor/mfmm/fourier/fft.c
+ Author      : Sin Shimozono
  Version     :
- Copyright   : by Sin Shimozono
+ Copyright   : reserved.
  Description : Factored discrete Fourier transform, or FFT, and its inverse iFFT
  ============================================================================
+ * Reference:
+ * http://www.math.wustl.edu/~victor/mfmm/fourier/fft.c
+ * http://rosettacode.org/wiki/Fast_Fourier_transform
+ *
  */
 
 #include <math.h>
@@ -42,58 +46,25 @@ typedef double complex dcomplex;
 void fft(dcomplex *v, int n, dcomplex *tmp) {
 	if ( n <= 1 ) /* do nothing and return */
 		return;
-
-	// n >= 1
+	// n > 1
 	const int m = n >> 1;
 	dcomplex *v1, *v0;
 	v0 = tmp;
-	v1 = tmp + m; //n / 2;
+	v1 = tmp + m;
 	for (int i = 0; i < n / 2; i++) {
 		v0[i] = v[2 * i];
 		v1[i] = v[2 * i + 1];
 	}
-	fft(v0, m /*n / 2*/, v); /* FFT on even-indexed elements of v[] */
-	fft(v1, m /* n / 2*/, v); /* FFT on odd-indexed elements of v[] */
-	for (int i = 0; i < m /*n / 2*/; i++) {
-		//dcomplex w = (cos(2 * PI * i / (double) n)) + (-sin(2 * PI * i / (double) n))*I;
+	fft(v0, m, v); /* FFT on even-indexed elements of v[] */
+	fft(v1, m, v); /* FFT on odd-indexed elements of v[] */
+	for (int i = 0; i < m; i++) {
+		// w = (cos(2 * PI * i / (double) n)) + (-sin(2 * PI * i / (double) n))*I;
 		dcomplex w = cexp(- I * /* 2 * */ PI * i / (double) m /* n */);
 		dcomplex z = w * v1[i];
 		v[i] = v0[i] + z;
-		v[i + m /* n / 2*/] = v0[i] - z;
+		v[i + m] = v0[i] - z;
 	}
 	return;
-}
-
-void mini_test(int n) {
-	const int N = 2*n;
-	int t[N];
-	int *src , *dst, * tmp;
-	//int m;
-
-	src = t; dst = t + n;
-	for(int i = 0; i < n; i++) {
-		src[i] = i;
-		dst[i] = 0;
-	}
-	printf("\n");
-
-	for(int m = n>>1; m > 0; m >>= 1) {
-		for(int head = 0; head < n; head += 2*m ) {
-			for(int i = 0; i < m; i++) {
-				dst[head+i] = src[head+2*i];
-				dst[head+m+i] = src[head+2*i+1];
-			}
-		}
-		tmp = src; src = dst; dst = tmp;
-	}
-
-	//printf("%d (%d), ", w, m);
-
-	printf("\n");
-	for(int i = 0; i < n; i++) {
-		printf("%d ", src[i]);
-	}
-	printf("\n");
 }
 
 
@@ -128,10 +99,12 @@ void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
 		dst = tmp;
 	}
 
+	/*
 	const double sqrt_N = sqrt( ((double) n) );
 	for(int i = 0; i < n; i++) {
 		vec[i] = src[i] / sqrt_N;
 	}
+	*/
 
 	return;
 }
@@ -175,8 +148,7 @@ void ifft(dcomplex *v, int n, dcomplex *tmp) {
 	fft_dp(v, n, tmp);
 
 	for (int i = 0; i < n; i++) {
-		dcomplex t = conj(v[i]);
-		//t = t/((double) n);
+		dcomplex t = conj(v[i]) / ((double) n);
 		v[i] = t;
 	}
 	return;
