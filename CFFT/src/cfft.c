@@ -102,6 +102,7 @@ void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
 	src = vec;
 	dst = scratch;
 	// n > 1
+	// do butterfly swap
 	for(int m = (n>>1); m > 0; m >>= 1) {
 		for(int head = 0; head < n; head += (m<<1) ) {
 			for(int i = 0; i < m; i++) {
@@ -112,6 +113,7 @@ void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
 		tmp = src; src = dst; dst = tmp;
 	}
 
+	// divide-and-conqure, only by merging
 	for(int m = 1; m < n; m = (m<<1) ) {
 		for (int h = 0; h < n; h += (m<<1) ) {
 			for(int i = 0; i < m; i++) {
