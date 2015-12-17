@@ -1,0 +1,14 @@
+Basalt:Debug sin$ ./StringSort kokura kurosaki munakata kashii hakata
+totally 5 words.
+0: kokura
+1: kurosaki
+2: munakata
+3: kashii
+4: hakata
+
+sorted:
+0: hakata
+1: kashii
+2: kokura
+3: kurosaki
+4: munakata
