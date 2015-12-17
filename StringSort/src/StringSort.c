@@ -10,7 +10,7 @@ typedef char* string;
 
 /* 全順序関係（関数），ソート関数　の型宣言，本体の定義など */
 
-int compare_str(void *a, void *b) {
+int compare_str(const void *a, const void *b) {
 	/* a, b ともに配列の要素(string)へのポインタ */
     return strcmp(*(string*) a, *(string*) b) ;
 }
@@ -18,11 +18,7 @@ int compare_str(void *a, void *b) {
 int main(int argcount, string argval[]) {
 
 	int number = argcount - 1;
-	string sarray[number+1];
-	for(int i = 0; i < number; i++) {
-		sarray[i] = argval[i+1];
-	}
-	sarray[number] = NULL;
+	string *sarray = argval+1;
 
 	printf("totally %d words.\n",number);
 	for(int i = 0; i < number; i++) {
