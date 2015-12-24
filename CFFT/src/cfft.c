@@ -28,21 +28,9 @@
 
 typedef double complex dcomplex;
 
-
 /*
- fft(v,N):
- [0] If N==1 then return.
- [1] For k = 0 to N/2-1, let ve[k] = v[2*k]
- [2] Compute fft(ve, N/2);
- [3] For k = 0 to N/2-1, let vo[k] = v[2*k+1]
- [4] Compute fft(vo, N/2);
- [5] For m = 0 to N/2-1, do [6] through [9]
- [6]   Let w.re = cos(2*PI*m/N)
- [7]   Let w.im = -sin(2*PI*m/N)
- [8]   Let v[m] = ve[m] + w*vo[m]
- [9]   Let v[m+N/2] = ve[m] - w*vo[m]
+ * FFT by explicit divide-and-conqure in recursion
  */
-
 void fft(dcomplex *v, int n, dcomplex *tmp) {
 	if ( n <= 1 ) /* do nothing and return */
 		return;
@@ -67,7 +55,9 @@ void fft(dcomplex *v, int n, dcomplex *tmp) {
 	return;
 }
 
-
+/*
+ * FFT by butterfly changes in advance forcing divide-and-conqure
+ */
 void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
 	dcomplex *src, *dst, *tmp;
 	src = vec;
@@ -99,46 +89,9 @@ void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
 		dst = tmp;
 	}
 
-	/*
-	const double sqrt_N = sqrt( ((double) n) );
-	for(int i = 0; i < n; i++) {
-		vec[i] = src[i] / sqrt_N;
-	}
-	*/
-
 	return;
 }
 
-/*
- ifft(v,N):
- [0] If N==1 then return.
- [1] For k = 0 to N/2-1, let ve[k] = v[2*k]
- [2] Compute ifft(ve, N/2);
- [3] For k = 0 to N/2-1, let vo[k] = v[2*k+1]
- [4] Compute ifft(vo, N/2);
- [5] For m = 0 to N/2-1, do [6] through [9]
- [6]   Let w.re = cos(2*PI*m/N)
- [7]   Let w.im = sin(2*PI*m/N)
- [8]   Let v[m] = ve[m] + w*vo[m]
- [9]   Let v[m+N/2] = ve[m] - w*vo[m]
- */
-
-/*
-	cplx out[n];
-	for (int i = 0; i < n; i++) {
-		out[i] = conj(buf[i]);
-		buf[i] = out[i];
-	}
-
-	fft_dc(buf, out, n, 1);
-
-	for (int i = 0; i < n; i++) {
-		cplx t = conj(buf[i]);
-		t = creal(t)/n + cimag(t)/n*I;
-		buf[i] = t;
-	}
-
- */
 void ifft(dcomplex *v, int n, dcomplex *tmp) {
 
 	for (int i = 0; i < n; i++) {
