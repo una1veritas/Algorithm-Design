@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <complex.h>
 
+#include <string.h>
 /*
  * double PI;
  */
@@ -27,6 +28,8 @@
 #endif
 
 typedef double complex dcomplex;
+
+int get_values(int argc, char * argv[], int * n, dcomplex * v[]);
 
 /*
  * FFT by explicit divide-and-conqure in recursion
@@ -107,41 +110,22 @@ void ifft(dcomplex *v, int n, dcomplex *tmp) {
 	return;
 }
 
-int get_values(int argc, char * argv[], int * n, dcomplex * v[]) {
-	int t;
-	double f;
-
-	if ( argc < 2 )
-		return 0;
-	for ( t = 1; t < argc-1; t *= 2) {}
-	*n = (int) t;
-	*v = (dcomplex * )malloc(sizeof(dcomplex)* 2* t);
-	for(int i = 0; i < t; ++i) {
-		if ( i < argc - 1 ) {
-			f = atof(argv[i+1]);
-		} else {
-			f = 0.0;
-		}
-		(*v)[i] = f;
-	}
-	return 1;
-}
 
 /* Print a vector of complexes as ordered pairs. */
 static void print_vector(const char *title, dcomplex *x, int n) {
 	int i;
 	printf("%s (dim=%d):\n", title, n);
 	for (i = 0; i < n; i++)
-		printf(" %5d ", i );
+		printf(" %6d ", i );
 	putchar('\n');
 	for (i = 0; i < n; i++)
-		printf(" %5.2f,", creal(x[i]) );
+		printf(" %6.3f,", creal(x[i]) );
 	putchar('\n');
 	for (i = 0; i < n; i++)
-		printf(" %5.2f,", cimag(x[i]) );
+		printf(" %6.3f,", cimag(x[i]) );
 	putchar('\n');
 	for (i = 0; i < n; i++)
-		printf(" %5.2f,", cabs(x[i]) );
+		printf(" %6.3f,", cabs(x[i]) );
 	printf("\n\n");
 	return;
 }
@@ -164,4 +148,46 @@ int main(int argc, char * argv[]) {
 	print_vector("iFFT", v, N);
 
 	exit(EXIT_SUCCESS);
+}
+
+
+int get_values(int argc, char * argv[], int * n, dcomplex * v[]) {
+	double f;
+	int mode = 0;
+
+	if ( argc < 2 )
+		return 0;
+
+	int t = 1;
+	int pos;
+	int count = 0;
+	for(pos = 1; pos < argc; pos++) {
+		f = atof( argv[pos]);
+		if ( f == 0 && argv[pos][0] == '-' ) {
+			/* - switch */
+			if ( strcmp("-c", argv[pos]) == 0 )
+				mode = 1; /* complex mode */
+		} else {
+			count++;
+			if ( !(count <= t) )
+				t *= 2;
+		}
+	}
+	if ( mode == 1 )
+		printf("complex mode: ");
+	else
+		printf("real only mode: ");
+	printf("t %d\n", t);
+
+	*n = (int) t;
+	*v = (dcomplex * )malloc(sizeof(dcomplex)* 2* t);
+	for(int i = 0; i < t; ++i) {
+		if ( i < argc - 1 ) {
+			f = atof(argv[i+1]);
+		} else {
+			f = 0.0;
+		}
+		(*v)[i] = f;
+	}
+	return 1;
 }
