@@ -99,7 +99,7 @@ char * convert(char * s, char * t) {
 int main(int argcount, string argval[]) {
 
 	int number = argcount - 1;
-	string *sarray = argval+1;
+	string *sarray = argval + 1;
 	unsigned int maxlen = 0;
 
 	printf("totally %d words.\n",number);
