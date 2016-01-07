@@ -9,11 +9,19 @@
 
 typedef char* string;
 
+static char * kanareg(char * s, char * t);
+static int compare_str(const void *a, const void *b);
+int isvowel(char c);
+
 /* 全順序関係（関数），ソート関数　の型宣言，本体の定義など */
 
-int compare_str(const void *a, const void *b) {
+
+static int compare_str(const void *a, const void *b) {
 	/* a, b ともに配列の要素(string)へのポインタ */
-    return strcmp(*(string*) a, *(string*) b) ;
+	char ta[32], tb[32];
+	kanareg(*(string*) a, ta);
+	kanareg(*(string*) b, tb);
+    return strcmp(ta, tb) ;
 }
 
 int isvowel(char c) {
@@ -29,7 +37,29 @@ int isvowel(char c) {
 	return 0;
 }
 
-char * kanareg(char * s, char * t) {
+int code50(char * t) {
+	static char transtable[][2] =
+		{ {'a', '1'}, {'i', '2'}, {'u', '3'}, {'e', '4'}, {'o', '5'},
+		{'@', 'A'}, {'k', 'B'}, {'s', 'C'}, {'t', 'D'}, {'n', 'E'},
+		{'h', 'F'}, {'m', 'G'}, {'y', 'H'}, {'r', 'I'}, {'w', 'J'}, {'n', 'K'},
+		{'\0', '\0'},
+	};
+	int i;
+
+	while( *t != '\0' ) {
+		for(i = 0; transtable[i][0]; i++) {
+			if ( *t == transtable[i][0] ) {
+				*t = transtable[i][1];
+				break;
+			}
+		}
+		t++;
+	}
+	*t = '\0';
+	return 1;
+}
+
+static char * kanareg(char * s, char * t) {
 	char * ptr = s;
 	char * outp = t;
 	char c;
@@ -77,8 +107,10 @@ char * kanareg(char * s, char * t) {
 		if ( c == 's' || c == 'z' || c == 'j' ) {
 			*outp++ = 's';
 			if ( c == 'j' ) {
-				*outp++ = 'i';
-				*outp++ = 'y';
+				if ( tolower(*ptr) != 'i') {
+					*outp++ = 'i';
+					*outp++ = 'y';
+				}
 			}
 			c = tolower(*ptr++);
 			if ( c == 'h' ) {
@@ -141,6 +173,8 @@ char * kanareg(char * s, char * t) {
 		} while ( !isvowel(c) );
 	}
 	*outp = '\0';
+
+	//code50(t);
 	return t;
 }
 
@@ -166,9 +200,9 @@ int main(int argcount, string argval[]) {
 
 	printf("sorted:\n");
 	for(int i = 0; i < number; i++) {
-		printf("%d: %s (%s)\n", i, sarray[i], kanareg(sarray[i], buf) );
+		kanareg(sarray[i], buf);
+		printf("%d: %s (%s)\n", i, sarray[i], buf);
 	}
 	printf("\n");
-
 	return EXIT_SUCCESS;
 }
