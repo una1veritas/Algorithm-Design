@@ -9,18 +9,21 @@
 
 typedef char* string;
 
-static char * kanareg(char * s, char * t);
-static int compare_str(const void *a, const void *b);
+int compare_str(const void *a, const void *b);
+int code50(char * t);
+char * kanareg(char * s, char * t);
 int isvowel(char c);
 
 /* 全順序関係（関数），ソート関数　の型宣言，本体の定義など */
 
 
-static int compare_str(const void *a, const void *b) {
+int compare_str(const void *a, const void *b) {
 	/* a, b ともに配列の要素(string)へのポインタ */
 	char ta[32], tb[32];
 	kanareg(*(string*) a, ta);
 	kanareg(*(string*) b, tb);
+	code50(ta);
+	code50(tb);
     return strcmp(ta, tb) ;
 }
 
@@ -38,7 +41,7 @@ int isvowel(char c) {
 }
 
 int code50(char * t) {
-	static char transtable[][2] =
+	static const char transtable[][2] =
 		{ {'a', '1'}, {'i', '2'}, {'u', '3'}, {'e', '4'}, {'o', '5'},
 		{'@', 'A'}, {'k', 'B'}, {'s', 'C'}, {'t', 'D'}, {'n', 'E'},
 		{'h', 'F'}, {'m', 'G'}, {'y', 'H'}, {'r', 'I'}, {'w', 'J'}, {'n', 'K'},
@@ -59,7 +62,7 @@ int code50(char * t) {
 	return 1;
 }
 
-static char * kanareg(char * s, char * t) {
+char * kanareg(char * s, char * t) {
 	char * ptr = s;
 	char * outp = t;
 	char c;
@@ -150,9 +153,57 @@ static char * kanareg(char * s, char * t) {
 			}
 			continue;
 		}
+		// ナ・ナ行拗音
+		if ( c == 'n' ) {
+			*outp++ = 'n';
+			c = tolower(*ptr++);
+			if ( c == 'y' ) {
+				// y をスキップ
+				c = tolower(*ptr++); // c は母音
+				*outp++ = 'i';
+				*outp++ = 'y';
+				*outp++ = c;
+			} else {
+				*outp++ = c;
+			}
+			continue;
+		}
 		// ハ・パ行拗音
-		if ( c == 'h' || c == 'p' || c == 'b' ) {
+		if ( c == 'h' || c == 'p' || c == 'b' || c == 'f' ) {
 			*outp++ = 'h';
+			if ( c == 'f' ) {
+				*outp++ = 'u';
+			}
+			c = tolower(*ptr++);
+			if ( c == 'y' ) {
+				// y をスキップ
+				c = tolower(*ptr++); // c は母音
+				*outp++ = 'i';
+				*outp++ = 'y';
+				*outp++ = c;
+			} else {
+				*outp++ = c;
+			}
+			continue;
+		}
+		// マ行・拗音
+		if ( c == 'm' ) {
+			*outp++ = 'm';
+			c = tolower(*ptr++);
+			if ( c == 'y' ) {
+				// y をスキップ
+				c = tolower(*ptr++); // c は母音
+				*outp++ = 'i';
+				*outp++ = 'y';
+				*outp++ = c;
+			} else {
+				*outp++ = c;
+			}
+			continue;
+		}
+		// ラ行・拗音
+		if ( c == 'r' ) {
+			*outp++ = 'r';
 			c = tolower(*ptr++);
 			if ( c == 'y' ) {
 				// y をスキップ
@@ -173,8 +224,6 @@ static char * kanareg(char * s, char * t) {
 		} while ( !isvowel(c) );
 	}
 	*outp = '\0';
-
-	//code50(t);
 	return t;
 }
 
