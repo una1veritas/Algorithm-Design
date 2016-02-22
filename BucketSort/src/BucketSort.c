@@ -18,26 +18,6 @@ struct Element {
 };
 typedef struct Element Element;
 
-void clearBuckets(Element **, int);
-void addToBuckets(Element ** buckets, datatype data);
-void purgeBuckets(Element **, int);
-
-int main(int argc, char * argv[]) {
-	if ( argc == 1 )
-		return EXIT_FAILURE;
-
-	int capacity = argc - 1;  /* 最大 */
-	Element * Buckets[100]; /* キーは 0 から 99 まで */
-
-	clearBuckets(Buckets, 100);
-	for(int i = 0; i < capacity; i++) {
-		int val = atoi(argv[1+i]);
-		addToBuckets(Buckets, val);
-	}
-	purgeBuckets(Buckets, 100);
-	return EXIT_SUCCESS;
-}
-
 void clearBuckets(Element ** buckets, int keySize) {
 	for(int i = 0; i < keySize; i++)
 		buckets[i] = NULL;
@@ -64,9 +44,27 @@ void purgeBuckets(Element ** buckets, int keySize) {
 		printf("[%d] ", i, (long) p);
 		while ( p != NULL ) {
 			printf("%d, ", p->data);
-			p = p->next;
+			Element * nextp = p->next;
 			free(p);
+			p = nextp;
 		}
 	}
 }
+int main(int argc, char * argv[]) {
+	if ( argc == 1 )
+		return EXIT_FAILURE;
+
+	int capacity = argc - 1;  /* 最大 */
+	Element * Buckets[100]; /* キーは 0 から 99 まで */
+
+	clearBuckets(Buckets, 100);
+	for(int i = 0; i < capacity; i++) {
+		int val = atoi(argv[1+i]);
+		addToBuckets(Buckets, val);
+	}
+	purgeBuckets(Buckets, 100);
+	return EXIT_SUCCESS;
+}
+
+
 
