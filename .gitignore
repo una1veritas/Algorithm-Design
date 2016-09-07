@@ -4,3 +4,4 @@ RemoteSystemsTempFiles
 *.o
 .cproject
 .project
+.DS_Store
