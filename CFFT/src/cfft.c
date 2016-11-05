@@ -1,40 +1,19 @@
 /*
- ============================================================================
- Name        : cfft.c
- Author      : Sin Shimozono
- Version     :
- Copyright   : reserved.
- Description : Factored discrete Fourier transform, or FFT, and its inverse iFFT
- ============================================================================
- * Reference:
- * http://www.math.wustl.edu/~victor/mfmm/fourier/fft.c
- * http://rosettacode.org/wiki/Fast_Fourier_transform
+ * cfft.c
  *
+ *  Created on: 2016/11/06
+ *      Author: sin
  */
 
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <complex.h>
 
-#include <string.h>
-/*
- * double PI;
- */
-#ifdef M_PI
-# define PI M_PI
-#else
-# define PI	3.14159265358979323846264338327950288
-#endif
-
-typedef double complex dcomplex;
-
-int get_values(int argc, char * argv[], int * n, dcomplex * v[]);
+#include "cfft.h"
 
 /*
- * FFT by explicit divide-and-conqure in recursion
+ *  Explicit divide-and-conqure FFT by recursion
  */
-void fft(dcomplex *v, int n, dcomplex *tmp) {
+void rfft(dcomplex *v, int n, dcomplex *tmp) {
 	if ( n <= 1 ) /* do nothing and return */
 		return;
 	// n > 1
@@ -46,8 +25,8 @@ void fft(dcomplex *v, int n, dcomplex *tmp) {
 		v0[i] = v[2 * i];
 		v1[i] = v[2 * i + 1];
 	}
-	fft(v0, m, v); /* FFT on even-indexed elements of v[] */
-	fft(v1, m, v); /* FFT on odd-indexed elements of v[] */
+	rfft(v0, m, v); /* FFT on even-indexed elements of v[] */
+	rfft(v1, m, v); /* FFT on odd-indexed elements of v[] */
 	for (int i = 0; i < m; i++) {
 		// w = (cos(2 * PI * i / (double) n)) + (-sin(2 * PI * i / (double) n))*I;
 		dcomplex w = cexp(- I * /* 2 * */ PI * i / (double) m /* n */);
@@ -58,10 +37,11 @@ void fft(dcomplex *v, int n, dcomplex *tmp) {
 	return;
 }
 
+
 /*
  * FFT by butterfly changes in advance forcing divide-and-conqure
  */
-void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
+void cfft(dcomplex *vec, int n, dcomplex *scratch) {
 	dcomplex *src, *dst, *tmp;
 	src = vec;
 	dst = scratch;
@@ -95,99 +75,19 @@ void fft_dp(dcomplex *vec, int n, dcomplex *scratch) {
 	return;
 }
 
+
+
 void ifft(dcomplex *v, int n, dcomplex *tmp) {
 
 	for (int i = 0; i < n; i++) {
 		v[i] = conj(v[i]);
 	}
 
-	fft_dp(v, n, tmp);
+	cfft(v, n, tmp);
 
 	for (int i = 0; i < n; i++) {
 		dcomplex t = conj(v[i]) / ((double) n);
 		v[i] = t;
 	}
 	return;
-}
-
-
-/* Print a vector of complexes as ordered pairs. */
-static void print_vector(const char *title, dcomplex *x, int n) {
-	int i;
-	printf("%s (dim=%d):\n", title, n);
-	for (i = 0; i < n; i++)
-		printf(" %6d ", i );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %6.3f,", creal(x[i]) );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %6.3f,", cimag(x[i]) );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %6.3f,", cabs(x[i]) );
-	printf("\n\n");
-	return;
-}
-
-int main(int argc, char * argv[]) {
-	int N;
-	dcomplex * v;
-
-	/* Get N and fill v[] with program inputs. */
-	if ( !get_values(argc, argv, &N, &v) )
-		exit(EXIT_FAILURE);
-
-	//mini_test(N);
-
-	/* FFT, iFFT of v[]: */
-	print_vector("Orig", v, N);
-	fft_dp(v, N, v+N);
-	print_vector(" FFT", v, N);
-	ifft(v, N, v+N);
-	print_vector("iFFT", v, N);
-
-	exit(EXIT_SUCCESS);
-}
-
-
-int get_values(int argc, char * argv[], int * n, dcomplex * v[]) {
-	double f;
-	int mode = 0;
-
-	if ( argc < 2 )
-		return 0;
-
-	int t = 1;
-	int pos;
-	int count = 0;
-	for(pos = 1; pos < argc; pos++) {
-		f = atof( argv[pos]);
-		if ( f == 0 && argv[pos][0] == '-' ) {
-			/* - switch */
-			if ( strcmp("-c", argv[pos]) == 0 )
-				mode = 1; /* complex mode */
-		} else {
-			count++;
-			if ( !(count <= t) )
-				t *= 2;
-		}
-	}
-	if ( mode == 1 )
-		printf("complex mode: ");
-	else
-		printf("real only mode: ");
-	printf("t %d\n", t);
-
-	*n = (int) t;
-	*v = (dcomplex * )malloc(sizeof(dcomplex)* 2* t);
-	for(int i = 0; i < t; ++i) {
-		if ( i < argc - 1 ) {
-			f = atof(argv[i+1]);
-		} else {
-			f = 0.0;
-		}
-		(*v)[i] = f;
-	}
-	return 1;
 }
