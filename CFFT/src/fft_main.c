@@ -21,26 +21,7 @@
 
 
 int get_values(int argc, char * argv[], int * n, dcomplex * v[]);
-
-
-/* Print a vector of complexes as ordered pairs. */
-static void print_vector(const char *title, dcomplex *x, int n) {
-	int i;
-	printf("%s (dim=%d):\n", title, n);
-	for (i = 0; i < n; i++)
-		printf(" %6d ", i );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %6.3f,", creal(x[i]) );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %6.3f,", cimag(x[i]) );
-	putchar('\n');
-	for (i = 0; i < n; i++)
-		printf(" %6.3f,", cabs(x[i]) );
-	printf("\n\n");
-	return;
-}
+void print_vector(const char *title, dcomplex *x, int n);
 
 int main(int argc, char * argv[]) {
 	int N;
@@ -54,8 +35,7 @@ int main(int argc, char * argv[]) {
 
 	/* FFT, iFFT of v[]: */
 	print_vector("Orig", v, N);
-	c
-	fft(v, N, v+N);
+	cfft(v, N, v+N);
 	print_vector(" FFT", v, N);
 	ifft(v, N, v+N);
 	print_vector("iFFT", v, N);
@@ -103,4 +83,23 @@ int get_values(int argc, char * argv[], int * n, dcomplex * v[]) {
 		(*v)[i] = f;
 	}
 	return 1;
+}
+
+/* Print a vector of complexes as ordered pairs. */
+void print_vector(const char *title, dcomplex *x, int n) {
+	int i;
+	printf("%s (dim=%d):\n", title, n);
+	for (i = 0; i < n; i++)
+		printf(" %6d ", i );
+	putchar('\n');
+	for (i = 0; i < n; i++)
+		printf(" %6.3f,", creal(x[i]) );
+	putchar('\n');
+	for (i = 0; i < n; i++)
+		printf(" %6.3f,", cimag(x[i]) );
+	putchar('\n');
+	for (i = 0; i < n; i++)
+		printf(" %6.3f,", cabs(x[i]) );
+	printf("\n\n");
+	return;
 }
