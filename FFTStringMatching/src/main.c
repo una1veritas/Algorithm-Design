@@ -28,26 +28,41 @@ typedef struct dcompvec dcompvec;
 void dcompvec_free(dcompvec * vec) {
 	free(vec->elem);
 }
+void dcompvec_mulinto(dcompvec * x, const dcompvec * y);
+
+#define min(x,y)  ( ((x) < (y) ? (x) : (y)) )
+#define max(x,y)  ( ((x) < (y) ? (y) : (x)) )
 
 int get_values(int argc, char * argv[], dcompvec * patt, dcompvec * text);
 void print_vector(const char *title, dcomplex *x, int n);
 
 int main(int argc, char * argv[]) {
-	dcompvec pattern, text;
+	dcompvec patt, text;
 
 	/* Get N and fill v[] with program inputs. */
-	if ( !get_values(argc, argv, &pattern, &text) )
+	if ( !get_values(argc, argv, &patt, &text) )
 		exit(EXIT_FAILURE);
 
 	/* FFT, iFFT of v[]: */
-	print_vector("Orig", text.elem, text.dimsize);
-	/*
-	cfft(v, N, v+N);
-	print_vector(" FFT", v, N);
-	ifft(v, N, v+N);
-	print_vector("iFFT", v, N);
-*/
-	dcompvec_free(&pattern);
+	print_vector("Text ", text.elem, text.dimsize);
+	print_vector("Patt ", patt.elem, patt.dimsize);
+
+	dcomplex * tmp = (dcomplex *) malloc(sizeof(dcomplex) * text.dimsize);
+
+	cfft(text.elem, text.dimsize, tmp);
+	print_vector(" FFT ", text.elem, text.dimsize);
+	cfft(patt.elem, patt.dimsize, tmp);
+	print_vector(" FFT ", patt.elem, patt.dimsize);
+
+	dcompvec_mulinto(&text, &patt);
+	print_vector("prod ", text.elem, text.dimsize);
+
+	ifft(text.elem, text.dimsize, tmp);
+	print_vector("iFFT ", text.elem, text.dimsize);
+
+	free(tmp);
+
+	dcompvec_free(&patt);
 	dcompvec_free(&text);
 
 	exit(EXIT_SUCCESS);
@@ -55,9 +70,9 @@ int main(int argc, char * argv[]) {
 
 
 int get_values(int argc, char * argv[], dcompvec * patt, dcompvec * text) {
-	int slen;
-	int num;
-	char * str;
+	int len;
+	int dsize;
+	char * p, * t, *s;
 	dcomplex * array;
 
 	if ( argc <= 2 ) {
@@ -65,35 +80,40 @@ int get_values(int argc, char * argv[], dcompvec * patt, dcompvec * text) {
 		return 0;
 	} else if( argc == 3 ) {
 		fprintf(stdout, "Take pattern and text from the command line arguments.\n");
+		p = argv[1];
+		t = argv[2];
+		if ( strlen(p) > strlen(t) ) {
+			s = t;
+			t = p;
+			p = s;
+		}
+		len = strlen(t);
+		for(dsize = 1; dsize < len; dsize <<= 1 ) {}
 
-		// the first is pattern
-		str = argv[1];
-		slen = strlen(str);
-		for(num = 1; num < slen; num <<= 1 ) {}
-				array = (dcomplex *) malloc(sizeof(dcomplex) * num);
-		for(int i = 0; i < num; i++) {
-			if ( i < slen )
-				array[i] = cexp( I * (float)(str[i]) /256.0f );  // by rotated unit vector
+		// the shorter is the pattern
+		array = (dcomplex *) malloc(sizeof(dcomplex) * dsize);
+		len = strlen(p);
+		for(int i = 0; i < dsize; i++) {
+			if ( i < len )
+				array[i] = cexp( 2*PI*I * (float)(p[i]) /256.0f );  // by rotated unit vector
 				// (*array)[i] = (float)(str[i]) / 128.0f  ;  // by char value
 			else
 				array[i] = 0;
 		}
-		patt->dimsize = num;
+		patt->dimsize = dsize;
 		patt->elem = array;
 
-		// the second is text
-		str = argv[2];
-		slen = strlen(str);
-		for(num = 1; num < slen; num <<= 1 ) {}
-		array = (dcomplex *) malloc(sizeof(dcomplex) * num);
-		for(int i = 0; i < num; i++) {
-			if ( i < slen )
-				array[i] = cexp( I * (float)(str[i]) /256.0f );  // by rotated unit vector
+		// the longer is the text
+		len = strlen(t);
+		array = (dcomplex *) malloc(sizeof(dcomplex) * dsize);
+		for(int i = 0; i < dsize; i++) {
+			if ( i < len )
+				array[i] = cexp(  2*PI*I * (float)(t[i]) /256.0f );  // by rotated unit vector
 				// (*array)[i] = (float)(str[i]) / 128.0f  ;  // by char value
 			else
 				array[i] = 0;
 		}
-		text->dimsize = num;
+		text->dimsize = dsize;
 		text->elem = array;
 
 	}
@@ -118,4 +138,10 @@ void print_vector(const char *title, dcomplex *x, int n) {
 		printf(" %7.3f,", cabs(x[i]) );
 	printf("\n\n");
 	return;
+}
+
+void dcompvec_mulinto(dcompvec * x, const dcompvec * y) {
+	for(int i = 0; i < x->dimsize; i++) {
+		x->elem[i] = x->elem[i] * y->elem[i];
+	}
 }
