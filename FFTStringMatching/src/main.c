@@ -34,7 +34,6 @@ void print_vector(const char *title, dcomplex *x, int n);
 
 int main(int argc, char * argv[]) {
 	dcompvec pattern, text;
-	dcomplex * v = NULL;
 
 	/* Get N and fill v[] with program inputs. */
 	if ( !get_values(argc, argv, &pattern, &text) )
