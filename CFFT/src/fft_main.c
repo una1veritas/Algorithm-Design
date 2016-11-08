@@ -40,6 +40,8 @@ int main(int argc, char * argv[]) {
 	ifft(v, N, v+N);
 	print_vector("iFFT", v, N);
 
+	free(v);
+
 	exit(EXIT_SUCCESS);
 }
 
