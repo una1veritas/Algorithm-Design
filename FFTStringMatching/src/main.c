@@ -25,93 +25,100 @@ struct dcompvec {
 };
 typedef struct dcompvec dcompvec;
 
-void dcompvec_free(dcompvec * vec) {
-	free(vec->elem);
-}
 void dcompvec_mulinto(dcompvec * x, const dcompvec * y);
+long smallestpow2(const long n) {
+	long t = 1;
+	while ( t < n ) {
+		t <<= 1;
+	}
+	return t;
+}
 
 #define min(x,y)  ( ((x) < (y) ? (x) : (y)) )
 #define max(x,y)  ( ((x) < (y) ? (y) : (x)) )
+#define abs(x)  ( (x) < 0 ? (-(x)) : (x) )
 
 
-int get_values(int argc, char * argv[], dcompvec * text1, dcompvec * text2);
+int get_values(int argc, const char * argv[], dcompvec * text1, dcompvec * text2);
 void print_vector(const char *title, dcomplex *x, int n);
 
 
-int main(int argc, char * argv[]) {
+int main(int argc, const char * argv[]) {
 	dcompvec text1, text2;
-
+	int pattlen = min(strlen(argv[1]), strlen(argv[2]));
 	/* Get N and fill v[] with program inputs. */
 	if ( !get_values(argc, argv, &text1, &text2) )
 		exit(EXIT_FAILURE);
 
+	printf("%d %d\n", sizeof(dcomplex), sizeof(_Complex_I) );
 	/* FFT, iFFT of v[]: */
 	print_vector("text1 ", text1.elem, text1.dimsize);
 	print_vector("text2 ", text2.elem, text2.dimsize);
 
-	dcomplex * tmp = (dcomplex *) malloc(sizeof(dcomplex) * text1.dimsize);
+	dcomplex * scratch = (dcomplex *) malloc(sizeof(dcomplex) * text1.dimsize);
 
-	cfft(text1.elem, text1.dimsize, tmp);
-	print_vector("fft1 ", text1.elem, text1.dimsize);
-	cfft(text2.elem, text2.dimsize, tmp);
-	print_vector("fft2 ", text2.elem, text2.dimsize);
+	cfft(text1.elem, text1.dimsize, scratch);
+//	print_vector("fft1 ", text1.elem, text1.dimsize);
+	cfft(text2.elem, text2.dimsize, scratch);
+//	print_vector("fft2 ", text2.elem, text2.dimsize);
 
 	dcompvec_mulinto(&text1, &text2);
-	print_vector("prod ", text1.elem, text1.dimsize);
+//	print_vector("prod ", text1.elem, text1.dimsize);
 
-	ifft(text1.elem, text1.dimsize, tmp);
+	ifft(text1.elem, text1.dimsize, scratch);
 	print_vector("iFFT ", text1.elem, text1.dimsize);
 
-	free(tmp);
+	printf("Occurring positions: ");
+	for(int i = 0; i < text1.dimsize; i++) {
+		if ( abs(creal(text1.elem[(text1.dimsize - pattlen + i) % text1.dimsize]) - (double) pattlen) < 0.0001220703125 )
+			printf("%d, ", i - pattlen + 1);
+	}
+	printf(".\n");
 
-	dcompvec_free(&text1);
-	dcompvec_free(&text2);
+	free(scratch);
+	free(text1.elem);
+	free(text2.elem);
 
 	exit(EXIT_SUCCESS);
 }
 
 
-int get_values(int argc, char * argv[], dcompvec * text1, dcompvec * text2) {
-	int slen, pow2len;
-	char * str1, * str2;
-	dcomplex * array;
+int get_values(int argc, const char * argv[], dcompvec * text1, dcompvec * text2) {
+	const char * str1 = argv[1];
+	const char * str2 = argv[2];
+	int maxlen, len;
 
 	if ( argc <= 2 ) {
 		fprintf(stdout, "No or an invalid number of inputs specified; quit.\n");
 		return 0;
 	} else if( argc == 3 ) {
 		fprintf(stdout, "Take pattern and text from the command line arguments.\n");
-		str1 = argv[1];
-		str2 = argv[2];
-		slen = max(strlen(str1), strlen(str2));
-		for(pow2len = 1; pow2len < slen; pow2len <<= 1 ) {} //
+		maxlen = smallestpow2(max(strlen(str1), strlen(str2)));
 
 		// the first as normal
-		array = (dcomplex *) malloc(sizeof(dcomplex) * pow2len);
-		slen = strlen(str1);
-		for(int i = 0; i < pow2len; i++) {
-			if ( i < slen )
-				array[i] = cexp( 2*PI*I * (float)(str1[i]) /256.0f );  // by rotated unit vector
+		text1->dimsize = maxlen;
+		text1->elem = (dcomplex*) malloc(sizeof(dcomplex)*maxlen);
+		len = strlen(str1);
+		for(int i = 0; i < text1->dimsize; ++i) {
+			if ( i < len )
+				text1->elem[i] = cexp( 2*PI*I * (float)(str1[i]) /256.0f );  // by rotated unit vector
 				// (*array)[i] = (float)(str[i]) / 128.0f  ;  // by char value
 			else
-				array[i] = 0;
+				text1->elem[i] = 0;
 		}
-		text1->dimsize = pow2len;
-		text1->elem = array;
 
 		// the second as conjugated and reversed order
-		slen = strlen(str2);
-		array = (dcomplex *) malloc(sizeof(dcomplex) * pow2len);
-		for(int i = 0; i < pow2len; i++) {
-			if ( i < slen )
+		text2->dimsize = maxlen;
+		text2->elem = (dcomplex*) malloc(sizeof(dcomplex)*maxlen);
+		len = strlen(str2);
+		for(int i = 0; i < text2->dimsize; ++i) {
+			if ( i < len )
 				//array[i] = cexp( -2*PI*I * (float)(str2[slen - i - 1]) /256.0f );  // by rotated unit vector
-				array[pow2len - i - 1] = cexp( -2*PI*I * (float)(str2[i]) /256.0f );  // by rotated unit vector
+				text2->elem[text2->dimsize - i - 1] = cexp( -2*PI*I * (float)(str2[i]) /256.0f );  // by rotated unit vector
 				// (*array)[i] = (float)(str[i]) / 128.0f  ;  // by char value
 			else
-				array[pow2len - i - 1] = 0;
+				text2->elem[text2->dimsize - i - 1] = 0;
 		}
-		text2->dimsize = pow2len;
-		text2->elem = array;
 
 	}
 
