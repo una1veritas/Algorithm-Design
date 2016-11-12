@@ -24,6 +24,13 @@ struct dcompvec {
 	int dimsize;
 };
 typedef struct dcompvec dcompvec;
+const int CONJ_REVERSE = 1;
+
+struct text {
+	char * str;
+	int textsize;
+};
+typedef struct text text;
 
 void dcompvec_mulinto(dcompvec * x, const dcompvec * y);
 long smallestpow2(const long n) {
@@ -38,90 +45,107 @@ long smallestpow2(const long n) {
 #define max(x,y)  ( ((x) < (y) ? (y) : (x)) )
 #define abs(x)  ( (x) < 0 ? (-(x)) : (x) )
 
-
-int get_values(int argc, const char * argv[], dcompvec * text1, dcompvec * text2);
+int make_signal(text * text1, int dimsize, dcompvec * vec, const int flag);
+int get_values(int argc, const char * argv[], text * text1, text * text2);
 void print_vector(const char *title, dcomplex *x, int n);
 
 
 int main(int argc, const char * argv[]) {
-	dcompvec text1, text2;
-	int pattlen = min(strlen(argv[1]), strlen(argv[2]));
+	text text1, text2;
+	dcompvec vec1, vec2;
+
 	/* Get N and fill v[] with program inputs. */
 	if ( !get_values(argc, argv, &text1, &text2) )
 		exit(EXIT_FAILURE);
 
-	printf("%d %d\n", sizeof(dcomplex), sizeof(_Complex_I) );
+	printf("inputs: \"%s\", \"%s\" \n", text1.str, text2.str);
+	int pow2len = smallestpow2(max(text1.textsize, text2.textsize));
+	int pattlen = min(text1.textsize, text2.textsize);
+
+	make_signal(&text1, pow2len, &vec1, !CONJ_REVERSE);
+	make_signal(&text2, pow2len, &vec2, CONJ_REVERSE);
 	/* FFT, iFFT of v[]: */
-	print_vector("text1 ", text1.elem, text1.dimsize);
-	print_vector("text2 ", text2.elem, text2.dimsize);
+	print_vector("text1 ", vec1.elem, vec1.dimsize);
+	print_vector("text2 ", vec2.elem, vec2.dimsize);
 
-	dcomplex * scratch = (dcomplex *) malloc(sizeof(dcomplex) * text1.dimsize);
+	dcomplex * scratch = (dcomplex *) malloc(sizeof(dcomplex) * vec1.dimsize);
 
-	cfft(text1.elem, text1.dimsize, scratch);
+	cfft(vec1.elem, vec1.dimsize, scratch);
 //	print_vector("fft1 ", text1.elem, text1.dimsize);
-	cfft(text2.elem, text2.dimsize, scratch);
+	cfft(vec2.elem, vec2.dimsize, scratch);
 //	print_vector("fft2 ", text2.elem, text2.dimsize);
 
-	dcompvec_mulinto(&text1, &text2);
+	dcompvec_mulinto(&vec1, &vec2);
 //	print_vector("prod ", text1.elem, text1.dimsize);
 
-	ifft(text1.elem, text1.dimsize, scratch);
-	print_vector("iFFT ", text1.elem, text1.dimsize);
+	ifft(vec1.elem, vec1.dimsize, scratch);
+
+	print_vector("iFFT ", vec1.elem, vec1.dimsize);
 
 	printf("Occurring positions: ");
-	for(int i = 0; i < text1.dimsize; i++) {
-		if ( abs(creal(text1.elem[(text1.dimsize - pattlen + i) % text1.dimsize]) - (double) pattlen) < 0.0001220703125 )
+	for(int i = 0; i < vec1.dimsize; i++) {
+		if ( abs(creal(vec1.elem[(vec1.dimsize - pattlen + i) % vec1.dimsize]) - (double) pattlen) < 0.0001220703125 )
 			printf("%d, ", i - pattlen + 1);
 	}
 	printf(".\n");
 
 	free(scratch);
-	free(text1.elem);
-	free(text2.elem);
+	free(vec1.elem);
+	free(vec2.elem);
 
+	free(text1.str);
+	free(text2.str);
 	exit(EXIT_SUCCESS);
 }
 
-
-int get_values(int argc, const char * argv[], dcompvec * text1, dcompvec * text2) {
-	const char * str1 = argv[1];
-	const char * str2 = argv[2];
-	int maxlen, len;
-
+int get_values(int argc, const char * argv[], text * text1, text * text2) {
 	if ( argc <= 2 ) {
 		fprintf(stdout, "No or an invalid number of inputs specified; quit.\n");
 		return 0;
 	} else if( argc == 3 ) {
 		fprintf(stdout, "Take pattern and text from the command line arguments.\n");
-		maxlen = smallestpow2(max(strlen(str1), strlen(str2)));
-
-		// the first as normal
-		text1->dimsize = maxlen;
-		text1->elem = (dcomplex*) malloc(sizeof(dcomplex)*maxlen);
-		len = strlen(str1);
-		for(int i = 0; i < text1->dimsize; ++i) {
-			if ( i < len )
-				text1->elem[i] = cexp( 2*PI*I * (float)(str1[i]) /256.0f );  // by rotated unit vector
-				// (*array)[i] = (float)(str[i]) / 128.0f  ;  // by char value
-			else
-				text1->elem[i] = 0;
+		if ( strlen(argv[1]) > strlen(argv[2]) ) {
+			text1->textsize = strlen(argv[1]);
+			text1->str = (char *) malloc(sizeof(char) * text1->textsize);
+			strcpy(text1->str, argv[1]);
+			text2->textsize = strlen(argv[2]);
+			text2->str = (char *) malloc(sizeof(char) * text2->textsize);
+			strcpy(text2->str, argv[2]);
+		} else {
+			text1->textsize = strlen(argv[2]);
+			text1->str = (char *) malloc(sizeof(char) * text1->textsize);
+			strcpy(text1->str, argv[2]);
+			text2->textsize = strlen(argv[1]);
+			text2->str = (char *) malloc(sizeof(char) * text2->textsize);
+			strcpy(text2->str, argv[1]);
 		}
-
-		// the second as conjugated and reversed order
-		text2->dimsize = maxlen;
-		text2->elem = (dcomplex*) malloc(sizeof(dcomplex)*maxlen);
-		len = strlen(str2);
-		for(int i = 0; i < text2->dimsize; ++i) {
-			if ( i < len )
-				//array[i] = cexp( -2*PI*I * (float)(str2[slen - i - 1]) /256.0f );  // by rotated unit vector
-				text2->elem[text2->dimsize - i - 1] = cexp( -2*PI*I * (float)(str2[i]) /256.0f );  // by rotated unit vector
-				// (*array)[i] = (float)(str[i]) / 128.0f  ;  // by char value
-			else
-				text2->elem[text2->dimsize - i - 1] = 0;
-		}
-
 	}
+	return 1;
+}
 
+int make_signal(text * str, const int dimsize, dcompvec * vec, const int flag) {
+	int len;
+	int dst;
+	complex factor;
+
+	// the first as normal
+	vec->dimsize = dimsize;
+	vec->elem = (dcomplex*) malloc(sizeof(dcomplex)*dimsize);
+	len = str->textsize;
+	for(int i = 0; i < vec->dimsize; ++i) {
+		if ( !flag ) {
+			dst = i;
+			factor = 2*PI*I;
+		} else {
+			dst = vec->dimsize - i - 1;
+			factor = -2*PI*I;
+		}
+		if ( i < len )
+			vec->elem[dst] = cexp( factor * (float)(str->str[i]) /256.0f );  // by rotated unit vector
+			// (*array)[i] = (float)(str[i]) / 128.0f  ;  // by char value
+		else
+			vec->elem[dst] = 0;
+	}
 	return 1;
 }
 
