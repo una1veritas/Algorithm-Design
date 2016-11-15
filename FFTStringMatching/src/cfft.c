@@ -15,12 +15,12 @@
 /*
  *  Explicit divide-and-conqure FFT by recursion
  */
-void rfft(float complex *v, int n, float complex *tmp) {
+void rfft(dcomplex *v, int n, dcomplex *tmp) {
 	if ( n <= 1 ) /* do nothing and return */
 		return;
 	// n > 1
 	const int m = n >> 1;
-	float complex *v1, *v0;
+	dcomplex *v1, *v0;
 	v0 = tmp;
 	v1 = tmp + m;
 	for (int i = 0; i < n / 2; i++) {
@@ -31,8 +31,8 @@ void rfft(float complex *v, int n, float complex *tmp) {
 	rfft(v1, m, v); /* FFT on odd-indexed elements of v[] */
 	for (int i = 0; i < m; i++) {
 		// w = (cos(2 * PI * i / (double) n)) + (-sin(2 * PI * i / (double) n))*I;
-		float complex w = cexpf(- I * /* 2 * */ PI * i / (double) m /* n */);
-		float complex z = w * v1[i];
+		dcomplex w = cexp(- I * /* 2 * */ PI * i / (double) m /* n */);
+		dcomplex z = w * v1[i];
 		v[i] = v0[i] + z;
 		v[i + m] = v0[i] - z;
 	}
@@ -43,8 +43,8 @@ void rfft(float complex *v, int n, float complex *tmp) {
 /*
  * FFT by butterfly changes in advance forcing divide-and-conqure
  */
-void cfft(float complex *vec, int n, float complex *scratch) {
-	float complex *src, *dst, *tmp;
+void cfft(dcomplex *vec, int n, dcomplex *scratch) {
+	dcomplex *src, *dst, *tmp;
 	src = vec;
 	dst = scratch;
 	// n > 1
@@ -68,8 +68,8 @@ void cfft(float complex *vec, int n, float complex *scratch) {
 		for (int h = 0; h < n; h += (m<<1) ) {
 			for(int i = 0; i < m; i++) {
 				// fprintf(stdout, "(%d : %d, %d) ", h, h+m, i);
-				float complex w = cexpf(- I * /* 2 * */ PI * i / ((double) m) /* n */);
-				float complex z = w * src[h + m + i];
+				dcomplex w = cexp(- I * /* 2 * */ PI * i / ((double) m) /* n */);
+				dcomplex z = w * src[h + m + i];
 				dst[h + i] = src[h + i] + z;
 				dst[h + m + i] = src[h + i] - z;
 			}
@@ -85,16 +85,16 @@ void cfft(float complex *vec, int n, float complex *scratch) {
 
 
 
-void ifft(float complex *v, int n, float complex *tmp) {
+void ifft(dcomplex *v, int n, dcomplex *tmp) {
 
 	for (int i = 0; i < n; i++) {
-		v[i] = conjf(v[i]);
+		v[i] = conj(v[i]);
 	}
 
 	cfft(v, n, tmp);
 
 	for (int i = 0; i < n; i++) {
-		float complex t = conjf(v[i]) / ((double) n);
+		dcomplex t = conj(v[i]) / ((double) n);
 		v[i] = t;
 	}
 	return;

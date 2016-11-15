@@ -19,9 +19,11 @@
 # define PI	3.14159265358979323846264338327950288
 #endif
 
-void rfft(float complex *v, int n, float complex *tmp);
-void cfft(float complex *vec, int n, float complex *scratch);
-void ifft(float complex *v, int n, float complex *tmp);
+typedef double complex dcomplex;
+
+void rfft(dcomplex *v, int n, dcomplex *tmp);
+void cfft(dcomplex *vec, int n, dcomplex *scratch);
+void ifft(dcomplex *v, int n, dcomplex *tmp);
 
 
 
