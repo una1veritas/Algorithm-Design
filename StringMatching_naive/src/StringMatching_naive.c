@@ -17,7 +17,35 @@
 
 #define STR_MAXLENGTH 16384
 
-unsigned int findOccurrence(char *, unsigned int, char *, unsigned int);
+unsigned int findOccurrence(const char *, const unsigned int, const char *, const unsigned int);
+int textfromfile(const char * filename, const unsigned int maxsize, char * text);
+
+struct watch {
+	struct timeval timevalue;
+	struct timeb timebuffer;
+	double   elapsed;
+	int sec, millisec;
+};
+
+typedef struct watch watch;
+
+void watch_start(watch * w) {
+	ftime( & w->timebuffer );
+	w->sec = w->timebuffer.time;
+	w->millisec = w->timebuffer.millitm;
+}
+
+void watch_stop(watch * w) {
+	ftime( & w->timebuffer );
+	w->sec = w->timebuffer.time - w->sec;
+	w->millisec = w->timebuffer.millitm - w->millisec;
+	w->millisec += w->sec*1000;
+	w->elapsed = (double) w->millisec/1000;
+}
+
+double watch_millis(watch * w) {
+	return w->elapsed;
+}
 
 int main(int argc, char * argv[]) {
 	puts("!!!Hello World!!!"); /* prints !!!Hello World!!! */
@@ -25,41 +53,50 @@ int main(int argc, char * argv[]) {
 	char * text, *patt;
 	unsigned int n, m;
 
-	double   elapsed_time;
-	int sec, millisec;
-	struct timeb timebuffer;
+	struct watch stopwatch;
 
 	if ( argc != 3 )
 		return EXIT_FAILURE;
 
-	text = argv[1];
+	printf("%s\n", argv[0]);
+
+	text = malloc(sizeof(char)*STR_MAXLENGTH);
+	patt = malloc(sizeof(char)*STR_MAXLENGTH);
+
+	if ( textfromfile(argv[1], STR_MAXLENGTH, text) != 0
+		|| textfromfile(argv[2], STR_MAXLENGTH, patt) != 0 ) {
+		goto exit_error;
+	}
+
 	n = strlen(text);
-	patt = argv[2];
 	m = strlen(patt);
 
 	printf("Input: \"%s\", \"%s\"\n", text, patt);
+	printf("(%d, %d)\n", n, m);
 
-	ftime( &timebuffer );
-	sec = timebuffer.time;
-	millisec = timebuffer.millitm;
-
+	watch_start(&stopwatch);
 
 	unsigned int pos = findOccurrence(text, n, patt, m);
 
-	ftime( &timebuffer );
-	sec = timebuffer.time - sec;
-	millisec = timebuffer.millitm - millisec;
-	millisec += sec*1000;
-	elapsed_time = (double)millisec/1000;
+	watch_stop(&stopwatch);
 
-	printf( "Elasped time: %lf\n", elapsed_time );
+	printf( "Elasped time: %lf\n", watch_millis(&stopwatch) );
 
 	printf("Found at %u\n", pos);
 
+	free(text);
+	free(patt);
+
 	return EXIT_SUCCESS;
+
+exit_error:
+	free(text);
+	free(patt);
+
+	return EXIT_FAILURE;
 }
 
-unsigned int findOccurrence(char* t, unsigned int n, char * p, unsigned int m) {
+unsigned int findOccurrence(const char* t, const unsigned int n, const char * p, const unsigned int m) {
 	unsigned int pos, l;
 	for(pos = 0; 0 < n - m + 1; ++pos) {
 		for(l = 0; l < m; ++l) {
@@ -69,6 +106,25 @@ unsigned int findOccurrence(char* t, unsigned int n, char * p, unsigned int m) {
 			return pos;
 	}
 	return pos;
+}
+
+int textfromfile(const char * filename, const unsigned int maxsize, char * text) {
+	FILE * fp;
+	int pos;
+	char * ptr;
+
+	fp = fopen(filename, "r");
+	if ( fp == NULL ) {
+		fprintf(stderr, "error: open file %s failed.\n", filename);
+		return -1;
+	}
+	for(ptr = text, pos = 0; pos < maxsize; ++ptr, ++pos) {
+		int c = fgetc(fp);
+		if ( c == EOF )
+			break;
+		*ptr = (char) c;
+	}
+	return EXIT_SUCCESS;
 }
 
 /* 10561
