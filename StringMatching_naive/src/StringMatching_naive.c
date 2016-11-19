@@ -17,7 +17,7 @@
 
 #define min(x, y)  (((x) > (y)) ? (y) : (x))
 
-#define STR_MAXLENGTH (512 * 1024)
+#define STR_MAXLENGTH (2 * 1024 * 1024)
 
 unsigned int findOccurrence(const char *, const unsigned int, const char *, const unsigned int);
 int textfromfile(const char * filename, const unsigned int maxsize, char * text);
@@ -84,6 +84,7 @@ int main(int argc, char * argv[]) {
 
 	watch_start(&stopwatch);
 
+	printf("Search start.\n");
 	unsigned int pos = findOccurrence(text, n, patt, m);
 
 	watch_stop(&stopwatch);
@@ -106,14 +107,16 @@ exit_error:
 
 unsigned int findOccurrence(const char* t, const unsigned int n, const char * p, const unsigned int m) {
 	unsigned int pos, l;
-	for(pos = 0; 0 < n - m + 1; ++pos) {
+
+	for(pos = 0; pos < n - m + 1; ++pos) {
+		//printf("@%u, %u\n",pos, n-m+1);
 		for(l = 0; l < m; ++l) {
 			if ( t[pos+l] != p[l] ) break;
 		}
 		if ( l == m )
 			return pos;
 	}
-	return pos;
+	return n;
 }
 
 int textfromfile(const char * filename, const unsigned int maxsize, char * text) {
