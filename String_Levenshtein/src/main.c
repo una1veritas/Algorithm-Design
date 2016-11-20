@@ -2,6 +2,11 @@
 #include <string.h>
 
 #include "stopwatch.h"
+#include "textfromfile.h"
+
+#define MEGA_BIN 1048576UL
+#define KILO_BIN 1024UL
+#define STR_MAXLENGTH (4 * MEGA_BIN)
 
 int r_edist(char s[], int m, char t[], int n) {
 	int a, b, c;
@@ -47,26 +52,45 @@ int dp_edist(char s[], int m, char t[], int n) {
 }
 
 int main (int argc, const char * argv[]) {
-	char * s = (char *) argv[1], * t = (char *) argv[2];
-	int m = strlen(s), n = strlen(t);
-	int d;
+	char * text, *patt;
+	unsigned long m, n;
+	unsigned long d;
 	
 	stopwatch sw;
 
-	printf("Input: %s (%d), %s (%d)\n", s, m, t, n);
+	if ( argc != 3 )
+		return EXIT_FAILURE;
+
+	text = malloc(sizeof(char)*STR_MAXLENGTH);
+	patt = malloc(sizeof(char)*STR_MAXLENGTH);
+
+	if ( textfromfile(argv[1], STR_MAXLENGTH, text) != 0
+		|| textfromfile(argv[2], STR_MAXLENGTH, patt) != 0 ) {
+		goto exit_error;
+	}
+	n = (text[STR_MAXLENGTH-1] == 0? strlen(text) : STR_MAXLENGTH);
+	m = (patt[STR_MAXLENGTH-1] == 0? strlen(patt) : STR_MAXLENGTH);
+
+	if ( n < 1000 && m < 1000 )
+		printf("Input: %s (%lu), %s (%lu)\n", text, n, patt, m);
 	
 	stopwatch_start(&sw);
-	//d = r_edist(s, m, t, n);
+	d = 0;//d = r_edist(s, m, t, n);
 	stopwatch_stop(&sw);
-	printf("Edit distance (by recursion): %d\n", d);
+	printf("Edit distance (by recursion): %lu\n", d);
 	printf("%lu milli %lu micro secs.\n", stopwatch_millis(&sw), stopwatch_micros(&sw));
 	printf("\n");
 
 	stopwatch_start(&sw);
-	d = dp_edist(s, m, t, n);
+	d = dp_edist(text, n, patt, m);
 	stopwatch_stop(&sw);
-	printf("Edit distance (by DP): %d\n", d);
+	printf("Edit distance (by DP): %lu\n", d);
 	printf("%lu milli %lu micro secs.\n", stopwatch_millis(&sw), stopwatch_micros(&sw));
 	
+exit_error:
+	free(text);
+	free(patt);
+
     return 0;
 }
+
