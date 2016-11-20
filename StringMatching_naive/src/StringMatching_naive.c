@@ -13,40 +13,50 @@
 #include <string.h>
 
 #include <time.h>
-#include <sys/timeb.h>
+#include <sys/time.h>
 
 #define min(x, y)  (((x) > (y)) ? (y) : (x))
 
-#define STR_MAXLENGTH (2 * 1024 * 1024)
+#define MEGA_BIN 1048576UL
+#define KILO_BIN 1024UL
+#define STR_MAXLENGTH (4 * MEGA_BIN)
 
 unsigned int findOccurrence(const char *, const unsigned int, const char *, const unsigned int);
 int textfromfile(const char * filename, const unsigned int maxsize, char * text);
 
+typedef unsigned long ulong;
+
 struct watch {
-	struct timeval timevalue;
-	struct timeb timebuffer;
-	double   elapsed;
-	int sec, millisec;
+	struct timeval start, stop;
+//	clock_t cpumicros;
+//	struct tm * tmstart, *tmstop;
+	ulong sec, millis, micros;
 };
 
 typedef struct watch watch;
 
 void watch_start(watch * w) {
-	ftime( & w->timebuffer );
-	w->sec = w->timebuffer.time;
-	w->millisec = w->timebuffer.millitm;
+	w->sec = 0;
+	w->millis = 0;
+	w->micros = 0;
+	gettimeofday(&w->start, NULL);
+//	w->cpumicros = clock();
 }
 
 void watch_stop(watch * w) {
-	ftime( & w->timebuffer );
-	w->sec = w->timebuffer.time - w->sec;
-	w->millisec = w->timebuffer.millitm - w->millisec;
-	w->millisec += w->sec*1000;
-	w->elapsed = (double) w->millisec/1000;
+	gettimeofday(&w->stop, NULL);
+	w->sec = w->stop.tv_sec - w->start.tv_sec;
+	w->micros = w->stop.tv_usec - w->start.tv_usec;
+	w->millis = w->micros / 1000;
+
 }
 
-double watch_millis(watch * w) {
-	return w->elapsed;
+ulong watch_millis(watch * w) {
+	return w->millis;
+}
+
+ulong watch_micros(watch * w) {
+	return w->micros;
 }
 
 int main(int argc, char * argv[]) {
@@ -89,7 +99,8 @@ int main(int argc, char * argv[]) {
 
 	watch_stop(&stopwatch);
 
-	printf( "Elasped time: %lf\n", watch_millis(&stopwatch) );
+	printf( "Elasped time: %lu milli %lu micro secs.\n",
+			watch_millis(&stopwatch), watch_micros(&stopwatch) % 1000);
 
 	printf("Found at %u\n", pos);
 
