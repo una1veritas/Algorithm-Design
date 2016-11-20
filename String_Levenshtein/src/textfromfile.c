@@ -15,6 +15,7 @@ int textfromfile(const char * filename, const unsigned int maxsize, char * text)
 	fp = fopen(filename, "r");
 	if ( fp == NULL ) {
 		fprintf(stderr, "error: open file %s failed.\n", filename);
+		fflush(stderr);
 		return -1;
 	}
 	for(ptr = text, pos = 0; pos < maxsize; ++ptr, ++pos) {

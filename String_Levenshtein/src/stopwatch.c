@@ -8,7 +8,7 @@
 #include "stopwatch.h"
 
 void stopwatch_start(stopwatch * w) {
-	w->sec = 0;
+	w->secs = 0;
 	w->millis = 0;
 	w->micros = 0;
 	gettimeofday(&w->start, NULL);
@@ -17,10 +17,15 @@ void stopwatch_start(stopwatch * w) {
 
 void stopwatch_stop(stopwatch * w) {
 	gettimeofday(&w->stop, NULL);
-	w->sec = w->stop.tv_sec - w->start.tv_sec;
+	w->secs = w->stop.tv_sec - w->start.tv_sec;
 	w->micros = w->stop.tv_usec - w->start.tv_usec;
 	w->millis = w->micros / 1000;
+	w->micros %= 1000;
+	w->millis %= 1000;
+}
 
+ulong stopwatch_secs(stopwatch * w) {
+	return w->secs;
 }
 
 ulong stopwatch_millis(stopwatch * w) {

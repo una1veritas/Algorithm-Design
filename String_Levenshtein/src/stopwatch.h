@@ -26,7 +26,7 @@ struct stopwatch {
 	struct timeval start, stop;
 //	clock_t cpumicros;
 //	struct tm * tmstart, *tmstop;
-	ulong sec, millis, micros;
+	ulong secs, millis, micros;
 };
 
 typedef struct stopwatch stopwatch;
@@ -35,5 +35,6 @@ void stopwatch_start(stopwatch * w);
 void stopwatch_stop(stopwatch * w);
 ulong stopwatch_millis(stopwatch * w);
 ulong stopwatch_micros(stopwatch * w);
+ulong stopwatch_secs(stopwatch * w);
 
 #endif /* SRC_STOPWATCH_H_ */
