@@ -16,11 +16,7 @@
 #include <sys/time.h>
 
 
-#ifndef ulong
 typedef unsigned long ulong;
-#else
-#error "conflict: ulong already defined."
-#endif
 
 struct stopwatch {
 	struct timeval start, stop;

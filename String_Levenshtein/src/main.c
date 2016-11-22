@@ -9,6 +9,9 @@
 #define KILO_B 1024UL
 #define STR_MAXLENGTH (32 * KILO_B)
 
+typedef unsigned long ulong;
+
+
 int r_edist(char s[], int m, char t[], int n) {
 	int a, b, c;
 	if (m == 0 && n == 0)
@@ -26,25 +29,30 @@ int r_edist(char s[], int m, char t[], int n) {
 unsigned long dp_edist(char t[], unsigned long n, char p[], unsigned long m) {
 	unsigned long * dist;
 	unsigned long result = 0;
-	unsigned long i, j, ins, del, repl;
+	unsigned long ins, del, repl;
 	
-	dist = (unsigned long *) malloc(sizeof(unsigned long)*(m+1)*(n+1));
+	dist = (unsigned long *) malloc(sizeof(unsigned long)*m*n);
 	if ( dist == NULL )
 		return 0;
-
-	// initialize
-	for(i = 0; i < n+1; i++)
-		dist[(i)] = i;
-	for(i = 0; i < m+1; i++) 
-		dist[((n+1)*i+0)] = i;
 	
+	// initialize cells in the top row or in the left-most column
+	// n -- the number of columns, m -- the number of rows
+	for(ulong col = 0; col < n; ++col) {
+		// row == 0
+		dist[0 + m * col] = (p[0] == t[col] ? 0 : 1);
+	}
+	for(ulong row = 0; row < m; ++row) {
+		// col == 0
+		dist[row + 0] = (p[row] == t[0] ? 0 : 1);
+	}
+
 	//table calcuration
-	for(i = 1; i < n+1; i++) { // column
-		for (j = 1; j < m+1; j++) {  // row
-			ins = dist[(i-1)+(n+1)*j]+1;
-			del = dist[i + (n+1)*(j-1)]+1;
-			repl = dist[(i-1) + (n+1)*(j-1)] + (t[i-1] == p[j-1] ? 0 : 1);
-			dist[i + (n+1)*j] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
+	for(ulong c = 1; c < n; c++) { // column, text axis
+		for (ulong r = 1; r < m; r++) {  // row, pattern axis
+			ins = dist[(r-1) + m*c]+1;
+			del = dist[r + m*(c-1)]+1;
+			repl = dist[(r-1) + m*(c-1)] + (t[c] == p[r] ? 0 : 1);
+			dist[r + m*c] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
 		}
 	}
 	// show DP table 
@@ -56,7 +64,7 @@ unsigned long dp_edist(char t[], unsigned long n, char p[], unsigned long m) {
 		printf("\n");
 	}
 	 */
-	result = dist[n + (n+1)* m];
+	result = dist[n * m - 1];
 	free(dist);
 	return result;
 }
@@ -91,13 +99,14 @@ int main (int argc, const char * argv[]) {
 	m = (patt[STR_MAXLENGTH-1] == 0? strlen(patt) : STR_MAXLENGTH);
 
 	if ( n < 1000 && m < 1000 )
-		printf("Input: %s (%lu), %s (%lu)\n\n", text, n, patt, m);
+		fprintf(stdout, "Input: %s (%lu), %s (%lu)\n\n", text, n, patt, m);
 	else
-		printf("Input: (%lu), (%lu)\n\n", n, m);
+		fprintf(stdout, "Input: (%lu), (%lu)\n\n", n, m);
+	fflush(stdout);
 	
 	stopwatch_start(&sw);
-	if ( n > 100 || m > 100 ) {
-		printf("Skip recursion version.\n");
+	if ( n > 16 || m > 16 ) {
+		printf("Skip using recursion version.\n");
 	} else {
 		d = r_edist(text, n, patt, m);
 		stopwatch_stop(&sw);
@@ -106,6 +115,8 @@ int main (int argc, const char * argv[]) {
 	}
 	printf("\n");
 
+	fprintf(stdout, "computing edit distance by DP.\n");
+	fflush(stdout);
 	stopwatch_start(&sw);
 	d = dp_edist(text, n, patt, m);
 	stopwatch_stop(&sw);
