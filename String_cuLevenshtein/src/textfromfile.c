@@ -7,28 +7,26 @@
 
 #include "textfromfile.h"
 
-int textfromfile(const char * filename, const unsigned int maxsize, char * text) {
+unsigned long textfromfile(const char * filename, const unsigned long maxsize, char * text) {
 	FILE * fp;
-	int pos;
+	unsigned long count = 0;
 	char * ptr;
 
 	fp = fopen(filename, "r");
 	if ( fp == NULL ) {
 		fprintf(stderr, "error: open file %s failed.\n", filename);
 		fflush(stderr);
-		return EXIT_FAILURE;
+		return count;
 	} else {
-		for(ptr = text, pos = 0; pos < maxsize; ++ptr, ++pos) {
+		for(ptr = text, count = 0; count < maxsize; ++ptr, ++count) {
 			int c = fgetc(fp);
 			if ( c == EOF )
 				break;
 			*ptr = (char) c;
 		}
-		if (pos < maxsize) {
+		if (count < maxsize) {
 			*ptr = 0;
-		} else {
-			text[maxsize-1] = 0;
 		}
-		return EXIT_SUCCESS;
+		return count;
 	}
 }

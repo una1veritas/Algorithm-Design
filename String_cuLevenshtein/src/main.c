@@ -34,22 +34,61 @@ ulong dp_edist(ulong * dist, const char t[], const ulong n, const char p[], cons
 	// n -- the number of columns, m -- the number of rows
 	for(ulong col = 0; col < n; ++col) {
 		// row == 0
-		dist[0 + m * col] = (p[0] == t[col] ? 0 : 1);
+		dist[0 + m * col] = (p[0] == t[col] ? col : col+1);
 	}
 	for(ulong row = 0; row < m; ++row) {
 		// col == 0
-		dist[row + 0] = (p[row] == t[0] ? 0 : 1);
+		dist[row + 0] = (p[row] == t[0] ? row : row+1);
 	}
 
-	//table calcuration
-	for(ulong c = 1; c < n; c++) { // column, text axis
-		for (ulong r = 1; r < m; r++) {  // row, pattern axis
-			ins = dist[(r-1) + m*c]+1;
-			del = dist[r + m*(c-1)]+1;
-			repl = dist[(r-1) + m*(c-1)] + (t[c] == p[r] ? 0 : 1);
-			dist[r + m*c] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
+	// table calcuration, assuming m <= n
+	// in left top triangle
+	// dix is the diagonal depth from the left top of the `inner' table from (1,1)
+	ulong dix, innx;
+	ulong col, row;
+	for(dix = 0; dix < m - 2; ++dix) {
+		for(innx = dix * (dix+1) / 2; innx < (dix+1) * (dix+2) / 2 ; ++innx) {
+			row = innx + 1 - dix * (dix+1) / 2;
+			col = dix - (row - 1) + 1;
+			fprintf(stdout, "%lu (%lu, %lu), ", innx, row, col);
+			//
+			ins = dist[(row-1) + m*col]+1;
+			del = dist[row + m*(col-1)]+1;
+			repl = dist[(row-1) + m*(col-1)] + (t[col] == p[row] ? 0 : 1);
+			dist[row + m*col] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
 		}
+		fprintf(stdout, "\n");
+		fflush(stdout);
 	}
+
+	// helical rectangles
+	//innx = dix*(dix+1)/2; // this value already has been set
+	ulong offset = dix*(dix+1)/2;
+	fprintf(stdout, "inner array (thread) index %lu\n", innx);
+	for(ulong hix = 0, dix = m-1 ; dix < n - 1 /* hix < n - m - 1 */; ++dix, ++hix ) {
+		// hix is the column id in helical rectangles of the inner rectangle
+		for( innx = offset + hix*(m-1); innx < offset + (hix+1)*(m-1); ++innx ) {
+			fprintf(stdout, "%lu (%lu, %lu), ", innx, row, col);
+			//
+			ins = dist[(row-1) + m*col]+1;
+			del = dist[row + m*(col-1)]+1;
+			repl = dist[(row-1) + m*(col-1)] + (t[col] == p[row] ? 0 : 1);
+			dist[row + m*col] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
+		}
+		fprintf(stdout, "\n");
+		fflush(stdout);
+	}
+
+	// bottom right triangles
+	fprintf(stdout, "inner array (thread) index %lu\n", innx);
+	fprintf(stdout, "the bottom right triangle.\n");
+
+/*		ins = dist[(row-1) + m*col]+1;
+		del = dist[row + m*(col-1)]+1;
+		repl = dist[(row-1) + m*(col-1)] + (t[col] == p[row] ? 0 : 1);
+		dist[row + m*col] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
+	*/
+
 	// show DP table 
 	/*
 	for(i = 0; i <= m; i++) {
@@ -86,17 +125,24 @@ int main (int argc, const char * argv[]) {
 	fprintf(stderr,"Current working directory: \n%s\n", text);
 	fflush(stderr);
 
-	if ( textfromfile(argv[1], STR_MAXLENGTH, text) != 0
-		|| textfromfile(argv[2], STR_MAXLENGTH, patt) != 0 ) {
+	n = textfromfile(argv[1], STR_MAXLENGTH, text);
+	m = textfromfile(argv[2], STR_MAXLENGTH, patt);
+	if ( n == 0 || m == 0 ) {
 		goto exit_error;
 	}
-	n = (text[STR_MAXLENGTH-1] == 0? strlen(text) : STR_MAXLENGTH);
-	m = (patt[STR_MAXLENGTH-1] == 0? strlen(patt) : STR_MAXLENGTH);
+	if ( n < m ) {
+		ulong t = n;
+		n = m;
+		m = t;
+		char * ptr = text;
+		text = patt;
+		patt = ptr;
+	}
 
 	if ( n < 1000 && m < 1000 )
-		fprintf(stdout, "Input: %s (%lu), %s (%lu)\n\n", text, n, patt, m);
+		fprintf(stdout, "Input: %s (text %lu),\n %s (pattern %lu)\n\n", text, n, patt, m);
 	else
-		fprintf(stdout, "Input: (%lu), (%lu)\n\n", n, m);
+		fprintf(stdout, "Input: (text %lu), (pattern %lu)\n\n", n, m);
 	fflush(stdout);
 	
 	stopwatch_start(&sw);
