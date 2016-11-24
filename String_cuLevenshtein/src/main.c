@@ -41,16 +41,19 @@ ulong dp_edist(ulong * dist, const char t[], const ulong n, const char p[], cons
 		dist[row + 0] = (p[row] == t[0] ? row : row+1);
 	}
 
+	ulong dix; // diagonal depth index
+	ulong thx; // thread index, equals the row value
+	ulong col, row;
+
 	// table calcuration, assuming m <= n
 	// in left top triangle
 	// dix is the diagonal depth from the left top of the `inner' table from (1,1)
-	ulong dix, innx;
-	ulong col, row;
+
 	for(dix = 0; dix < m - 2; ++dix) {
-		for(innx = dix * (dix+1) / 2; innx < (dix+1) * (dix+2) / 2 ; ++innx) {
-			row = innx + 1 - dix * (dix+1) / 2;
-			col = dix - (row - 1) + 1;
-			fprintf(stdout, "%lu (%lu, %lu), ", innx, row, col);
+		for(thx = 0; thx <= dix; ++thx) {
+			row = thx + 1;
+			col = dix - row + 2;
+			fprintf(stdout, "%lu:%lu (%lu, %lu), ", dix, thx, row, col);
 			//
 			ins = dist[(row-1) + m*col]+1;
 			del = dist[row + m*(col-1)]+1;
@@ -61,14 +64,13 @@ ulong dp_edist(ulong * dist, const char t[], const ulong n, const char p[], cons
 		fflush(stdout);
 	}
 
-	// helical rectangles
-	//innx = dix*(dix+1)/2; // this value already has been set
-	ulong offset = dix*(dix+1)/2;
-	fprintf(stdout, "inner array (thread) index %lu\n", innx);
-	for(ulong hix = 0, dix = m-1 ; dix < n - 1 /* hix < n - m - 1 */; ++dix, ++hix ) {
-		// hix is the column id in helical rectangles of the inner rectangle
-		for( innx = offset + hix*(m-1); innx < offset + (hix+1)*(m-1); ++innx ) {
-			fprintf(stdout, "%lu (%lu, %lu), ", innx, row, col);
+	fprintf(stdout, "\n");
+	// the helical rectangle
+	for( ; dix < n; ++dix) {
+		for(thx = 0; thx < m - 1; ++thx) {
+			row = thx + 1;
+			col = dix - row + 2;
+			fprintf(stdout, "%lu:%lu (%lu, %lu), ", dix, thx, row, col);
 			//
 			ins = dist[(row-1) + m*col]+1;
 			del = dist[row + m*(col-1)]+1;
@@ -79,9 +81,22 @@ ulong dp_edist(ulong * dist, const char t[], const ulong n, const char p[], cons
 		fflush(stdout);
 	}
 
+	fprintf(stdout, "\n");
 	// bottom right triangles
-	fprintf(stdout, "inner array (thread) index %lu\n", innx);
-	fprintf(stdout, "the bottom right triangle.\n");
+	for( ; dix < n + m; ++dix) {
+		for(thx = dix - n + 1; thx < m - 1; ++thx) {
+			row = thx + 1;
+			col = dix - row + 1;
+			fprintf(stdout, "%lu:%lu (%lu, %lu), ", dix, thx, row, col);
+			//
+			ins = dist[(row-1) + m*col]+1;
+			del = dist[row + m*(col-1)]+1;
+			repl = dist[(row-1) + m*(col-1)] + (t[col] == p[row] ? 0 : 1);
+			dist[row + m*col] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
+		}
+		fprintf(stdout, "\n");
+		fflush(stdout);
+	}
 
 /*		ins = dist[(row-1) + m*col]+1;
 		del = dist[row + m*(col-1)]+1;
