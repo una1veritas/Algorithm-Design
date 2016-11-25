@@ -27,6 +27,9 @@ int r_edist(char s[], int m, char t[], int n) {
 }
 
 ulong dp_edist(ulong * dist, const char t[], const ulong n, const char p[], const ulong m) {
+	ulong dix; // diagonal depth index
+	ulong thx; // thread index, equals the row value
+	ulong col, row;
 	ulong result = n+m+1;
 	ulong ins, del, repl;
 	
@@ -40,10 +43,6 @@ ulong dp_edist(ulong * dist, const char t[], const ulong n, const char p[], cons
 		// col == 0
 		dist[row + 0] = (p[row] == t[0] ? row : row+1);
 	}
-
-	ulong dix; // diagonal depth index
-	ulong thx; // thread index, equals the row value
-	ulong col, row;
 
 	// table calcuration, assuming m <= n
 	// in left top triangle
