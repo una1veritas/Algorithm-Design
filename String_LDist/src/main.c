@@ -37,13 +37,23 @@ unsigned long dp_edist(char t[], unsigned long n, char p[], unsigned long m) {
 	
 	// initialize cells in the top row or in the left-most column
 	// n -- the number of columns, m -- the number of rows
-	for(ulong col = 0; col < n; ++col) {
+	ulong col = 0;
+	ulong row = 0;
+	ins = col + 1;
+	repl = (p[0] == t[col] ? 0 : 1);
+	dist[0] = (ins < repl ? ins : repl);
+
+	for(col = 1; col < n; ++col) {
 		// row == 0
-		dist[0 + m * col] = (p[0] == t[col] ? 0 : 1);
+		ins = col + 1;
+		repl = col - 1 + (p[0] == t[col] ? 0 : 1);
+		dist[0 + m * col] = (ins < repl ? ins : repl);
 	}
-	for(ulong row = 0; row < m; ++row) {
+	for(row = 1; row < m; ++row) {
 		// col == 0
-		dist[row + 0] = (p[row] == t[0] ? 0 : 1);
+		del = row + 1;
+		repl = row - 1 + (p[row] == t[0] ? 0 : 1);
+		dist[row + 0]  = (del < repl ? del : repl);
 	}
 
 	//table calcuration
@@ -56,14 +66,14 @@ unsigned long dp_edist(char t[], unsigned long n, char p[], unsigned long m) {
 		}
 	}
 	// show DP table 
-	/*
-	for(i = 0; i <= m; i++) {
-		for (j = 0; j <= n; j++) { 
-			printf("%d\t", d[i][j]);
+
+	for(ulong r = 0; r < m; r++) {
+		for (ulong c = 0; c < n; c++) {
+			printf("%d\t", dist[m*c+r]);
 		}
 		printf("\n");
 	}
-	 */
+
 	result = dist[n * m - 1];
 	free(dist);
 	return result;
@@ -105,7 +115,7 @@ int main (int argc, const char * argv[]) {
 	fflush(stdout);
 	
 	stopwatch_start(&sw);
-	if ( n > 16 || m > 16 ) {
+	if ( n > 5 || m > 5 ) {
 		printf("Skip using recursion version.\n");
 	} else {
 		d = r_edist(text, n, patt, m);
