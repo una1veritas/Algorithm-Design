@@ -10,7 +10,7 @@
 
 #include "editdistance.h"
 
-#define DEBUG_DPTABLE
+//#define DEBUG_DPTABLE
 
 #define min(x, y)  ((x) <= (y)? (x) : (y))
 
@@ -46,30 +46,39 @@ long dptable(long * table, const long colsize, const long rowsize, const char t[
 	}
 
 	// upper-left triangle
+	dix = 1;
 	for(dcol = 2; dcol <= m + 1; ++dcol) {
-		dix = dcol*(dcol+1)/2;
+		dix += dcol;
 		for(drow = 1; drow < dcol; ++drow) {
 			col = dcol - drow;
+#ifdef DEBUG_DPTABLE
 			fprintf(stdout, "%3ld:%3ld [%2ld, %2ld] ", dcol, dix+drow, col, drow);
+#endif
 			ins = table[ dix + drow - dcol - 1 ] + 1;
 			del = table[ dix + drow - dcol ] + 1;
 			repl = table[ dix + drow - 2*dcol]
 						  + (t[col-1] == p[drow-1] ? 0 : 1);
-			fprintf(stdout, " %c=%c? ",t[col-1],p[drow-1] );
+			//fprintf(stdout, " %c=%c? ",t[col-1],p[drow-1] );
 			ins = ((ins <= del) ? ins : del);
 			table[dix+drow]  = (ins < repl ? ins : repl);
 		}
+#ifdef DEBUG_DPTABLE
 		fprintf(stdout, "\n");
+#endif
 	}
+#ifdef DEBUG_DPTABLE
 	fprintf(stdout, "\n");
+#endif
 
 	// skewed rectangle
 	for(dcol = m+2; dcol < n + 1;++dcol) {
-		dix = (m+1)*(m+2)/2 + (m+1) + (m+1)*(dcol - (m+2));
+		dix += m + 1;
 		for(drow = 1; drow < m + 1; ++drow) {
 			col = dcol - drow;
+#ifdef DEBUG_DPTABLE
 			fprintf(stdout, "%3ld:%3ld [%2ld, %2ld] ", dcol, dix+drow, col, drow);
-			fprintf(stdout, " %c=%c? ",t[col-1],p[drow-1] );
+			//fprintf(stdout, " %c=%c? ",t[col-1],p[drow-1] );
+#endif
 			ins = table[ dix + drow - (m+1) - 1] + 1;
 			del = table[ dix + drow - (m+1) ] + 1;
 			repl = table[ dix + drow - 2 *(m+1) - 1 ]
@@ -80,36 +89,40 @@ long dptable(long * table, const long colsize, const long rowsize, const char t[
 			//table[(dcol + 2)*rowsize + (drow + 1)] = table[ ((dcol + 2)% (n+2))*rowsize + (drow + 1)];
 #endif
 			}
+#ifdef DEBUG_DPTABLE
 		fprintf(stdout, "\n");
+#endif
 	}
+#ifdef DEBUG_DPTABLE
 	fprintf(stdout, "\n");
-
+#endif
 
 	// bottom-right triangle
-	dix = (m+1)*(m+2)/2 + (m+1)*(n-m-1) + m;
-	for(dcol = n+1; dcol < n + m + 2;++dcol) {
+	for(dcol = n+1; dcol < n + m + 2; ++dcol) {
+		dix += n + m + 1 - dcol;
 		for(drow = dcol - n; drow < m+1; ++drow) {
 			col = dcol - drow;
+#ifdef DEBUG_DPTABLE
 			fprintf(stdout, "%3ld:%3ld [%2ld, %2ld] ", dcol, dix+drow, col, drow);
-			/*
-			ins = table[ (((dcol + 2) - 1) % (n+2)) *rowsize + (drow + 1) - 1 ] + 1;
-			del = table[ (((dcol + 2) - 1)% (n+2))*rowsize + (drow + 1) ] + 1;
-			repl = table[ (((dcol + 2) - 2)% (n+2))*rowsize + (drow + 1) - 1 ]
-						  + (t[col-row] == p[drow] ? 0 : 1);
-						  */
-			fprintf(stdout, " %c=%c? ",t[col-1],p[drow-1] );
-			/*
+#endif
+			ins = table[ dix + drow - (n + m + 2 - dcol) ] + 1;
+			del = table[ dix + drow - (n + m + 2 - dcol) + 1 ] + 1;
+			repl = table[ dix + drow - 2*(n + m + 2 - dcol) ]
+						  + (t[col-1] == p[drow-1] ? 0 : 1);
+			//fprintf(stdout, "(%3ld)", n + m + 2 - dcol);
 			ins = ((ins <= del) ? ins : del);
-			table[ ((dcol + 2)% (n+2))*rowsize + (drow + 1)]  = (ins < repl ? ins : repl);
-			*/
+			table[ dix + drow ]  = (ins < repl ? ins : repl);
 #ifdef DEBUG_DPTABLE
 			//table[(dcol + 2)*rowsize + (drow + 1)] = table[ ((dcol + 2)% (n+2))*rowsize + (drow + 1)];
 #endif
 			}
-		dix += m + 1 - (dcol - n + 1);
+#ifdef DEBUG_DPTABLE
 		fprintf(stdout, "\n");
+#endif
 	}
+#ifdef DEBUG_DPTABLE
 	fprintf(stdout, "\n");
+#endif
 
 #ifdef DEBUG_DPTABLE
 	// show DP table
@@ -123,14 +136,14 @@ long dptable(long * table, const long colsize, const long rowsize, const char t[
 			} else {
 				dix = (m+1)*(m+2)/2 + (m+1)*(c - m - 1 + r) + r - (c + r - n)*(c + r - n + 1)/2;
 			}
-			fprintf(stdout, "%2ld:%2ld\t", dix,table[dix]);
+			fprintf(stdout, "%3ld\t", table[dix]);
 		}
 		fprintf(stdout, "\n");
 	}
 
-	fprintf(stdout, "[%3ld], ", (m-2)*rowsize + m );
+	fprintf(stdout, "[%3ld], ", (n+1)*(m+1) - 1 );
 #endif
-	result = table[(m-2)*rowsize + m ];
+	result = table[ (n+1)*(m+1) - 1 ];
 	return result;
 }
 

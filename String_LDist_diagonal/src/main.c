@@ -8,7 +8,7 @@
 
 #define MEGA_B 1048576UL
 #define KILO_B 1024UL
-#define STR_MAXLENGTH (32 * KILO_B)
+#define STR_MAXLENGTH (128 * KILO_B)
 
 long pow2log(long base, long val) {
 	long result = base;
@@ -57,9 +57,9 @@ int main (int argc, const char * argv[]) {
 	dist = n + m + 1;
 
 	if ( n < 1000 && m < 1000 )
-		fprintf(stdout, "Input: %s (text %lu),\n %s (pattern %lu)\n\n", text, n, patt, m);
+		fprintf(stdout, "Input: \n%s (%lu),\n\n%s (%lu)\n\n", text, n, patt, m);
 	else
-		fprintf(stdout, "Input: (text %lu), (pattern %lu)\n\n", n, m);
+		fprintf(stdout, "Input: (%lu), (%lu)\n\n", n, m);
 	fflush(stdout);
 	
 	fprintf(stdout, "computing edit distance by DP.\n");
@@ -70,7 +70,7 @@ int main (int argc, const char * argv[]) {
 	const long M = pow2log(4, m+1);
 	fprintf(stdout, "N = %lu, M = %lu\n\n", N, M);
 
-	table = (ulong *) malloc(sizeof(ulong)*N*M);
+	table = (long *) malloc(sizeof(long)*N*M);
 	if ( table != NULL) {
 		dist = dptable(table, N, M, text, n, patt, m);
 		free(table);
