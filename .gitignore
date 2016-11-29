@@ -1,10 +1,13 @@
 .metadata
 RemoteSystemsTempFiles
 
+*~
+#*#
+
 *.o
 *.mk
 *.d
 .cproject
 .project
-*.settings.xml
+
 .DS_Store
