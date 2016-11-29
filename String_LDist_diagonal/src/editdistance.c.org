@@ -10,7 +10,7 @@
 
 #include "editdistance.h"
 
-//#define DEBUG_DPTABLE
+#define DEBUG_DPTABLE
 
 #define min(x, y)  ((x) <= (y)? (x) : (y))
 
