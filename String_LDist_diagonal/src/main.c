@@ -10,10 +10,8 @@
 #define KILO_B 1024UL
 #define STR_MAXLENGTH (32 * KILO_B)
 
-typedef unsigned long ulong;
-
-ulong pow2log(ulong base, ulong val) {
-	ulong result = base;
+long pow2log(long base, long val) {
+	long result = base;
 	if ( base < 2 )
 		return 0;
 	for (result = base; result < val; result <<= 1 ) ;
@@ -22,9 +20,9 @@ ulong pow2log(ulong base, ulong val) {
 
 int main (int argc, const char * argv[]) {
 	char * text, *patt;
-	ulong m, n;
-	ulong dist;
-	ulong * table;
+	long m, n;
+	long dist;
+	long * table;
 	
 	stopwatch sw;
 
@@ -68,8 +66,8 @@ int main (int argc, const char * argv[]) {
 	fflush(stdout);
 	stopwatch_start(&sw);
 
-	const ulong N = pow2log(16, n+1);
-	const ulong M = pow2log(16, m+1);
+	const long N = pow2log(4, n+1);
+	const long M = pow2log(4, m+1);
 	fprintf(stdout, "N = %lu, M = %lu\n\n", N, M);
 
 	table = (ulong *) malloc(sizeof(ulong)*N*M);

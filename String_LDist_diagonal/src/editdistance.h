@@ -8,9 +8,7 @@
 #ifndef SRC_EDITDISTANCE_H_
 #define SRC_EDITDISTANCE_H_
 
-typedef unsigned long ulong;
-
-ulong dptable(ulong * dist, const ulong colsize, const ulong rowsize, const char t[], const ulong tsize, const char p[], const ulong msize);
+long dptable(long * dist, const long colsize, const long rowsize, const char t[], const long tsize, const char p[], const long msize);
 
 
 #endif /* SRC_EDITDISTANCE_H_ */

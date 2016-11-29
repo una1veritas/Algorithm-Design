@@ -15,53 +15,44 @@
 #define min(x, y)  ((x) <= (y)? (x) : (y))
 
 // assumes the table size (n+1) x (m+1)
-long dptable(long * table, const long colsize, const long rowsize, const char t[], const long n, const char p[], const long m) {
-	long dix, dcol, drow; // diagonal column index, row index
-	long col, row; // inner diagonal index
-	long result = n+m+1; // an impossible large value
-	long ins, del, repl;
+ulong dptable(ulong * table, const ulong colsize, const ulong rowsize, const char t[], const ulong n, const char p[], const ulong m) {
+	ulong dix, dcol, drow; // diagonal column index, row index
+	ulong col, row; // inner diagonal index
+	ulong result = n+m+1; // an impossible large value
+	ulong ins, del, repl;
 
 #ifdef DEBUG_DPTABLE
-	// clear table elements
-	for(long r = 0; r < rowsize; ++r)
-		for(long c = 0; c < colsize; ++c)
+	for(int r = 0; r < rowsize; ++r)
+		for(int c = 0; c < colsize; ++c)
 			table[rowsize*c + r] = 0;
 #endif
 
 	// initialize
 	for(col = 0; col <= n; ++col) {
-		if ( col <= m ) {
-			dix = col*(col+1)/2;
-		} else {
-			dix = m*(m+1)/2+(m+1)*(col-m);
-		}
-		table[dix] = col;
+		table[col*rowsize] = col;
 	}
-	fprintf(stdout, "\n");
 
 	for(row = 1; row <= m; ++row) {
-		// m <= n
-		dix = (row+1)*(row+2)/2 - 1;
-		table[dix] = row;
+		// col == row
+		table[row*rowsize+row] = row;
 	}
 
-	for(dcol = 1; dcol <= m; ++dcol) {
-		for(drow = 1; drow <= dcol; ++drow) {
-			dix = dcol*(dcol+1)/2 + drow;
+	for(dcol = 0; dcol < n; ++dcol) {
+		for(drow = 0; drow < min(dcol+1, m); ++drow) {
 			row = drow;
 			col = dcol - row;
 			//fprintf(stdout, "%3lu:%3lu [%2lu, %2lu] ", dcol+2, (dcol+2)*rowsize+drow+1, col, row);
-			ins = table[ dix - dcol - 1 ] + 1;
-			del = table[ dix - dcol ] + 1;
-			repl = table[ dix - dcol - (dcol - 1) - 1]
+			ins = table[ ((dcol + 2) - 1)*rowsize + (drow + 1) - 1 ] + 1;
+			del = table[ ((dcol + 2) - 1)*rowsize + (drow + 1) ] + 1;
+			repl = table[ ((dcol + 2) - 2)*rowsize + (drow + 1) - 1 ]
 						  + (t[dcol-row] == p[drow] ? 0 : 1);
 			//fprintf(stdout, " %c=%c? ",t[dcol-drow],p[drow] );
 			ins = ((ins <= del) ? ins : del);
-			table[ dix]  = (ins < repl ? ins : repl);
+			table[ (dcol + 2)*rowsize + (drow + 1)]  = (ins < repl ? ins : repl);
 		}
 	}
 
-/*
+
 	for(dcol = n; dcol < n+m; ++dcol) {
 		for(drow = dcol + 1 - n; drow < m; ++drow) {
 			row = drow;
@@ -79,20 +70,20 @@ long dptable(long * table, const long colsize, const long rowsize, const char t[
 #endif
 			}
 	}
-*/
+
+/*		ins = dist[(row-1) + m*col]+1;
+		del = dist[row + m*(col-1)]+1;
+		repl = dist[(row-1) + m*(col-1)] + (t[col] == p[row] ? 0 : 1);
+		dist[row + m*col] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
+	*/
 
 #ifdef DEBUG_DPTABLE
 	// show DP table
-	for(row = 0; row <= m; row++) {
-		for (col = 0; col <= n; col++) {
-			if ( col + row <= m ) {
-				dix = (col + row)*(col + row + 1)/2 + row;
-			} else if (col+row<=n) {
-				dix = (m+1)*(m+2)/2 + (m+1)*(col - m - 1 + row) + row;
-			} else {
-				dix = (m+1)*(m+2)/2 + (m+1)*(col - m - 1 + row) + row - (col+row-n)*(col+row-n+1)/2;
-			}
-			fprintf(stdout, "%2lu\t", table[dix]);
+	for(ulong  r = 0; r < m+1; r++) {
+		for(ulong i = 0; i < m+1 - r; ++i)
+			fprintf(stdout, "\t");
+		for (ulong c = 0; c < colsize; c++) {
+			fprintf(stdout, "%3lu\t", table[r + rowsize * c]);
 		}
 		fprintf(stdout, "\n");
 	}
