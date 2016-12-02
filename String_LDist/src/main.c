@@ -65,14 +65,16 @@ unsigned long dp_edist(char t[], unsigned long n, char p[], unsigned long m) {
 			dist[r + m*c] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
 		}
 	}
-	// show DP table 
 
+#ifdef DEBUG_TABLE
+	// show DP table
 	for(ulong r = 0; r < m; r++) {
 		for (ulong c = 0; c < n; c++) {
 			printf("%d\t", dist[m*c+r]);
 		}
 		printf("\n");
 	}
+#endif
 
 	result = dist[n * m - 1];
 	free(dist);
