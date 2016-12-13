@@ -7,13 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEBUG_TABLE
-
-#define min(x, y)   ((x) > (y)? (y) : (x))
-#define max(x, y)   ((x) < (y)? (y) : (x))
-
-static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
-static const int grayscale = 62;
+#include "levdist.h"
 
 long r_edist(char s[], int m, char t[], int n) {
 	long a, b, c;
@@ -29,14 +23,11 @@ long r_edist(char s[], int m, char t[], int n) {
 	return (a < b ? (a < c ? a: c): (b < c ? b : c));
 }
 
-long dp_edist(char t[], long n, char p[], long m) {
-	long * dist;
-	long result = 0;
+long dp_edist(long * dist, char t[], long n, char p[], long m) {
 	long ins, del, repl;
 
-	dist = (long *) malloc(sizeof(long)*m*n);
 	if ( dist == NULL )
-		return 0;
+		return n+m+1;
 
 	// initialize cells in the top row or in the left-most column
 	// n -- the number of columns, m -- the number of rows
@@ -69,31 +60,19 @@ long dp_edist(char t[], long n, char p[], long m) {
 		}
 	}
 
-#ifdef DEBUG_TABLE
-	// show DP table
-	for(long r = 0; r < m; r++) {
-		for (long c = 0; c < n; c++) {
-			printf("%3ld ", dist[m*c+r]);
-		}
-		printf("\n");
-	}
-#endif
-
-	result = dist[n * m - 1];
-	free(dist);
-	return result;
+	return dist[n * m - 1];
 }
 
-long wv_edist(long * inframe, long * outframe, char t[], long n, char p[], long m) {
-	long * dist;
+long wv_edist(const long * inframe, long * outframe, const char t[], const long n, const char p[], const long m) {
+	long * threads;
 	long result = n+m+1;
 	long col, row;
 	long del, ins, repl; // del = delete from pattern, downward; ins = insert to pattern, rightward
 	long thix;
 	long thread_min, thread_max;
 
-	dist = (long *) malloc(sizeof(long)*m*n);
-	if ( dist == NULL )
+	threads = (long *) malloc(sizeof(long)*m*2);
+	if ( threads == NULL )
 		return -1;
 
 	for(long depth = 0; depth < n+m; depth++) {
@@ -105,7 +84,7 @@ long wv_edist(long * inframe, long * outframe, char t[], long n, char p[], long 
 		if ( !(depth < n) )
 			thread_max -= (depth + 1 - n)<<1;
 		//printf("thread_max = %ld\n", thread_max);
-		fflush(stdout);
+		//fflush(stdout);
 		for(long thread = thread_min; thread <= thread_max; thread += 2) {
 			col = (depth + thread)>>1;
 			row = (depth - thread)>>1;
@@ -114,54 +93,49 @@ long wv_edist(long * inframe, long * outframe, char t[], long n, char p[], long 
 			if ( row == 0 ) {
 				del = inframe[m+1+col] + 1;
 			} else {
-				del = dist[m*col + (row -1)] + 1;
+				//del = debug_table[m*col + (row - 1)] + 1;
+				del = threads[(thix+(m<<1)+1)%(2*m)]+1;
 			}
 			if ( col == 0 ) {
 				ins = inframe[m-1-row] + 1;
 			} else {
-				ins = dist[m*(col-1) + row] + 1;
+				//ins = debug_table[m*(col-1) + row] + 1;
+				ins = threads[(thix+(m<<1)-1)%(2*m)]+1;
+				//printf("thr[%d]\n",(thix+2*m-1)%(2*m));
 			}
 			if ( row == 0 ) {
 				repl = inframe[m+1+col-1];
 			} else if (col == 0) {
 				repl = inframe[m-1-(row-1)];
 			} else {
-				repl = dist[m*(col-1)+(row-1)];
+				//repl = debug_table[m*(col-1) + (row-1)];
+				repl = threads[thix];
 			}
 			repl += (t[col] != p[row]);
+
+			//printf("%ld: (%ld, %ld) ", depth, col, row);
+			//printf("%ld/%ld/%ld, ", del, ins, repl);
+			//printf("\n");
+
 			//
 			if ( del < ins )
 				ins = del;
 			if ( ins < repl )
 				repl = ins;
 			//
-			dist[m*col + row] = repl;
+			threads[thix] = repl;
+			//printf("threads[%d] %d, \n", thix, repl);
+			debug_table[m*col + row] = repl;
 
-			//printf("%ld: %ld, %ld; ", depth, col, row);
-			//printf("\n");
 		}
 		//printf("\n");
 		//fflush(stdout);
 	}
-	printf("table computation finished.\n");
-	fflush(stdout);
+	//printf("table computation finished.\n");
+	//fflush(stdout);
 
-#ifdef DEBUG_TABLE
-	// show DP table
-	for(long r = 0; r < m; r++) {
-		for (long c = 0; c < n; c++) {
-			printf("%c", grays[max(0,61 - (int)((dist[m*c+r]/(float)(n))*grayscale))] );
-			//printf("%3ld ", dist[m*c+r]);
-		}
-		printf("\n");
-		fflush(stdout);
-	}
-	printf("\n");
-	fflush(stdout);
-#endif
+	result = threads[(n+m)%(2*m)];
 
-	result = dist[n * m - 1];
-
-	free(dist);
+	free(threads);
 	return result;
 }
