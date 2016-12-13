@@ -10,6 +10,10 @@
 #define DEBUG_TABLE
 
 #define min(x, y)   ((x) > (y)? (y) : (x))
+#define max(x, y)   ((x) < (y)? (y) : (x))
+
+static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+static const int grayscale = 62;
 
 long r_edist(char s[], int m, char t[], int n) {
 	long a, b, c;
@@ -80,11 +84,11 @@ long dp_edist(char t[], long n, char p[], long m) {
 	return result;
 }
 
-long wv_edist(char t[], long n, char p[], long m) {
+long wv_edist(long * inframe, long * outframe, char t[], long n, char p[], long m) {
 	long * dist;
 	long result = n+m+1;
 	long col, row;
-//	long ins, del, repl;
+	long del, ins, repl; // del = delete from pattern, downward; ins = insert to pattern, rightward
 	long thix;
 	long thread_min, thread_max;
 
@@ -94,33 +98,60 @@ long wv_edist(char t[], long n, char p[], long m) {
 
 	for(long depth = 0; depth < n+m; depth++) {
 		thread_min = -depth;
-		if ( depth > m )
-			thread_min += (depth - m)<<1;
+		if ( !(depth < m) ) {
+			thread_min += (depth + 1 - m)<<1;
+		}
 		thread_max = depth;
-		if ( depth > n )
-			thread_max -= (depth - n)<<1;
-		printf("thread_max = %ld\n", thread_max);
+		if ( !(depth < n) )
+			thread_max -= (depth + 1 - n)<<1;
+		//printf("thread_max = %ld\n", thread_max);
 		fflush(stdout);
 		for(long thread = thread_min; thread <= thread_max; thread += 2) {
 			col = (depth + thread)>>1;
 			row = (depth - thread)>>1;
-			thix = (thread + m)%m;
-			if ( row < m ) {
-				dist[m*col + row] = (thread + 2*m) % (2*m);
-				printf("%ld: %ld, %ld; ", thix, col, row);
+			thix = (thread + 2*m) % (2*m);
+			//
+			if ( row == 0 ) {
+				del = inframe[m+1+col] + 1;
+			} else {
+				del = dist[m*col + (row -1)] + 1;
 			}
+			if ( col == 0 ) {
+				ins = inframe[m-1-row] + 1;
+			} else {
+				ins = dist[m*(col-1) + row] + 1;
+			}
+			if ( row == 0 ) {
+				repl = inframe[m+1+col-1];
+			} else if (col == 0) {
+				repl = inframe[m-1-(row-1)];
+			} else {
+				repl = dist[m*(col-1)+(row-1)];
+			}
+			repl += (t[col] != p[row]);
+			//
+			if ( del < ins )
+				ins = del;
+			if ( ins < repl )
+				repl = ins;
+			//
+			dist[m*col + row] = repl;
+
+			//printf("%ld: %ld, %ld; ", depth, col, row);
+			//printf("\n");
 		}
-		printf("\n");
-		fflush(stdout);
+		//printf("\n");
+		//fflush(stdout);
 	}
-	printf("ended.\n");
+	printf("table computation finished.\n");
 	fflush(stdout);
 
 #ifdef DEBUG_TABLE
 	// show DP table
 	for(long r = 0; r < m; r++) {
 		for (long c = 0; c < n; c++) {
-			printf("%3ld ", dist[m*c+r]);
+			printf("%c", grays[max(0,61 - (int)((dist[m*c+r]/(float)(n))*grayscale))] );
+			//printf("%3ld ", dist[m*c+r]);
 		}
 		printf("\n");
 		fflush(stdout);

@@ -39,9 +39,17 @@ int main (int argc, const char * argv[]) {
 	}
 	n = (text[STR_MAXLENGTH-1] == 0? strlen(text) : STR_MAXLENGTH);
 	m = (patt[STR_MAXLENGTH-1] == 0? strlen(patt) : STR_MAXLENGTH);
+	if ( n < m ) {
+		char * tmp = text;
+		text = patt;
+		patt = tmp;
+		long t = n;
+		n = m;
+		m = t;
+	}
 
 	if ( n < 1000 && m < 1000 )
-		fprintf(stdout, "Input: %s (%lu), %s (%lu)\n\n", text, n, patt, m);
+		fprintf(stdout, "Input: %s \n(%lu), \n%s \n(%lu)\n\n", text, n, patt, m);
 	else
 		fprintf(stdout, "Input: (%lu), (%lu)\n\n", n, m);
 	fflush(stdout);
@@ -60,7 +68,15 @@ int main (int argc, const char * argv[]) {
 	fprintf(stdout, "computing edit distance by DP.\n");
 	fflush(stdout);
 	stopwatch_start(&sw);
-	d = wv_edist(text, n, patt, m);
+
+	long * lefttopframe = (long*)malloc(sizeof(long)*(m+n+1));
+	long * bottomrightframe = (long*)malloc(sizeof(long)*(n-1+m-1+1));
+	for(long i = 0; i < m + n + 1; i++) {
+		lefttopframe[i] = (i - m < 0 ? m - i : i - m);
+		//printf("[%ld] = %ld, ", i, lefttopframe[i]);
+	}
+	//printf("\n");
+	d = wv_edist(lefttopframe, bottomrightframe, text, n, patt, m);
 	stopwatch_stop(&sw);
 	printf("Edit distance (by DP): %lu\n", d);
 	printf("%lu sec %lu milli %lu micros.\n", stopwatch_secs(&sw), stopwatch_millis(&sw), stopwatch_micros(&sw));
