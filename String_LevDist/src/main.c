@@ -10,6 +10,9 @@
 #define KILO_B 1024UL
 #define STR_MAXLENGTH (32 * KILO_B)
 
+long * debug_table;
+static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+static const int grayscale = 62;
 
 int main (int argc, const char * argv[]) {
 	char * text, *patt;
@@ -55,32 +58,68 @@ int main (int argc, const char * argv[]) {
 	fflush(stdout);
 	
 	stopwatch_start(&sw);
-	if ( n > 5 || m > 5 ) {
-		printf("Skip using recursion version.\n");
-	} else {
-		d = r_edist(text, n, patt, m);
-		stopwatch_stop(&sw);
-		printf("Edit distance (by recursion): %lu\n", d);
-		printf("%lu sec %lu milli %lu micros.\n", stopwatch_secs(&sw), stopwatch_millis(&sw), stopwatch_micros(&sw));
-	}
+	debug_table = (long*) malloc(sizeof(long)*m*n);
+
+	d = dp_edist(debug_table, text, n, patt, m);
+
+	stopwatch_stop(&sw);
+
+	printf("Edit distance (by Pure DP): %lu\n", d);
+	printf("%lu sec %lu milli %lu micros.\n", stopwatch_secs(&sw), stopwatch_millis(&sw), stopwatch_micros(&sw));
 	printf("\n");
 
-	fprintf(stdout, "computing edit distance by DP.\n");
+#ifdef DEBUG_TABLE
+	// show DP table
+	for(long r = 0; r < m; r++) {
+		for (long c = 0; c < n; c++) {
+			printf("%c", grays[max(0,61 - (int)((debug_table[m*c+r]/(float)(n))*grayscale))] );
+			//printf("%3ld ", debug_table[m*c+r]);
+		}
+		printf("\n");
+		fflush(stdout);
+	}
+	printf("\n");
+	fflush(stdout);
+#endif
+
+
+	fprintf(stdout, "computing edit distance by Waving DP.\n");
 	fflush(stdout);
 	stopwatch_start(&sw);
 
 	long * lefttopframe = (long*)malloc(sizeof(long)*(m+n+1));
 	long * bottomrightframe = (long*)malloc(sizeof(long)*(n-1+m-1+1));
 	for(long i = 0; i < m + n + 1; i++) {
-		lefttopframe[i] = (i - m < 0 ? m - i : i - m);
-		//printf("[%ld] = %ld, ", i, lefttopframe[i]);
+		if (i == m)
+			lefttopframe[i] = 0;
+		else
+			lefttopframe[i] = (i - m < 0 ? m - i - 1 : i - m - 1);
+		//printf("[%ld] %ld, ", i, lefttopframe[i]);
 	}
 	//printf("\n");
+
 	d = wv_edist(lefttopframe, bottomrightframe, text, n, patt, m);
 	stopwatch_stop(&sw);
-	printf("Edit distance (by DP): %lu\n", d);
+
+	printf("Edit distance (by Weaving DP): %lu\n", d);
 	printf("%lu sec %lu milli %lu micros.\n", stopwatch_secs(&sw), stopwatch_millis(&sw), stopwatch_micros(&sw));
-	
+
+#ifdef DEBUG_TABLE
+	// show DP table
+	for(long r = 0; r < m; r++) {
+		for (long c = 0; c < n; c++) {
+			printf("%c", grays[max(0,61 - (int)((debug_table[m*c+r]/(float)(n))*grayscale))] );
+			//printf("%3ld ", debug_table[m*c+r]);
+		}
+		printf("\n");
+		fflush(stdout);
+	}
+	printf("\n");
+	fflush(stdout);
+#endif
+	free(debug_table);
+
+
 exit_error:
 	free(text);
 	free(patt);
