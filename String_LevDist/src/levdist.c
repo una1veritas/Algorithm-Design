@@ -85,21 +85,36 @@ long wv_edist(char t[], long n, char p[], long m) {
 	long result = n+m+1;
 	long col, row;
 //	long ins, del, repl;
+	long thix;
+	long thread_min, thread_max;
 
 	dist = (long *) malloc(sizeof(long)*m*n);
 	if ( dist == NULL )
-		return 0;
+		return -1;
 
-	for(long depth = 0; depth < n; depth++) {
-		for(long thread = - depth; thread <= depth; thread += 2) {
+	for(long depth = 0; depth < n+m; depth++) {
+		thread_min = -depth;
+		if ( depth > m )
+			thread_min += (depth - m)<<1;
+		thread_max = depth;
+		if ( depth > n )
+			thread_max -= (depth - n)<<1;
+		printf("thread_max = %ld\n", thread_max);
+		fflush(stdout);
+		for(long thread = thread_min; thread <= thread_max; thread += 2) {
 			col = (depth + thread)>>1;
 			row = (depth - thread)>>1;
+			thix = (thread + m)%m;
 			if ( row < m ) {
-				dist[m*col + row] = (thread + m) % m;
-				printf("%ld: %ld, %ld\n", depth, col, row);
+				dist[m*col + row] = (thread + 2*m) % (2*m);
+				printf("%ld: %ld, %ld; ", thix, col, row);
 			}
 		}
+		printf("\n");
+		fflush(stdout);
 	}
+	printf("ended.\n");
+	fflush(stdout);
 
 #ifdef DEBUG_TABLE
 	// show DP table
@@ -108,7 +123,10 @@ long wv_edist(char t[], long n, char p[], long m) {
 			printf("%3ld ", dist[m*c+r]);
 		}
 		printf("\n");
+		fflush(stdout);
 	}
+	printf("\n");
+	fflush(stdout);
 #endif
 
 	result = dist[n * m - 1];
