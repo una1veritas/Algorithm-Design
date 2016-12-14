@@ -81,73 +81,47 @@ void wv_setframe(long * frame,  const char t[], const long n, const char p[], co
 	}
 }
 
+long pow2(const long val) {
+	long result = 1;
+
+	while ( result < val ) {
+		result <<= 1;
+	}
+	return result;
+}
+
 long wv_edist(long * frame, const char t[], const long n, const char p[], const long m) {
 	long result = n+m+1;
 	long col, row;
 	long del, ins, repl; // del = delete from pattern, downward; ins = insert to pattern, rightward
 	long thix, lthix, rthix;
 	long thread_min, thread_max;
-	long weftlen = n+m+1;
+	long weftlen = pow2(n+m+1);
 
 	if ( frame == NULL )
 		return -1;
 
 	for(long depth = 0; depth < n+m; depth++) {
 		thread_min = -depth;
-		if ( !(depth < m) ) {
+		if ( !(depth < m) )
 			thread_min += (depth + 1 - m)<<1;
-		}
+
 		thread_max = depth;
 		if ( !(depth < n) )
 			thread_max -= (depth + 1 - n)<<1;
-		//printf("thread_max = %ld\n", thread_max);
-		//fflush(stdout);
+
 		for(long thread = thread_min; thread <= thread_max; thread += 2) {
 			col = (depth + thread)>>1;
 			row = (depth - thread)>>1;
 
-			thix = (thread + weftlen) % weftlen;
-			lthix = (thix - 1 + weftlen) % weftlen;
-			rthix = (thix + 1) % weftlen;
+			thix = (thread + weftlen) & (weftlen-1);
+			lthix = (thix - 1 + weftlen) & (weftlen-1);
+			rthix = (thix + 1) & (weftlen-1);
 			//
-			if ( row == 0 ) {
-				//printf("row = 0; ");
-				//del = frame[m+1+col] + 1;
-				//del = frame[rthix] + 1;
-				del = frame[rthix] + 1;
-				//printf("del: [%ld] %ld\n", rthix, frame[rthix]);
-			} else {
-				del = frame[rthix]+1;
-				//printf("del: [%ld] %ld\n", rthix, threads[rthix]);
-			}
-			if ( col == 0 ) {
-				//printf("col = 0; ");
-				//ins = frame[m-1-row] + 1;
-				//ins = frame[lthix] + 1;
-				ins = frame[lthix] + 1;
-				//printf("ins: [%ld], %ld\n", lthix, frame[lthix]);
-			} else {
-				ins = frame[lthix]+1;
-				//printf("ins: [%ld] %ld\n", lthix, threads[lthix]);
-			}
-			if ( row == 0 || col == 0) {
-				//repl = frame[m+1+col-1];
-				//repl = frame[thix];
-				repl = frame[thix];
-				//printf("repl: [%ld] %ld\n", thix, frame[thix]);
-			} else if (col == 0) {
-				//repl = frame[m-1-(row-1)];
-				repl = frame[thix];
-				//printf("repl: [%ld] %ld\n", thix, frame[thix]);
-			} else {
-				//repl = debug_table[m*(col-1) + (row-1)];
-				repl = frame[thix];
-			}
-			repl += (t[col] != p[row]);
+			del = frame[rthix] + 1;
+			ins = frame[lthix] + 1;
+			repl = frame[thix] + (t[col] != p[row]);
 
-			//printf("%ld: (%ld, %ld) ", depth, col, row);
-			//printf("%ld/%ld/%ld, ", del, ins, repl);
-			//printf("\n");
 
 			//
 			if ( del < ins )
@@ -156,19 +130,14 @@ long wv_edist(long * frame, const char t[], const long n, const char p[], const 
 				repl = ins;
 			//
 			frame[thix] = repl;
-			//printf("threads[%d] %d, \n", thix, repl);
 #ifdef DEBUG_TABLE
 			debug_table[m*col + row] = repl;
 #endif
 
 		}
-		//printf("\n");
-		//fflush(stdout);
 	}
-	//printf("table computation finished.\n");
-	//fflush(stdout);
 
-	result = frame[(n-m)%weftlen];
+	result = frame[(n-m) & (weftlen-1)];
 
 	return result;
 }

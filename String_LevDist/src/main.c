@@ -51,7 +51,7 @@ long compare_table(long * t0, long * t1, long n, long m) {
 	return count;
 }
 
-int getargs(int argc, char * argv[], char * text, char * patt, long * n, long *m) {
+int getargs(const int argc, const char * argv[], char * text, char * patt, long * n, long *m) {
 	if ( argc != 3 )
 		return EXIT_FAILURE;
 
@@ -120,7 +120,7 @@ int main (int argc, const char * argv[]) {
 
 	stopwatch_start(&sw);
 
-	long * frame = (long*)malloc(sizeof(long)*(m+n+1));
+	long * frame = (long*)malloc(sizeof(long)*pow2(m+n+1));
 	wv_setframe(frame, text, n, patt, m);
 
 	d = wv_edist(frame, text, n, patt, m);

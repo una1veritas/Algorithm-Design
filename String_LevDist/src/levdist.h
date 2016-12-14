@@ -16,6 +16,8 @@ extern long * debug_table;
 #define min(x, y)   ((x) > (y)? (y) : (x))
 #define max(x, y)   ((x) < (y)? (y) : (x))
 
+long pow2(const long val);
+
 long r_edist(char s[], int m, char t[], int n);
 long dp_edist(long * table, char t[], long n, char p[], long m);
 long wv_edist(long * frame, const char t[], const long n, const char p[], const long m);
