@@ -15,12 +15,17 @@ long * debug_table;
 void show_table(long * table, long n, long m) {
 	static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 	static const int grayscale = 62;
+
+	if ( n > 1024 || m > 1024) {
+		printf("\ntable seems being too big.\n");
+		return;
+	}
 	// show DP table
 	printf("\ntable contents:\n");
 	for(long r = 0; r < m; r++) {
 		for (long c = 0; c < n; c++) {
-			//printf("%c", grays[max(0,61 - (int)((table[m*c+r]/(float)(n))*grayscale))] );
-			printf("%3ld ", table[m*c+r]);
+			printf("%c", grays[max(0,61 - (int)((table[m*c+r]/(float)(n))*grayscale))] );
+			//printf("%3ld ", table[m*c+r]);
 		}
 		printf("\n");
 		fflush(stdout);
@@ -29,13 +34,57 @@ void show_table(long * table, long n, long m) {
 	fflush(stdout);
 }
 
+long compare_table(long * t0, long * t1, long n, long m) {
+	long c, r;
+	long count = 0;
+	for(c = 0; c < n; c++) {
+		for(r = 0; r < m; r++) {
+			if( t0[m*c+r] != t1[m*c+r] ) {
+				count ++;
+				printf("different @ %ld, %ld\n", c, r);
+			}
+		}
+	}
+	if ( count > 0 )
+		printf("%ld different elements in table.\n", count);
+	printf("\n");
+	return count;
+}
+
+int getargs(int argc, char * argv[], char * text, char * patt, long * n, long *m) {
+	if ( argc != 3 )
+		return EXIT_FAILURE;
+
+	if ( textfromfile(argv[1], STR_MAXLENGTH, text) != 0
+		|| textfromfile(argv[2], STR_MAXLENGTH, patt) != 0 ) {
+		return EXIT_FAILURE;
+	}
+	*n = (text[STR_MAXLENGTH-1] == 0? strlen(text) : STR_MAXLENGTH);
+	*m = (patt[STR_MAXLENGTH-1] == 0? strlen(patt) : STR_MAXLENGTH);
+	if ( *n < *m ) {
+		char * tmp = text;
+		text = patt;
+		patt = tmp;
+		long t = *n;
+		*n = *m;
+		*m = t;
+	}
+
+	if ( *n < 1000 && *m < 1000 )
+		fprintf(stdout, "Input: %s \n(%lu), \n%s \n(%lu)\n\n", text, *n, patt, *m);
+	else
+		fprintf(stdout, "Input: (%lu), (%lu)\n\n", *n, *m);
+	fflush(stdout);
+
+	return 0;
+}
+
 int main (int argc, const char * argv[]) {
 	char * text, *patt;
+	long * table;
 	long m, n;
 	long d;
 	
-	stopwatch sw;
-
 	text = malloc(sizeof(char)*STR_MAXLENGTH);
 	patt = malloc(sizeof(char)*STR_MAXLENGTH);
 	if ( text == NULL || patt == NULL ) {
@@ -44,38 +93,15 @@ int main (int argc, const char * argv[]) {
 		goto exit_error;
 	}
 
-	if ( argc != 3 )
-		return EXIT_FAILURE;
-
-	getcwd(text, STR_MAXLENGTH);
-	fprintf(stderr,"Current working directory: \n%s\n", text);
-	fflush(stderr);
-
-	if ( textfromfile(argv[1], STR_MAXLENGTH, text) != 0
-		|| textfromfile(argv[2], STR_MAXLENGTH, patt) != 0 ) {
+	if ( getargs(argc, argv, text, patt, &n, &m) != 0 )
 		goto exit_error;
-	}
-	n = (text[STR_MAXLENGTH-1] == 0? strlen(text) : STR_MAXLENGTH);
-	m = (patt[STR_MAXLENGTH-1] == 0? strlen(patt) : STR_MAXLENGTH);
-	if ( n < m ) {
-		char * tmp = text;
-		text = patt;
-		patt = tmp;
-		long t = n;
-		n = m;
-		m = t;
-	}
 
-	if ( n < 1000 && m < 1000 )
-		fprintf(stdout, "Input: %s \n(%lu), \n%s \n(%lu)\n\n", text, n, patt, m);
-	else
-		fprintf(stdout, "Input: (%lu), (%lu)\n\n", n, m);
-	fflush(stdout);
-	
+
+	stopwatch sw;
 	stopwatch_start(&sw);
-	debug_table = (long*) malloc(sizeof(long)*m*n);
+	table = (long*) malloc(sizeof(long)*m*n);
 
-	d = dp_edist(debug_table, text, n, patt, m);
+	d = dp_edist(table, text, n, patt, m);
 
 	stopwatch_stop(&sw);
 
@@ -84,9 +110,10 @@ int main (int argc, const char * argv[]) {
 	printf("\n");
 
 #ifdef DEBUG_TABLE
-	show_table(debug_table, n, m);
-#endif
+	show_table(table, n, m);
 
+	debug_table = (long*) malloc(sizeof(long)*m*n);
+#endif
 
 	fprintf(stdout, "computing edit distance by Waving DP.\n");
 	fflush(stdout);
@@ -95,10 +122,9 @@ int main (int argc, const char * argv[]) {
 
 	long * frame = (long*)malloc(sizeof(long)*(m+n+1));
 	wv_setframe(frame, text, n, patt, m);
-	for(long i = 0; i < n + m + 1; i++)
-		printf("[%ld] %ld,", i, frame[i]);
-	printf("\n");
+
 	d = wv_edist(frame, text, n, patt, m);
+	free(frame);
 	stopwatch_stop(&sw);
 
 	printf("Edit distance (by Weaving DP): %lu\n", d);
@@ -106,10 +132,15 @@ int main (int argc, const char * argv[]) {
 
 #ifdef DEBUG_TABLE
 	show_table(debug_table, n, m);
-#endif
 
+	if ( compare_table(debug_table, table, n, m) != 0) {
+		printf("table compare failed.\n");
+	} else {
+		printf("two tables are identical.\n");
+	}
 	free(debug_table);
-
+#endif
+	free(table);
 
 exit_error:
 	free(text);
