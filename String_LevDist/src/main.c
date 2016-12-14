@@ -11,8 +11,23 @@
 #define STR_MAXLENGTH (32 * KILO_B)
 
 long * debug_table;
-static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
-static const int grayscale = 62;
+
+void show_table(long * table, long n, long m) {
+	static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+	static const int grayscale = 62;
+	// show DP table
+	printf("\ntable contents:\n");
+	for(long r = 0; r < m; r++) {
+		for (long c = 0; c < n; c++) {
+			//printf("%c", grays[max(0,61 - (int)((table[m*c+r]/(float)(n))*grayscale))] );
+			printf("%3ld ", table[m*c+r]);
+		}
+		printf("\n");
+		fflush(stdout);
+	}
+	printf("\n\n");
+	fflush(stdout);
+}
 
 int main (int argc, const char * argv[]) {
 	char * text, *patt;
@@ -69,54 +84,30 @@ int main (int argc, const char * argv[]) {
 	printf("\n");
 
 #ifdef DEBUG_TABLE
-	// show DP table
-	for(long r = 0; r < m; r++) {
-		for (long c = 0; c < n; c++) {
-			printf("%c", grays[max(0,61 - (int)((debug_table[m*c+r]/(float)(n))*grayscale))] );
-			//printf("%3ld ", debug_table[m*c+r]);
-		}
-		printf("\n");
-		fflush(stdout);
-	}
-	printf("\n");
-	fflush(stdout);
+	show_table(debug_table, n, m);
 #endif
 
 
 	fprintf(stdout, "computing edit distance by Waving DP.\n");
 	fflush(stdout);
+
 	stopwatch_start(&sw);
 
-	long * lefttopframe = (long*)malloc(sizeof(long)*(m+n+1));
-	long * bottomrightframe = (long*)malloc(sizeof(long)*(n-1+m-1+1));
-	for(long i = 0; i < m + n + 1; i++) {
-		if (i == m)
-			lefttopframe[i] = 0;
-		else
-			lefttopframe[i] = (i - m < 0 ? m - i - 1 : i - m - 1);
-		//printf("[%ld] %ld, ", i, lefttopframe[i]);
-	}
-	//printf("\n");
-
-	d = wv_edist(lefttopframe, bottomrightframe, text, n, patt, m);
+	long * frame = (long*)malloc(sizeof(long)*(m+n+1));
+	wv_setframe(frame, text, n, patt, m);
+	for(long i = 0; i < n + m + 1; i++)
+		printf("[%ld] %ld,", i, frame[i]);
+	printf("\n");
+	d = wv_edist(frame, text, n, patt, m);
 	stopwatch_stop(&sw);
 
 	printf("Edit distance (by Weaving DP): %lu\n", d);
 	printf("%lu sec %lu milli %lu micros.\n", stopwatch_secs(&sw), stopwatch_millis(&sw), stopwatch_micros(&sw));
 
 #ifdef DEBUG_TABLE
-	// show DP table
-	for(long r = 0; r < m; r++) {
-		for (long c = 0; c < n; c++) {
-			printf("%c", grays[max(0,61 - (int)((debug_table[m*c+r]/(float)(n))*grayscale))] );
-			//printf("%3ld ", debug_table[m*c+r]);
-		}
-		printf("\n");
-		fflush(stdout);
-	}
-	printf("\n");
-	fflush(stdout);
+	show_table(debug_table, n, m);
 #endif
+
 	free(debug_table);
 
 

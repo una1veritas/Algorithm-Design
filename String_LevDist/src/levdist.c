@@ -33,28 +33,36 @@ long dp_edist(long * dist, char t[], long n, char p[], long m) {
 	// n -- the number of columns, m -- the number of rows
 	long col = 0;
 	long row = 0;
-	ins = col + 1;
+
+	//[0, 0]
+	ins = col + 1; // always == del
 	repl = (p[0] == t[col] ? 0 : 1);
 	dist[0] = (ins < repl ? ins : repl);
 
+	//[col, 0]
 	for(col = 1; col < n; ++col) {
 		// row == 0
-		ins = col + 1;
-		repl = col - 1 + (p[0] == t[col] ? 0 : 1);
-		dist[0 + m * col] = (ins < repl ? ins : repl);
+		del = (col + 1) + 1;
+		ins = dist[m*(col-1)] + 1;
+		repl = col + (p[0] == t[col] ? 0 : 1);
+		ins = (ins < del ? ins : del);
+		dist[m * col + 0] = (ins < repl ? ins : repl);
 	}
+	//[0, row]
 	for(row = 1; row < m; ++row) {
 		// col == 0
-		del = row + 1;
-		repl = row - 1 + (p[row] == t[0] ? 0 : 1);
-		dist[row + 0]  = (del < repl ? del : repl);
+		del = dist[row - 1] + 1;
+		ins = row + 1 + 1;
+		repl = row + (p[row] == t[0] ? 0 : 1);
+		ins = (ins < del ? ins : del);
+		dist[m*0 + row]  = (ins < repl ? ins : repl);
 	}
 
 	//table calcuration
 	for(long c = 1; c < n; c++) { // column, text axis
 		for (long r = 1; r < m; r++) {  // row, pattern axis
-			ins = dist[(r-1) + m*c]+1;
-			del = dist[r + m*(c-1)]+1;
+			del = dist[(r-1) + m*c]+1;
+			ins = dist[r + m*(c-1)]+1;
 			repl = dist[(r-1) + m*(c-1)] + (t[c] == p[r] ? 0 : 1);
 			dist[r + m*c] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
 		}
@@ -63,12 +71,18 @@ long dp_edist(long * dist, char t[], long n, char p[], long m) {
 	return dist[n * m - 1];
 }
 
-long wv_edist(const long * inframe, long * outframe, const char t[], const long n, const char p[], const long m) {
+void wv_setframe(long * frame,  const char t[], const long n, const char p[], const long m) {
+	for(long i = 0; i < m + n + 1; i++) {
+		frame[i] = (i - m < 0 ? m - i : i - m );
+	}
+}
+
+long wv_edist(long * frame, const char t[], const long n, const char p[], const long m) {
 	long * threads;
 	long result = n+m+1;
 	long col, row;
 	long del, ins, repl; // del = delete from pattern, downward; ins = insert to pattern, rightward
-	long thix;
+	long thix, lthix, rthix;
 	long thread_min, thread_max;
 
 	threads = (long *) malloc(sizeof(long)*m*2);
@@ -88,25 +102,29 @@ long wv_edist(const long * inframe, long * outframe, const char t[], const long 
 		for(long thread = thread_min; thread <= thread_max; thread += 2) {
 			col = (depth + thread)>>1;
 			row = (depth - thread)>>1;
-			thix = (thread + 2*m) % (2*m);
+			lthix = (thread + 2*m - 1) % (2*m);
+			thix = (lthix + 1)%(2*m);//(thread + 2*m) % (2*m);
+			rthix = (thix+1)%(2*m);
 			//
 			if ( row == 0 ) {
-				del = inframe[m+1+col] + 1;
+				del = frame[m+1+col] + 1;
+				printf("del: %ld, %ld\n", ((m+1+col) -m+2*m)%(2*m), rthix);
 			} else {
 				//del = debug_table[m*col + (row - 1)] + 1;
-				del = threads[(thix+(m<<1)+1)%(2*m)]+1;
+				del = threads[rthix]+1;
 			}
 			if ( col == 0 ) {
-				ins = inframe[m-1-row] + 1;
+				ins = frame[m-1-row] + 1;
+				printf("ins: %ld, %ld\n", ((m-1-row)-m+2*m)%(2*m), lthix);
 			} else {
 				//ins = debug_table[m*(col-1) + row] + 1;
-				ins = threads[(thix+(m<<1)-1)%(2*m)]+1;
+				ins = threads[lthix]+1;
 				//printf("thr[%d]\n",(thix+2*m-1)%(2*m));
 			}
 			if ( row == 0 ) {
-				repl = inframe[m+1+col-1];
+				repl = frame[m+1+col-1];
 			} else if (col == 0) {
-				repl = inframe[m-1-(row-1)];
+				repl = frame[m-1-(row-1)];
 			} else {
 				//repl = debug_table[m*(col-1) + (row-1)];
 				repl = threads[thix];
