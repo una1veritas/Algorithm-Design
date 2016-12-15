@@ -103,6 +103,9 @@ int main (int argc, const char * argv[]) {
 
 	d = dp_edist(table, text, n, patt, m);
 
+#ifndef DEBUG_TABLE
+	free(table);
+#endif
 	stopwatch_stop(&sw);
 
 	printf("Edit distance (by Pure DP): %lu\n", d);
@@ -139,8 +142,8 @@ int main (int argc, const char * argv[]) {
 		printf("two tables are identical.\n");
 	}
 	free(debug_table);
-#endif
 	free(table);
+#endif
 
 exit_error:
 	free(text);

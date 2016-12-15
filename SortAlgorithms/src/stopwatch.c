@@ -11,12 +11,13 @@ void stopwatch_start(stopwatch * w) {
 	w->secs = 0;
 	w->millis = 0;
 	w->micros = 0;
-	gettimeofday(&w->start, NULL);
-//	w->cpumicros = clock();
+	getrusage(RUSAGE_SELF, &w->usage);
+	w->start = w->usage.ru_utime;
 }
 
 void stopwatch_stop(stopwatch * w) {
-	gettimeofday(&w->stop, NULL);
+	getrusage(RUSAGE_SELF, &w->usage);
+	w->stop = w->usage.ru_utime;
 	w->secs = w->stop.tv_sec - w->start.tv_sec;
 	w->micros = w->stop.tv_usec - w->start.tv_usec;
 	w->millis = w->micros / 1000;
@@ -24,14 +25,22 @@ void stopwatch_stop(stopwatch * w) {
 	w->millis %= 1000;
 }
 
-ulong stopwatch_secs(stopwatch * w) {
+void stopwatch_lap(stopwatch * w) {
+	stopwatch_stop(w);
+}
+
+void stopwatch_reset(stopwatch * w) {
+	stopwatch_start(w);
+}
+
+unsigned long stopwatch_secs(stopwatch * w) {
 	return w->secs;
 }
 
-ulong stopwatch_millis(stopwatch * w) {
+unsigned long stopwatch_millis(stopwatch * w) {
 	return w->millis;
 }
 
-ulong stopwatch_micros(stopwatch * w) {
+unsigned long stopwatch_micros(stopwatch * w) {
 	return w->micros;
 }

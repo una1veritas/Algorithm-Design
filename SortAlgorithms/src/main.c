@@ -17,7 +17,7 @@ int main(int argc, char * args[]) {
 	long rep = 1;
 	long t, r;
 	long worst, best;
-	long sum;
+	long long sum;
 
 	if (argc >= 2) {
 		size = atol(args[1]);
@@ -77,12 +77,12 @@ int main(int argc, char * args[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Merge: \tworst %ld u sec., \tbest %ld u sec., \tavr. %ld u sec.\n",
-			worst, best, sum / rep);
+	printf("Merge: \tworst %ld u sec., \tbest %ld u sec., \tavr. %f u sec.\n",
+			worst, best, sum / (float)rep);
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = rand() % range + 2;
+		r = (rand() % range) + 2;
 		for (int i = 0; i < size; i++) {
 			array[i] = rand() % r;
 
@@ -108,73 +108,71 @@ int main(int argc, char * args[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Quick: \tworst %ld u sec., \tbest %ld u sec., \tavr. %ld u sec.\n",
-			worst, best, sum / rep);
+	printf("Quick: \tworst %ld u sec., \tbest %ld u sec., \tavr. %f u sec.\n",
+			worst, best, sum / (float)rep);
+
+	srand(seed);
+	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
+		r = (rand() % range) + 2;
+		for (int i = 0; i < size; i++) {
+			array[i] = rand() % r;
+
+		}
+
+		stopwatch_start(&sw);
+		heapSort(array, size);
+		stopwatch_stop(&sw);
+		elapsed = stopwatch_micros(&sw)+1000*stopwatch_millis(&sw);
+		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
+		// showing the result
+
+		//
+		if (t == 0) {
+			worst = elapsed;
+			best = elapsed;
+		} else {
+			if (elapsed > worst) {
+				worst = elapsed;
+			}
+			if (elapsed < best) {
+				best = elapsed;
+			}
+		}
+		sum += elapsed;
+	}
+	printf("Heap: \tworst %ld u sec., \tbest %ld u sec., \tavr. %f u sec.\n",
+			worst, best, sum / (float)rep);
+
+	srand(seed);
+	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
+		r = (rand() % range) + 2;
+		for (int i = 0; i < size; i++)
+			array[i] = rand();
+
+		stopwatch_start(&sw);
+		insertionSort(array, size);
+		stopwatch_stop(&sw);
+		elapsed = stopwatch_micros(&sw)+1000*stopwatch_millis(&sw);
+		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
+		// showing the result
+		//
+		if (t == 0) {
+			worst = elapsed;
+			best = elapsed;
+		} else {
+			if (elapsed > worst) {
+				worst = elapsed;
+			}
+			if (elapsed < best) {
+				best = elapsed;
+			}
+		}
+		sum += elapsed;
+	}
+	printf("Insertion: \tworst %ld u sec., \tbest %ld u sec., \tavr. %f u sec.\n",
+			worst, best, sum / (float)rep);
 
 	/*
-	rnd.setSeed(seed);
-	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = rnd.nextInt(range) + 2;
-		for (int i = 0; i < size; i++) {
-			array[i] = rnd.nextInt(r);
-
-		}
-
-		ela = System.currentTimeMillis();
-		SortingAlgorithms.heapSort(array);
-		ela = System.currentTimeMillis() - ela;
-		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
-		// showing the result
-
-		//
-		if (t == 0) {
-			worst = ela;
-			best = ela;
-		} else {
-			if (ela > worst) {
-				worst = ela;
-			}
-			if (ela < best) {
-				best = ela;
-			}
-		}
-		sum += ela;
-	}
-	System.out.println(
-			"Heap: \tworst " + ((float) worst) / 1000 + " sec., \tbest "
-					+ ((float) best) / 1000 + " sec., \tavr. "
-					+ ((int) ((float) sum) / rep) / (float) 1000 + " sec.");
-
-	rnd.setSeed(seed);
-	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = rnd.nextInt(range) + 2;
-		for (int i = 0; i < size; i++)
-			array[i] = rnd.nextInt(r);
-
-		ela = System.currentTimeMillis();
-		SortingAlgorithms.insertionSort(array);
-		ela = System.currentTimeMillis() - ela;
-		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
-		// showing the result
-		//
-		if (t == 0) {
-			worst = ela;
-			best = ela;
-		} else {
-			if (ela > worst) {
-				worst = ela;
-			}
-			if (ela < best) {
-				best = ela;
-			}
-		}
-		sum += ela;
-	}
-	System.out.println(
-			"Insertion: \tworst " + ((float) worst) / 1000 + " sec., \tbest "
-					+ ((float) best) / 1000 + " sec., \tavr. "
-					+ ((int) ((float) sum) / rep) / (float) 1000 + " sec.");
-
 	rnd.setSeed(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		r = rnd.nextInt(range) + 2;

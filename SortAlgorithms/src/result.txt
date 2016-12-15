@@ -1,0 +1,14 @@
+Size: 50, Range within: 0 -- 11071, Initial Seed: 13, Number of trials: 16000
+7486, 4862, 7991, 1872, 5866, 7768, 830, 7439, 517, 5564, 231, 4214, 5962, 1815, 4337, 2179, 461, ... 
+Merge: 	worst 30 u sec., 	best 2 u sec., 	avr. 2.392125 u sec.
+Quick: 	worst 44 u sec., 	best 2 u sec., 	avr. 2.447813 u sec.
+Heap: 	worst 30 u sec., 	best 2 u sec., 	avr. 2.638625 u sec.
+Insertion: 	worst 60 u sec., 	best 3 u sec., 	avr. 3.637000 u sec.
+
+Size: 100, Range within: 0 -- 11071, Initial Seed: 13, Number of trials: 16000
+7486, 4862, 7991, 1872, 5866, 7768, 830, 7439, 517, 5564, 231, 4214, 5962, 1815, 4337, 2179, 461, ... 
+Merge: 	worst 38 u sec., 	best 5 u sec., 	avr. 5.437250 u sec.
+Quick: 	worst 46 u sec., 	best 4 u sec., 	avr. 5.746313 u sec.
+Heap: 	worst 23 u sec., 	best 4 u sec., 	avr. 6.221313 u sec.
+Insertion: 	worst 100 u sec., 	best 11 u sec., 	avr. 12.389563 u sec.
+
