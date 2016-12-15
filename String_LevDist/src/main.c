@@ -8,7 +8,7 @@
 
 #define MEGA_B 1048576UL
 #define KILO_B 1024UL
-#define STR_MAXLENGTH (32 * KILO_B)
+#define STR_MAXLENGTH (64 * KILO_B)
 
 long * debug_table;
 
