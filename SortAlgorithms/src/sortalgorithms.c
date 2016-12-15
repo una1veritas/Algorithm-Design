@@ -6,8 +6,8 @@
 
 #define min(a,b) ((a) < (b)? (a) : (b))
 
-void maxHeapify(int a[], int i, int end) {
-		int larger, tmp;
+void maxHeapify(long a[], long i, long end) {
+	long larger, tmp;
 		
 		while ( 2*i + 1 < end ) {
 			larger = 2*i + 1;
@@ -26,8 +26,8 @@ void maxHeapify(int a[], int i, int end) {
 		return;
     }
 	
-void buildMaxHeap(int a[], int n) {
-		int i;
+void buildMaxHeap(long a[], long n) {
+	long i;
 		
 		for (i = (n / 2) - 1 ; ! (i < 0); i--) {
 			maxHeapify(a, i, n);
@@ -35,9 +35,9 @@ void buildMaxHeap(int a[], int n) {
 		return;
     }
 	
-void heapSort(int a[], int n) {
-		int i;
-		int t;
+void heapSort(long a[], long n) {
+	long i;
+	long t;
 		
 		buildMaxHeap(a, n);
 		for (i = n - 1; i > 0; i--) {
@@ -51,8 +51,8 @@ void heapSort(int a[], int n) {
     }
 	
 	
-void selectionSort(int a[], int n){
-		int i, j, max, t; // i for the length (end+1) of sorted-array.
+void selectionSort(long a[], long n){
+	long i, j, max, t; // i for the length (end+1) of sorted-array.
 		
 		for(i = n - 1; i > 0; i--){
 			for(j = 0, max = i; j < i; j++ ){
@@ -115,9 +115,9 @@ void selectionSort(int a[], int n){
     }
 */	
 
-void quickSort_range(int array[], int start, int end) {
-		int smaller, larger, mid;
-		int tmp;
+void quickSort_range(long array[], long start, long end) {
+	long smaller, larger, mid;
+	long tmp;
 		
 		// do nothing if the size of array equals one. 
 		if (! (end - start > 1)) {
@@ -141,10 +141,9 @@ void quickSort_range(int array[], int start, int end) {
 			array[mid] = array[end - 1];
 			array[end - 1] = tmp;
 		}
-		printf("[%ld, %ld, %ld] = %ld, %ld, %ld.\n", start, mid, end-1,
-				array[start], array[mid], array[end - 1]);
 		if ( end - 1 > 100000 )
-			for(;;);
+			printf("[%ld, %ld, %ld] = %ld, %ld, %ld.\n", start, mid, end-1,
+				array[start], array[mid], array[end - 1]);
 		
 		// already enough if the size is no more than three. 
 		if (end - start <= 3) {
@@ -175,7 +174,7 @@ void quickSort_range(int array[], int start, int end) {
 		return;
     }
     
-void quickSort(int array[], int n) {
+void quickSort(long array[], long n) {
 		quickSort_range(array, 0, n);
     }
 

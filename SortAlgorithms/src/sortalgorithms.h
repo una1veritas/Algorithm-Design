@@ -8,13 +8,13 @@
 #ifndef SRC_SORTALGORITHMS_H_
 #define SRC_SORTALGORITHMS_H_
 
-void heapSort(int a[], int n);
-void selectionSort(int a[]);
-void quickSort(int a[], int n);
-void bubbleSort(int a[], int n);
-void insertionSort(int a[], int n);
-void mergeSort_recursive(int a[], int n);
-void mergeSort(int a[], int n);
+void heapSort(long a[], long n);
+void selectionSort(long a[]);
+void quickSort(long a[], long n);
+void bubbleSort(long a[], long n);
+void insertionSort(long a[], long n);
+void mergeSort_recursive(long a[], long n);
+void mergeSort(long a[], long n);
 
 
 #endif /* SRC_SORTALGORITHMS_H_ */

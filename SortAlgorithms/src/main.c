@@ -1,22 +1,23 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "stopwatch.h"
 #include "sortalgorithms.h"
 
 int main(int argc, char * args[]) {
-	int * array;
-	int size = 10;
+	long * array;
+	long size = 10;
 
 	stopwatch sw;
 	long elapsed;
 
-	int range = 101;
+	long range = 101;
 	long seed = 113;
 
-	int rep = 1;
-	int t, r;
+	long rep = 1;
+	long t, r;
 	long worst, best;
-	long long sum;
+	long sum;
 
 	if (argc >= 2) {
 		size = atol(args[1]);
@@ -33,21 +34,21 @@ int main(int argc, char * args[]) {
 		rep = atol(args[4]);
 	}
 
-	printf("Size: %d, Range within: 0 -- %d, Initial Seed: %ld, Number of trials: %ld\n",
+	printf("Size: %ld, Range within: 0 -- %ld, Initial Seed: %ld, Number of trials: %ld\n",
 			size, range, seed, rep);
 
-	array = (int *)malloc(sizeof(int)*size);
+	array = (long *)malloc(sizeof(long)*size);
 
 	// Merge Sort
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = (random() % range) + 2;
+		r = (rand() % range) + 2;
 		for (int i = 0; i < size; i++)
-			array[i] = random() % r;
+			array[i] = rand() % r;
 		// showing the contents
 		if (t < 1) {
 			for (int i = 0; i < size; i++) {
-				printf("%d, ", array[i]);
+				printf("%ld, ", array[i]);
 				if (i > 15) {
 					printf("... ");
 					break;
@@ -76,14 +77,14 @@ int main(int argc, char * args[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Merge: \tworst %ld u sec., \tbest %ld u sec., \tavr. %ld u sec.",
+	printf("Merge: \tworst %ld u sec., \tbest %ld u sec., \tavr. %ld u sec.\n",
 			worst, best, sum / rep);
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = random() % range + 2;
+		r = rand() % range + 2;
 		for (int i = 0; i < size; i++) {
-			array[i] = random() % r;
+			array[i] = rand() % r;
 
 		}
 		stopwatch_start(&sw);
@@ -107,7 +108,7 @@ int main(int argc, char * args[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Quick: \tworst %ld u sec., \tbest %ld u sec., \tavr. %ld u sec.",
+	printf("Quick: \tworst %ld u sec., \tbest %ld u sec., \tavr. %ld u sec.\n",
 			worst, best, sum / rep);
 
 	/*
