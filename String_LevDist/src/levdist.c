@@ -72,11 +72,15 @@ long dp_edist(long * dist, char t[], long n, char p[], long m) {
 }
 
 void wv_setframe(long * frame,  const char t[], const long n, const char p[], const long m) {
-	for(long i = 0; i < m + n + 1; i++) {
+	const long weftlen = pow2(n+m+1);
+	for(long i = 0; i < weftlen; i++) {
 		if ( i < n + 1 ) {
 			frame[i] = i;
-		} else {
-			frame[i] = n + m + 1 - i;
+		} else if (i > weftlen - m - 1) {
+			frame[i] = weftlen-i;
+		}
+		else {
+			frame[i] = 0;  // will be untouched.
 		}
 	}
 }

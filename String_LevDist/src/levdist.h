@@ -8,7 +8,7 @@
 #ifndef SRC_LEVDIST_H_
 #define SRC_LEVDIST_H_
 
-//#define DEBUG_TABLE
+#define DEBUG_TABLE
 #ifdef DEBUG_TABLE
 extern long * debug_table;
 #endif

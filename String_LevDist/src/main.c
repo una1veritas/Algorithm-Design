@@ -24,8 +24,8 @@ void show_table(long * table, long n, long m) {
 	printf("\ntable contents:\n");
 	for(long r = 0; r < m; r++) {
 		for (long c = 0; c < n; c++) {
-			printf("%c", grays[max(0,61 - (int)((table[m*c+r]/(float)(n))*grayscale))] );
-			//printf("%3ld ", table[m*c+r]);
+			//printf("%c", grays[max(0,61 - (int)((table[m*c+r]/(float)(n))*grayscale))] );
+			printf("%3ld ", table[m*c+r]);
 		}
 		printf("\n");
 		fflush(stdout);
@@ -54,6 +54,9 @@ long compare_table(long * t0, long * t1, long n, long m) {
 int getargs(const int argc, const char * argv[], char * text, char * patt, long * n, long *m) {
 	if ( argc != 3 )
 		return EXIT_FAILURE;
+
+	text[STR_MAXLENGTH-1] = 0;
+	patt[STR_MAXLENGTH-1] = 0;
 
 	if ( textfromfile(argv[1], STR_MAXLENGTH, text) != 0
 		|| textfromfile(argv[2], STR_MAXLENGTH, patt) != 0 ) {
@@ -96,16 +99,13 @@ int main (int argc, const char * argv[]) {
 	if ( getargs(argc, argv, text, patt, &n, &m) != 0 )
 		goto exit_error;
 
+	table = (long*) malloc(sizeof(long)*m*n);
 
 	stopwatch sw;
 	stopwatch_start(&sw);
-	table = (long*) malloc(sizeof(long)*m*n);
 
 	d = dp_edist(table, text, n, patt, m);
 
-#ifndef DEBUG_TABLE
-	free(table);
-#endif
 	stopwatch_stop(&sw);
 
 	printf("Edit distance (by Pure DP): %lu\n", d);
@@ -125,6 +125,9 @@ int main (int argc, const char * argv[]) {
 
 	long * frame = (long*)malloc(sizeof(long)*pow2(m+n+1));
 	wv_setframe(frame, text, n, patt, m);
+	for(int i = 0; i < pow2(m+n+1); i++)
+		printf("%d, ",frame[i]);
+	printf("\n");
 
 	d = wv_edist(frame, text, n, patt, m);
 	free(frame);
@@ -142,8 +145,8 @@ int main (int argc, const char * argv[]) {
 		printf("two tables are identical.\n");
 	}
 	free(debug_table);
-	free(table);
 #endif
+	free(table);
 
 exit_error:
 	free(text);
