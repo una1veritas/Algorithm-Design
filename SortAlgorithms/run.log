@@ -1,0 +1,59 @@
+Size: 100, Range within: 0 -- 1113, Initial Seed: 11, Number of trials: 100000
+43, 14, 105, 6, 97, 22, 103, 81, 1, 73, 105, 35, 55, 88, 116, 114, 55, ... 
+Merge:    	worst 90 clk., 	best 7 clk., 	avr. 8.5 clk.
+Quick:    	worst 62 clk., 	best 6 clk., 	avr. 8.3 clk.
+Heap:    	worst 68 clk., 	best 5 clk., 	avr. 10.2 clk.
+Insertion: 	worst 120 clk., 	best 17 clk., 	avr. 21.4 clk.
+Selection: 	worst 108 clk., 	best 16 clk., 	avr. 22.0 clk.
+
+Size: 500, Range within: 0 -- 1113, Initial Seed: 11, Number of trials: 1000000
+43, 14, 105, 6, 97, 22, 103, 81, 1, 73, 105, 35, 55, 88, 116, 114, 55, ... 
+Merge:    	worst 276 clk., 	best 38 clk., 	avr. 50.0 clk.
+Quick:    	worst 1930 clk., 	best 42 clk., 	avr. 50.9 clk.
+Heap:    	worst 528 clk., 	best 26 clk., 	avr. 62.6 clk.
+Insertion: 	worst 3284 clk., 	best 385 clk., 	avr. 440.8 clk.
+Selection: 	worst 2455 clk., 	best 362 clk., 	avr. 431.6 clk.
+
+Size: 1000, Range within: 0 -- 1113, Initial Seed: 11, Number of trials: 1000
+43, 14, 105, 6, 97, 22, 103, 81, 1, 73, 105, 35, 55, 88, 116, 114, 55, ... 
+Merge:    	worst 206 clk., 	best 96 clk., 	avr. 120.9 clk.
+Quick:    	worst 485 clk., 	best 103 clk., 	avr. 122.7 clk.
+Heap:    	worst 257 clk., 	best 98 clk., 	avr. 143.4 clk.
+Insertion: 	worst 3385 clk., 	best 1569 clk., 	avr. 1764.4 clk.
+Selection: 	worst 3208 clk., 	best 1500 clk., 	avr. 1644.4 clk.
+
+Size: 2000, Range within: 0 -- 1113, Initial Seed: 11, Number of trials: 1000
+43, 14, 105, 6, 97, 22, 103, 81, 1, 73, 105, 35, 55, 88, 116, 114, 55, ... 
+Merge:    	worst 538 clk., 	best 228 clk., 	avr. 319.0 clk.
+Quick:    	worst 1546 clk., 	best 225 clk., 	avr. 298.5 clk.
+Heap:    	worst 446 clk., 	best 230 clk., 	avr. 308.1 clk.
+Insertion: 	worst 8438 clk., 	best 6917 clk., 	avr. 7025.7 clk.
+Selection: 	worst 8951 clk., 	best 6448 clk., 	avr. 6547.1 clk.
+
+Size: 3000, Range within: 0 -- 1113, Initial Seed: 11, Number of trials: 1000
+43, 14, 105, 6, 97, 22, 103, 81, 1, 73, 105, 35, 55, 88, 116, 114, 55, ... 
+Merge:    	worst 713 clk., 	best 317 clk., 	avr. 471.3 clk.
+Quick:    	worst 7798 clk., 	best 347 clk., 	avr. 424.1 clk.
+Heap:    	worst 686 clk., 	best 204 clk., 	avr. 471.1 clk.
+Insertion: 	worst 18394 clk., 	best 14843 clk., 	avr. 15503.9 clk.
+Selection: 	worst 20526 clk., 	best 14460 clk., 	avr. 15046.0 clk.
+
+Size: 10000, Range within: 0 -- 1113, Initial Seed: 11, Number of trials: 1000
+43, 14, 105, 6, 97, 22, 103, 81, 1, 73, 105, 35, 55, 88, 116, 114, 55, ... 
+Merge:    	worst 2345 clk., 	best 1210 clk., 	avr. 1470.3 clk.
+Quick:    	worst 55337 clk., 	best 1348 clk., 	avr. 2048.7 clk.
+Heap:    	worst 2884 clk., 	best 994 clk., 	avr. 1826.0 clk.
+Insertion: 	worst 382888 clk., 	best 157900 clk., 	avr. 198957.5 clk.
+Selection: 	worst 194206 clk., 	best 148841 clk., 	avr. 159096.5 clk.
+
+Size: 20000, Range within: 0 -- 1113, Initial Seed: 11, Number of trials: 1000
+43, 14, 105, 6, 97, 22, 103, 81, 1, 73, 105, 35, 55, 88, 116, 114, 55, ... 
+Merge:    	worst 4747 clk., 	best 2470 clk., 	avr. 3125.9 clk.
+Quick:    	worst 323529 clk., 	best 2976 clk., 	avr. 6735.9 clk.
+Heap:    	worst 6285 clk., 	best 1534 clk., 	avr. 3893.5 clk.
+
+Size: 100000, Range within: 0 -- 1113, Initial Seed: 11, Number of trials: 1000
+43, 14, 105, 6, 97, 22, 103, 81, 1, 73, 105, 35, 55, 88, 116, 114, 55, ... 
+Merge:    	worst 28669 clk., 	best 13577 clk., 	avr. 16773.4 clk.
+Quick:    	worst 8055468 clk., 	best 27183 clk., 	avr. 111561.2 clk.
+Heap:    	worst 30492 clk., 	best 8579 clk., 	avr. 22420.4 clk.

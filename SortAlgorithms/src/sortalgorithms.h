@@ -9,7 +9,7 @@
 #define SRC_SORTALGORITHMS_H_
 
 void heapSort(long a[], long n);
-void selectionSort(long a[]);
+void selectionSort(long a[], long n);
 void quickSort(long a[], long n);
 void bubbleSort(long a[], long n);
 void insertionSort(long a[], long n);

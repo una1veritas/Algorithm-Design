@@ -17,7 +17,7 @@ int main(int argc, char * args[]) {
 	long rep = 1;
 	long t, r;
 	long worst, best;
-	long long sum;
+	double sum;
 
 	if (argc >= 2) {
 		size = atol(args[1]);
@@ -43,8 +43,9 @@ int main(int argc, char * args[]) {
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		r = (rand() % range) + 2;
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < size; i++) {
 			array[i] = rand() % r;
+		}
 		// showing the contents
 		if (t < 1) {
 			for (int i = 0; i < size; i++) {
@@ -61,9 +62,16 @@ int main(int argc, char * args[]) {
 		mergeSort(array, size);
 		stopwatch_stop(&sw);
 
-		elapsed = stopwatch_micros(&sw)+1000*stopwatch_millis(&sw);
-		//printf("Merge:   \t %ld\n",elapsed);
+		elapsed = stopwatch_clocks(&sw);
+		//printf("Merge:      \t %ld\n",elapsed);
 
+		if ( elapsed > 500000 ) {
+			printf("r=%ld, t=%ld\n", r, t);
+			for (int i = 0; i < size; i++) {
+				printf("%ld, ", array[i]);
+			}
+			printf("\n");
+		}
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
@@ -77,7 +85,7 @@ int main(int argc, char * args[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Merge: \tworst %ld u sec., \tbest %ld u sec., \tavr. %f u sec.\n",
+	printf("Merge:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
 
 	srand(seed);
@@ -90,7 +98,7 @@ int main(int argc, char * args[]) {
 		stopwatch_start(&sw);
 		quickSort(array, size);
 		stopwatch_stop(&sw);
-		elapsed = stopwatch_micros(&sw)+1000*stopwatch_millis(&sw);
+		elapsed = stopwatch_clocks(&sw);
 
 		// System.out.println("Quick:  \t"+ (((float)ela)/1000));
 		// showing the contents
@@ -108,7 +116,7 @@ int main(int argc, char * args[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Quick: \tworst %ld u sec., \tbest %ld u sec., \tavr. %f u sec.\n",
+	printf("Quick:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
 
 	srand(seed);
@@ -122,7 +130,7 @@ int main(int argc, char * args[]) {
 		stopwatch_start(&sw);
 		heapSort(array, size);
 		stopwatch_stop(&sw);
-		elapsed = stopwatch_micros(&sw)+1000*stopwatch_millis(&sw);
+		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
 		// showing the result
 
@@ -140,19 +148,19 @@ int main(int argc, char * args[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Heap: \tworst %ld u sec., \tbest %ld u sec., \tavr. %f u sec.\n",
+	printf("Heap:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		r = (rand() % range) + 2;
 		for (int i = 0; i < size; i++)
-			array[i] = rand();
+			array[i] = rand() % r;
 
 		stopwatch_start(&sw);
 		insertionSort(array, size);
 		stopwatch_stop(&sw);
-		elapsed = stopwatch_micros(&sw)+1000*stopwatch_millis(&sw);
+		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
 		// showing the result
 		//
@@ -169,40 +177,39 @@ int main(int argc, char * args[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Insertion: \tworst %ld u sec., \tbest %ld u sec., \tavr. %f u sec.\n",
+	printf("Insertion: \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
 
-	/*
-	rnd.setSeed(seed);
-	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = rnd.nextInt(range) + 2;
-		for (int i = 0; i < size; i++)
-			array[i] = rnd.nextInt(r);
 
-		ela = System.currentTimeMillis();
-		SortingAlgorithms.selectionSort(array);
-		ela = System.currentTimeMillis() - ela;
+	srand(seed);
+	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
+		r = (rand() % range) + 2;
+		for (int i = 0; i < size; i++)
+			array[i] = rand() % r;
+
+		stopwatch_start(&sw);
+		selectionSort(array, size);
+		stopwatch_stop(&sw);
+		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
 		// showing the result
 		//
 		if (t == 0) {
-			worst = ela;
-			best = ela;
+			worst = elapsed;
+			best = elapsed;
 		} else {
-			if (ela > worst)
-				worst = ela;
-			if (ela < best)
-				best = ela;
+			if (elapsed > worst)
+				worst = elapsed;
+			if (elapsed < best)
+				best = elapsed;
 		}
-		sum += ela;
+		sum += elapsed;
 	}
-	System.out.println(
-			"Selection: \tworst " + ((float) worst) / 1000 + " sec., \tbest "
-					+ ((float) best) / 1000 + " sec., \tavr. "
-					+ ((int) ((float) sum) / rep) / (float) 1000 + " sec.");
+	printf("Selection: \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
+			worst, best, sum / (float)rep);
 
-	//System.out.println((new BufferedReader(new InputStreamReader(System.in))).readLine()+": Ok?");
-*/
+	printf("1 clock = 1/%ld sec.\n", CLOCKS_PER=SEC);
+
 	free(array);
 	return EXIT_SUCCESS;
 }
