@@ -13,15 +13,11 @@
 #include <string.h>
 
 #include <time.h>
-#include <sys/time.h>
-#include <sys/resource.h>
 
 struct stopwatch {
-	struct timeval start, stop;
-	struct rusage usage;
-//	clock_t cpumicros;
-//	struct tm * tmstart, *tmstop;
-	unsigned long secs, millis, micros;
+	time_t start_time, stop_time;
+	clock_t start_clock, stop_clock;
+	unsigned long secs, millis, clocks;
 };
 
 typedef struct stopwatch stopwatch;
@@ -31,7 +27,7 @@ void stopwatch_lap(stopwatch * w);
 void stopwatch_stop(stopwatch * w);
 void stopwatch_reset(stopwatch * w);
 unsigned long stopwatch_millis(stopwatch * w);
-unsigned long stopwatch_micros(stopwatch * w);
+unsigned long stopwatch_clocks(stopwatch * w);
 unsigned long stopwatch_secs(stopwatch * w);
 
 #endif /* SRC_STOPWATCH_H_ */

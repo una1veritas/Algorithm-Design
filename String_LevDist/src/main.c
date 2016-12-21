@@ -109,7 +109,7 @@ int main (int argc, const char * argv[]) {
 	stopwatch_stop(&sw);
 
 	printf("Edit distance (by Pure DP): %lu\n", d);
-	printf("%lu sec %lu milli %lu micros.\n", stopwatch_secs(&sw), stopwatch_millis(&sw), stopwatch_micros(&sw));
+	printf("%lu sec %lu milli sec.\n", stopwatch_secs(&sw), stopwatch_millis(&sw));
 	printf("\n");
 
 #ifdef DEBUG_TABLE
@@ -123,18 +123,18 @@ int main (int argc, const char * argv[]) {
 
 	stopwatch_start(&sw);
 
-	long * frame = (long*)malloc(sizeof(long)*pow2(m+n+1));
+	long * frame = (long*)malloc(sizeof(long)*ceilpow2(m+n+1));
 	wv_setframe(frame, text, n, patt, m);
-	for(int i = 0; i < pow2(m+n+1); i++)
-		printf("%d, ",frame[i]);
+	for(int i = 0; i < ceilpow2(m+n+1); i++)
+		printf("%ld, ",frame[i]);
 	printf("\n");
 
 	d = wv_edist(frame, text, n, patt, m);
 	free(frame);
 	stopwatch_stop(&sw);
 
-	printf("Edit distance (by Weaving DP): %lu\n", d);
-	printf("%lu sec %lu milli %lu micros.\n", stopwatch_secs(&sw), stopwatch_millis(&sw), stopwatch_micros(&sw));
+	printf("Edit distance (by Weaving DP): %ld\n", d);
+	printf("%ld sec %ld milli sec.\n", stopwatch_secs(&sw), stopwatch_millis(&sw));
 
 #ifdef DEBUG_TABLE
 	show_table(debug_table, n, m);

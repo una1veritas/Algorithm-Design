@@ -9,6 +9,13 @@
 
 #include "levdist.h"
 
+long ceilpow2(const long val) {
+	long result;
+	for (result = 1 ; result < val; result <<= 1) ;
+	return result;
+}
+
+
 long r_edist(char s[], int m, char t[], int n) {
 	long a, b, c;
 	if (m == 0 && n == 0)
@@ -72,7 +79,7 @@ long dp_edist(long * dist, char t[], long n, char p[], long m) {
 }
 
 void wv_setframe(long * frame,  const char t[], const long n, const char p[], const long m) {
-	const long weftlen = pow2(n+m+1);
+	const long weftlen = ceilpow2(n+m+1);
 	for(long i = 0; i < weftlen; i++) {
 		if ( i < n + 1 ) {
 			frame[i] = i;
@@ -85,59 +92,57 @@ void wv_setframe(long * frame,  const char t[], const long n, const char p[], co
 	}
 }
 
-long pow2(const long val) {
-	long result = 1;
-
-	while ( result < val ) {
-		result <<= 1;
-	}
-	return result;
-}
-
 long wv_edist(long * frame, const char t[], const long n, const char p[], const long m) {
 	long result = n+m+1;
 	long col, row;
 	long del, ins, repl; // del = delete from pattern, downward; ins = insert to pattern, rightward
 	long thix, lthix, rthix;
 	long thread_min, thread_max;
-	long weftlen = pow2(n+m+1);
+	long weftlen = ceilpow2(n+m+1);
 
 	if ( frame == NULL )
 		return -1;
 
-	for(long depth = 0; depth < n+m; depth++) {
-		thread_min = -depth;
-		if ( !(depth < m) )
-			thread_min += (depth + 1 - m)<<1;
+	long depth_minor, depth_major, depth;
+	for(depth_major = 0; depth_major < ceilpow2(n+m+1); depth_major += m<<1) {
+		for(depth_minor = 0; depth_minor < m<<1; depth_minor++) {
+			printf("depth major, minor = %ld, %ld\n", depth_major, depth_minor);
+			depth = depth_major + depth_minor;
+			if ( !(depth < ceilpow2(n+m+1)) )
+				break;
+			thread_min = -depth;
+			if ( !(depth < m) )
+				thread_min += (depth + 1 - m)<<1;
 
-		thread_max = depth;
-		if ( !(depth < n) )
-			thread_max -= (depth + 1 - n)<<1;
+			thread_max = depth;
+			if ( !(depth < n) )
+				thread_max -= (depth + 1 - n)<<1;
 
-		for(long thread = thread_min; thread <= thread_max; thread += 2) {
-			col = (depth + thread)>>1;
-			row = (depth - thread)>>1;
+			for(long thread = thread_min; thread <= thread_max; thread += 2) {
+				col = (depth + thread)>>1;
+				row = (depth - thread)>>1;
 
-			thix = (thread + weftlen) & (weftlen-1);
-			lthix = (thix - 1 + weftlen) & (weftlen-1);
-			rthix = (thix + 1) & (weftlen-1);
-			//
-			del = frame[rthix] + 1;
-			ins = frame[lthix] + 1;
-			repl = frame[thix] + (t[col] != p[row]);
+				thix = (thread + weftlen) & (weftlen-1);
+				lthix = (thix - 1 + weftlen) & (weftlen-1);
+				rthix = (thix + 1) & (weftlen-1);
+				//
+				del = frame[rthix] + 1;
+				ins = frame[lthix] + 1;
+				repl = frame[thix] + (t[col] != p[row]);
 
 
-			//
-			if ( del < ins )
-				ins = del;
-			if ( ins < repl )
-				repl = ins;
-			//
-			frame[thix] = repl;
-#ifdef DEBUG_TABLE
-			debug_table[m*col + row] = repl;
-#endif
+				//
+				if ( del < ins )
+					ins = del;
+				if ( ins < repl )
+					repl = ins;
+				//
+				frame[thix] = repl;
+		#ifdef DEBUG_TABLE
+				debug_table[m*col + row] = repl;
+		#endif
 
+			}
 		}
 	}
 
