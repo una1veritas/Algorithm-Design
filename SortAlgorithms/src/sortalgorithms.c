@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #define min(a,b) ((a) < (b)? (a) : (b))
+#define swap(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
 
 void maxHeapify(long a[], long i, long end) {
 	long larger, tmp;
@@ -50,70 +51,27 @@ void heapSort(long a[], long n) {
 		return;
     }
 	
-	
-void selectionSort(long a[], long n){
+
+void selectionSort_range(long a[], long start, long end){
 	long i, j, max, t; // i for the length (end+1) of sorted-array.
 		
-		for(i = n - 1; i > 0; i--){
-			for(j = 0, max = i; j < i; j++ ){
-				if(a[j] > a[max]) {
-					max = j;
-				}
-			}
-			t = a[max];
-			a[max] = a[i];
-			a[i] = t;
-			}
-		return;
-    }
-	
-/*	
-    static void buildMAXHeap(Object array[]) {
-		int i;
-		
-		for (i = (array.length / 2) - 1 ; ! (i < 0); i--) {
-			maxHeapify(array, i, array.length);
-		}
-		return;
-    }
-	
-    private static void maxHeapify(Object array[], int i, int end) {
-		int c;
-		Object tmp;
-		
-		while ( 2*i + 1 < end ) {
-			c = 2*i + 1;
-			if ( 2*i + 2 < end ) {
-				if ( ((Comparable) array[2*i + 1]).compareTo(array[2*i + 2]) < 0) {
-					c = 2*i + 2;
-				}
-			}
-			if ( ((Comparable) array[c]).compareTo(array[i]) > 0 ) {
-				tmp = array[c];
-				array[c] = array[i];
-				array[i] = tmp;
-				i = c;
-			} else {
-				return;
+	for(i = end - 1; i > start; i--){
+		for(j = start, max = i; j < i; j++ ){
+			if(a[j] > a[max]) {
+				max = j;
 			}
 		}
-		return;
-    }
-	
-    public static void heapSort(Object array[]) {
-		int i;
-		Object tmp;
-		
-		buildMaxHeap(array);
-		for (i = array.length - 1; i > 0; i--) {
-			tmp = array[i];
-			array[i] = array[0];
-			array[0] = tmp;
-			maxHeapify(array, 0, i);
+		t = a[max];
+		a[max] = a[i];
+		a[i] = t;
 		}
-		return;
-    }
-*/	
+	return;
+}
+	
+void selectionSort(long a[], long n) {
+	return selectionSort_range(a, 0, n);
+}
+
 
 void quickSort_range(long array[], long start, long end) {
 	long smaller, larger, mid;
@@ -127,33 +85,20 @@ void quickSort_range(long array[], long start, long end) {
 		// order the first, the middle and the last elements. 
 		mid = (end - start) / 2 + start;
 		if (array[end - 1] < array[start]) {
-			tmp = array[start];
-			array[start] = array[end - 1];
-			array[end - 1] = tmp;
+			swap(array[start], array[end - 1], tmp);
 		}
 		if (array[mid] < array[start]) {
-			tmp = array[start];
-			array[start] = array[mid];
-			array[mid] = tmp;
+			swap(array[start], array[mid], tmp);
 		}
 		if (array[end - 1] < array[mid]) {
-			tmp = array[mid];
-			array[mid] = array[end - 1];
-			array[end - 1] = tmp;
+			swap(array[mid], array[end - 1], tmp);
 		}
-		if ( end - 1 > 100000 )
-			printf("[%ld, %ld, %ld] = %ld, %ld, %ld.\n", start, mid, end-1,
-				array[start], array[mid], array[end - 1]);
-		
 		// already enough if the size is no more than three. 
 		if (end - start <= 3) {
 			return;
 		}
-		
 		// use the middle element as the pivot value. 
-		tmp = array[start];
-		array[start] = array[mid];
-		array[mid] = tmp;
+		swap(array[start], array[mid], tmp);
 		smaller = start + 1;
 		larger = end - 1;
 		while ( smaller < larger) {
@@ -162,9 +107,7 @@ void quickSort_range(long array[], long start, long end) {
 			} else {
 				// swap array[smaller] with array[larger - 1].
 				larger--;
-				tmp = array[smaller];
-				array[smaller] = array[larger];
-				array[larger] = tmp;
+				swap(array[smaller], array[larger], tmp);
 			}
 		}
 		
@@ -249,31 +192,32 @@ void mergeSort_recursive(int array[], int n) {
     
 void mergeSort(int array[], int n) {
 		int buf[n];
-		int i, l, s, e, cl, cr, ct;
+		int i, len, start, end, cleft, cright, ctemp;
 		
-		for (l = 1; l < n; l = l * 2) {
-			for (s = 0; s < n; s = s + (2 * l)) {
-				e = min(s + (2 * l), n);
-				for (cl = s, cr = s + l, ct = cl; ct < e; ct++) {
-					if (cl < s+l && cr < e) {
-						if (array[cl] < array[cr]) {
-							buf[ct] = array[cl];
-							cl++;
+		for (len = 1; len < n; len = len<<1) {
+			for (start = 0; start < n; start = start + (len<<1)) {
+				end = min(start + (len<<1), n);
+				for (cleft = start, cright = start + len, ctemp = cleft; ctemp < end; ctemp++) {
+					if (cleft < start+len && cright < end) {
+						if (array[cleft] < array[cright]) {
+							buf[ctemp] = array[cleft];
+							cleft++;
 						} else {
-							buf[ct] = array[cr];
-							cr++;
+							buf[ctemp] = array[cright];
+							cright++;
 						}
 					} else {
-						if (cl < s+l) {
-							buf[ct] = array[cl];
-							cl++;
+						if (cleft < start+len) {
+							buf[ctemp] = array[cleft];
+							cleft++;
 						} else {
-							buf[ct] = array[cr];
-							cr++;
+							buf[ctemp] = array[cright];
+							cright++;
 						}
 					}
 				}
 			}
+			//copy back
 			for (i = 0; i < n; i++)
 				array[i] = buf[i];
 		}

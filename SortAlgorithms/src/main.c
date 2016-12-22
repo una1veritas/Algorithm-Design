@@ -34,6 +34,8 @@ int main(int argc, char * args[]) {
 		rep = atol(args[4]);
 	}
 
+	setbuf(stdout, NULL);
+
 	printf("Size: %ld, Range within: 0 -- %ld, Initial Seed: %ld, Number of trials: %ld\n",
 			size, range, seed, rep);
 
@@ -65,13 +67,18 @@ int main(int argc, char * args[]) {
 		elapsed = stopwatch_clocks(&sw);
 		//printf("Merge:      \t %ld\n",elapsed);
 
-		if ( elapsed > 500000 ) {
-			printf("r=%ld, t=%ld\n", r, t);
+		// showing the contents
+		if (t < 1) {
 			for (int i = 0; i < size; i++) {
 				printf("%ld, ", array[i]);
+				if (i > 15) {
+					printf("... ");
+					break;
+				}
 			}
 			printf("\n");
 		}
+
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
@@ -208,7 +215,7 @@ int main(int argc, char * args[]) {
 	printf("Selection: \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
 
-	printf("1 clock = 1/%ld sec.\n", CLOCKS_PER=SEC);
+	printf("1 clk = 1/%ld sec.\n", (long) CLOCKS_PER_SEC);
 
 	free(array);
 	return EXIT_SUCCESS;

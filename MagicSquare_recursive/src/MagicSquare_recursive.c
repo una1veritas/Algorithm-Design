@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <math.h>
+
 int rsearch(int *, int ,int );
 
 int main(int argc, char * argv[]) {
@@ -40,7 +42,8 @@ int main(int argc, char * argv[]) {
 		printf("Couldn't find any magic square.\n\n");
 	}
 	free(square);
-
+	printf("\n");
+	fflush(stdout);
 	return EXIT_SUCCESS;
 
 	exit_failure:
