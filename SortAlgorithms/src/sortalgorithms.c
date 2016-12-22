@@ -83,10 +83,13 @@ void quickSort_range(long array[], long start, long end) {
 		}
 		
 		// order the first, the middle and the last elements. 
-		mid = (end - start) / 2 + start;
 		if (array[end - 1] < array[start]) {
 			swap(array[start], array[end - 1], tmp);
 		}
+		if (end - start == 2) {
+			return;
+		}
+		mid = ((end - start)>>1) + start;
 		if (array[mid] < array[start]) {
 			swap(array[start], array[mid], tmp);
 		}
@@ -94,7 +97,7 @@ void quickSort_range(long array[], long start, long end) {
 			swap(array[mid], array[end - 1], tmp);
 		}
 		// already enough if the size is no more than three. 
-		if (end - start <= 3) {
+		if (end - start == 3) {
 			return;
 		}
 		// use the middle element as the pivot value. 

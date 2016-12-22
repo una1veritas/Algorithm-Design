@@ -6,15 +6,15 @@
 
 int main(int argc, char * args[]) {
 	long * array;
-	long size = 10;
+	long size = 35000;
 
 	stopwatch sw;
 	long elapsed;
 
-	long range = 101;
-	long seed = 113;
+	long range = 1317;
+	long seed = 7;
 
-	long rep = 1;
+	long rep = 1000;
 	long t, r;
 	long worst, best;
 	double sum;
