@@ -4,8 +4,8 @@
  */
 #include <stdio.h>
 
-#define min(a,b) ((a) < (b)? (a) : (b))
-#define swap(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
+#define MIN(a,b) ((a) < (b)? (a) : (b))
+#define SWAP(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
 
 void maxHeapify(long a[], long i, long end) {
 	long larger, tmp;
@@ -16,9 +16,7 @@ void maxHeapify(long a[], long i, long end) {
 				larger = 2*i + 2;
 			}
 			if ( a[larger] > a[i] ) {
-				tmp = a[larger];
-				a[larger] = a[i];
-				a[i] = tmp;
+				SWAP(a[larger], a[i], tmp);
 				i = larger;
 			} else {
 				return;
@@ -43,9 +41,7 @@ void heapSort(long a[], long n) {
 		buildMaxHeap(a, n);
 		for (i = n - 1; i > 0; i--) {
 			// a[0] is always the maximum. 
-			t = a[i];
-			a[i] = a[0];
-			a[0] = t;
+			SWAP(a[i], a[0], t);
 			maxHeapify(a, 0, i);
 		}
 		return;
@@ -61,9 +57,7 @@ void selectionSort_range(long a[], long start, long end){
 				max = j;
 			}
 		}
-		t = a[max];
-		a[max] = a[i];
-		a[i] = t;
+		SWAP(a[max], a[i], t);
 		}
 	return;
 }
@@ -84,24 +78,24 @@ void quickSort_range(long array[], long start, long end) {
 		
 		// order the first, the middle and the last elements. 
 		if (array[end - 1] < array[start]) {
-			swap(array[start], array[end - 1], tmp);
+			SWAP(array[start], array[end - 1], tmp);
 		}
 		if (end - start == 2) {
 			return;
 		}
 		mid = ((end - start)>>1) + start;
 		if (array[mid] < array[start]) {
-			swap(array[start], array[mid], tmp);
+			SWAP(array[start], array[mid], tmp);
 		}
 		if (array[end - 1] < array[mid]) {
-			swap(array[mid], array[end - 1], tmp);
+			SWAP(array[mid], array[end - 1], tmp);
 		}
 		// already enough if the size is no more than three. 
 		if (end - start == 3) {
 			return;
 		}
 		// use the middle element as the pivot value. 
-		swap(array[start], array[mid], tmp);
+		SWAP(array[start], array[mid], tmp);
 		smaller = start + 1;
 		larger = end - 1;
 		while ( smaller < larger) {
@@ -110,7 +104,7 @@ void quickSort_range(long array[], long start, long end) {
 			} else {
 				// swap array[smaller] with array[larger - 1].
 				larger--;
-				swap(array[smaller], array[larger], tmp);
+				SWAP(array[smaller], array[larger], tmp);
 			}
 		}
 		
@@ -131,9 +125,7 @@ void bubbleSort(int a[], int n){
 		for(i = 1; i < n; i++){
 			for(j = n - 1; j >= i; j--){
 				if(a[j-1] > a[j]) {
-					tmp = a[j];
-					a[j] = a[j-1];
-					a[j-1] = tmp;
+					SWAP(a[j], a[j-1], tmp);
 				}
 			}
 		}
@@ -199,7 +191,8 @@ void mergeSort(int array[], int n) {
 		
 		for (len = 1; len < n; len = len<<1) {
 			for (start = 0; start < n; start = start + (len<<1)) {
-				end = min(start + (len<<1), n);
+				end = MIN(start + (len<<1), n);
+				//printf("cdp_merge %d [%d, %d)\n", len, start, end);
 				for (cleft = start, cright = start + len, ctemp = cleft; ctemp < end; ctemp++) {
 					if (cleft < start+len && cright < end) {
 						if (array[cleft] < array[cright]) {
@@ -227,3 +220,12 @@ void mergeSort(int array[], int n) {
 		return;
     }
     
+
+int verify(long a[], long n) {
+	long i;
+	for(i = 1; i < n; i++) {
+		if ( a[i-1] > a[i] )
+			return 0;
+	}
+	return 1;
+}

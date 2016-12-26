@@ -16,5 +16,6 @@ void insertionSort(long a[], long n);
 void mergeSort_recursive(long a[], long n);
 void mergeSort(long a[], long n);
 
+int verify(long a[], long n);
 
 #endif /* SRC_SORTALGORITHMS_H_ */
