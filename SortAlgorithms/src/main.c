@@ -36,7 +36,7 @@ int main(int argc, char * args[]) {
 
 	setbuf(stdout, NULL);
 
-	printf("Size: %ld, Range within: 0 -- %ld, Initial Seed: %ld, Number of trials: %ld\n",
+	printf("Size: %ld, Range: [0, %ld), Initial Seed: %ld, Number of trials: %ld\n",
 			size, range, seed, rep);
 
 	array = (long *)malloc(sizeof(long)*size);
@@ -48,24 +48,15 @@ int main(int argc, char * args[]) {
 		for (int i = 0; i < size; i++) {
 			array[i] = rand() % r;
 		}
-		// showing the contents
-		if (t < 1) {
-			for (int i = 0; i < size; i++) {
-				printf("%ld, ", array[i]);
-				if (i > 15) {
-					printf("... ");
-					break;
-				}
-			}
-			printf("\n");
-		}
-		//
+
 		stopwatch_start(&sw);
 		mergeSort(array, size);
 		stopwatch_stop(&sw);
 
 		elapsed = stopwatch_clocks(&sw);
-		//printf("Merge:      \t %ld\n",elapsed);
+		if ( !verify(array, size) ) {
+			printf("Merge sort has bug(s)!\n");
+		}
 
 		// showing the contents
 		if (t < 1) {
