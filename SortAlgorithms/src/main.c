@@ -20,7 +20,8 @@ int main(int argc, char * args[]) {
 	double sum;
 
 	if (argc >= 2) {
-		size = atol(args[1]);
+		size = atol
+				(args[1]);
 	}
 	if (argc >= 3) {
 		range = atol(args[2]);
@@ -33,8 +34,6 @@ int main(int argc, char * args[]) {
 	if (argc >= 5) {
 		rep = atol(args[4]);
 	}
-
-	setbuf(stdout, NULL);
 
 	printf("Size: %ld, Range within: 0 -- %ld, Initial Seed: %ld, Number of trials: %ld\n",
 			size, range, seed, rep);
