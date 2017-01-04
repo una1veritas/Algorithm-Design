@@ -10,14 +10,6 @@
 #include "levdist.h"
 #include "debug_table.h"
 
-/*
-long ceilpow2(const long val) {
-	long result;
-	for (result = 1 ; result < val; result <<= 1) ;
-	return result;
-}
-*/
-
 long r_edist(char s[], int m, char t[], int n) {
 	long a, b, c;
 	if (m == 0 && n == 0)
@@ -120,7 +112,7 @@ long weaving_edist(long * frame, const char t[], const long n, const char p[], c
 	}
 #endif
 	for (long depth = 0; depth <= (n - 1) + (m - 1); depth++) {
-		warp_start = abs((m - 1) - depth);
+		warp_start = ABS((m - 1) - depth);
 		if (depth < n) {
 			warp_last = depth + (m - 1);
 		}

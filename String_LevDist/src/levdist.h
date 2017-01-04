@@ -13,8 +13,11 @@
 extern long * debug_table;
 #endif
 
-#define min(x, y)   ((x) > (y)? (y) : (x))
-#define max(x, y)   ((x) < (y)? (y) : (x))
+#define MIN(x, y)   ((x) > (y)? (y) : (x))
+#define MAC(x, y)   ((x) < (y)? (y) : (x))
+#ifndef ABS
+#define ABS(x)  ((x) < 0 ? -(x) : (x))
+#endif //ABS
 
 //long ceilpow2(const long val);
 

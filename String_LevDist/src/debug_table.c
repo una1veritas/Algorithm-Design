@@ -12,9 +12,9 @@
 
 long * debug_table;
 
-#ifndef max
-#define min(x, y)   ((x) > (y)? (y) : (x))
-#define max(x, y)   ((x) < (y)? (y) : (x))
+#ifndef MAX
+#define MIN(x, y)   ((x) > (y)? (y) : (x))
+#define MAX(x, y)   ((x) < (y)? (y) : (x))
 #endif
 
 void show_table(long * table, long n, long m) {
