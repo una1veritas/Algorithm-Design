@@ -33,47 +33,50 @@ long r_edist(char s[], int m, char t[], int n) {
 }
 
 long dp_edist(long * dist, char t[], long n, char p[], long m) {
+	long col, row;
 	long ins, del, repl;
+	const int lcs_switch = 0;
 
 	if ( dist == NULL )
 		return n+m+1;
 
-	// initialize cells in the top row or in the left-most column
-	// n -- the number of columns, m -- the number of rows
-	long col = 0;
-	long row = 0;
-
-	//[0, 0]
-	ins = col + 1; // always == del
-	repl = (p[0] == t[col] ? 0 : 1);
-	dist[0] = (ins < repl ? ins : repl);
-
-	//[col, 0]
-	for(col = 1; col < n; ++col) {
-		// row == 0
-		del = (col + 1) + 1;
-		ins = dist[m*(col-1)] + 1;
-		repl = col + (p[0] == t[col] ? 0 : 1);
-		ins = (ins < del ? ins : del);
-		dist[m * col + 0] = (ins < repl ? ins : repl);
-	}
-	//[0, row]
-	for(row = 1; row < m; ++row) {
-		// col == 0
-		del = dist[row - 1] + 1;
-		ins = row + 1 + 1;
-		repl = row + (p[row] == t[0] ? 0 : 1);
-		ins = (ins < del ? ins : del);
-		dist[m*0 + row]  = (ins < repl ? ins : repl);
-	}
-
+	// n -- the number of columns (the text length), m -- the number of rows (the pattern length)
 	//table calcuration
-	for(long c = 1; c < n; c++) { // column, text axis
-		for (long r = 1; r < m; r++) {  // row, pattern axis
-			del = dist[(r-1) + m*c]+1;
-			ins = dist[r + m*(c-1)]+1;
-			repl = dist[(r-1) + m*(c-1)] + (t[c] == p[r] ? 0 : 1);
-			dist[r + m*c] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
+	for(col = 0; col < n; col++) { // column, text axis
+		for (row = 0; row < m; row++) {  // row, pattern axis
+			if (col == 0) {
+				ins = row + 1 + 1;
+			} else {
+				ins = dist[row + m*(col-1)]+1;
+			}
+			if (row == 0) {
+				del = col + 1 + 1;
+			} else {
+				del = dist[(row-1) + m*col]+1;
+			}
+			if ( col == 0 ) {
+				repl = row;
+			} else if ( row == 0 ) {
+				repl = col;
+			} else {
+				repl = dist[(row-1) + m*(col-1)];
+			}
+			if ( t[col] == p[row] ) {
+				if ( ins < del && ins < repl ) {
+					repl = ins;
+				} else if (del < ins && del < repl ) {
+					repl = del;
+				}
+			} else {
+				repl += 1;
+				if ( ins <= del && (lcs_switch || ins < repl) ) {
+					repl = ins;
+				} else if (del < ins && (lcs_switch || del < repl) ) {
+					repl = del;
+				}
+			}
+			dist[row + m*col] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
+			//printf("[%ld,%ld] %c|%c : %ld/%ld/%ld+%d >%ld,\n", col, row, t[col], p[row], del,ins, repl, (t[col] != p[row]), dist[col*m+row]);
 		}
 	}
 
@@ -91,15 +94,31 @@ void weaving_setframe(long * frame, const long n, const long m) {
 	}
 }
 
+#define SNAKE_HEADS
 long weaving_edist(long * frame, const char t[], const long n, const char p[], const long m)
 {
 	long col, row;
 	long del, ins, repl; // del = delete from pattern, downward; ins = insert to pattern, rightward
 	long warp_start, warp_last;
 
+	const int lcs_switch = 0;
+
+#ifdef SNAKE_HEADS
+	long snake[n+m+1];
+	struct {
+		long warp, tail, head;
+	} heads[n*m];
+	long numheads = 0;
+#endif // SNAKE_HEADS
+
 	if (frame == NULL)
 		return n+m+1;
 
+#ifdef SNAKE_HEADS
+	for(long i = 0; i < n+m; i++) {
+		snake[i] = frame[i];
+	}
+#endif
 	for (long depth = 0; depth <= (n - 1) + (m - 1); depth++) {
 		warp_start = abs((m - 1) - depth);
 		if (depth < n) {
@@ -122,23 +141,62 @@ long weaving_edist(long * frame, const char t[], const long n, const char p[], c
 			//
 			del = frame[warpix+1+1] + 1;
 			ins = frame[warpix-1+1] + 1;
-			repl = frame[warpix+1] + (t[col] != p[row]);
+			repl = frame[warpix+1];
+
+			//repl = frame[warpix+1] + (t[col] != p[row]);
 			//printf("%ld: %ld [%ld,%ld] %c|%c : %ld/%ld/%ld+%ld,\n",depth, warpix, col,row,t[col],p[row], del,ins, frame[warpix], (t[col] != p[row]));
 			//
-			if (del < ins) {
-				ins = del;
+			if ( t[col] == p[row] ) {
+				if (del < ins && del < repl) {
+					repl = del;
+				} else if ( ins < del && ins < repl ) {
+					repl = ins;
+				}
+			} else /* ( t[col] != p[row] ) */ {
+				repl += 1;
+				if (del <= ins && (lcs_switch || del < repl) ) {
+					repl = del;
+				} else if ( ins < del && (lcs_switch || ins < repl) ) {
+					repl = ins;
+				}
 			}
-			if (ins < repl) {
-				repl = ins;
+			//
+#ifdef SNAKE_HEADS
+			if ( t[col] != p[row] ) {
+				if ( (snake[warpix+1] < depth - 2) ) {
+					heads[numheads].warp = warpix+1;
+					heads[numheads].tail = snake[warpix+1];
+					heads[numheads].head = depth - 2;
+					numheads++;
+				}
+				snake[warpix+1] = depth;
 			}
+#endif
 			//
 			frame[warpix+1] = repl;
 #ifdef DEBUG_TABLE
 			debug_table[m*col + row] = repl;
 #endif
 		}
-		//printf("\n");
+#ifdef SNAKE_HEADS
+		for(long i = 0; i < n+m+1; i ++) {
+			if ( i < warp_start || i > warp_last || (((i - warp_start) & 1) == 1) ) {
+				printf("   ");
+			} else {
+				printf("%2ld ", snake[i+1]);
+			}
+		}
+		printf("\n");
+#endif
 	}
+
+#ifdef SNAKE_HEADS
+		for(long i = 0; i < numheads; i ++) {
+			printf("snake head: %ld: %ld -- %ld\n", heads[i].warp - m, heads[i].tail, heads[i].head);
+		}
+		printf("\n");
+#endif
+
 
 	return frame[n];
 }
