@@ -12,11 +12,6 @@
 
 long * debug_table;
 
-#ifndef MAX
-#define MIN(x, y)   ((x) > (y)? (y) : (x))
-#define MAX(x, y)   ((x) < (y)? (y) : (x))
-#endif
-
 void show_table(long * table, long n, long m) {
 	static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 

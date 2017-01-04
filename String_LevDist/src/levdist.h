@@ -8,13 +8,12 @@
 #ifndef SRC_LEVDIST_H_
 #define SRC_LEVDIST_H_
 
-#define DEBUG_TABLE
-#ifdef DEBUG_TABLE
-extern long * debug_table;
+#ifndef MAX
+#define MAX(x, y)   ((x) < (y)? (y) : (x))
 #endif
-
+#ifndef MIN
 #define MIN(x, y)   ((x) > (y)? (y) : (x))
-#define MAC(x, y)   ((x) < (y)? (y) : (x))
+#endif
 #ifndef ABS
 #define ABS(x)  ((x) < 0 ? -(x) : (x))
 #endif //ABS

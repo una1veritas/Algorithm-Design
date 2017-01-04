@@ -27,7 +27,7 @@ long r_edist(char s[], int m, char t[], int n) {
 long dp_edist(long * dist, char t[], long n, char p[], long m) {
 	long col, row;
 	long ins, del, repl;
-	const int lcs_switch = 0;
+	const int lcs_switch = 1;
 
 	if ( dist == NULL )
 		return n+m+1;
@@ -93,7 +93,7 @@ long weaving_edist(long * frame, const char t[], const long n, const char p[], c
 	long del, ins, repl; // del = delete from pattern, downward; ins = insert to pattern, rightward
 	long warp_start, warp_last;
 
-	const int lcs_switch = 0;
+	const int lcs_switch = 1;
 
 #ifdef SNAKE_HEADS
 	long snake[n+m+1];
@@ -162,6 +162,13 @@ long weaving_edist(long * frame, const char t[], const long n, const char p[], c
 					numheads++;
 				}
 				snake[warpix+1] = depth;
+			} else if ( col == n-1 || row == m-1 ) {
+				if ( (snake[warpix+1] < depth - 2) ) {
+					heads[numheads].warp = warpix+1;
+					heads[numheads].tail = snake[warpix+1];
+					heads[numheads].head = depth;
+					numheads++;
+				}
 			}
 #endif
 			//
