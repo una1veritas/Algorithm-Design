@@ -24,35 +24,41 @@ long r_edist(char s[], int m, char t[], int n) {
 	return (a < b ? (a < c ? a: c): (b < c ? b : c));
 }
 
-long dp_edist(long * dist, char t[], long n, char p[], long m) {
+void setframe(long * frame, const long n, const long m) {
+	for (long i = 0; i < n + m + 1; i++) {
+		frame[i] = ABS(m - i);  // m (pattern, left) frame
+	}
+}
+
+long dp_edist(long * frame, char t[], long n, char p[], long m) {
+	long * dist;
 	long col, row;
-	long ins, del, repl;
+	long ins, del, repl, result;
 	const int lcs_switch = 1;
 
+	dist = (long*) malloc(sizeof(long)*n*m);
 	if ( dist == NULL )
-		return n+m+1;
+		return n+m+1; // error
 
 	// n -- the number of columns (the text length), m -- the number of rows (the pattern length)
 	//table calcuration
+	// let and top frames of the table corresponds to col = -1, row = -1
 	for(col = 0; col < n; col++) { // column, text axis
 		for (row = 0; row < m; row++) {  // row, pattern axis
-			if (col == 0) {
-				ins = row + 1 + 1;
-			} else {
+			if (col == 0)
+				ins = frame[(m-1)-row] + 1;
+			else
 				ins = dist[row + m*(col-1)]+1;
-			}
-			if (row == 0) {
-				del = col + 1 + 1;
-			} else {
+			if ( row == 0 )
+				del = frame[m+1+col] + 1;
+			else
 				del = dist[(row-1) + m*col]+1;
-			}
-			if ( col == 0 ) {
-				repl = row;
-			} else if ( row == 0 ) {
-				repl = col;
-			} else {
+			if ( col == 0 )
+				repl = frame[m-row];
+			else if ( row == 0 )
+				repl = frame[m+col];
+			else
 				repl = dist[(row-1) + m*(col-1)];
-			}
 			if ( t[col] == p[row] ) {
 				if ( ins < del && ins < repl ) {
 					repl = ins;
@@ -68,22 +74,16 @@ long dp_edist(long * dist, char t[], long n, char p[], long m) {
 				}
 			}
 			dist[row + m*col] = ins < del ? (ins < repl ? ins : repl) : (del < repl ? del : repl);
-			//printf("[%ld,%ld] %c|%c : %ld/%ld/%ld+%d >%ld,\n", col, row, t[col], p[row], del,ins, repl, (t[col] != p[row]), dist[col*m+row]);
+			printf("[%ld,%ld] %c|%c : %ld/%ld/%ld+%d >%ld,\n", col, row, t[col], p[row], del,ins, repl, (t[col] != p[row]), dist[col*m+row]);
+#ifdef DEBUG_TABLE
+			debug_table[row+m*col] = dist[row+m*col];
+#endif
 		}
 	}
 
-	return dist[n * m - 1];
-}
-
-void weaving_setframe(long * frame, const long n, const long m) {
-	for (long i = 0; i < n + m + 1; i++) {
-		if (i < m) {
-			frame[i] = m - i;
-		}
-		else {
-			frame[i] = i - m;  // will be untouched.
-		}
-	}
+	result = dist[n*m-1];
+	free(dist);
+	return result;
 }
 
 #define SNAKE_HEADS

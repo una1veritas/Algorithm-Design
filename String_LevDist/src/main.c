@@ -46,7 +46,7 @@ int getargs(const int argc, const char * argv[], char * text, char * patt, long 
 
 int main (int argc, const char * argv[]) {
 	char * text, *patt;
-	long * table;
+	long *frame;
 	long m, n;
 	long d;
 	
@@ -61,12 +61,25 @@ int main (int argc, const char * argv[]) {
 	if ( getargs(argc, argv, text, patt, &n, &m) != 0 )
 		goto exit_error;
 
-	table = (long*) malloc(sizeof(long)*m*n);
+	frame = (long*)malloc(sizeof(long)*(m+n+1));
+	setframe(frame, n, m);
+
+	printf("frame:\n");
+	for(int i = 0; i < m+n+1; i++)
+		printf("%ld, ",frame[i]);
+	printf("\n");
+
+#ifdef DEBUG_TABLE
+	debug_table = (long*) malloc(sizeof(long)*m*n);
+
+	long * dp_table;
+	dp_table = (long*) malloc(sizeof(long)*n*m);
+#endif
 
 	stopwatch sw;
 	stopwatch_start(&sw);
 
-	d = dp_edist(table, text, n, patt, m);
+	d = dp_edist(frame, text, n, patt, m);
 
 	stopwatch_stop(&sw);
 
@@ -75,21 +88,17 @@ int main (int argc, const char * argv[]) {
 	printf("\n");
 
 #ifdef DEBUG_TABLE
-	show_table(table, n, m);
+	for(int c = 0; c < n; c++)
+		for(int r = 0; r < m; r++)
+			dp_table[m*c+r] = debug_table[m*c+r];
+	show_table(dp_table, n, m);
 
-	debug_table = (long*) malloc(sizeof(long)*m*n);
 #endif
 
 	fprintf(stdout, "computing edit distance by Waving DP.\n");
 	fflush(stdout);
 
 	stopwatch_start(&sw);
-
-	long * frame = (long*)malloc(sizeof(long)*(m+n+1));
-	weaving_setframe(frame, n, m);
-	for(int i = 0; i < m+n+1; i++)
-		printf("%ld, ",frame[i]);
-	printf("\n");
 
 	d = weaving_edist(frame, text, n, patt, m);
 	free(frame);
@@ -101,14 +110,13 @@ int main (int argc, const char * argv[]) {
 #ifdef DEBUG_TABLE
 	show_table(debug_table, n, m);
 
-	if ( compare_table(debug_table, table, n, m) != 0) {
+	if ( compare_table(debug_table, dp_table, n, m) != 0) {
 		printf("table compare failed.\n");
 	} else {
 		printf("two tables are identical.\n");
 	}
 	free(debug_table);
 #endif
-	free(table);
 
 exit_error:
 	free(text);
