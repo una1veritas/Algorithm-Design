@@ -12,8 +12,10 @@
 
 long * debug_table;
 
-void show_table(long * table, long n, long m) {
-	static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+static const char grays[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+
+void show_table(long * frame, long * table, long n, long m) {
+	long cellval;
 
 	if (n > 1024 || m > 1024) {
 		printf("\ntable seems being too big.\n");
@@ -21,10 +23,17 @@ void show_table(long * table, long n, long m) {
 	}
 	// show DP table
 	printf("\ntable contents:\n");
-	for (long r = 0; r < m; r++) {
-		for (long c = 0; c < n; c++) {
+	for (long r = 0; r < m+1; r++) {
+		for (long c = 0; c < n+1; c++) {
+			if ( c == 0 ) {
+				cellval = frame[m - r];
+			} else if ( r == 0 ) {
+				cellval = frame[m + c];
+			} else {
+				cellval = table[m*(c-1)+(r-1)];
+			}
 			//printf("%c", grays[max(0, 61 - (int)((table[m*c + r] / (float)(n))*strlen(grays)))]);
-			printf("%3ld ", table[m*c+r]);
+			printf("%3ld ", cellval);
 		}
 		printf("\n");
 		fflush(stdout);

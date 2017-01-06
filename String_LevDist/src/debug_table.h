@@ -13,7 +13,7 @@
 #ifdef DEBUG_TABLE
 extern long * debug_table;
 
-void show_table(long * table, long n, long m);
+void show_table(long * frame, long * table, long n, long m);
 long compare_table(long * t0, long * t1, long n, long m);
 #endif
 

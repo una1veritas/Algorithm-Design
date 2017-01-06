@@ -4,8 +4,8 @@
  */
 #include <stdio.h>
 
-#define min(a,b) ((a) < (b)? (a) : (b))
-#define swap(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
+#define MIN(a,b) ((a) < (b)? (a) : (b))
+#define SWAP(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
 
 void maxHeapify(long a[], long i, long end) {
 	long larger, tmp;
@@ -16,9 +16,7 @@ void maxHeapify(long a[], long i, long end) {
 				larger = 2*i + 2;
 			}
 			if ( a[larger] > a[i] ) {
-				tmp = a[larger];
-				a[larger] = a[i];
-				a[i] = tmp;
+				SWAP(a[larger], a[i], tmp);
 				i = larger;
 			} else {
 				return;
@@ -43,9 +41,7 @@ void heapSort(long a[], long n) {
 		buildMaxHeap(a, n);
 		for (i = n - 1; i > 0; i--) {
 			// a[0] is always the maximum. 
-			t = a[i];
-			a[i] = a[0];
-			a[0] = t;
+			SWAP(a[0], a[i], t);
 			maxHeapify(a, 0, i);
 		}
 		return;
@@ -61,9 +57,7 @@ void selectionSort_range(long a[], long start, long end){
 				max = j;
 			}
 		}
-		t = a[max];
-		a[max] = a[i];
-		a[i] = t;
+		SWAP(a[max], a[i], t);
 		}
 	return;
 }
@@ -84,24 +78,24 @@ void quickSort_range(long array[], long start, long end) {
 		
 		// order the first, the middle and the last elements. 
 		if (array[end - 1] < array[start]) {
-			swap(array[start], array[end - 1], tmp);
+			SWAP(array[start], array[end - 1], tmp);
 		}
 		if (end - start == 2) {
 			return;
 		}
 		mid = ((end - start)>>1) + start;
 		if (array[mid] < array[start]) {
-			swap(array[start], array[mid], tmp);
+			SWAP(array[start], array[mid], tmp);
 		}
 		if (array[end - 1] < array[mid]) {
-			swap(array[mid], array[end - 1], tmp);
+			SWAP(array[mid], array[end - 1], tmp);
 		}
 		// already enough if the size is no more than three. 
 		if (end - start == 3) {
 			return;
 		}
 		// use the middle element as the pivot value. 
-		swap(array[start], array[mid], tmp);
+		SWAP(array[start], array[mid], tmp);
 		smaller = start + 1;
 		larger = end - 1;
 		while ( smaller < larger) {
@@ -110,7 +104,7 @@ void quickSort_range(long array[], long start, long end) {
 			} else {
 				// swap array[smaller] with array[larger - 1].
 				larger--;
-				swap(array[smaller], array[larger], tmp);
+				SWAP(array[smaller], array[larger], tmp);
 			}
 		}
 		
@@ -157,10 +151,35 @@ void insertionSort(int a[], int n){
     }
 	
 	
-void mergeSort_recursive(int array[], int n) {
-		int i, l, r;
-		int bufl[n/2];
-		int bufr[n/2+(n % 2)];
+
+void merge(long dst[], long lsrc[], long llen, long rsrc[], long rlen) {
+	long dstlen = llen + rlen;
+	long left, right, temp;
+	for (left = 0, right = 0, temp = 0; temp < dstlen; temp++) {
+		if (left < llen && right < rlen) {
+			if (lsrc[left] < rsrc[right]) {
+				dst[temp] = lsrc[left];
+				left++;
+			} else {
+				dst[temp] = rsrc[right];
+				right++;
+			}
+		} else {
+			if (left < llen) {
+				dst[temp] = lsrc[left];
+				left++;
+			} else {
+				dst[temp] = rsrc[right];
+				right++;
+			}
+		}
+	}
+}
+
+void mergeSort_recursive(long array[], int n) {
+		long i, l, r;
+		long bufl[n/2];
+		long bufr[n/2+(n % 2)];
 		
 		if (n <= 1)
 			return;
@@ -193,32 +212,14 @@ void mergeSort_recursive(int array[], int n) {
     }
     
     
-void mergeSort(int array[], int n) {
-		int buf[n];
-		int i, len, start, end, cleft, cright, ctemp;
+void mergeSort(long array[], long n) {
+		long buf[n];
+		long i, len, start, end; //, cleft, cright, ctemp;
 		
 		for (len = 1; len < n; len = len<<1) {
-			for (start = 0; start < n; start = start + (len<<1)) {
-				end = min(start + (len<<1), n);
-				for (cleft = start, cright = start + len, ctemp = cleft; ctemp < end; ctemp++) {
-					if (cleft < start+len && cright < end) {
-						if (array[cleft] < array[cright]) {
-							buf[ctemp] = array[cleft];
-							cleft++;
-						} else {
-							buf[ctemp] = array[cright];
-							cright++;
-						}
-					} else {
-						if (cleft < start+len) {
-							buf[ctemp] = array[cleft];
-							cleft++;
-						} else {
-							buf[ctemp] = array[cright];
-							cright++;
-						}
-					}
-				}
+			for (start = 0; start < n; start += (len<<1)) {
+				end = MIN(len, n - (start + len) );
+				merge(buf+start, array+start, len, array+(start+len), end);
 			}
 			//copy back
 			for (i = 0; i < n; i++)

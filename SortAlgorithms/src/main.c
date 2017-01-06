@@ -51,7 +51,7 @@ int main(int argc, char * args[]) {
 		if (t < 1) {
 			for (int i = 0; i < size; i++) {
 				printf("%ld, ", array[i]);
-				if (i > 15) {
+				if (i > 24) {
 					printf("... ");
 					break;
 				}
@@ -70,7 +70,7 @@ int main(int argc, char * args[]) {
 		if (t < 1) {
 			for (int i = 0; i < size; i++) {
 				printf("%ld, ", array[i]);
-				if (i > 15) {
+				if (i > 24) {
 					printf("... ");
 					break;
 				}

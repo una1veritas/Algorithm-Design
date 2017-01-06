@@ -91,9 +91,10 @@ int main (int argc, const char * argv[]) {
 	for(int c = 0; c < n; c++)
 		for(int r = 0; r < m; r++)
 			dp_table[m*c+r] = debug_table[m*c+r];
-	show_table(dp_table, n, m);
+	show_table(frame, dp_table, n, m);
 
 #endif
+
 
 	fprintf(stdout, "computing edit distance by Waving DP.\n");
 	fflush(stdout);
@@ -101,14 +102,15 @@ int main (int argc, const char * argv[]) {
 	stopwatch_start(&sw);
 
 	d = weaving_edist(frame, text, n, patt, m);
-	free(frame);
+
 	stopwatch_stop(&sw);
 
 	printf("Edit distance (by Weaving DP): %ld\n", d);
 	printf("%ld sec %ld milli sec.\n", stopwatch_secs(&sw), stopwatch_millis(&sw));
 
 #ifdef DEBUG_TABLE
-	show_table(debug_table, n, m);
+	setframe(frame, n, m);
+	show_table(frame, debug_table, n, m);
 
 	if ( compare_table(debug_table, dp_table, n, m) != 0) {
 		printf("table compare failed.\n");
@@ -116,8 +118,10 @@ int main (int argc, const char * argv[]) {
 		printf("two tables are identical.\n");
 	}
 	free(debug_table);
+	free(dp_table);
 #endif
 
+	free(frame);
 exit_error:
 	free(text);
 	free(patt);
