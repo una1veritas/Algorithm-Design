@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "debug_table.h"
 
@@ -32,16 +33,19 @@ void show_table(long * frame, long * table, long n, long m) {
 			} else {
 				cellval = table[m*(c-1)+(r-1)];
 			}
-			//printf("%c", grays[max(0, 61 - (int)((table[m*c + r] / (float)(n))*strlen(grays)))]);
+			cellval = ((n+m+1-cellval) * strlen(grays)) / (n+m+1);
 			if ( c == 0 )
-				printf("%3ld |",cellval);
+				//printf("%3ld|",cellval);
+				printf("%c|", grays[cellval]);
 			else
-				printf("%3ld  ", cellval);
+				//printf("%3ld ", cellval);
+				printf("%c ", grays[cellval]);
 		}
 		printf("\n");
 		if ( r == 0 ) {
 			for (long c = 0; c < n+1; c++) {
-				printf("+----");
+				//printf("+---");
+				printf("--");
 			}
 			printf("\n");
 		}
