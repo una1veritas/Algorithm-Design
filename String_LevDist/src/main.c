@@ -117,6 +117,7 @@ int main (int argc, const char * argv[]) {
 	} else {
 		printf("two tables are identical.\n");
 	}
+	fflush(stdout);
 	free(debug_table);
 	free(dp_table);
 #endif

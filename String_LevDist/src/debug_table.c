@@ -33,9 +33,18 @@ void show_table(long * frame, long * table, long n, long m) {
 				cellval = table[m*(c-1)+(r-1)];
 			}
 			//printf("%c", grays[max(0, 61 - (int)((table[m*c + r] / (float)(n))*strlen(grays)))]);
-			printf("%3ld ", cellval);
+			if ( c == 0 )
+				printf("%3ld |",cellval);
+			else
+				printf("%3ld  ", cellval);
 		}
 		printf("\n");
+		if ( r == 0 ) {
+			for (long c = 0; c < n+1; c++) {
+				printf("+----");
+			}
+			printf("\n");
+		}
 		fflush(stdout);
 	}
 	printf("\n\n");
