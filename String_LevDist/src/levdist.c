@@ -36,6 +36,8 @@ long dp_edist(long * frame, char t[], long n, char p[], long m) {
 	long ins, del, repl, result;
 	const int lcs_switch = 1;
 
+	//printf("text %s (%d), pattern %s (%d)\n", t, n, p, m);
+
 	dist = (long*) malloc(sizeof(long)*n*m);
 	if ( dist == NULL )
 		return n+m+1; // error
@@ -90,7 +92,8 @@ long weaving_edist(long * frame, const char t[], const long n, const char p[], c
 #ifdef SNAKE_HEADS
 	long snake[n+m+1];
 	long tail;
-	const long num_heads_max = n+m+1;
+	const long dist_max = 64;
+	const long num_heads_max = dist_max * dist_max;
 	struct {
 		long warpix, head, tail;
 	} snake_heads[num_heads_max];
@@ -110,28 +113,25 @@ long weaving_edist(long * frame, const char t[], const long n, const char p[], c
 		if ( depth < m ) {
 			warp_start = m - depth;
 		} else {
-			//printf("##");
 			warp_start = depth - (m - 2);
 		}
-		//warp_start = ABS(m - depth);
 		if (depth < n) {
 			warp_last = depth + m;
 		} else {
-			//printf("!!");
 			warp_last = ((n-1) << 1) + m - depth;
 		}
-		// mywarpix = (thix<<1) + (depth & 1);
 		//printf("depth %ld (%ld, %ld):\n", depth, warp_start, warp_last);
 		for (long warpix = warp_start; warpix <= warp_last; warpix += 2) {
+			/*
 			if (warpix < 0 || warpix > n + m + 1) {
 				printf("warp value error: %ld\n", warpix);
 				//fflush(stdout);
 			}
+			*/
 			col = (depth + warpix - m)>>1;
 			row = (depth - warpix + m)>>1;
 
 			//printf("%ld = (%ld, %ld), ", warpix, col, row);
-			//
 			del = frame[warpix+1] + 1;
 			ins = frame[warpix-1] + 1;
 			repl = frame[warpix];
@@ -154,35 +154,37 @@ long weaving_edist(long * frame, const char t[], const long n, const char p[], c
 			//printf("-> %ld\n", repl);
 			//
 #ifdef SNAKE_HEADS
-			if ( t[col] == p[row] ) {
-				if ( snake[warpix] == -1 )
-					snake[warpix] = depth; // start the snake
-				// else
-				//  continue the snake
-			} else { // finish the snake on character mismatch
-				if ( snake[warpix] != -1 ) {
-					tail = snake[warpix];
-					snake[warpix] = -1;
-					if ( num_heads < num_heads_max ) {
-						//printf("snake head %ld (%ld), %ld -> %ld\n", warpix, warpix-m, tail, depth);
-						snake_heads[num_heads].head = depth;
-						snake_heads[num_heads].tail = tail;
-						snake_heads[num_heads].warpix = warpix;
-						num_heads++;
+			if ( ABS(warpix - ((m+n)>>1)) < (dist_max>>1) ) {
+				if ( t[col] == p[row] ) {
+					if ( snake[warpix] == -1 )
+						snake[warpix] = depth; // start the snake
+					// else
+					//  continue the snake
+				} else { // finish the snake on character mismatch
+					if ( snake[warpix] != -1 ) {
+						tail = snake[warpix];
+						snake[warpix] = -1;
+						if ( num_heads < num_heads_max ) {
+							//printf("snake head %ld (%ld), %ld -> %ld\n", warpix, warpix-m, tail, depth);
+							snake_heads[num_heads].head = depth;
+							snake_heads[num_heads].tail = tail;
+							snake_heads[num_heads].warpix = warpix;
+							num_heads++;
+						}
 					}
 				}
-			}
-			if ( (t[col] == p[row]) &&
-					((depth >= m && warpix == warp_start) || (depth >= n && warpix == warp_last)) ) {
-				// finish the snake on the warp end
-				if ( snake[warpix] != -1 ) {
-					tail = snake[warpix];
-					if ( num_heads < num_heads_max ) {
-						//printf("snake head %ld (%ld), %ld -> %ld\n", warpix, warpix-m, tail, depth);
-						snake_heads[num_heads].head = depth + 2;
-						snake_heads[num_heads].tail = tail;
-						snake_heads[num_heads].warpix = warpix;
-						num_heads++;
+				if ( (t[col] == p[row]) &&
+						((depth >= m && warpix == warp_start) || (depth >= n && warpix == warp_last)) ) {
+					// finish the snake on the warp end
+					if ( snake[warpix] != -1 ) {
+						tail = snake[warpix];
+						if ( num_heads < num_heads_max ) {
+							//printf("snake head %ld (%ld), %ld -> %ld\n", warpix, warpix-m, tail, depth);
+							snake_heads[num_heads].head = depth + 2;
+							snake_heads[num_heads].tail = tail;
+							snake_heads[num_heads].warpix = warpix;
+							num_heads++;
+						}
 					}
 				}
 			}

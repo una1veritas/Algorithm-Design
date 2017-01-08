@@ -33,7 +33,7 @@ void show_table(long * frame, long * table, long n, long m) {
 			} else {
 				cellval = table[m*(c-1)+(r-1)];
 			}
-			cellval = ((n+m+1-cellval) * strlen(grays)) / (n+m+1);
+			cellval = ((n+m+1-cellval) * (strlen(grays)-1)) / (n+m+1);
 			if ( c == 0 )
 				//printf("%3ld|",cellval);
 				printf("%c|", grays[cellval]);

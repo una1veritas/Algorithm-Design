@@ -14,6 +14,7 @@
 
 
 int getargs(const int argc, const char * argv[], char * text, char * patt, long * n, long *m) {
+	char tmp[STR_MAXLENGTH];
 	if ( argc != 3 )
 		return EXIT_FAILURE;
 
@@ -27,16 +28,16 @@ int getargs(const int argc, const char * argv[], char * text, char * patt, long 
 	*n = (text[STR_MAXLENGTH-1] == 0? strlen(text) : STR_MAXLENGTH);
 	*m = (patt[STR_MAXLENGTH-1] == 0? strlen(patt) : STR_MAXLENGTH);
 	if ( *n < *m ) {
-		char * tmp = text;
-		text = patt;
-		patt = tmp;
 		long t = *n;
 		*n = *m;
 		*m = t;
+		strcpy(tmp,text);
+		strcpy(text,patt);
+		strcpy(patt,tmp);
 	}
 
 	if ( *n < 1000 && *m < 1000 )
-		fprintf(stdout, "Input: %s \n(%lu), \n%s \n(%lu)\n\n", text, *n, patt, *m);
+		fprintf(stdout, "Input: \n%s \n(%lu), \n%s \n(%lu)\n\n", text, *n, patt, *m);
 	else
 		fprintf(stdout, "Input: (%lu), (%lu)\n\n", *n, *m);
 	fflush(stdout);
