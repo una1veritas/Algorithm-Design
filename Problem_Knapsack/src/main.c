@@ -1,46 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
-int bestPrice_recursive(int list[], int budget) {
-	int s, ss;
+int best_recursive(int * price, int n, int budget, char cart[]) {
+	int sum_notbuy, sum_buy;
+	char cart_notbuy[n];
 	
-	if ( *list == 0 ) 
+	if ( *price == 0 )
 		return 0;
-	s = bestPrice_recursive(list+1, budget);
-	if ( *list > budget) 
-		return s;
-	ss = *list + bestPrice_recursive(list+1, budget - *list);
-	if (ss > s) 
-		return ss;
-	return s;
+
+	sum_notbuy = best_recursive(price+1, n-1, budget, cart+1);
+	memcpy(cart_notbuy, cart, n);
+	cart_notbuy[0] = 0;
+
+	if ( *price <= budget) {
+		sum_buy = *price + best_recursive(price+1, n-1, budget - *price, cart+1);
+		cart[0] = 1;
+		if (sum_buy > sum_notbuy) {
+			return sum_buy;
+		}
+	}
+	memcpy(cart, cart_notbuy, n);
+	return sum_notbuy;
 }
 
-int bestPrice_dp(int list[], int budget) {
-	int i, n;
-	int b;
+int best_dp(int price[], int n, int budget) {
+	int i, b;
 	
-	for (n = 1; list[n] != 0; n++);
 	int best[n][budget+1];
 
 	for (b = 0; b <= budget; b++) {
-		if (list[0] > b) {
+		if (price[0] > b) {
 			best[0][b] = 0;
 		} else {
-			best[0][b] = list[0];
+			best[0][b] = price[0];
 		}
 	}
 
 	for (i = 1; i < n; i++) {
 		for (b = 0; b <= budget; b++) {
-			if (list[i] > b) {
+			if (price[i] > b) {
 				best[i][b] = best[i-1][b];
 				continue;
 			}
-			if ( best[i-1][b] > list[i] + best[i-1][b-list[i]] ) {
+			if ( best[i-1][b] > price[i] + best[i-1][b-price[i]] ) {
 				best[i][b] = best[i-1][b];
 			} else {
-				best[i][b] = list[i] + best[i-1][b-list[i]];
+				best[i][b] = price[i] + best[i-1][b-price[i]];
 			}
 		}
 	}
@@ -48,38 +55,47 @@ int bestPrice_dp(int list[], int budget) {
 	return best[n-1][budget];
 }
 
+
 int main (int argc, const char * argv[]) {
 	int budget;
 	int itemCount;
-	int i, s, totalPrice;
+	int i, totalPrice;
 	clock_t swatch;
 	
 	budget = atoi(argv[1]);
 	itemCount = argc - 2;
-	int priceList[itemCount + 1];
+
+	int priceList[itemCount+1];
+	char cart[itemCount];
 	//int * priceList; priceList = (int *) malloc(sizeof(int) * (itemCount+1) );
-	for (i = 0, s = 2; i < itemCount; i++, s++) {
-		priceList[i] = atoi(argv[s]);
+	for (i = 0; i < itemCount; i++) {
+		priceList[i] = atoi(argv[i+2]);
 	}
-	priceList[i] = 0; // the end mark.
+	priceList[itemCount] = 0;
 	
 	// Show our input.
 	printf("%d yen for %d items.\n", budget, itemCount);
-	for (i = 0; priceList[i] != 0; i++) {
+	for (i = 0; i < itemCount; i++) {
 		printf("%d, ", priceList[i]);
 	}
 	printf("\n");
 	
 	// compute.
 	swatch = clock();
-	totalPrice = bestPrice_recursive(priceList, budget);
+	totalPrice = best_recursive(priceList, itemCount, budget, cart);
 	swatch = clock() - swatch;
 	// Show the result.
 	printf("bought totally %d yen.\n", totalPrice);
 	printf("By recursion: %f\n", (double) swatch / CLOCKS_PER_SEC);
 
+	for (i = 0; i < itemCount; i++) {
+		if ( cart[i] == 1 )
+			printf("%d: %d,\n", i, priceList[i]);
+	}
+	printf("\n");
+
 	swatch = clock();
-	totalPrice = bestPrice_dp(priceList, budget);
+	totalPrice = best_dp(priceList, itemCount, budget);
 	swatch = clock() - swatch;
 	// Show the result.
 	printf("bought totally %d yen.\n", totalPrice);
