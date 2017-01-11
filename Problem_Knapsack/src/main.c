@@ -34,29 +34,29 @@ int best_recursive(int * prices, int n, int budget, char cart[]) {
 	return sum_backup;
 }
 
-int best_dp(int price[], int n, int budget) {
+int best_dp(int prices[], int n, int budget) {
 	int i, b;
 	
 	int best[n][budget+1];
 
 	for (b = 0; b <= budget; b++) {
-		if (price[0] > b) {
+		if (prices[0] > b) {
 			best[0][b] = 0;
 		} else {
-			best[0][b] = price[0];
+			best[0][b] = prices[0];
 		}
 	}
 
 	for (i = 1; i < n; i++) {
 		for (b = 0; b <= budget; b++) {
-			if (price[i] > b) {
+			if (prices[i] > b) {
 				best[i][b] = best[i-1][b];
 				continue;
 			}
-			if ( best[i-1][b] > price[i] + best[i-1][b-price[i]] ) {
+			if ( best[i-1][b] > prices[i] + best[i-1][b-prices[i]] ) {
 				best[i][b] = best[i-1][b];
 			} else {
-				best[i][b] = price[i] + best[i-1][b-price[i]];
+				best[i][b] = prices[i] + best[i-1][b-prices[i]];
 			}
 		}
 	}
@@ -64,6 +64,53 @@ int best_dp(int price[], int n, int budget) {
 	return best[n-1][budget];
 }
 
+int best_enumerate(int * prices, int n, int budget, char cart[]) {
+	int finished = 0;
+	int sum, best, item, dgt;
+	char subset[n];
+
+	for(dgt = 0; dgt < n; dgt++)
+		subset[dgt] = 0;
+
+	best = 0;
+	do {
+		sum = 0;
+		for(item = 0; item < n; item++) {
+			if ( subset[item] )
+				sum += prices[item-1];
+		}
+		/*
+		for(int i = 0; i < n; i++) {
+			if ( i < n - item )
+				printf("%d ", subset[i]);
+			else
+				printf("- ");
+		}
+		printf(": %d\n", sum);
+		*/
+		if ( sum <= budget && sum > best ) {
+			best = sum;
+			for(dgt = 0; dgt < n; dgt++)
+				cart[dgt] = subset[dgt];
+		}
+
+		for(item = 0; item < n; item++) {
+			if ( subset[item] )
+				continue;
+			//
+			subset[item] = 1;
+			for(dgt = item; dgt > 0; --dgt) {
+				subset[dgt-1] = 0;
+			}
+			break;
+		}
+		if ( !(item < n) )
+			finished = 1;
+
+	} while (!finished);
+
+	return best;
+}
 
 int main (int argc, const char * argv[]) {
 	int budget;
@@ -91,6 +138,19 @@ int main (int argc, const char * argv[]) {
 		printf("%d, ", plist[i]);
 	}
 	printf("\n\n");
+
+	swatch = clock();
+	totalPrice = best_enumerate(plist, itemCount, budget, cart);
+	swatch = clock() - swatch;
+	printf("By enumeration: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
+	printf("Total %d yen.\n", totalPrice);
+	printf("Buy item id ");
+	for (i = 0; i < itemCount; i++) {
+		if ( cart[i] == 1 )
+			printf("%d (%d), ", i, plist[i]);
+	}
+	printf("\n\n");
+
 
 #ifdef USE_COUNTER
 	counter = 0;
