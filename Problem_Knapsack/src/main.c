@@ -65,7 +65,6 @@ int best_dp(int prices[], int n, int budget) {
 }
 
 int best_enumerate(int * prices, int n, int budget, char cart[]) {
-	int finished = 0;
 	int sum, best, item, dgt;
 	char subset[n];
 
@@ -75,23 +74,13 @@ int best_enumerate(int * prices, int n, int budget, char cart[]) {
 	best = 0;
 	do {
 		sum = 0;
-		for(item = 0; item < n; item++) {
+		for(item = 0; item < n; item++)
 			if ( subset[item] )
-				sum += prices[item-1];
-		}
-		/*
-		for(int i = 0; i < n; i++) {
-			if ( i < n - item )
-				printf("%d ", subset[i]);
-			else
-				printf("- ");
-		}
-		printf(": %d\n", sum);
-		*/
+				sum += prices[item];
+
 		if ( sum <= budget && sum > best ) {
 			best = sum;
-			for(dgt = 0; dgt < n; dgt++)
-				cart[dgt] = subset[dgt];
+			memcpy(cart, subset, sizeof(char)*n);
 		}
 
 		for(item = 0; item < n; item++) {
@@ -99,15 +88,11 @@ int best_enumerate(int * prices, int n, int budget, char cart[]) {
 				continue;
 			//
 			subset[item] = 1;
-			for(dgt = item; dgt > 0; --dgt) {
+			for(dgt = item; dgt > 0; --dgt)
 				subset[dgt-1] = 0;
-			}
 			break;
 		}
-		if ( !(item < n) )
-			finished = 1;
-
-	} while (!finished);
+	} while (item < n);
 
 	return best;
 }
