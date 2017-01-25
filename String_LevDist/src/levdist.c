@@ -80,7 +80,7 @@ long dp_edist(long * frame, char t[], long n, char p[], long m) {
 	return result;
 }
 
-#define SNAKE_HEADS
+//#define SNAKE_HEADS
 long weaving_edist(long * frame, const char t[], const long n, const char p[], const long m)
 {
 	long col, row;
