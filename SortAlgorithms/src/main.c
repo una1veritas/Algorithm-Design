@@ -66,18 +66,6 @@ int main(int argc, char * args[]) {
 		elapsed = stopwatch_clocks(&sw);
 		//printf("Merge:      \t %ld\n",elapsed);
 
-		// showing the contents
-		if (t < 1) {
-			for (int i = 0; i < size; i++) {
-				printf("%ld, ", array[i]);
-				if (i > 24) {
-					printf("... ");
-					break;
-				}
-			}
-			printf("\n");
-		}
-
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
@@ -139,6 +127,17 @@ int main(int argc, char * args[]) {
 		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
 		// showing the result
+
+		if (t < 1) {
+			for (int i = 0; i < size; i++) {
+				printf("%ld, ", array[i]);
+				if (i > 24) {
+					printf("... ");
+					break;
+				}
+			}
+			printf("\n");
+		}
 
 		//
 		if (t == 0) {

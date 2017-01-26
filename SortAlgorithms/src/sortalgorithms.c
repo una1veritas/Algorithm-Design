@@ -10,10 +10,10 @@
 void maxHeapify(long a[], long i, long end) {
 	long larger, tmp;
 		
-		while ( 2*i + 1 < end ) {
-			larger = 2*i + 1;
-			if ( (2*i + 2 < end) && (a[2*i + 1] < a[2*i + 2]) ) {
-				larger = 2*i + 2;
+		while ( (i<<1) + 1 < end ) {
+			larger = (i<<1) + 1;
+			if ( ((i<<1) + 2 < end) && (a[(i<<1) + 1] < a[(i<<1) + 2]) ) {
+				larger = (i<<1) + 2;
 			}
 			if ( a[larger] > a[i] ) {
 				SWAP(a[larger], a[i], tmp);
@@ -28,7 +28,7 @@ void maxHeapify(long a[], long i, long end) {
 void buildMaxHeap(long a[], long n) {
 	long i;
 		
-		for (i = (n / 2) - 1 ; ! (i < 0); i--) {
+		for (i = (n>>1) - 1 ; ! (i < 0); i--) {
 			maxHeapify(a, i, n);
 		}
 		return;
@@ -189,10 +189,10 @@ void mergeSort_recursive(long array[], int n) {
 		for (r = 0; i < n; i++, r++) {
 			bufr[r] = array[i];
 		}
-		mergeSort_recursive(bufl, n/2);
-		mergeSort_recursive(bufr, n - n/2);
+		mergeSort_recursive(bufl, (n>>1) );
+		mergeSort_recursive(bufr, n - (n>>1));
 		for (i = 0, l = 0, r = 0; i < n; i++){
-			if ( !(r < n - n/2) ) {
+			if ( !(r < n - (n>>1)) ) {
 				array[i]=bufl[l];
 				l++;
 				continue;
