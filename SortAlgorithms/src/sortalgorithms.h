@@ -10,7 +10,11 @@
 
 void heapSort(long a[], long n);
 void selectionSort(long a[], long n);
+void selectionSort_range(long a[], long start, long end);
+
 void quickSort(long a[], long n);
+void quickSort_range(long array[], long start, long end);
+
 void bubbleSort(long a[], long n);
 void insertionSort(long a[], long n);
 void mergeSort_recursive(long a[], long n);
