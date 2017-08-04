@@ -6,6 +6,7 @@ RemoteSystemsTempFiles
 *.o
 *.mk
 *.d
+a.out
 *.exe
 *.dll
 .cproject
