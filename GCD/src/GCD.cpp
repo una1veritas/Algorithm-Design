@@ -24,12 +24,13 @@ long gcd_Euclidean(long a, long b) {
 		b = c;
 		countup;
 	} while ( c );
-	return a;
+	return b;
 }
 
 long gcd_naive(long a, long b) {
-	long c;
-	for(long i = 1; i < (a >= b ? b : a); ++i ) {
+	long c, max_a_b;
+	max_a_b = (a >= b ? b : a);
+	for(long i = 1; i < max_a_b; ++i ) {
 		countup;
 		if ( (a % i) == 0 && (b % i) == 0 )
 			c = i;
