@@ -52,13 +52,36 @@ int main(int argc, char * argv[]) {
 }
 
 double CalendarDate(double jd) {
+	/*
+	 * 400 REM CALENDAR DATE FROM THE JD
+410 CLS: INPUT"JD=";JD
+420 IF JD<0 THEN PRINT "NEG JD ERROR":GOTO 400
+425 JD=JD+0.5
+430 Z=FIX(JD)
+440 F=FRAC(JD)
+450 IF Z<2299161 THEN A=Z
+460 IF Z>=2299161 THEN ALPHA=FIX((Z-1867216.25)/36524.25):A=Z+1+ALPHA-FIX(ALPHA/4)
+470 B=A+1524
+480 C=FIX((B-122.1)/365.25)
+490 D=FIX(365.25*C)
+500 E=FIX((B-D)/30.6001)
+510 DOM=B-D-FIX(30.6001*E)+F
+520 IF E<13.5 THEN MON=E-1
+530 IF E>13.5 THEN MON=E-13
+540 IF MON>2.5THEN YER=C-4716
+550 IF MON<2.5THEN YER=C-4715
+560 PRINT YER;"/";MON;"/";DOM
+570 RETURN
+	 */
 	jd += 0.5;
 	long z = INT(jd);
-	long a = z;
 	double f = FRAC(jd);
-	if ( z >= 2299161 ) {
+	long a;
+	if ( z <  2299161 ) {
+		a = z;
+	} else {
 		long alpha = INT( (z-1867216.25)/36524.25 );
-		a += 1 + alpha - INT(alpha/4);
+		a = z + 1 + alpha - INT(alpha/4);
 	}
 	long b = a + 1524;
 	long c = INT( (b-122.1)/365.25 );
@@ -68,7 +91,7 @@ double CalendarDate(double jd) {
 	int month;
 	if ( e < 13.5 ) {
 		month = e - 1;
-	} else {
+	} else { // if ( e > 13.5 ) {
 		month = e-13;
 	}
 	long year;
