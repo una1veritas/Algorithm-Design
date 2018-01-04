@@ -9,6 +9,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include <cstdlib>
+
 using namespace std;
 
 double JulianDay(int, int, double);
@@ -23,11 +25,9 @@ unsigned int DayofWeek(double);
 #define SIGN(x) ((x) < 0 ? -1 : ( (x) > 0 ? 1 : 0))
 
 int main(int argc, char * argv[]) {
-	//test
-	int year = 2011;
-	int month = 10;
-	double date = 12;
-	double jd = 2436116.31;
+	//set dummy values
+	int year = 1966, month = 4;
+	double date = 7, jd = 2458123.20;
 
 	// process input
 	if ( argc == 2 ) {
@@ -36,16 +36,19 @@ int main(int argc, char * argv[]) {
 		year = atoi(argv[1]);
 		month = atoi(argv[2]);
 		date = atof(argv[3]);
+	} else {
+		std::cerr << "input error." << std::endl;
+		return EXIT_FAILURE;
 	}
+	//
 	cout << "Input: ";
 	cout << "Year " << year << ", month " << month << ", date " << date << endl;
 	//
-	cout << "INT(-4.98) = " << INT(-4.98) << endl;
-	//
 	jd = JulianDay(year, month, date);
-	cout << "Julian Day number = "<< INT(jd) << "." << INT(jd*10)%10 << INT(jd*100)%10 << endl << endl;
+	cout << "Julian Day number = "<< INT(jd) << "." << INT(jd*10)%10 << INT(jd*100)%10 << endl;
 	cout << "Day of the week = " << INT(INT(jd)+1.5) %7 << "." << endl;
-	double cal = CalendarDate((double)1507900.13);
+	cout << endl;
+	double cal = CalendarDate(jd);
 	cout << "Calendar date is "<< setprecision(10) << cal << endl;
 
 	return 0;
@@ -87,7 +90,7 @@ double CalendarDate(double jd) {
 	long c = INT( (b-122.1)/365.25 );
 	long d = INT(365.25 * c);
 	long e = INT( (b-d)/30.6001 );
-	double day = b - d - INT(30.6001 * e) + f;
+	double date = b - d - INT(30.6001 * e) + f;
 	int month;
 	if ( e < 13.5 ) {
 		month = e - 1;
@@ -100,7 +103,7 @@ double CalendarDate(double jd) {
 	} else {
 		year = c - 4715;
 	}
-	return SIGN(year)*(abs(year)*10000 + month*100 + day);
+	return SIGN(year)*(abs(year)*10000 + month*100 + date);
 }
 
 double JulianDay(int y, int m, double d) {
