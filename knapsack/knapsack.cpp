@@ -9,9 +9,10 @@
 #include <iostream>
 #include <iomanip>
 
+#include <ctime>
+
 using namespace std;
 
-#include <time.h>
 
 #define MAX(X, Y) ((X) < (Y) ? (Y) : (X))
 
@@ -112,43 +113,43 @@ Recommended total price is 300 with these items 28 32 33 .
  */
 
 int main(int argc, char ** argv) {
-	int number;
+	int itemnum;
 
 	cout << "Budget: " << B << "," << endl;
-	for (number = 0; plist[number] > 0; number++)
+	for (itemnum = 0; plist[itemnum] > 0; itemnum++)
 		;
 
-	cout << number << " Items: " << endl;
-	for (number = 0; plist[number] > 0; number++) {
-		cout << plist[number] << ", ";
+	cout << itemnum << " Items: " << endl;
+	for (itemnum = 0; plist[itemnum] > 0; itemnum++) {
+		cout << plist[itemnum] << ", ";
 	}
 	cout << endl;
 
-	bool shoppingCart[number];
+	bool shoppingCart[itemnum];
 
 	clock_t swatch;
 	int result;
 	swatch = clock();
-	result = best(number - 1, B, shoppingCart);
+	result = best(itemnum - 1, B, shoppingCart);
 	swatch = clock() - swatch;
 	cout << "Elapsed in function \"best\": " << double(swatch) / 1000000L
 			<< " sec. " << endl;
 
 	swatch = clock();
-	result = best_dp(number - 1, B, shoppingCart);
+	result = best_dp(itemnum - 1, B, shoppingCart);
 	swatch = clock() - swatch;
 	cout << "Elapsed in function \"best_dp\": " << double(swatch) / 1000000L
 			<< " sec. " << endl;
 
-	cout << endl << number << " Items: " << endl;
-	for (number = 0; plist[number] > 0; number++) {
-		cout << "(" << number << ")" << plist[number] << ", ";
+	cout << endl << itemnum << " Items: " << endl;
+	for (itemnum = 0; plist[itemnum] > 0; itemnum++) {
+		cout << "(" << itemnum << ")" << plist[itemnum] << ", ";
 	}
 	cout << endl;
 	cout << "Recommended total price is " << result << " with these items ";
-	for (number = 0; plist[number] > 0; number++) {
-		if (shoppingCart[number]) {
-			cout << number << " ";
+	for (itemnum = 0; plist[itemnum] > 0; itemnum++) {
+		if (shoppingCart[itemnum]) {
+			cout << itemnum << " ";
 		}
 	}
 	cout << "." << endl;
