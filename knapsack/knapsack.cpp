@@ -17,7 +17,7 @@ using namespace std;
 #define MAX(X, Y) ((X) < (Y) ? (Y) : (X))
 
 int list4[] = { 108, 78, 78, 64, 0 };
-int list6[] = { 108, 78, 78, 58, 58, 68, 0 };
+int list8[] = { 108, 78, 78, 68, 58, 48, 128, 98, 0 };
 int list10[] = { 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 0 };
 int list20[] = { 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78,
 		78, 58, 158, 68, 128, 98, 0 };
@@ -33,7 +33,7 @@ int list34[] = { 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78,
 		78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228, 238, 198, 298, 64,
 		178, 115, 138, 148, 88, 0 };
 
-int * plist = list30;
+int * plist = list8;
 const int B = 300;
 
 int best(int lastitem, int budget, bool cart[]) {
@@ -98,6 +98,16 @@ int best_dp(const int lastitem, const int budget, bool cart[]) {
 			// not bought
 		}
 	}
+	/* */
+	for(int b = 0; b <= budget; ++b) {
+		cout << setw(3) << b << ": ";
+		for(int i = 0; i < lastitem+1; ++i) {
+			cout << setw(4) << best[i][b] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+	/* */
 	return best[lastitem][budget];
 }
 
