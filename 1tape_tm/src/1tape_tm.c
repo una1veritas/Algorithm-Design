@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 	/* 入力の確認とポインタのセットアップ */
 	if ( argc < 2 )
 		return EXIT_FAILURE;
-	while ( *head == ' ' ) ++head;
+	while ( *head == 'B' ) ++head;
 	printf(">%s<\n", head);
 
 	/* 主ルーチン */
@@ -24,45 +24,67 @@ int main(int argc, char **argv) {
 	do {
 		if ( c > 10 ) { break; } else { ++c; printf("c=%d, ",c); }
 	q_0:
-		printf(">%s<\n", head);
+		printf("q0: %s\n", head);
+		printf(">%s< %d\n", argv[1], (unsigned long) head & 0xffff);
 		while ( *head == 'a' || *head == 'b' ) ++head;
+		printf("q0 %s\n", head);
 		if ( *head == '0' ) {
 			*head++ = 'a';
-			while ( *head == 'a' || *head == 'b' ) ++head;
+			printf("q2\n");
+			while ( *head == '0' || *head == '1' ) ++head;
 			if ( *head == '#' ) {
+				++head;
+				printf("q4 %s\n", head);
 				while ( *head == 'a' || *head == 'b' ) ++head;
 				if ( *head == '0' ) {
 					*head = 'a';
 					--head;
 					//goto q_1;
+				} else {
+					goto q_halt;
 				}
 			}
 		} else if ( *head == '1' ) {
 			*head++ = 'b';
-			while ( *head == 'a' || *head == 'b' ) ++head;
+			while ( *head == '0' || *head == '1' ) ++head;
 			if ( *head == '#' ) {
+				++head;
 				while ( *head == 'a' || *head == 'b' ) ++head;
 				if ( *head == '1' ) {
 					*head = 'b';
 					--head;
 					//goto q_1;
+				} else {
+					goto q_halt;
 				}
 			}
 		} else if ( *head == '#' ) {
 			++head;
+			while ( *head == 'a' || *head == 'b' )
+				++head;
+			if ( *head == 'B' )
+				goto q_accept;
+			break;
+		} else {
 			break;
 		}
 
 	q_1:
-		while ( *head != ' ' ) --head;
-		if ( *head == ' ' ) {
-			++head;
+		printf("q1: \n");
+		while ( *head != 'B' ) {
+			--head;
+			printf("%s\n", head);
 		}
+		++head;
+		printf("%s\n", head);
 	} while (1);
 
-	return EXIT_SUCCESS;
-
-HALT_EXIT:
+q_halt:
 	printf("Machine halted.");
 	return EXIT_FAILURE;
+
+q_accept:
+	printf("accepted.\n");
+	return EXIT_SUCCESS;
+
 }
