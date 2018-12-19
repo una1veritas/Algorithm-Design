@@ -1,26 +1,27 @@
-CC = gcc
-CXX = g++ -std=c++11
 
-CFLAGS = -Wall -O -g3
-CXXFLAGS = -Wall -O -g3
-INCLUDES = -I./src
+CC = gcc -O -g
+CXX = g++ -O -g
 
+CCFLAGS = -O -g -Wall
+CXXFLAGS =	-O2 -g -Wall -fmessage-length=0
 
-%.o: ./src/%.c
-	$(CC) $(CXXFLAGS) $(INCLUDES) -c $<
+OBJS =	main.o sortalgorithms.o stopwatch.o
+LIBS = 
+INCDIRS = -I./src/
 
-all: sortalgorithms.exe
+%.o: ./src/%.c $(INCLUDES)
+	$(CC) -c $(INCLIDRS) $<
 
-nc++test.o:
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
+%.o:%.cpp $(INCLUDES)
+	$(CXX) -c $(INCLIDRS) $<
 
-sortalgorithms.exe: main.o stopwatch.o sortalgorithms.o 
-	$(CXX) $(CXXFLAGS) $(INCLUDES)  main.o stopwatch.o sortalgorithms.o -o $@
+TARGET =	sortalgorithms.exe
 
-main.o: ./src/sortalgorithms.h
-#	$(CXX) $(CXXFLAGS) $(INCLUDES) -c ./src/main.c
-stopwatch.o: ./src/stopwatch.h
-sortalgorithms.o: ./src/sortalgorithms.h
+$(TARGET):	$(OBJS)
+	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
+
+all:	$(TARGET)
 
 clean:
-	rm -f *.exe *.o
+	rm -f $(OBJS) $(TARGET)
+
