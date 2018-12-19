@@ -1,3 +1,4 @@
+
 CC = gcc -O -g
 CXX = g++ -O -g
 
@@ -23,3 +24,4 @@ all:	$(TARGET)
 
 clean:
 	rm -f $(OBJS) $(TARGET)
+
