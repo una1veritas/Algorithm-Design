@@ -119,8 +119,8 @@ void quickSort(long array[], long n) {
     }
 
 
-void bubbleSort(int a[], int n){
-		int i, j, tmp;
+void bubbleSort(long a[], long n){
+		long i, j, tmp;
 		
 		for(i = 1; i < n; i++){
 			for(j = n - 1; j >= i; j--){
@@ -215,11 +215,14 @@ void mergeSort_recursive(long array[], int n) {
 void mergeSort(long array[], long n) {
 		long buf[n];
 		long i, len, start, end; //, cleft, cright, ctemp;
-		
-		for (len = 1; len < n; len = len<<1) {
+		const long bubble_len = 8;
+		for (len = bubble_len; len < n; len = len<<1) {
 			for (start = 0; start < n; start += (len<<1)) {
 				end = MIN(len, n - (start + len) );
-				merge(buf+start, array+start, len, array+(start+len), end);
+				if ( (len<<1) <= bubble_len ) {
+					bubbleSort(buf+start, bubble_len);
+				} else
+					merge(buf+start, array+start, len, array+(start+len), end);
 			}
 			//copy back
 			for (i = 0; i < n; i++)
