@@ -214,23 +214,26 @@ void mergeSort_recursive(long array[], long n) {
 
 void mergeSort(long array[], long n) {
 	long buf[n];
-	long i, len, start, rlen;
+	long i, len, start, llen, rstart, rlen;
 	const long bubble_len = 8;
-
-	if ( bubble_len > 1 ) {
-		for (start = 0; start < n; start += bubble_len) {
-			bubbleSort(array+start, MIN(bubble_len, n - start) );
-		}
-	}
 
 	for (len = bubble_len; len < n; len = len<<1) {
 		for (start = 0; start < n; start += (len<<1)) {
-			rlen = MIN(len, n - (start + len) );
-			// merge array[start,...,start+len-1] and array[start+len,...,start+len+rlen-1]
-			merge(buf+start, array+start, len, array+(start+len), rlen);
-			// copy back
-			for (i = 0; i < len + rlen; i++)
-				array[start+i] = buf[start+i];
+			llen = MIN(len, n - start);
+			rstart = start + len;
+			rlen = MIN(len, n - rstart );
+			if ( len == bubble_len ) {
+				bubbleSort(array+start, llen);
+				if ( rstart < n )
+					bubbleSort(array+rstart, rlen );
+			}
+			if ( rstart < n ) {
+				// merge array[start,...,start+len-1] and array[start+len,...,start+len+rlen-1]
+				merge(buf+start, array+start, llen, array+rstart, rlen);
+				// copy back
+				for (i = 0; i < llen + rlen; i++)
+					array[start+i] = buf[start+i];
+			}
 		}
 	}
 	return;
