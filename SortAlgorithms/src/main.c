@@ -4,9 +4,17 @@
 #include "stopwatch.h"
 #include "sortalgorithms.h"
 
+void make_randarray(long array[], long size, long range) {
+	long r;
+	r = (rand() % range) + 2;
+	for (int i = 0; i < size; i++) {
+		array[i] = rand() % r;
+	}
+}
+
 int main(int argc, char * args[]) {
 	long * array;
-	long size = 35000;
+	long size = 1000;
 
 	stopwatch sw;
 	long elapsed;
@@ -15,7 +23,7 @@ int main(int argc, char * args[]) {
 	long seed = 7;
 
 	long rep = 1000;
-	long t, r;
+	long t;
 	long worst, best;
 	double sum;
 
@@ -43,21 +51,7 @@ int main(int argc, char * args[]) {
 	// Merge Sort
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = (rand() % range) + 2;
-		for (int i = 0; i < size; i++) {
-			array[i] = rand() % r;
-		}
-		// showing the contents
-		if (t < 1) {
-			for (int i = 0; i < size; i++) {
-				printf("%ld, ", array[i]);
-				if (i > 24) {
-					printf("... ");
-					break;
-				}
-			}
-			printf("\n");
-		}
+		make_randarray(array, size, range);
 		//
 		stopwatch_start(&sw);
 		mergeSort(array, size);
@@ -82,19 +76,24 @@ int main(int argc, char * args[]) {
 	printf("Merge:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
 
+	// showing the last sorted contents
+	for (int i = 0; i < size; i++) {
+		printf("%ld, ", array[i]);
+		if (i > 32) {
+			printf("... ");
+			break;
+		}
+	}
+	printf("\n");
+
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = (rand() % range) + 2;
-		for (int i = 0; i < size; i++) {
-			array[i] = rand() % r;
-
-		}
+		make_randarray(array, size, range);
+		//
 		stopwatch_start(&sw);
 		quickSort(array, size);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
-
-		// System.out.println("Quick:  \t"+ (((float)ela)/1000));
 		// showing the contents
 		//
 		if (t == 0) {
@@ -113,32 +112,24 @@ int main(int argc, char * args[]) {
 	printf("Quick:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
 
+	// showing the last sorted contents
+	for (int i = 0; i < size; i++) {
+		printf("%ld, ", array[i]);
+		if (i > 32) {
+			printf("... ");
+			break;
+		}
+	}
+	printf("\n");
+
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = (rand() % range) + 2;
-		for (int i = 0; i < size; i++) {
-			array[i] = rand() % r;
-
-		}
-
+		make_randarray(array, size, range);
+		//
 		stopwatch_start(&sw);
 		heapSort(array, size);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
-		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
-		// showing the result
-
-		if (t < 1) {
-			for (int i = 0; i < size; i++) {
-				printf("%ld, ", array[i]);
-				if (i > 24) {
-					printf("... ");
-					break;
-				}
-			}
-			printf("\n");
-		}
-
 		//
 		if (t == 0) {
 			worst = elapsed;
@@ -158,10 +149,8 @@ int main(int argc, char * args[]) {
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = (rand() % range) + 2;
-		for (int i = 0; i < size; i++)
-			array[i] = rand() % r;
-
+		make_randarray(array, size, range);
+		//
 		stopwatch_start(&sw);
 		insertionSort(array, size);
 		stopwatch_stop(&sw);
@@ -188,10 +177,8 @@ int main(int argc, char * args[]) {
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		r = (rand() % range) + 2;
-		for (int i = 0; i < size; i++)
-			array[i] = rand() % r;
-
+		make_randarray(array, size, range);
+		//
 		stopwatch_start(&sw);
 		selectionSort(array, size);
 		stopwatch_stop(&sw);
