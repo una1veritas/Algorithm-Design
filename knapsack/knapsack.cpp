@@ -33,8 +33,8 @@ int list34[] = { 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78,
 		78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228, 238, 198, 298, 64,
 		178, 115, 138, 148, 88, 0 };
 
-int * plist = list8;
-const int B = 300;
+int * plist = list32;
+const int B = 400;
 
 int best(int lastitem, int budget, bool cart[]) {
 	// lastitem == 0
@@ -98,7 +98,7 @@ int best_dp(const int lastitem, const int budget, bool cart[]) {
 			// not bought
 		}
 	}
-	/* */
+	/*
 	for(int b = 0; b <= budget; ++b) {
 		cout << setw(3) << b << ": ";
 		for(int i = 0; i < lastitem+1; ++i) {
@@ -107,7 +107,7 @@ int best_dp(const int lastitem, const int budget, bool cart[]) {
 		cout << endl;
 	}
 	cout << endl;
-	/* */
+	*/
 	return best[lastitem][budget];
 }
 
@@ -142,24 +142,27 @@ int main(int argc, char ** argv) {
 	swatch = clock();
 	result = best(itemnum - 1, B, shoppingCart);
 	swatch = clock() - swatch;
-	cout << "Elapsed in function \"best\": " << double(swatch) / 1000000L
+	cout << "Elapsed time in function \"best\": " << double(swatch) / 1000000L
 			<< " sec. " << endl;
+
+	cout << " Cart: ";
+	for (itemnum = 0; plist[itemnum] > 0; itemnum++) {
+		if ( shoppingCart[itemnum] )
+			cout << itemnum << " (" << plist[itemnum] << "), ";
+	}
+	cout << endl << endl;
+
 
 	swatch = clock();
 	result = best_dp(itemnum - 1, B, shoppingCart);
 	swatch = clock() - swatch;
-	cout << "Elapsed in function \"best_dp\": " << double(swatch) / 1000000L
+	cout << "Elapsed time in function \"best_dp\": " << double(swatch) / 1000000L
 			<< " sec. " << endl;
 
-	cout << endl << itemnum << " Items: " << endl;
-	for (itemnum = 0; plist[itemnum] > 0; itemnum++) {
-		cout << "(" << itemnum << ")" << plist[itemnum] << ", ";
-	}
-	cout << endl;
 	cout << "Recommended total price is " << result << " with these items ";
 	for (itemnum = 0; plist[itemnum] > 0; itemnum++) {
 		if (shoppingCart[itemnum]) {
-			cout << itemnum << " ";
+			cout << itemnum << " (" << plist[itemnum] << "), ";
 		}
 	}
 	cout << "." << endl;
