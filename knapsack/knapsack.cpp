@@ -33,7 +33,7 @@ int list34[] = { 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78,
 		78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228, 238, 198, 298, 64,
 		178, 115, 138, 148, 88, 0 };
 
-int * plist = list32;
+int * plist = list25;
 const int B = 400;
 
 int best(int lastitem, int budget, bool cart[]) {
@@ -171,52 +171,32 @@ int main(int argc, char ** argv) {
 }
 
 /*
- Budget: 300,
- 4 Items:
- 108, 78, 78, 64,
- Recommended total price is 264 with these items 0 1 2 .
- Elapsed 4e-06.
+Budget: 400,
+25 Items:
+108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78, 78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228,
+Elapsed time in function "best": 0.233844 sec.
+ Cart: 1 (78), 2 (78), 3 (58), 4 (58), 9 (128),
 
- Budget: 300,
- 6 Items:
- 108, 78, 78, 58, 58, 68,
- Recommended total price is 292 with these items 0 3 4 5 .
- Elapsed 6e-06.
+Elapsed time in function "best_dp": 4.7e-05 sec.
+Recommended total price is 400 with these items 6 (38), 8 (58), 15 (58), 21 (118), 22 (128), .
 
- Budget: 300,
- 10 Items:
- 108, 78, 78, 58, 58, 68, 38, 39, 58, 128,
- Recommended total price is 300 with these items 1 3 4 5 6 .
- Elapsed 4.4e-05.
+Budget: 400,
+30 Items:
+108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78, 78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228, 238, 198, 298, 64, 178,
+Elapsed time in function "best": 6.49217 sec.
+ Cart: 1 (78), 2 (78), 3 (58), 4 (58), 9 (128),
 
- Budget: 300,
- 20 Items:
- 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78, 78, 58, 158, 68, 128, 98,
- Recommended total price is 300 with these items 1 3 4 5 6 .
- Elapsed 0.045501.
-
- Budget: 300,
- 25 Items:
- 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78, 78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228,
- Recommended total price is 300 with these items 1 3 4 5 6 .
- Elapsed 1.2132.
-
- Budget: 300,
- 30 Items:
- 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78, 78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228, 238, 198, 298, 64, 178,
- Recommended total price is 300 with these items 1 3 4 5 6 .
- Elapsed 37.806.
+Elapsed time in function "best_dp": 5.6e-05 sec.
+Recommended total price is 400 with these items 20 (158), 28 (64), 29 (178), .
 
 
- Budget: 300,
- 32 Items:
- 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78, 78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228, 238, 198, 298, 64, 178, 115, 138,
- Recommended total price is 300 with these items 1 3 4 5 6 .
- Elapsed 159.271.
+Budget: 400,
+32 Items:
+108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78, 78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228, 238, 198, 298, 64, 178, 115, 138,
+Elapsed time in function "best": 28.6292 sec.
+ Cart: 1 (78), 2 (78), 3 (58), 4 (58), 9 (128),
 
- Budget: 300,
- 34 Items:
- 108, 78, 78, 58, 58, 68, 38, 39, 58, 128, 158, 108, 138, 78, 78, 58, 158, 68, 128, 98, 158, 118, 128, 328, 228, 238, 198, 298, 64, 178, 115, 138, 148, 88,
- Recommended total price is 300 with these items 1 3 4 5 6 .
- Elapsed 647.102.
+Elapsed time in function "best_dp": 6e-05 sec.
+Recommended total price is 400 with these items 7 (39), 11 (108), 30 (115), 31 (138), .
+
  */
