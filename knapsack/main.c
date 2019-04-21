@@ -2,51 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-int bestPrice_recursive(int list[], int budget) {
-	int s, ss;
-	
-	if ( *list == 0 ) 
-		return 0;
-	s = bestPrice_recursive(list+1, budget);
-	if ( *list > budget) 
-		return s;
-	ss = *list + bestPrice_recursive(list+1, budget - *list);
-	if (ss > s) 
-		return ss;
-	return s;
-}
-
-int bestPrice_dp(int list[], int budget) {
-	int i, n;
-	int b;
-	
-	for (n = 1; list[n] != 0; n++);
-	int best[n][budget+1];
-
-	for (b = 0; b <= budget; b++) {
-		if (list[0] > b) {
-			best[0][b] = 0;
-		} else {
-			best[0][b] = list[0];
-		}
-	}
-
-	for (i = 1; i < n; i++) {
-		for (b = 0; b <= budget; b++) {
-			if (list[i] > b) {
-				best[i][b] = best[i-1][b];
-				continue;
-			}
-			if ( best[i-1][b] > list[i] + best[i-1][b-list[i]] ) {
-				best[i][b] = best[i-1][b];
-			} else {
-				best[i][b] = list[i] + best[i-1][b-list[i]];
-			}
-		}
-	}
-	
-	return best[n-1][budget];
-}
+#include "knapsack.h"
 
 int main (int argc, const char * argv[]) {
 	int budget;
@@ -70,6 +26,17 @@ int main (int argc, const char * argv[]) {
 	}
 	printf("\n");
 	
+	int bestCart[itemCount + 1];
+	totalPrice = try_all_subsets(priceList, budget, bestCart);
+	printf("buy items: ");
+	int sum = 0;
+	for (i = 0; priceList[i]; i++) {
+		if ( bestCart[i] )
+			printf("%d (%d), ", i, priceList[i]);
+	}
+	printf("\ntotally %d yen.\n", totalPrice);
+
+	/*
 	// compute.
 	swatch = clock();
 	totalPrice = bestPrice_recursive(priceList, budget);
@@ -84,5 +51,7 @@ int main (int argc, const char * argv[]) {
 	// Show the result.
 	printf("bought totally %d yen.\n", totalPrice);
 	printf("By dp: %f\n", (double) swatch / CLOCKS_PER_SEC);
+	*/
+
     return 0;
 }

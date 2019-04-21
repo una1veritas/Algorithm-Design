@@ -1,7 +1,7 @@
 CC = gcc -O2 -g
 CXX = g++ -O2 -g
 
-OBJS = knapsack.o
+OBJS = knapsack.o main.o
 LIBS = 
 INCDIRS = -I./
 
@@ -20,10 +20,10 @@ TARGET =
 all: knapsack
 
 knapsack: $(OBJS)
-	$(CXX) -o knapsack $(OBJS)
+	$(CC) -o knapsack.exe $(OBJS)
 
-subsetenum: 	subsetenum.o
-	$(CC) -o subsetenum subsetenum.c
+subsetenum: subsetenum.o
+	$(CC) -o subsetenum.exe subsetenum.c
 
 clean:
-	\rm -f *.o 
+	\rm -f *.o *.exe
