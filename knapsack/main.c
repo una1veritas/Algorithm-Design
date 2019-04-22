@@ -4,47 +4,6 @@
 
 #include "knapsack.h"
 
-int try_all_subsets(int list[], int budget, int cart[]) {
-	int n, i;
-	int bestPrice = 0, sum;
-	// count the number
-	for(n = 0; list[n]; ++n) {}
-	int subset[n+1];
-	// initialize subset: cart is "valid" while subset[n] == 0.
-	for(i = 0; i < n + 1; ++i)
-		subset[i] = 0;
-	// try all combinations
-	while ( subset[n] == 0 ) {
-		sum = 0;
-		for(i = 0; i < n; ++i) {
-			if ( subset[i] )
-				sum += list[i];
-#ifdef PRINT_COMBINATION
-			printf("%d, ", subset[i]);
-#endif
-		}
-		if ( sum <= budget && sum > bestPrice ) {
-			bestPrice = sum;
-			for(i = 0; i < n+1; ++i)
-				cart[i] = subset[i];
-		}
-#ifdef PRINT_COMBINATION
-		printf(": %d\n", sum);
-#endif
-		/* make next combination */
-		for(i = 0; i < n + 1; ++i) {
-			if ( subset[i] ) {
-				subset[i] = 0;
-				continue;
-			} else {
-				subset[i] = 1;
-				break;
-			}
-		}
-	}
-	return bestPrice;
-}
-
 int main (int argc, const char * argv[]) {
 	int budget;
 	int itemCount;

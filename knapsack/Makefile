@@ -1,4 +1,4 @@
-CC = gcc -O2 -g
+CC = gcc -O2 -g -DPRINT_COMBINATION
 CXX = g++ -O2 -g
 
 OBJS = knapsack.o main.o
@@ -17,9 +17,12 @@ TARGET =
 #$(TARGET):	$(OBJS)
 #	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
-all: knapsack
+all: knapsack_p
 
 knapsack: $(OBJS)
+	$(CC) -o knapsack.exe $(OBJS)
+
+knapsack_p: $(OBJS)
 	$(CC) -o knapsack.exe $(OBJS)
 
 subsetenum: subsetenum.o
