@@ -4,8 +4,6 @@
 
 #include "knapsack.h"
 
-#undef PRINT_COMBINATION
-
 int bestPrice_recursive(int list[], int budget) {
 	int s, ss;
 	
