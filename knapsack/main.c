@@ -18,13 +18,13 @@ int main (int argc, const char * argv[]) {
 	priceList[i] = 0; // the end mark.
 	
 	// Show our input.
-	printf("%d yen for %d items.\n", budget, itemCount);
+	printf("%d yen, %d items.\n", budget, itemCount);
 	for (i = 0; priceList[i] != 0; i++) {
 		printf("%d, ", priceList[i]);
 	}
-	printf("\n");
+	printf("\n\n");
 	
-	int bestCart[itemCount + 1];
+	unsigned char bestCart[itemCount + 1];
 	totalPrice = try_all_subsets(priceList, budget, bestCart);
 	printf("buy items: ");
 	int sum = 0;

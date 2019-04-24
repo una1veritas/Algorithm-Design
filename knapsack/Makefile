@@ -1,4 +1,4 @@
-CC = gcc -O2 -g -DPRINT_COMBINATION
+CC = gcc -O2 -g #-DSTATUS_PRINT_STDOUT
 CXX = g++ -O2 -g
 
 OBJS = knapsack.o main.o

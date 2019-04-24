@@ -11,6 +11,6 @@
 int bestPrice_recursive(int list[], int budget);
 int bestPrice_dp(int list[], int budget);
 
-int try_all_subsets(int list[], int budget, int cart[]);
+int try_all_subsets(int list[], int budget, unsigned char cart[]);
 
 #endif /* KNAPSACK_H_ */
