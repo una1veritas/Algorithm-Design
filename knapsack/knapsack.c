@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "knapsack.h"
-
-#undef PRINT_COMBINATION
 
 int bestPrice_recursive(int list[], int budget) {
 	int s, ss;
@@ -53,7 +52,7 @@ int bestPrice_dp(int list[], int budget) {
 }
 
 
-int try_all_subsets(int list[], int budget, int cart[]) {
+int try_all_subsets(int list[], int budget, unsigned char cart[]) {
 	int n, i;
 	int bestPrice = 0, sum;
 	// count the number
@@ -68,19 +67,18 @@ int try_all_subsets(int list[], int budget, int cart[]) {
 		for(i = 0; i < n; ++i) {
 			if ( subset[i] )
 				sum += list[i];
-#ifdef PRINT_COMBINATION
+#ifdef STATUS_PRINT_STDOUT
 			printf("%d, ", subset[i]);
 #endif
 		}
 		if ( sum <= budget && sum > bestPrice ) {
 			bestPrice = sum;
-			for(i = 0; i < n+1; ++i)
-				cart[i] = subset[i];
+			memcpy(cart, subset, n);
 		}
-#ifdef PRINT_COMBINATION
+#ifdef STATUS_PRINT_STDOUT
 		printf(": %d\n", sum);
 #endif
-		/* make next combination */
+		/* make the next combination */
 		for(i = 0; i < n + 1; ++i) {
 			if ( subset[i] ) {
 				subset[i] = 0;
