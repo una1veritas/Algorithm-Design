@@ -17,7 +17,7 @@ TARGET =
 #$(TARGET):	$(OBJS)
 #	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
-all: knapsack_p
+all: knapsack
 
 knapsack: $(OBJS)
 	$(CC) -o knapsack.exe $(OBJS)
