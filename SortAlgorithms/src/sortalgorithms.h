@@ -8,6 +8,11 @@
 #ifndef SRC_SORTALGORITHMS_H_
 #define SRC_SORTALGORITHMS_H_
 
+#define MIN(a,b) ((a) < (b)? (a) : (b))
+#define SWAP(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
+
+typedef long data;
+
 void heapSort(long a[], long n);
 void selectionSort(long a[], long n);
 void selectionSort_range(long a[], long start, long end);

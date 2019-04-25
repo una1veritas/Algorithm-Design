@@ -12,17 +12,12 @@ int main(int argc, char **argv) {
 	}
 	printf("\n");
 
-	passcount[0] = 0;
-	passcount[1] = 0;
-
-	while ( insertionSort(array, length)) ;
+	while ( selectionSort(array, length) ) ;
 
 	for(unsigned int i = 0; i < length; ++i) {
 		printf("%d, ", array[i]);
 	}
 	printf("\n");
-
-	printf("passcount [0] = %u, [1] = %u\n", passcount[0], passcount[1]);
 
 	return EXIT_SUCCESS;
 }

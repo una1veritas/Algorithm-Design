@@ -4,8 +4,6 @@
  */
 #include <stdio.h>
 
-#define MIN(a,b) ((a) < (b)? (a) : (b))
-#define SWAP(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
 
 void maxHeapify(long a[], long i, long end) {
 	long larger, tmp;

@@ -9,11 +9,10 @@
 #define SORT_ALGORITHMS_H_
 
 typedef int data;
-int lessthan(data x, data y);
+unsigned int lessthan(data x, data y);
+unsigned int lessthan_or_equal(data x, data y);
 
 unsigned int insertionSort(data a[], unsigned int n);
-
-/* counters by global variables */
-unsigned long passcount[2];
+unsigned int selectionSort(data a[], unsigned int n);
 
 #endif /* SORT_ALGORITHMS_H_ */

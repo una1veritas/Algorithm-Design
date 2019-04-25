@@ -2,6 +2,7 @@ CC = gcc -O2 -g #-DSTATUS_PRINT_STDOUT
 CXX = g++ -O2 -g
 
 OBJS = sort_algorithms.o main.o
+INCLUDES = sort_algorithms.h
 LIBS = 
 INCDIRS = -I./
 
