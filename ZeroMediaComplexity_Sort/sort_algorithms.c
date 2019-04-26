@@ -41,7 +41,7 @@ unsigned int selectionSort(data a[], unsigned int n) {
 	data t;
 	for (sorted_end = 1; sorted_end < n
 			&& lessthan_or_equal(a[sorted_end-1], a[sorted_end]); ++sorted_end);
-	printf("sorted_end: %d\n", sorted_end);
+//	printf("sorted_end: %d\n", sorted_end);
 	if ( sorted_end == n )
 		return 0;
 
@@ -50,12 +50,18 @@ unsigned int selectionSort(data a[], unsigned int n) {
 		if ( lessthan(a[i], a[imin]) ) {
 			imin = i;
 		}
-	printf("imin = %d\n", imin);
+//	printf("imin = %d\n", imin);
 	for(i = 0; i < sorted_end && lessthan_or_equal(a[i], a[imin]); ++i);
-	printf("swap: %d\n", i);
+//	printf("swap: %d\n", i);
 	t = a[i];
 	a[i] = a[imin];
 	a[imin] = t;
 	return 1;
 }
 
+unsigned int mergeSort(data a[], unsigned int n) {
+	data t[n];
+	unsigned int left_begin, left_end, right_begin, right_end;
+
+	return 0;
+}

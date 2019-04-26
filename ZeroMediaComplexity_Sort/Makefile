@@ -2,7 +2,7 @@ CC = gcc -O2 -g #-DSTATUS_PRINT_STDOUT
 CXX = g++ -O2 -g
 
 OBJS = sort_algorithms.o main.o
-INCLUDES = sort_algorithms.h
+INCLUDES = sort_algorithms.h 
 LIBS = 
 INCDIRS = -I./
 
@@ -20,9 +20,9 @@ TARGET =
 
 all: zmsort
 
-zmsort: $(OBJS)
+zmsort: $(OBJS) 
 	$(CC) -o zmsort.exe $(OBJS)
 
 
 clean:
-	\rm -f *.o *.exe
+	\rm -f *.o *~
