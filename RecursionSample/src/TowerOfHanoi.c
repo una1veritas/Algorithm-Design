@@ -1,5 +1,5 @@
 /*
- * RecursionSample.c by Sin Shimozono
+ * TowerOfHanoi.c by Sin Shimozono
  */
 
 #include <stdio.h>
@@ -15,9 +15,11 @@ void Rods_show(Rod rods[]);
  * move the disk on top of disks in `from' to 'to'.
  */
 long Hanoi_move(Rod rods[], int id_from, int id_to) {
+	// pop the top disk
 	int topdisk = rods[id_from].disks[rods[id_from].count-1];
 	rods[id_from].disks[rods[id_from].count-1] = 0;
 	--rods[id_from].count;
+	// push the disk on top
 	rods[id_to].disks[rods[id_to].count] = topdisk;
 	++rods[id_to].count;
 	Rods_show(rods);
