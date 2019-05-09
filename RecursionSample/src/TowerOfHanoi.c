@@ -1,5 +1,7 @@
 /*
  * TowerOfHanoi.c by Sin Shimozono
+ * download from github una1veritas/Algorithm-Design/RecursionSample/
+ *
  */
 
 #include <stdio.h>
@@ -7,7 +9,7 @@
 
 typedef struct {
 	int count;
-	int disks[10];
+	int disks[32];
 } Rod;
 void Rods_show(Rod rods[]);
 
@@ -43,8 +45,8 @@ long Hanoi(Rod rods[], int num, int id_src, int id_work, int id_dst) {
 int main(int argc, char * argv[]) {
 	int n = (argc >= 2 ? atoi(argv[1]) : 3);
 	int moves;
-	Rod rods[3] = {{0}, {0}, {0}};
-	if (n > 10) n = 10;
+	Rod rods[3] = {{0, {0}}, {0, {0}}, {0, {0}}};
+	if (n > 31) n = 31;
 	printf("Tower with %d disks.\n", n);
 	rods[0].count = n;
 	for(int i = 0; i <= n; ++i) {
