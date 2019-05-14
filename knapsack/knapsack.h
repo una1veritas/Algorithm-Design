@@ -8,9 +8,12 @@
 #ifndef KNAPSACK_H_
 #define KNAPSACK_H_
 
-int bestPrice_recursive(int list[], int budget);
-int bestPrice_dp(int list[], int budget);
+typedef unsigned int price;
+typedef unsigned char mybool;
 
-int try_all_subsets(int list[], int budget, unsigned char cart[]);
+price bestPrice_recursive(price list[], price budget);
+price bestPrice_dp(price list[], price budget);
+
+price try_all_subsets(price list[], price budget, mybool cart[]);
 
 #endif /* KNAPSACK_H_ */

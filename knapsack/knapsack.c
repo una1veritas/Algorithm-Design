@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include "knapsack.h"
 
-int try_all_subsets(int list[], int budget, unsigned char cart[]) {
+price try_all_subsets(price list[], price budget, mybool cart[]) {
 	int n, i;
-	int bestPrice = 0, sum;
+	price bestPrice = 0, sum;
 	// count the number
 	for(n = 0; list[n]; ++n) {}
 	int subset[n+1];
@@ -45,23 +44,23 @@ int try_all_subsets(int list[], int budget, unsigned char cart[]) {
 	return bestPrice;
 }
 
-int bestPrice_recursive(int list[], int budget) {
-	int s, ss;
+price bestPrice_recursive(price list[], price budget) {
+	price sum_skip, sum_buy;
 	
 	if ( *list == 0 ) 
 		return 0;
-	s = bestPrice_recursive(list+1, budget);
+	sum_skip = bestPrice_recursive(list+1, budget);
 	if ( *list > budget) 
-		return s;
-	ss = *list + bestPrice_recursive(list+1, budget - *list);
-	if (ss > s) 
-		return ss;
-	return s;
+		return sum_skip;
+	sum_buy = *list + bestPrice_recursive(list+1, budget - *list);
+	if (sum_buy > sum_skip)
+		return sum_buy;
+	return sum_skip;
 }
 
-int bestPrice_dp(int list[], int budget) {
+price bestPrice_dp(price list[], price budget) {
 	int i, n;
-	int b;
+	price b;
 	
 	for (n = 1; list[n] != 0; n++);
 	int best[n][budget+1];
