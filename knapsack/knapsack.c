@@ -100,10 +100,11 @@ unsigned int best_dp(PriceList list, unsigned int budget, unsigned char cart[]) 
 	}
 
 	unsigned int total = best[list.count-1][budget];
-	for(unsigned int itemcount = list.count; itemcount > 1; --itemcount) {
-		if (  best[itemcount - 2][total] == best[itemcount - 2][total] )
+	for(unsigned int itemcount = list.count; itemcount > 0; --itemcount) {
+		printf("%d\n",total);
+		if ( best[itemcount - 1][total] == (itemcount == 1 ? 0 : best[itemcount - 2][total]) ) {
 			cart[itemcount-1] = 0;
-		else {
+		} else {
 			total -= list.price[itemcount-1];
 			cart[itemcount-1] = 1;
 		}
