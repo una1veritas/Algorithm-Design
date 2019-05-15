@@ -8,12 +8,14 @@
 #ifndef KNAPSACK_H_
 #define KNAPSACK_H_
 
-typedef unsigned int price;
-typedef unsigned char mybool;
+typedef struct {
+	unsigned int count;
+	unsigned int * price;
+} PriceList;
 
-price bestPrice_recursive(price list[], price budget);
-price bestPrice_dp(price list[], price budget);
+unsigned int bestPrice_recursive(PriceList list, unsigned int budget, unsigned int item, unsigned char cart[]);
+unsigned int bestPrice_dp(PriceList list, unsigned int budget, unsigned char cart[]);
 
-price try_all_subsets(price list[], price budget, mybool cart[]);
+unsigned int try_all_subsets(PriceList list, unsigned int budget, unsigned char cart[] );
 
 #endif /* KNAPSACK_H_ */

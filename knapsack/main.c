@@ -5,32 +5,33 @@
 #include "knapsack.h"
 
 int main (int argc, const char * argv[]) {
-	int budget;
-	int itemCount;
-	int i, s, totalPrice;
+	unsigned int budget;
+	PriceList pricelist;
+	unsigned int totalPrice;
 	
 	budget = atoi(argv[1]);
-	itemCount = argc - 2;
-	int priceList[itemCount + 1];
-	for (i = 0, s = 2; i < itemCount; i++, s++) {
-		priceList[i] = atoi(argv[s]);
+	pricelist.count = argc - 2;
+	pricelist.price = (unsigned int *) malloc(sizeof(unsigned int)*pricelist.count);
+	for (unsigned int i = 0; i < pricelist.count; i++) {
+		pricelist.price[i] = atoi(argv[i+2]);
 	}
-	priceList[i] = 0; // the end mark.
 	
 	// Show our input.
-	printf("%d yen, %d items.\n", budget, itemCount);
-	for (i = 0; priceList[i] != 0; i++) {
-		printf("%d, ", priceList[i]);
+	printf("%d yen, %d items.\n", budget, pricelist.count);
+	for (unsigned int i = 0; i < pricelist.count; i++) {
+		printf("%d, ", pricelist.price[i]);
 	}
 	printf("\n\n");
 	
-	unsigned char bestCart[itemCount + 1];
-	totalPrice = try_all_subsets(priceList, budget, bestCart);
+	unsigned char bestCart[pricelist.count];
+	for(int i = 0; i < pricelist.count; ++i)
+		bestCart[i] = 0;
+	totalPrice = bestPrice_recursive(pricelist, budget, 0, bestCart);
 	printf("buy items: ");
 	int sum = 0;
-	for (i = 0; priceList[i]; i++) {
+	for (unsigned int i = 0; i < pricelist.count; i++) {
 		if ( bestCart[i] )
-			printf("%d (%d), ", i, priceList[i]);
+			printf("%d (%d), ", i, pricelist.price[i]);
 	}
 	printf("\ntotally %d yen.\n", totalPrice);
 

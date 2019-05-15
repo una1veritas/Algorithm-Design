@@ -1,5 +1,5 @@
-CC = gcc -O2 -g #-DSTATUS_PRINT_STDOUT
-CXX = g++ -O2 -g
+CC = gcc -g #-DSTATUS_PRINT_STDOUT
+CXX = g++ -g
 
 OBJS = knapsack.o main.o
 LIBS = 
