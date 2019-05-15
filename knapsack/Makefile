@@ -3,6 +3,7 @@ CXX = g++ -g
 
 OBJS = knapsack.o main.o
 LIBS = 
+INCLUDES = knapsack.h
 INCDIRS = -I./
 
 TARGET =
@@ -12,9 +13,8 @@ TARGET =
 
 %.o:%.cpp $(INCLUDES)
 	$(CXX) -c $(INCLIDRS) $<
-	
 
-#$(TARGET):	$(OBJS)
+#$(TARGET): $(OBJS)
 #	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
 all: knapsack

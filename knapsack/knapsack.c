@@ -4,7 +4,7 @@
 
 #include "knapsack.h"
 
-unsigned int try_all_subsets(PriceList list, unsigned int budget, unsigned char cart[]) {
+unsigned int best_enumeration(PriceList list, unsigned int budget, unsigned char cart[]) {
 	unsigned int n, i;
 	unsigned int bestPrice = 0, sum;
 	// count the number
@@ -44,39 +44,32 @@ unsigned int try_all_subsets(PriceList list, unsigned int budget, unsigned char 
 	return bestPrice;
 }
 
-unsigned int bestPrice_recursive(PriceList list, unsigned int budget, unsigned int item, unsigned char cart[]) {
+unsigned int best_recursive(PriceList list, unsigned int budget, unsigned int item, unsigned char cart[]) {
 	unsigned int sum_skip, sum_buy;
-	unsigned char tcart1[list.count], tcart2[list.count];
+	unsigned char tcart_buy[list.count], tcart_dont[list.count];
 	if ( item >= list.count )
 		return 0;
-	for(int i = 0; i < list.count; ++i) {
-		tcart1[i] = cart[i];
-		tcart2[i] = cart[i];
-	}
-	sum_skip = bestPrice_recursive(list, budget, item+1, tcart1);
-	if ( list.price[item] > budget) {
-		for(int i = 0; i < list.count; ++i)
-			cart[i] = tcart1[i];
+	sum_skip = best_recursive(list, budget, item+1, tcart_dont);
+	// default --- don't buy it
+	cart[item] = 0;
+	for(int i = item + 1; i < list.count; ++i)
+		cart[i] = tcart_dont[i];
+	if ( list.price[item] > budget)
 		return sum_skip;
-	}
-	sum_buy = list.price[item] + bestPrice_recursive(list, budget - list.price[item], item+1, tcart2);
+	sum_buy = list.price[item] + best_recursive(list, budget - list.price[item], item+1, tcart_buy);
 	if (sum_buy > sum_skip) {
-		for(int i = 0; i < list.count; ++i)
-			cart[i] = tcart2[i];
-		cart[item] = 1;
+		cart[item] = 1; // buy it
+		for(int i = item+1; i < list.count; ++i)
+			cart[i] = tcart_buy[i];
 		return sum_buy;
 	}
-	for(int i = 0; i < list.count; ++i)
-		cart[i] = tcart1[i];
 	return sum_skip;
 }
 
-unsigned int bestPrice_dp(PriceList list, unsigned int budget, unsigned char cart[]) {
-	unsigned int i, b;
-	
+unsigned int best_dp(PriceList list, unsigned int budget, unsigned char cart[]) {
 	unsigned int best[list.count][budget+1];
 
-	for (b = 0; b <= budget; b++) {
+	for (unsigned int b = 0; b <= budget; b++) {
 		if (list.price[0] > b) {
 			best[0][b] = 0;
 		} else {
@@ -84,8 +77,8 @@ unsigned int bestPrice_dp(PriceList list, unsigned int budget, unsigned char car
 		}
 	}
 
-	for (i = 1; i < list.count; i++) {
-		for (b = 0; b <= budget; b++) {
+	for (unsigned int i = 1; i < list.count; i++) {
+		for (unsigned int b = 0; b <= budget; b++) {
 			if (list.price[i] > b) {
 				best[i][b] = best[i-1][b];
 				continue;
@@ -98,6 +91,24 @@ unsigned int bestPrice_dp(PriceList list, unsigned int budget, unsigned char car
 		}
 	}
 	
-	return best[list.count][budget];
+
+	for(int i = 0; i < list.count; ++i) {
+		for(int p = 0; p <= budget; ++p) {
+			printf("%3d ", best[i][p]);
+		}
+		printf("\n");
+	}
+
+	unsigned int total = best[list.count-1][budget];
+	for(unsigned int itemcount = list.count; itemcount > 1; --itemcount) {
+		if (  best[itemcount - 2][total] == best[itemcount - 2][total] )
+			cart[itemcount-1] = 0;
+		else {
+			total -= list.price[itemcount-1];
+			cart[itemcount-1] = 1;
+		}
+	}
+
+	return best[list.count-1][budget];
 }
 
