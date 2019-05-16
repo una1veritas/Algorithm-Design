@@ -13,9 +13,9 @@ typedef struct {
 	unsigned int * price;
 } PriceList;
 
-unsigned int best_recursive(PriceList list, unsigned int budget, unsigned int item, unsigned char cart[]);
-unsigned int best_dp(PriceList list, unsigned int budget, unsigned char cart[]);
+unsigned int bestcart_recursive(PriceList list, unsigned int budget, unsigned int item, unsigned char cart[]);
+unsigned int bestcart_dp(PriceList list, unsigned int budget, unsigned char cart[]);
 
-unsigned int best_enumerate(PriceList list, unsigned int budget, unsigned char cart[] );
+unsigned int bestcart_enumerate(PriceList list, unsigned int budget, unsigned char cart[] );
 
 #endif /* KNAPSACK_H_ */

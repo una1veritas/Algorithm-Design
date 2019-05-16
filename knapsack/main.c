@@ -28,7 +28,7 @@ int main (int argc, const char * argv[]) {
 		bestCart[i] = 0;
 
 	clock_t swatch = clock();
-	totalPrice = best_recursive(pricelist, budget, 0, bestCart);
+	totalPrice = bestcart_dp(pricelist, budget, bestCart);
 	swatch = clock() - swatch;
 	printf("spent %g m sec.\n", swatch/(double)CLOCKS_PER_SEC * 1000);
 	printf("buy items: ");
