@@ -4,7 +4,7 @@
 
 #include "knapsack.h"
 
-unsigned int best_enumeration(PriceList list, unsigned int budget, unsigned char cart[]) {
+unsigned int best_enumerate(PriceList list, unsigned int budget, unsigned char cart[]) {
 	unsigned int n, i;
 	unsigned int bestPrice = 0, sum;
 	// count the number
@@ -92,22 +92,33 @@ unsigned int best_dp(PriceList list, unsigned int budget, unsigned char cart[]) 
 	}
 	
 
+#ifdef STATUS_PRINT_STDOUT
 	for(int i = 0; i < list.count; ++i) {
 		for(int p = 0; p <= budget; ++p) {
 			printf("%3d ", best[i][p]);
 		}
 		printf("\n");
 	}
+#endif
 
 	unsigned int total = best[list.count-1][budget];
-	for(unsigned int itemcount = list.count; itemcount > 0; --itemcount) {
-		printf("%d\n",total);
-		if ( best[itemcount - 1][total] == (itemcount == 1 ? 0 : best[itemcount - 2][total]) ) {
-			cart[itemcount-1] = 0;
-		} else {
-			total -= list.price[itemcount-1];
-			cart[itemcount-1] = 1;
+
+	unsigned int itemcount = list.count;
+	while (total > 0) {
+		if ( itemcount == 1 ) {
+			if ( best[0][total] == list.price[0] )
+				cart[0] = 1;
+			else
+				cart[0] = 0;
+			break;
 		}
+		if ( best[itemcount - 1][total] == best[itemcount - 2][total] ) {
+			cart[itemcount - 1] = 0;
+		} else {
+			total -= list.price[itemcount - 1];
+			cart[itemcount - 1] = 1;
+		}
+		--itemcount;
 	}
 
 	return best[list.count-1][budget];

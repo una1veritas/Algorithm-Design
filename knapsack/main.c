@@ -26,7 +26,11 @@ int main (int argc, const char * argv[]) {
 	unsigned char bestCart[pricelist.count];
 	for(int i = 0; i < pricelist.count; ++i)
 		bestCart[i] = 0;
-	totalPrice = best_dp(pricelist, budget, bestCart);
+
+	clock_t swatch = clock();
+	totalPrice = best_recursive(pricelist, budget, 0, bestCart);
+	swatch = clock() - swatch;
+	printf("spent %g m sec.\n", swatch/(double)CLOCKS_PER_SEC * 1000);
 	printf("buy items: ");
 	int sum = 0;
 	for (unsigned int i = 0; i < pricelist.count; i++) {
