@@ -23,21 +23,22 @@ int main (int argc, const char * argv[]) {
 	}
 	printf("\n\n");
 	
-	unsigned char bestCart[pricelist.count];
-	for(int i = 0; i < pricelist.count; ++i)
+	unsigned char bestCart[bitstobytes(pricelist.count)];
+	for(int i = 0; i < bitstobytes(pricelist.count); ++i)
 		bestCart[i] = 0;
 
 	clock_t swatch = clock();
-	totalPrice = bestcart_dp(pricelist, budget, bestCart);
+	totalPrice = bestcart_recursive(pricelist, budget, 0, bestCart);
 	swatch = clock() - swatch;
 	printf("spent %g m sec.\n", swatch/(double)CLOCKS_PER_SEC * 1000);
 	printf("buy items: ");
 	int sum = 0;
 	for (unsigned int i = 0; i < pricelist.count; i++) {
-		if ( bestCart[i] )
+		if ( bitcheck(bestCart, i) )
 			printf("%d (%d), ", i, pricelist.price[i]);
 	}
 	printf("\ntotally %d yen.\n", totalPrice);
 
+	free(pricelist.price);
     return 0;
 }
