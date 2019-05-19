@@ -1,0 +1,16 @@
+result.txt
+ Created on: 2019/05/19
+     Author: Sin Shimozono
+
+Size: 32000, Range within: 0 -- 1000, Initial Seed: 0, Number of trials: 1000
+Merge:    	worst 17 clk., 	best 0 clk., 	avr. 3.2 clk.
+
+31889 30449 30455 29500 29153 29021 28780 28577 27152 26646 26126 26023 25625 25380 25309 24735 24439 23590 23554 23384 23015 22628 22584 21986 21548 19984 19155 18288 18204 16286 15506 15109 15010 14266 ... 
+--------
+  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0 ... 
+
+Quick:    	worst 334 clk., 	best 0 clk., 	avr. 6.5 clk.
+Heap:    	worst 10 clk., 	best 0 clk., 	avr. 0.5 clk.
+Insertion: 	worst 12079 clk., 	best 545 clk., 	avr. 657.5 clk.
+Selection: 	worst 717 clk., 	best 430 clk., 	avr. 489.1 clk.
+1 clk = 1/1000 sec.

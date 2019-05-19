@@ -13,8 +13,8 @@ void make_randarray(long array[], long size, long range) {
 }
 
 int main(int argc, char * args[]) {
-	long * array;
-	long size = 1000;
+	data * dt;
+	index * ix, size = 1000;
 
 	stopwatch sw;
 	long elapsed;
@@ -46,15 +46,18 @@ int main(int argc, char * args[]) {
 	printf("Size: %ld, Range within: 0 -- %ld, Initial Seed: %ld, Number of trials: %ld\n",
 			size, range, seed, rep);
 
-	array = (long *)malloc(sizeof(long)*size);
+	dt = (data *)malloc(sizeof(data)*size);
+	ix = (index *)malloc(sizeof(index)*size);
 
 	// Merge Sort
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(array, size, range);
+		make_randarray(dt, size, range);
+		for(index i = 0; i < size; ++i)
+			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		mergeSort(array, size);
+		mergeSort(dt, ix, size);
 		stopwatch_stop(&sw);
 
 		elapsed = stopwatch_clocks(&sw);
@@ -77,21 +80,32 @@ int main(int argc, char * args[]) {
 			worst, best, sum / (float)rep);
 
 	// showing the last sorted contents
+	printf("\n");
 	for (int i = 0; i < size; i++) {
-		printf("%ld, ", array[i]);
+		printf("%3ld ", ix[i]);
 		if (i > 32) {
 			printf("... ");
 			break;
 		}
 	}
-	printf("\n");
+	printf("\n--------\n");
+	for (int i = 0; i < size; i++) {
+		printf("%3ld ", dt[ix[i]]);
+		if (i > 32) {
+			printf("... ");
+			break;
+		}
+	}
+	printf("\n\n");
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(array, size, range);
+		make_randarray(dt, size, range);
+		for(index i = 0; i < size; ++i)
+			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		quickSort(array, size);
+		quickSort(dt, ix, size);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		// showing the contents
@@ -111,23 +125,26 @@ int main(int argc, char * args[]) {
 	}
 	printf("Quick:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
-
+	/*
 	// showing the last sorted contents
 	for (int i = 0; i < size; i++) {
-		printf("%ld, ", array[i]);
+		printf("%ld, ", dt[ix[i]]);
 		if (i > 32) {
 			printf("... ");
 			break;
 		}
 	}
 	printf("\n");
+	 */
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(array, size, range);
+		make_randarray(dt, size, range);
+		for(index i = 0; i < size; ++i)
+			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		heapSort(array, size);
+		heapSort(dt, ix, size);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		//
@@ -149,10 +166,12 @@ int main(int argc, char * args[]) {
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(array, size, range);
+		make_randarray(dt, size, range);
+		for(index i = 0; i < size; ++i)
+			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		insertionSort(array, size);
+		insertionSort(dt, ix, size);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
@@ -177,10 +196,12 @@ int main(int argc, char * args[]) {
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(array, size, range);
+		make_randarray(dt, size, range);
+		for(index i = 0; i < size; ++i)
+			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		selectionSort(array, size);
+		selectionSort(dt, ix, size);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
@@ -202,6 +223,7 @@ int main(int argc, char * args[]) {
 
 	printf("1 clk = 1/%ld sec.\n", (long) CLOCKS_PER_SEC);
 
-	free(array);
+	free(dt);
+	free(ix);
 	return EXIT_SUCCESS;
 }

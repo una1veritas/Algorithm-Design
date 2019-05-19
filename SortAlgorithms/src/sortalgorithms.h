@@ -12,18 +12,20 @@
 #define SWAP(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
 
 typedef long data;
+typedef unsigned long index;
+int data_greaterThan(data * a, data * b);
 
-void heapSort(long a[], long n);
-void selectionSort(long a[], long n);
-void selectionSort_range(long a[], long start, long end);
+void heapSort(data d[], index a[], index n);
+void selectionSort(data d[], index a[], index n);
+void selectionSort_range(data d[], index a[], index start, index end);
 
-void quickSort(long a[], long n);
-void quickSort_range(long array[], long start, long end);
+void quickSort(data d[], index a[], index n);
+void quickSort_range(data d[], index array[], index start, index end);
 
-void bubbleSort(long a[], long n);
-void insertionSort(long a[], long n);
-void mergeSort_recursive(long a[], long n);
-void mergeSort(long a[], long n);
+void bubbleSort(data d[], index a[], index n);
+void insertionSort(data d[],index a[], index n);
+void mergeSort_recursive(data d[], index a[], index n);
+void mergeSort(data d[], index a[], index n);
 
 
 #endif /* SRC_SORTALGORITHMS_H_ */

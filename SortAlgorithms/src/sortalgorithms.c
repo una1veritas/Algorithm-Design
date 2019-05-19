@@ -3,17 +3,21 @@
  *
  */
 #include <stdio.h>
+#include "sortalgorithms.h"
 
+int data_greaterThan(data * a, data * b) {
+	return *a > *b;
+}
 
-void maxHeapify(long a[], long i, long end) {
-	long larger, tmp;
+void maxHeapify(data d[], index a[], index i, index end) {
+	index larger, tmp;
 		
 		while ( (i<<1) + 1 < end ) {
 			larger = (i<<1) + 1;
 			if ( ((i<<1) + 2 < end) && (a[(i<<1) + 1] < a[(i<<1) + 2]) ) {
 				larger = (i<<1) + 2;
 			}
-			if ( a[larger] > a[i] ) {
+			if ( data_greaterThan(d+a[larger], d+a[i]) ) {
 				SWAP(a[larger], a[i], tmp);
 				i = larger;
 			} else {
@@ -23,30 +27,30 @@ void maxHeapify(long a[], long i, long end) {
 		return;
     }
 	
-void buildMaxHeap(long a[], long n) {
+void buildMaxHeap(data d[], index a[], index n) {
 	long i;
 		
 		for (i = (n>>1) - 1 ; ! (i < 0); i--) {
-			maxHeapify(a, i, n);
+			maxHeapify(d, a, i, n);
 		}
 		return;
     }
 	
-void heapSort(long a[], long n) {
+void heapSort(data d[], index a[], index n) {
 	long i;
 	long t;
 		
-		buildMaxHeap(a, n);
+		buildMaxHeap(d, a, n);
 		for (i = n - 1; i > 0; i--) {
 			// a[0] is always the maximum. 
 			SWAP(a[0], a[i], t);
-			maxHeapify(a, 0, i);
+			maxHeapify(d, a, 0, i);
 		}
 		return;
     }
 	
 
-void selectionSort_range(long a[], long start, long end){
+void selectionSort_range(data d[], index a[], index start, index end){
 	long i, j, max, t; // i for the length (end+1) of sorted-array.
 		
 	for(i = end - 1; i > start; i--){
@@ -60,14 +64,14 @@ void selectionSort_range(long a[], long start, long end){
 	return;
 }
 	
-void selectionSort(long a[], long n) {
-	return selectionSort_range(a, 0, n);
+void selectionSort(data d[], index a[], index n) {
+	return selectionSort_range(d, a, 0, n);
 }
 
 
-void quickSort_range(long array[], long start, long end) {
-	long smaller, larger, mid;
-	long tmp;
+void quickSort_range(data d[], index array[], index start, index end) {
+	index smaller, larger, mid;
+	index tmp;
 		
 	// do nothing if the size of array equals one.
 	if (! (end - start > 1)) {
@@ -75,17 +79,17 @@ void quickSort_range(long array[], long start, long end) {
 	}
 
 	// order the first, the middle and the last elements.
-	if (array[end - 1] < array[start]) {
+	if ( data_greaterThan(d+array[start], d+array[end - 1]) ) {
 		SWAP(array[start], array[end - 1], tmp);
 	}
 	if (end - start == 2) {
 		return;
 	}
 	mid = ((end - start)>>1) + start;
-	if (array[mid] < array[start]) {
+	if (data_greaterThan(d+array[start], d+array[mid]) ) {
 		SWAP(array[start], array[mid], tmp);
 	}
-	if (array[end - 1] < array[mid]) {
+	if (data_greaterThan(d+array[mid], d+array[end - 1]) ) {
 		SWAP(array[mid], array[end - 1], tmp);
 	}
 	// already enough if the size is no more than three.
@@ -97,7 +101,7 @@ void quickSort_range(long array[], long start, long end) {
 	smaller = start + 1;
 	larger = end - 1;
 	while ( smaller < larger) {
-		if (array[smaller] <= array[start]) {
+		if ( !data_greaterThan(d+array[smaller], d+array[start]) ) {
 			smaller++;
 		} else {
 			// swap array[smaller] with array[larger - 1].
@@ -107,22 +111,22 @@ void quickSort_range(long array[], long start, long end) {
 	}
 
 	// divide into two arrays; the latter always has at least one element.
-	quickSort_range(array, start, smaller);
-	quickSort_range(array, smaller, end);
+	quickSort_range(d, array, start, smaller);
+	quickSort_range(d, array, smaller, end);
 	return;
 }
     
-void quickSort(long array[], long n) {
-	quickSort_range(array, 0, n);
+void quickSort(data d[], index array[], index n) {
+	quickSort_range(d, array, 0, n);
 }
 
 
-void bubbleSort(long a[], long n){
+void bubbleSort(data d[], index a[], index n){
 	int i, j, tmp;
 
 	for(i = 1; i < n; i++){
 		for(j = n - 1; j >= i; j--){
-			if(a[j-1] > a[j]) {
+			if(data_greaterThan(&d[a[j-1]], &d[a[j]])) {
 				tmp = a[j];
 				a[j] = a[j-1];
 				a[j-1] = tmp;
@@ -132,13 +136,13 @@ void bubbleSort(long a[], long n){
 	return;
 }
 	
-void insertionSort(long a[], long n){
-	int i, j, t; // j for the length (end+1) of sorted-array.
+void insertionSort(data d[], index a[], index n){
+	index i, j, t; // j for the length (end+1) of sorted-array.
 
 	for(j = 1; j < n; j++) {
 		t = a[j];
 		for (i = j; i > 0; i--) {
-			if (a[i-1] > t) {
+			if ( data_greaterThan(&d[a[i-1]], &d[t]) ) {
 				a[i] = a[i-1];
 				continue;
 			}
@@ -150,12 +154,12 @@ void insertionSort(long a[], long n){
 	
 	
 
-void merge(long dst[], long lsrc[], long llen, long rsrc[], long rlen) {
-	long dstlen = llen + rlen;
-	long left, right, temp;
+void merge(data d[], index dst[], index lsrc[], index llen, index rsrc[], index rlen) {
+	index dstlen = llen + rlen;
+	index left, right, temp;
 	for (left = 0, right = 0, temp = 0; temp < dstlen; temp++) {
 		if (left < llen && right < rlen) {
-			if (lsrc[left] < rsrc[right]) {
+			if (data_greaterThan(d+rsrc[right], d+lsrc[left]) ) {
 				dst[temp] = lsrc[left];
 				left++;
 			} else {
@@ -174,10 +178,10 @@ void merge(long dst[], long lsrc[], long llen, long rsrc[], long rlen) {
 	}
 }
 
-void mergeSort_recursive(long array[], long n) {
-	long i, l, r;
-	long bufl[n/2];
-	long bufr[n/2+(n % 2)];
+void mergeSort_recursive(data d[], index array[], index n) {
+	index i, l, r;
+	index bufl[n/2];
+	index bufr[n/2+(n % 2)];
 
 	if (n <= 1)
 		return;
@@ -187,8 +191,8 @@ void mergeSort_recursive(long array[], long n) {
 	for (r = 0; i < n; i++, r++) {
 		bufr[r] = array[i];
 	}
-	mergeSort_recursive(bufl, (n>>1) );
-	mergeSort_recursive(bufr, n - (n>>1));
+	mergeSort_recursive(d, bufl, (n>>1) );
+	mergeSort_recursive(d, bufr, n - (n>>1));
 	for (i = 0, l = 0, r = 0; i < n; i++){
 		if ( !(r < n - (n>>1)) ) {
 			array[i]=bufl[l];
@@ -210,10 +214,10 @@ void mergeSort_recursive(long array[], long n) {
 }
     
 
-void mergeSort(long array[], long n) {
-	long buf[n];
-	long i, len, start, llen, rstart, rlen;
-	const long bubble_len = 8;
+void mergeSort(data d[], index array[], index n) {
+	index buf[n];
+	index i, len, start, llen, rstart, rlen;
+	const index bubble_len = 8;
 
 	for (len = bubble_len; len < n; len = len<<1) {
 		for (start = 0; start < n; start += (len<<1)) {
@@ -221,13 +225,13 @@ void mergeSort(long array[], long n) {
 			rstart = start + len;
 			rlen = MIN(len, n - rstart );
 			if ( len == bubble_len ) {
-				bubbleSort(array+start, llen);
+				bubbleSort(d, array+start, llen);
 				if ( rstart < n )
-					bubbleSort(array+rstart, rlen );
+					bubbleSort(d, array+rstart, rlen );
 			}
 			if ( rstart < n ) {
 				// merge array[start,...,start+len-1] and array[start+len,...,start+len+rlen-1]
-				merge(buf+start, array+start, llen, array+rstart, rlen);
+				merge(d, buf+start, array+start, llen, array+rstart, rlen);
 				// copy back
 				for (i = 0; i < llen + rlen; i++)
 					array[start+i] = buf[start+i];

@@ -1,32 +1,27 @@
-CC = gcc -g #-DSTATUS_PRINT_STDOUT
-CXX = g++ -g
+CC = gcc 
+CXX = g++ 
 
-OBJS = knapsack.o main.o
-LIBS = 
-INCLUDES = knapsack.h
-INCDIRS = -I./
+OBJS =		knapsack.o main.o
+INCS = 		knapsack.h
+LIBS =
 
-TARGET =
+TARGET =	knapsack.exe
+
+CXXFLAGS =	-O0 -g -Wall -fmessage-length=0
+#CCFLAGS = -O2 -Wall
+CCFLAGS = -O0 -g -Wall
+
 
 %.o:%.c $(INCLUDES)
-	$(CC) -c $(INCLIDRS) $<
+	$(CC) -c $(CCFLAGS) $<
 
 %.o:%.cpp $(INCLUDES)
-	$(CXX) -c $(INCLIDRS) $<
+	$(CXX) -c $(CXXFLAGS) $<
+	
+$(TARGET):	$(OBJS)
+	$(CC) $(CCFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
 
-#$(TARGET): $(OBJS)
-#	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
-
-all: knapsack
-
-knapsack: $(OBJS)
-	$(CC) -o knapsack.exe $(OBJS)
-
-knapsack_p: $(OBJS)
-	$(CC) -o knapsack.exe $(OBJS)
-
-subsetenum: subsetenum.o
-	$(CC) -o subsetenum.exe subsetenum.c
+all:	$(TARGET)
 
 clean:
-	\rm -f *.o *.exe
+	rm -f $(OBJS) $(TARGET)
