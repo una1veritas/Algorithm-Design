@@ -39,16 +39,16 @@ void buildMaxHeap(data d[], index a[], index n) {
 void heapSort(data d[], index a[], index n) {
 	long i;
 	long t;
-		
-		buildMaxHeap(d, a, n);
-		for (i = n - 1; i > 0; i--) {
-			// a[0] is always the maximum. 
-			SWAP(a[0], a[i], t);
-			maxHeapify(d, a, 0, i);
-		}
-		return;
-    }
-	
+
+	buildMaxHeap(d, a, n);
+	for (i = n - 1; i > 0; i--) {
+		// a[0] is always the maximum.
+		SWAP(a[0], a[i], t);
+		maxHeapify(d, a, 0, i);
+	}
+	return;
+}
+
 
 void selectionSort_range(data d[], index a[], index start, index end){
 	long i, j, max, t; // i for the length (end+1) of sorted-array.
