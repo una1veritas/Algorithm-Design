@@ -25,7 +25,10 @@ int main(const int argc, const char *argv[]) {
 	std::cout << list << std::endl;
 	list.make_tail_loop(2);
 	for(LinkedList::Iterator i = list.begin(); i != list.end(); ++i ) {
-		std::cout << reinterpret_cast<const char*>(*i) << " (" << reinterpret_cast<unsigned long long>(i.nodeptr()->next) << ") ";
+		std::cout << reinterpret_cast<const char*>(*i)
+				<< " (" << reinterpret_cast<unsigned long long>(i.nodeptr()) << "->"
+				<< reinterpret_cast<unsigned long long>(i.nodeptr()->next)
+				<< ") ";
 	}
 	std::cout << std::endl;
 
@@ -33,8 +36,7 @@ int main(const int argc, const char *argv[]) {
 	LinkedList::Iterator fast = list.begin();
 	LinkedList::Iterator slow = list.begin();
 	do {
-		++fast;
-		++fast;
+		fast += 2;
 		++slow;
 		c += 1;
 		std::cout << c << ", ";

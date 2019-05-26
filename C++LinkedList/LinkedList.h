@@ -43,15 +43,17 @@ public:
 		const ListNode * nodeptr() { return ptr->next; }
 		const void * data() {
 			if ( ptr->next == NULL) {
-				std::cerr << "ListNodeHandler::data() accessed NULL ptr." << std::endl;
+				std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
 			}
 			return ptr->next->data;
 		}
 		Iterator & operator++() { ptr = ptr->next; return *this; }
-		Iterator & operator+(int offset) {
+		Iterator & operator+=(int offset) {
 			while ( offset-- ) {
-				if ( ptr->next == NULL )
+				if ( ptr->next == NULL) {
+					std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
 					break;
+				}
 				ptr = ptr->next;
 			}
 			return *this;
