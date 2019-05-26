@@ -17,15 +17,16 @@
 
 struct ListNode {
 public:
-	void * data;
+	const void* data;
 	ListNode * next;
 
 public:
-	ListNode(void * ptr = NULL, ListNode * nodeptr = NULL) {
-		data = ptr;
+	ListNode(const void* d, ListNode * nodeptr = NULL) {
+		data = d;
 		next = nodeptr;
 	}
 };
+
 
 struct LinkedList {
 public:
@@ -34,20 +35,54 @@ public:
 	unsigned int elemcount;
 
 public:
+	struct Iterator {
+		ListNode * ptr;
+
+		Iterator(ListNode * p) { ptr = p; }
+		const void * operator*() { return data(); }
+		const ListNode * nodeptr() { return ptr->next; }
+		const void * data() {
+			if ( ptr->next == NULL) {
+				std::cerr << "ListNodeHandler::data() accessed NULL ptr." << std::endl;
+			}
+			return ptr->next->data;
+		}
+		Iterator & operator++() { ptr = ptr->next; return *this; }
+		Iterator & operator+(int offset) {
+			while ( offset-- ) {
+				if ( ptr->next == NULL )
+					break;
+				ptr = ptr->next;
+			}
+			return *this;
+		}
+		const bool operator!=(const LinkedList::Iterator & itr) const {
+			return ptr != itr.ptr;
+		}
+		const bool operator==(const LinkedList::Iterator & itr) const {
+			return ptr == itr.ptr;
+		}
+	};
+
+public:
 	LinkedList();
 	~LinkedList();
 	unsigned int size() const { return elemcount; }
 
-//	void LinkedList_printf(LinkedList *, char * sep);
+	ListNode * append(const void* dataptr);
+	ListNode * push(const void* dataptr);
+	const void * pop();
 
-	ListNode * append(void * dataptr);
-	ListNode * push(void * dataptr);
-	void * pop();
+	Iterator begin() { return Iterator(head); }
+	Iterator end() { return Iterator(tail); }
+	ListNode * make_tail_loop(unsigned int ith);
 
 	friend std::ostream & operator<<(std::ostream & out, const LinkedList & list) {
 		ListNode * ptr = list.head->next;
 		while ( ptr != NULL ) {
-			out << (unsigned long) ptr->data;
+			out << reinterpret_cast<unsigned long long>(ptr->data) << ' ';
+			if ( ptr == list.tail )
+				break;
 			ptr = ptr->next;
 		}
 		return out;

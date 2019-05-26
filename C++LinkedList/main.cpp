@@ -8,20 +8,39 @@ int main(const int argc, const char *argv[]) {
 
 	std::cout << "Sample LinkedList main." << std::endl;
 
-	list.append((void*) "Hello.");
-	list.append((void*) "What is your name?");
-	list.push((void*) "Hi!");
+	list.append("Hello.");
+	list.append("my");
+	list.push("name");
+	list.push("is");
+	list.push("Chebrashka!");
+	list.push("Ochi");
+	list.push("priyatono!");
 	std::cout << std::endl << "list size = " << list.size() << std::endl;
-	for(ListNode * ptr = list.head->next; ptr != NULL; ptr = ptr->next ) {
-		std::cout << (char*) ptr->data << " (" << (unsigned long) ptr->data << ") ";
+	for(LinkedList::Iterator i = list.begin(); i != list.end(); ++i ) {
+		std::cout << reinterpret_cast<const char*>(*i) << " (" << reinterpret_cast<unsigned long long>(i.nodeptr()) << ") ";
 	}
 	std::cout << std::endl;
 	std::cout << (char *) list.pop() << std::endl;
 	std::cout << "list size = " << list.size() << std::endl;
-	for(ListNode * ptr = list.head->next; ptr != NULL; ptr = ptr->next ) {
-		std::cout << (char*) ptr->data << " (" << (unsigned long) ptr->data << ") ";
+	std::cout << list << std::endl;
+	list.make_tail_loop(2);
+	for(LinkedList::Iterator i = list.begin(); i != list.end(); ++i ) {
+		std::cout << reinterpret_cast<const char*>(*i) << " (" << reinterpret_cast<unsigned long long>(i.nodeptr()->next) << ") ";
 	}
-//	std::cout << list << std::endl;
 	std::cout << std::endl;
+
+	int c = 0;
+	LinkedList::Iterator fast = list.begin();
+	LinkedList::Iterator slow = list.begin();
+	do {
+		++fast;
+		++fast;
+		++slow;
+		c += 1;
+		std::cout << c << ", ";
+	} while ( slow != fast );
+	std::cout << std::endl;
+	std::cout << (char*)*slow << ", " << (char*)*fast << std::endl;
+	std::cout << "finished." << std::endl;
 	std::exit(EXIT_SUCCESS);
 }

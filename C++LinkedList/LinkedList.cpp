@@ -7,8 +7,9 @@
 
 #include "LinkedList.h"
 
+
 LinkedList::LinkedList() {
-	head = new ListNode(0, NULL);
+	head = new ListNode(NULL, NULL);
 	tail = head;
 	elemcount = 0;
 }
@@ -23,7 +24,7 @@ LinkedList::~LinkedList() {
 	delete head;
 }
 
-ListNode * LinkedList::append(void * dptr) {
+ListNode * LinkedList::append(const void* dptr) {
 	ListNode * newnode = new ListNode(dptr, NULL);
 	tail->next = newnode;
 	elemcount += 1;
@@ -31,20 +32,32 @@ ListNode * LinkedList::append(void * dptr) {
 	return newnode;
 }
 
-ListNode * LinkedList::push(void * dataptr) {
-	head->data = dataptr;
-	head = new ListNode(dataptr, head);
+ListNode * LinkedList::push(const void* d) {
+	head->data = d;
+	head = new ListNode(d, head);
 	elemcount += 1;
 	return head->next;
 }
 
-void * LinkedList::pop() {
+const void * LinkedList::pop() {
 	ListNode * t = head;
-	void * dataptr;
+	const void* d;
 	head = head->next;
-	dataptr = head->data;
+	d = head->data;
 	delete t;
 	elemcount -= 1;
-	return dataptr;
+	return d;
 }
 
+ListNode * LinkedList::make_tail_loop(unsigned int ith) {
+	ListNode * ptr = head->next;
+	while ( ptr->next != NULL and ith != 0 ) {
+		ptr = ptr->next;
+		ith -= 1;
+	}
+	if ( ptr == NULL ) {
+		tail->next = tail;
+	}
+	tail->next = ptr;
+	return tail->next;
+}
