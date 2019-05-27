@@ -26,13 +26,13 @@ void down_to_leaf(data a[], unsigned int i, unsigned int n) {
 	data t;
 	while ( 1 ) {
 		j = (i<<1) + 1; // the left child
-		if (! (j < n) )
+		if ( !(j < n) )
 			break;
-		//printf("%d, ", j);
 		if ( j+1 < n ) { // i has the right child
 			if ( lt_or_eqs(a[j], a[j+1]) )
 				j += 1; // select the right child
 		}
+		//printf("%d -> %d, ", i, j);
 		if ( lt_or_eqs(a[j], a[i]) )
 			break;
 		t = a[i]; a[i] = a[j]; a[j] = t;
@@ -42,8 +42,13 @@ void down_to_leaf(data a[], unsigned int i, unsigned int n) {
 }
 
 void make_heap(data a[], unsigned int n) {
-	for(unsigned int i = (n-1)>>1; i > 0; --i)
-		down_to_leaf(a, i-1, n);
+	for(unsigned int i = (n-1)>>1; ; --i) {
+		printf("%d: ", i);
+		down_to_leaf(a, i, n);
+		if ( i == 0 )
+			break;
+	};
+	printf("\n");
 }
 
 void heapSort(data a[], unsigned int n) {
@@ -53,11 +58,11 @@ void heapSort(data a[], unsigned int n) {
 	for(unsigned int i = 0; i < n; ++i) {
 		printf("%d, ", a[i]);
 	}
+	printf("\nheap constructed.\n");
 	printf("\n");
-	printf("\n");
-	for(i = n; i > 0; --i) {
-		t = a[i-1]; a[i-1] = a[0]; a[0] = t;
-		down_to_leaf(a, 0, i - 1);
+	for(i = n - 1; i > 0; --i) {
+		t = a[i]; a[i] = a[0]; a[0] = t;
+		down_to_leaf(a, 0, i);
 		for(unsigned int j = 0; j < n; ++j) {
 			printf("%d, ", a[j]);
 		}
@@ -65,27 +70,6 @@ void heapSort(data a[], unsigned int n) {
 	}
 }
 
-void insertionSort(data a[], unsigned int n){
-	unsigned int i, j;
-	data t;
-	for(;;) {
-		for (i = 0; i < n - 1; ++i) {	++passcount[0];
-			if ( ! lt_or_eqs(a[i], a[i+1]) ) {
-				t = a[i+1];
-				j = i + 1;
-				do { 	++passcount[1];
-					a[j] = a[j-1];
-					--j;
-				} while ( j > 0 && a[j-1] > t);
-				a[j] = t;
-				break;
-			}
-		}
-		if ( i == n - 1 )
-			break;
-	}
-	return;
-}
 
 dataseq input_array(int argc, char * argv[]) {
 	dataseq a;
@@ -117,6 +101,7 @@ int main(int argc, char * argv[]) {
 	heapSort(a.elem, a.length);
 	//insertionSort(a.elem, a.length);
 
+	printf("sort has finished.\n");
 	for(i = 0; i < a.length; ++i) {
 		printf("%d, ", a.elem[i]);
 	}
