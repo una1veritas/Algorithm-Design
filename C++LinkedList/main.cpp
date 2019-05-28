@@ -17,7 +17,7 @@ int main(const int argc, const char *argv[]) {
 	list.push("priyatono!");
 	std::cout << std::endl << "list size = " << list.size() << std::endl;
 	for(LinkedList::Iterator i = list.begin(); i != list.end(); ++i ) {
-		std::cout << reinterpret_cast<const char*>(*i) << " (" << reinterpret_cast<unsigned long long>(i.nodeptr()) << ") ";
+		std::cout << (const char*)(*i) << " (" << (i.nodeptr()) << ") ";
 	}
 	std::cout << std::endl;
 	std::cout << (char *) list.pop() << std::endl;
@@ -25,9 +25,9 @@ int main(const int argc, const char *argv[]) {
 	std::cout << list << std::endl;
 	list.make_tail_loop(2);
 	for(LinkedList::Iterator i = list.begin(); i != list.end(); ++i ) {
-		std::cout << reinterpret_cast<const char*>(*i)
-				<< " (" << reinterpret_cast<unsigned long long>(i.nodeptr()) << "->"
-				<< reinterpret_cast<unsigned long long>(i.nodeptr()->next)
+		std::cout << (const char*)(*i)
+				<< " (" << (i.nodeptr()) << "->"
+				<< (i.nodeptr()->next)
 				<< ") ";
 	}
 	std::cout << std::endl;
@@ -42,7 +42,7 @@ int main(const int argc, const char *argv[]) {
 		std::cout << c << ", ";
 	} while ( slow != fast );
 	std::cout << std::endl;
-	std::cout << (char*)*slow << ", " << (char*)*fast << std::endl;
+	std::cout << (char*) *slow << ", " << (char*) *fast << std::endl;
 	std::cout << "finished." << std::endl;
 	std::exit(EXIT_SUCCESS);
 }
