@@ -17,7 +17,7 @@ int main(const int argc, const char *argv[]) {
 	list.push("priyatono!");
 	std::cout << std::endl << "list size = " << list.size() << std::endl;
 	for(LinkedList::Iterator i = list.begin(); i != list.end(); ++i ) {
-		std::cout << (const char*)(*i) << " (" << (i.nodeptr()) << ") ";
+		std::cout << (const char*)(*i) << " (" << (i.nodeptr()) << ") " << std::flush;
 	}
 	std::cout << std::endl;
 	std::cout << (char *) list.pop() << std::endl;
@@ -28,7 +28,7 @@ int main(const int argc, const char *argv[]) {
 		std::cout << (const char*)(*i)
 				<< " (" << (i.nodeptr()) << "->"
 				<< (i.nodeptr()->next)
-				<< ") ";
+				<< ") " << std::flush;
 	}
 	std::cout << std::endl;
 

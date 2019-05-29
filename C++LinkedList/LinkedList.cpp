@@ -82,3 +82,14 @@ ListNode * LinkedList::make_tail_loop(unsigned int ith) {
 	}
 	return tailptr->next;
 }
+
+std::ostream & LinkedList::printOn(std::ostream & out) const {
+	const ListNode * ptr = &head;
+	while ( ptr->next != NULL ) {
+		out << reinterpret_cast<unsigned long long>(ptr->next->data) << ' ';
+		if ( ptr == tailptr )
+			break;
+		ptr = ptr->next;
+	}
+	return out;
+}

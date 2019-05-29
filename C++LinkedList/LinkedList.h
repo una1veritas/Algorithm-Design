@@ -21,10 +21,7 @@ public:
 	ListNode * next;
 
 public:
-	ListNode(const void* d, ListNode * nodeptr = NULL) {
-		data = d;
-		next = nodeptr;
-	}
+	ListNode(const void* d, ListNode * nodeptr = NULL) : data(d), next(nodeptr) { }
 };
 
 
@@ -57,6 +54,7 @@ public:
 	ListNode * append(const void* dataptr);
 	ListNode * push(const void* dataptr);
 	const void * pop();
+	std::ostream & printOn(std::ostream & out) const;
 
 	Iterator begin() { return Iterator(&head); }
 	Iterator end() { return Iterator(tailptr); }
@@ -64,14 +62,7 @@ public:
 	ListNode * make_tail_loop(unsigned int ith);
 
 	friend std::ostream & operator<<(std::ostream & out, LinkedList & list) {
-		ListNode * ptr = &list.head;
-		while ( ptr != NULL ) {
-			out << reinterpret_cast<unsigned long long>( ptr->data) << ' ';
-			if ( ptr == list.tailptr )
-				break;
-			ptr = ptr->next;
-		}
-		return out;
+		return list.printOn(out);
 	}
 
 };

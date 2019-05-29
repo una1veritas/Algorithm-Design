@@ -6,6 +6,7 @@ CXXFLAGS =  -std=c++11 -O0 -g -Wall -fmessage-length=0
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 OBJS = main.o LinkedList.o
+INCLUDES = LinkedList.h
 
 #ifeq ($(BUILD_MODE),debug)
 #	CFLAGS += -g
