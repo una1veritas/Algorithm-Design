@@ -32,6 +32,7 @@ int main(const int argc, const char *argv[]) {
 	}
 	std::cout << std::endl;
 
+
 	int c = 0;
 	LinkedList::Iterator fast = list.begin();
 	LinkedList::Iterator slow = list.begin();
@@ -43,6 +44,7 @@ int main(const int argc, const char *argv[]) {
 	} while ( slow != fast );
 	std::cout << std::endl;
 	std::cout << (char*) *slow << ", " << (char*) *fast << std::endl;
+
 	std::cout << "finished." << std::endl;
 	std::exit(EXIT_SUCCESS);
 }

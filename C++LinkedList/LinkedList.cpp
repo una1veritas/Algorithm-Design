@@ -7,57 +7,78 @@
 
 #include "LinkedList.h"
 
+const void * LinkedList::Iterator::data() const {
+	if ( preptr == NULL) {
+		std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
+	}
+	return preptr->next->data;
+}
+LinkedList::Iterator & LinkedList::Iterator::operator++() { preptr = preptr->next; return *this; }
+LinkedList::Iterator & LinkedList::Iterator::operator+=(int offset) {
+	while ( offset-- ) {
+		if ( preptr == NULL) {
+			std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
+			break;
+		}
+		preptr = preptr->next;
+	}
+	return *this;
+}
+const bool LinkedList::Iterator::operator==(const Iterator & itr) const {
+	return preptr == itr.preptr;
+}
+const bool LinkedList::Iterator::operator!=(const Iterator & itr) const {
+	return preptr != itr.preptr;
+}
 
-LinkedList::LinkedList() {
-	head = new ListNode(NULL, NULL);
-	tail = head;
+
+LinkedList::LinkedList() : head(0, NULL) {
+	tailptr = &head;
 	elemcount = 0;
 }
 
 LinkedList::~LinkedList() {
 	ListNode * t;
-	while ( head->next != NULL ) {
-		t = head;
-		head = head->next;
+	while ( head.next != NULL ) {
+		t = head.next;
+		head.next = head.next->next;
 		delete t;
 	}
-	delete head;
 }
 
 ListNode * LinkedList::append(const void* dptr) {
 	ListNode * newnode = new ListNode(dptr, NULL);
-	tail->next = newnode;
+	tailptr->next = newnode;
 	elemcount += 1;
-	tail = tail->next;
+	tailptr = newnode;
 	return newnode;
 }
 
 ListNode * LinkedList::push(const void* d) {
-	head->data = d;
-	head = new ListNode(d, head);
+	head.next = new ListNode(d, head.next);
 	elemcount += 1;
-	return head->next;
+	return head.next;
 }
 
 const void * LinkedList::pop() {
-	ListNode * t = head;
-	const void* d;
-	head = head->next;
-	d = head->data;
+	ListNode * t = head.next;
+	const void* d = t->data;
+	head = t->next;
 	delete t;
 	elemcount -= 1;
 	return d;
 }
 
 ListNode * LinkedList::make_tail_loop(unsigned int ith) {
-	ListNode * ptr = head->next;
-	while ( ptr->next != NULL and ith != 0 ) {
+	ListNode * ptr = head.next;
+	while ( ptr != NULL and ith != 0 ) {
 		ptr = ptr->next;
 		ith -= 1;
 	}
 	if ( ptr == NULL ) {
-		tail->next = tail;
+		tailptr->next = tailptr;
+	} else {
+		tailptr->next = ptr;
 	}
-	tail->next = ptr;
-	return tail->next;
+	return tailptr->next;
 }

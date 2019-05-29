@@ -30,40 +30,23 @@ public:
 
 struct LinkedList {
 public:
-	ListNode * head;
-	ListNode * tail;
+	ListNode head;
+	ListNode * tailptr;
 	unsigned int elemcount;
 
 public:
-	struct Iterator {
-		ListNode * ptr;
 
-		Iterator(ListNode * p) { ptr = p; }
+	struct Iterator {
+		ListNode * preptr;
+
+		Iterator(ListNode * ptr) { preptr = ptr; }
 		const void * operator*() { return data(); }
-		const ListNode * nodeptr() { return ptr->next; }
-		const void * data() {
-			if ( ptr->next == NULL) {
-				std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
-			}
-			return ptr->next->data;
-		}
-		Iterator & operator++() { ptr = ptr->next; return *this; }
-		Iterator & operator+=(int offset) {
-			while ( offset-- ) {
-				if ( ptr->next == NULL) {
-					std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
-					break;
-				}
-				ptr = ptr->next;
-			}
-			return *this;
-		}
-		const bool operator!=(const LinkedList::Iterator & itr) const {
-			return ptr != itr.ptr;
-		}
-		const bool operator==(const LinkedList::Iterator & itr) const {
-			return ptr == itr.ptr;
-		}
+		const ListNode * nodeptr() { return preptr->next; }
+		const void * data() const;
+		Iterator & operator++();
+		Iterator & operator+=(int offset);
+		const bool operator==(const Iterator & itr) const;
+		const bool operator!=(const Iterator & itr) const;
 	};
 
 public:
@@ -75,15 +58,16 @@ public:
 	ListNode * push(const void* dataptr);
 	const void * pop();
 
-	Iterator begin() { return Iterator(head); }
-	Iterator end() { return Iterator(tail); }
+	Iterator begin() { return Iterator(&head); }
+	Iterator end() { return Iterator(tailptr); }
+
 	ListNode * make_tail_loop(unsigned int ith);
 
-	friend std::ostream & operator<<(std::ostream & out, const LinkedList & list) {
-		ListNode * ptr = list.head->next;
+	friend std::ostream & operator<<(std::ostream & out, LinkedList & list) {
+		ListNode * ptr = &list.head;
 		while ( ptr != NULL ) {
-			out << reinterpret_cast<unsigned long long>(ptr->data) << ' ';
-			if ( ptr == list.tail )
+			out << reinterpret_cast<unsigned long long>( ptr->data) << ' ';
+			if ( ptr == list.tailptr )
 				break;
 			ptr = ptr->next;
 		}
