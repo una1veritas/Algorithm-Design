@@ -63,7 +63,7 @@ ListNode * LinkedList::push(const void* d) {
 const void * LinkedList::pop() {
 	ListNode * t = head.next;
 	const void* d = t->data;
-	head = t->next;
+	head.next = t->next;
 	delete t;
 	elemcount -= 1;
 	return d;

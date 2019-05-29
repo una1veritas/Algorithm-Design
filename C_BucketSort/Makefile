@@ -5,8 +5,9 @@ CXXFLAGS =  -std=c++11 -O0 -g -Wall -fmessage-length=0
 
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
+TARGET = bucketsort.exe
 OBJS = main.o LinkedList.o
-INCLUDES = LinkedList.h
+INCLUDES = 
 
 #ifeq ($(BUILD_MODE),debug)
 #	CFLAGS += -g
@@ -16,16 +17,16 @@ INCLUDES = LinkedList.h
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 #endif
 
-all:	C++LinkedList
+all:	$(TARGET)
 
-%.o:	$(PROJECT_ROOT)%.cpp
-	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+%.o:	%.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
-%.o:	$(PROJECT_ROOT)%.c
-	$(CC) -c $(CFLAGS)  -o $@ $<
+%.o:	%.c
+	$(CC) -c $(CCFLAGS)  -o $@ $<
 
-C++LinkedList:	$(OBJS)
+$(TARGET):	$(OBJS)
 	$(CXX) -o $@ $^
 
 clean:
-	rm -fr C++LinkedList $(OBJS)
+	rm -fr $(TARGET) $(OBJS)
