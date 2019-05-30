@@ -20,22 +20,11 @@ LinkedList::Iterator & LinkedList::Iterator::operator+=(int offset) {
 			std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
 			break;
 		}
-		preptr = preptr->next;
+		++(*this);
 	}
 	return *this;
 }
-const bool LinkedList::Iterator::operator==(const Iterator & itr) const {
-	return preptr == itr.preptr;
-}
-const bool LinkedList::Iterator::operator!=(const Iterator & itr) const {
-	return preptr != itr.preptr;
-}
 
-
-LinkedList::LinkedList() : head(0, NULL) {
-	tailptr = &head;
-	elemcount = 0;
-}
 
 LinkedList::~LinkedList() {
 	ListNode * t;

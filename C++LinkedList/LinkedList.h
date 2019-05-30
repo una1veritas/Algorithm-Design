@@ -38,16 +38,20 @@ public:
 
 		Iterator(ListNode * ptr) { preptr = ptr; }
 		const void * operator*() { return data(); }
-		const ListNode * nodeptr() { return preptr->next; }
+		const ListNode & node() { return *(preptr->next); }
 		const void * data() const;
 		Iterator & operator++();
 		Iterator & operator+=(int offset);
-		const bool operator==(const Iterator & itr) const;
-		const bool operator!=(const Iterator & itr) const;
+		const bool operator==(const Iterator & itr) const {
+			return preptr->next == itr.preptr->next;
+		}
+		const bool operator!=(const Iterator & itr) const {
+			return preptr->next != itr.preptr->next;
+		}
 	};
 
 public:
-	LinkedList();
+	LinkedList() : head(0, NULL), tailptr(&head), elemcount(0) { }
 	~LinkedList();
 	unsigned int size() const { return elemcount; }
 
@@ -57,7 +61,7 @@ public:
 	std::ostream & printOn(std::ostream & out) const;
 
 	Iterator begin() { return Iterator(&head); }
-	Iterator end() { return Iterator(tailptr); }
+	Iterator end() { return Iterator(tailptr->next); }
 
 	ListNode * make_tail_loop(unsigned int ith);
 
