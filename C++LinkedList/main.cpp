@@ -17,40 +17,43 @@ int main(const int argc, const char *argv[]) {
 	list.push("2");
 	list.push("1");
 	list.push("0");
+	list.push("-1");
 	std::cout << std::endl << "list size = " << list.size() << std::endl;
-	for(LinkedList::Iterator i = list.begin(); i != list.end(); ++i ) {
-		std::cout << (const char*)(*i) << " (" << (&i.node()) << ") " << std::flush;
+	for(ListNode * i = list.begin(); i != list.end(); i = i->next ) {
+		std::cout << (const char*) i->next->data << " (->" << i->next->next << "), " << std::flush;
 	}
 	std::cout << std::endl;
-	std::cout << (char *) list.pop() << std::endl;
-	std::cout << "list size = " << list.size() << std::endl;
-	std::cout << list << std::endl;
-	list.make_tail_loop(4);
-	for(LinkedList::Iterator i = list.begin(); i != list.end(); ++i ) {
-		std::cout << (const char*)(*i) << " -> " << (const char*) (i.node().next->data) << ", ";
+	list.pop();
+	std::cout << "list data, next = " << list << std::endl;
+	list.make_tail_loop(5);
+	for(ListNode * i = list.begin(); i != list.end(); i = i->next ) {
+		std::cout << (const char*) i->next->data << " ->(" << std::hex << (void*) i->next->next << "), ";
 	}
 	std::cout << std::endl << std::endl;
 
 	int c = 0;
-	LinkedList::Iterator p1 = list.begin();
-	LinkedList::Iterator p2 = list.begin();
-	std::cout << c <<": (" << (const char*) *p1 << ", " << (const char*) *p2 << "); ";
+	ListNode * p1 = list.begin();
+	ListNode * p2 = list.begin();
 	do {
-		++p1;
-		++p2; ++p2;
-		c += 1;
-		std::cout << c <<": (" << (const char*) *p1 << ", " << (const char*) *p2 << "); ";
-	} while ( p1 != p2 );
+		std::cout << c <<": (" << (const char*) p1->next->data << ", " << (const char*) p2->next->data << "); ";
+		p1 = p1->next;
+		p2 = p2->next;
+		p2 = p2->next;
+		++c;
+	} while (p1->next != p2->next);
+	std::cout << c <<": (" << (const char*) p1->next->data << ", " << (const char*) p2->next->data << "); ";
 	std::cout << std::endl;
 	p1 = list.begin();
 	do {
-		++p1;
-		++p2;
-		c += 1;
-		std::cout << c <<": (" << (const char*) *p1 << ", " << (const char*) *p2 << "); ";
-	} while ( p1 != p2 );
+		std::cout << c <<": (" << (const char*) p1->next->data << ", " << (const char*) p2->next->data << "); ";
+		p1 = p1->next;
+		p2 = p2->next;
+		++c;
+	} while ( p1->next != p2->next );
+	std::cout << c <<": (" << (const char*) p1->next->data << ", " << (const char*) p2->next->data << "); ";
 	std::cout << std::endl;
 
 	std::cout << "finished." << std::endl;
+
 	std::exit(EXIT_SUCCESS);
 }

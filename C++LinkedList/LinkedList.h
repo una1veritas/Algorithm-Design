@@ -37,9 +37,7 @@ public:
 		ListNode * preptr;
 
 		Iterator(ListNode * ptr) { preptr = ptr; }
-		const void * operator*() { return data(); }
-		const ListNode & node() { return *(preptr->next); }
-		const void * data() const;
+		const ListNode & operator*() { return *(preptr->next); }
 		Iterator & operator++();
 		Iterator & operator+=(int offset);
 		const bool operator==(const Iterator & itr) const {
@@ -60,8 +58,8 @@ public:
 	const void * pop();
 	std::ostream & printOn(std::ostream & out) const;
 
-	Iterator begin() { return Iterator(&head); }
-	Iterator end() { return Iterator(tailptr->next); }
+	ListNode * begin() { return &head; }
+	ListNode * end() { return tailptr; }
 
 	ListNode * make_tail_loop(unsigned int ith);
 

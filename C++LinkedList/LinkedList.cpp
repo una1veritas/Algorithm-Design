@@ -7,12 +7,6 @@
 
 #include "LinkedList.h"
 
-const void * LinkedList::Iterator::data() const {
-	if ( preptr == NULL) {
-		std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
-	}
-	return preptr->next->data;
-}
 LinkedList::Iterator & LinkedList::Iterator::operator++() { preptr = preptr->next; return *this; }
 LinkedList::Iterator & LinkedList::Iterator::operator+=(int offset) {
 	while ( offset-- ) {
@@ -75,7 +69,7 @@ ListNode * LinkedList::make_tail_loop(unsigned int ith) {
 std::ostream & LinkedList::printOn(std::ostream & out) const {
 	const ListNode * ptr = &head;
 	while ( ptr->next != NULL ) {
-		out << reinterpret_cast<unsigned long long>(ptr->next->data) << ' ';
+		out << "(" << std::hex << ptr->next->data << ", " << std::hex << ptr->next->data << "), ";
 		if ( ptr == tailptr )
 			break;
 		ptr = ptr->next;

@@ -3,7 +3,7 @@ CXX = g++
 CCFLAGS =  -O0 -g -Wall
 CXXFLAGS =  -std=c++11 -O0 -g -Wall -fmessage-length=0
 
-PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+#PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 OBJS = main.o LinkedList.o
 INCLUDES = LinkedList.h
@@ -16,16 +16,16 @@ INCLUDES = LinkedList.h
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 #endif
 
-all:	C++LinkedList
+all:	C++LinkedList.exe
 
-%.o:	$(PROJECT_ROOT)%.cpp
+%.o:	%.cpp
 	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
-%.o:	$(PROJECT_ROOT)%.c
+%.o:	%.c
 	$(CC) -c $(CFLAGS)  -o $@ $<
 
-C++LinkedList:	$(OBJS)
+C++LinkedList.exe:	$(OBJS)
 	$(CXX) -o $@ $^
 
 clean:
-	rm -fr C++LinkedList $(OBJS)
+	rm -fr C++LinkedList.exe $(OBJS)
