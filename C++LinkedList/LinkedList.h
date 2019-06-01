@@ -34,18 +34,13 @@ public:
 public:
 
 	struct Iterator {
-		ListNode * preptr;
+		ListNode * prevptr;
 
-		Iterator(ListNode * ptr) { preptr = ptr; }
-		const ListNode & operator*() { return *(preptr->next); }
-		Iterator & operator++();
-		Iterator & operator+=(int offset);
-		const bool operator==(const Iterator & itr) const {
-			return preptr->next == itr.preptr->next;
-		}
-		const bool operator!=(const Iterator & itr) const {
-			return preptr->next != itr.preptr->next;
-		}
+		Iterator(ListNode * ptr) : prevptr(ptr) { }
+		Iterator & operator++() { prevptr = prevptr->next; return *this; }
+		bool operator !=(const Iterator & itr) const { return (prevptr != itr.prevptr); }
+		ListNode & operator*()  { return *(prevptr->next); }
+		ListNode * operator->() { return prevptr->next; }
 	};
 
 public:
@@ -58,8 +53,8 @@ public:
 	const void * pop();
 	std::ostream & printOn(std::ostream & out) const;
 
-	ListNode * begin() { return &head; }
-	ListNode * end() { return tailptr; }
+	Iterator begin() { return Iterator(&head); }
+	Iterator end()   { return Iterator(tailptr); }
 
 	ListNode * make_tail_loop(unsigned int ith);
 

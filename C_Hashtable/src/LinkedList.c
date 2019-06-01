@@ -64,14 +64,27 @@ ListNode * LinkedList_end(LinkedList * list) {
 	return list->tailptr;
 }
 
-ListNode * LinkedList_find(LinkedList * list, void * dataptr) {
+ListNode * LinkedList_find(LinkedList * list, void * data) {
 	ListNode * preptr = &list->head;
 	while ( preptr != list->tailptr ) {
-		if ( preptr->next->data == dataptr ) {
+		if ( preptr->next->data == data ) {
 			return preptr;
 		}
 	}
 	return NULL;
+}
+
+void * LinkedList_remove(LinkedList * list, void * data) {
+	ListNode * preptr = &list->head;
+	while ( preptr != list->tailptr ) {
+		if ( preptr->next->data == data ) {
+			break;
+		}
+	}
+	if ( preptr == list->tailptr ) {
+		return NULL;
+	}
+	return preptr->next->data;
 }
 
 

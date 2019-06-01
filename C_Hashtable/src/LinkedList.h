@@ -29,5 +29,6 @@ void * LinkedList_pop(LinkedList * list);
 ListNode * LinkedList_begin(LinkedList * list);
 ListNode * LinkedList_end(LinkedList * list);
 ListNode * LinkedList_find(LinkedList * list, void*);
+void * LinkedList_remove(LinkedList * list, void*);
 
 #endif /* LINKEDLIST_H_ */

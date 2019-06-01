@@ -19,7 +19,7 @@ INCLUDES = LinkedList.h
 all:	C++LinkedList.exe
 
 %.o:	%.cpp
-	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 %.o:	%.c
 	$(CC) -c $(CFLAGS)  -o $@ $<

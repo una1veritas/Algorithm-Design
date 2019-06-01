@@ -7,18 +7,6 @@
 
 #include "LinkedList.h"
 
-LinkedList::Iterator & LinkedList::Iterator::operator++() { preptr = preptr->next; return *this; }
-LinkedList::Iterator & LinkedList::Iterator::operator+=(int offset) {
-	while ( offset-- ) {
-		if ( preptr == NULL) {
-			std::cerr << "LinkedList::Iterator::data() accessed NULL ptr." << std::endl;
-			break;
-		}
-		++(*this);
-	}
-	return *this;
-}
-
 
 LinkedList::~LinkedList() {
 	ListNode * t;
