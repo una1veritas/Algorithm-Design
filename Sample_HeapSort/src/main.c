@@ -10,13 +10,19 @@
 #include <time.h>
 //#include "mt.h"
 
-typedef int data;
+typedef char * data;
 typedef struct {
 	data * elem;
 	unsigned int length;
 } dataseq;
 
-#define lt_or_eqs(x, y)  ((x) <= (y) ? 1 : 0)
+int lt_or_eqs(data x, data y) {
+	char * px, *py;
+	int cnt;
+	for(cnt = 0, px = x; cnt < 2 && *px != '\0'; ++px) {}
+	for(cnt = 0, py = y; cnt < 2 && *py != '\0'; ++py) {}
+	return atoi(px) < atoi(py);
+}
 
 /* passage counters */
 long passcount[] = { 0, 0, };
@@ -56,7 +62,7 @@ void heapSort(data a[], unsigned int n) {
 	data t;
 	make_heap(a, n);
 	for(unsigned int i = 0; i < n; ++i) {
-		printf("%d, ", a[i]);
+		printf("%s, ", a[i]);
 	}
 	printf("\nheap constructed.\n");
 	printf("\n");
@@ -64,13 +70,13 @@ void heapSort(data a[], unsigned int n) {
 		t = a[i]; a[i] = a[0]; a[0] = t;
 		down_to_leaf(a, 0, i);
 		for(unsigned int j = 0; j < n; ++j) {
-			printf("%d, ", a[j]);
+			printf("%s, ", a[j]);
 		}
 		printf("\n");
 	}
 }
 
-
+/*
 dataseq input_array(int argc, char * argv[]) {
 	dataseq a;
 	unsigned int length = argc-1, i;
@@ -89,15 +95,22 @@ dataseq input_array(int argc, char * argv[]) {
 	a.length = length;
 	return a;
 }
+*/
 
 int main(int argc, char * argv[]) {
-	dataseq a = input_array(argc, argv);
-	unsigned int i;
-	for(i = 0; i < a.length; ++i) {
-		printf("%d, ", a.elem[i]);
-	}
-	printf("\n%d data.\n", a.length);
+	char * member[] = { "Ito, Taro/M/1998-9-17", "Hayata, Masako/F/2001-3-2",
+			"Tanaka, Rio/F/1984-8-18", "Sasaki, Jyouji/M/2003-11-27",
+			"Agata, Maresuke/M/1952-2-29", "Sumi, Reika/F/1990-5-12",
+			"Ooe, Marika/F/1978-10-21", "Takeda, Tesuji/M/1965-10-8" };
+	dataseq d = { member, 8};
 
+//	dataseq a = input_array(argc, argv);
+	unsigned int i;
+	for(i = 0; i < d.length; ++i) {
+		printf("%s, ", d.elem[i]);
+	}
+	printf("\n%d data.\n", d.length);
+/*
 	heapSort(a.elem, a.length);
 	//insertionSort(a.elem, a.length);
 
@@ -108,7 +121,6 @@ int main(int argc, char * argv[]) {
 	printf("\n");
 
 	printf("passing counter [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
-
-	free(a.elem);
+*/
 	return 0;
 }

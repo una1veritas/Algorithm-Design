@@ -3,20 +3,18 @@ CXX =	gxx -O0 -g -Wall -fmessage-length=0
 
 OBJS =	main.o
 LIBS = 
-INCDIRS = -I./src/
+INCDIRS = 
 
-%.o: ./src/%.c $(INCLUDES)
+%.o: %.c $(INCLUDES)
 	$(CC) -c $(INCLIDRS) $<
 
-%.o:%.cpp $(INCLUDES)
+%.o: %.cpp $(INCLUDES)
 	$(CXX) -c $(INCLIDRS) $<
 
-TARGET =	sample_heap.exe
-
-$(TARGET):	$(OBJS)
+sample_heap.exe:	$(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
-all:	$(TARGET)
+all:	sample_heap.exe
 
 clean:
 	rm -f $(OBJS) $(TARGET)
