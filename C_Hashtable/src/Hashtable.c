@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : C_Hashtable.c
+ Name        : Hashtable.c
  Author      : Sin
  Version     :
  Copyright   : Your copyright notice
@@ -17,29 +17,31 @@
 typedef struct {
 	LinkedList * table;
 	unsigned int tablesize;
+	unsigned int elemcount;
 } Hashtable;
 
 typedef struct {
 	LinkedList * list;
 	ListNode * node;
-} ListNodePair;
+} LNPair;
 
 unsigned long hash_str(char * str) {
 	unsigned long t = 0;
 	unsigned int i = 0;
 	for(char * p = str; *p != (char) 0 && i < 8; ++p, ++i) {
 		t ^= *p;
-		t <<= 6;
+		t <<= 5;
 	}
 	return t;
 }
 
-void Hashtable_new(Hashtable * h, unsigned int n) {
+void Hashtable_allocate(Hashtable * h, unsigned int n) {
 	h->tablesize = n;
 	h->table = (void*) malloc(sizeof(LinkedList) * h->tablesize);
 	for(unsigned int i = 0; i < h->tablesize; ++i) {
 		LinkedList_init(&h->table[i]);
 	}
+	h->elemcount = 0;
 }
 
 void Hashtable_free(Hashtable * h) {
@@ -48,8 +50,8 @@ void Hashtable_free(Hashtable * h) {
 	free(h->table);
 }
 
-ListNodePair Hashtable_find(Hashtable * h, char * str) {
-	ListNodePair pair;
+LNPair Hashtable_find(Hashtable * h, char * str) {
+	LNPair pair;
 	unsigned long hashcode = hash_str(str);
 	pair.list = & h->table[hashcode % h->tablesize];
 	for(pair.node = LinkedList_begin(pair.list); pair.node != LinkedList_end(pair.list);
@@ -61,15 +63,18 @@ ListNodePair Hashtable_find(Hashtable * h, char * str) {
 }
 
 void Hashtable_add(Hashtable * h, char * str) {
-	ListNodePair pair = Hashtable_find(h, str);
-	if ( pair.node->next == NULL )
+	LNPair pair = Hashtable_find(h, str);
+	if ( pair.node->next == NULL ) {
 		LinkedList_append(pair.list, str);
+		h->elemcount += 1;
+	}
 }
 
 void Hashtable_remove(Hashtable * h, char * str) {
-	ListNodePair pair = Hashtable_find(h, str);
-	if ( pair.node->next != NULL )
-		LinkedList_remove(pair.list, str);
+	unsigned long hashcode = hash_str(str);
+	LinkedList * list = & h->table[hashcode % h->tablesize];
+	if ( LinkedList_remove(list, str) != NULL )
+		h->elemcount -= 1;
 }
 
 void Hashtable_print(Hashtable * h) {
@@ -87,13 +92,15 @@ void Hashtable_print(Hashtable * h) {
 }
 
 int main(int argc, char * argv[]) {
-
-	printf("the number of words = %d\n", argc-1);
 	Hashtable tbl;
-	Hashtable_new(&tbl, 23);
-	for(unsigned int i = 1; i < argc; ++i)
+	unsigned int tblsize = atoi(argv[1]);
+	tblsize = (tblsize < 11 ? 11 : tblsize );
+
+	Hashtable_allocate(&tbl, tblsize);
+	for(unsigned int i = 2; i < argc; ++i)
 		Hashtable_add(&tbl, argv[i]);
 
+	printf("the number of words = %d\n", tbl.elemcount);
 	Hashtable_print(&tbl);
 
 	Hashtable_free(&tbl);
