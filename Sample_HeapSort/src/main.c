@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 //#include "mt.h"
+#include <string.h>
 
 typedef char * data;
 typedef struct {
@@ -18,10 +19,26 @@ typedef struct {
 
 int lt_or_eqs(data x, data y) {
 	char * px, *py;
-	int cnt;
-	for(cnt = 0, px = x; cnt < 2 && *px != '\0'; ++px) {}
-	for(cnt = 0, py = y; cnt < 2 && *py != '\0'; ++py) {}
-	return atoi(px) < atoi(py);
+	int cnt, dx, dy;
+	for(cnt = 0, px = x; cnt < 2 && *px != '\0'; ++px) {
+		if (*px == '/')
+			++cnt;
+	}
+	for(cnt = 0, py = y; cnt < 2 && *py != '\0'; ++py) {
+		if (*py == '/')
+			++cnt;
+	}
+	//printf("%s-%s, ",px,py);
+	dx = strtol(px, &px, 10), dy = strtol(py, &py, 10);
+	if (dx != dy)
+		return dx <= dy;
+	dx = strtol(++px, &px, 10), dy = strtol(++py, &py, 10);
+	if (dx != dy)
+		return dx <= dy;
+	dx = strtol(++px, &px, 10), dy = strtol(++py, &py, 10);
+	if (dx != dy)
+		return dx <= dy;
+	return 0;
 }
 
 /* passage counters */
@@ -99,9 +116,9 @@ dataseq input_array(int argc, char * argv[]) {
 
 int main(int argc, char * argv[]) {
 	char * member[] = { "Ito, Taro/M/1998-9-17", "Hayata, Masako/F/2001-3-2",
-			"Tanaka, Rio/F/1984-8-18", "Sasaki, Jyouji/M/2003-11-27",
+			"Tanaka, Rio/F/1984-8-18", "Sasaki, Jyouji/M/1978-10-27",
 			"Agata, Maresuke/M/1952-2-29", "Sumi, Reika/F/1990-5-12",
-			"Ooe, Marika/F/1978-10-21", "Takeda, Tesuji/M/1965-10-8" };
+			"Ooe, Marika/F/1978-11-21", "Takeda, Tesuji/M/1965-10-8" };
 	dataseq d = { member, 8};
 
 //	dataseq a = input_array(argc, argv);
@@ -110,17 +127,17 @@ int main(int argc, char * argv[]) {
 		printf("%s, ", d.elem[i]);
 	}
 	printf("\n%d data.\n", d.length);
-/*
-	heapSort(a.elem, a.length);
+
+	heapSort(d.elem, d.length);
 	//insertionSort(a.elem, a.length);
 
 	printf("sort has finished.\n");
-	for(i = 0; i < a.length; ++i) {
-		printf("%d, ", a.elem[i]);
+	for(i = 0; i < d.length; ++i) {
+		printf("%s, ", d.elem[i]);
 	}
 	printf("\n");
 
-	printf("passing counter [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
-*/
+	//printf("passing counter [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
+
 	return 0;
 }
