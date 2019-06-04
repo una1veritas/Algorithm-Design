@@ -23,3 +23,4 @@ STL-sample.exe: $(OBJS)
 
 clean:
 	\rm -f *.o *~ *.exe
+	\rm -rf *.dSYM Default
