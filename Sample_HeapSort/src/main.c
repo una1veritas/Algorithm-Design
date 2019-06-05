@@ -10,41 +10,17 @@
 #include <time.h>
 //#include "mt.h"
 #include <string.h>
+#include <inttypes.h>
 
 typedef struct {
 	char * name;
 	char gender;
-	char * dateofbirth;
-} MemberData;
-
-typedef MemberData * data;
-typedef struct {
-	data * elem;
-	unsigned int length;
-} dataseq;
+	uint32_t dateofbirth;
+} Member;
+typedef Member * data;
 
 int lt_or_eqs(data x, data y) {
-	char * px, *py;
-	int cnt, dx, dy;
-	for(cnt = 0, px = x; cnt < 2 && *px != '\0'; ++px) {
-		if (*px == '/')
-			++cnt;
-	}
-	for(cnt = 0, py = y; cnt < 2 && *py != '\0'; ++py) {
-		if (*py == '/')
-			++cnt;
-	}
-	//printf("%s-%s, ",px,py);
-	dx = strtol(px, &px, 10), dy = strtol(py, &py, 10);
-	if (dx != dy)
-		return dx <= dy;
-	dx = strtol(++px, &px, 10), dy = strtol(++py, &py, 10);
-	if (dx != dy)
-		return dx <= dy;
-	dx = strtol(++px, &px, 10), dy = strtol(++py, &py, 10);
-	if (dx != dy)
-		return dx <= dy;
-	return 0;
+	return x->dateofbirth <= y->dateofbirth;
 }
 
 /* passage counters */
@@ -85,7 +61,7 @@ void heapSort(data a[], unsigned int n) {
 	data t;
 	make_heap(a, n);
 	for(unsigned int i = 0; i < n; ++i) {
-		printf("%s, ", a[i]);
+		printf("%s, %c, %x; ", a[i]->name, a[i]->gender, a[i]->dateofbirth);
 	}
 	printf("\nheap constructed.\n");
 	printf("\n");
@@ -93,7 +69,7 @@ void heapSort(data a[], unsigned int n) {
 		t = a[i]; a[i] = a[0]; a[0] = t;
 		down_to_leaf(a, 0, i);
 		for(unsigned int j = 0; j < n; ++j) {
-			printf("%s, ", a[j]);
+			printf("%s, %c, %x; ", a[j]->name, a[j]->gender, a[j]->dateofbirth);
 		}
 		printf("\n");
 	}
@@ -121,30 +97,31 @@ dataseq input_array(int argc, char * argv[]) {
 */
 
 int main(int argc, char * argv[]) {
-	MemberData members[] = {
-			{ "Ito, Taro", 'M', "1998-9-17" },
-			{ "Hayata, Masako", 'F', "2001-3-2"},
-			{ "Tanaka, Rio", 'F', "1984-8-18"},
-			{ "Sasaki, Jyouji", 'M', "1978-10-27"},
-			{ "Agata, Maresuke", 'M' "1952-2-29"},
-			{ "Sumi, Reika", 'F', "1990-5-12"},
-			{"Ooe, Marika", 'F', "1978-11-21"},
-			{"Takeda, Tesuji", 'M', "1965-10-8"} };
-	dataseq d = { members, 8};
+	Member members[] = {
+			{ "Ito, Taro", 'M', 0x19980917 },
+			{ "Hayata, Masako", 'F', 0x20010302 },
+			{ "Tanaka, Rio", 'F', 0x19840818 },
+			{ "Sasaki, Jyouji", 'M', 0x19781027 },
+			{ "Agata, Maresuke", 'M', 0x19520229 },
+			{ "Sumi, Reika", 'F', 0x19900512 },
+			{"Ooe, Marika", 'F', 0x19781121 },
+			{"Takeda, Tesuji", 'M', 0x19651008},
+	};
+	unsigned int n = 8;
+	data memberlist[8];
 
-//	dataseq a = input_array(argc, argv);
-	unsigned int i;
-	for(i = 0; i < d.length; ++i) {
-		printf("%s, ", d.elem[i]);
+	for(unsigned int i = 0; i < n; ++i) {
+		memberlist[i] = &members[i];
+		printf("%s, ", memberlist[i]->name);
 	}
-	printf("\n%d data.\n", d.length);
+	printf("\n%d data.\n", n);
 
-	heapSort(d.elem, d.length);
+	heapSort(memberlist, n);
 	//insertionSort(a.elem, a.length);
 
 	printf("sort has finished.\n");
-	for(i = 0; i < d.length; ++i) {
-		printf("%s, ", d.elem[i]);
+	for(unsigned int i = 0; i < n; ++i) {
+		printf("%s, %c, %d; ", memberlist[i]->name, memberlist[i]->gender, memberlist[i]->dateofbirth);
 	}
 	printf("\n");
 
