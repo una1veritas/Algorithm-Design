@@ -4,16 +4,16 @@ OBJS = BitManip.o
 
 CFLAGS = -O0 -g -Wall
 
-all:	BitManip
+all:	BitManip.exe
 
-BitManip:	$(OBJS)
+BitManip.exe:	$(OBJS)
 	$(CXX) -o $@ $^
 
-%.o:	$(PROJECT_ROOT)%.cpp
+%.o:	%.cpp
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
-%.o:	$(PROJECT_ROOT)%.c
+%.o:	src/%.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
-	rm -fr BitManip $(OBJS)
+	rm -fr BitManip.exe $(OBJS)
