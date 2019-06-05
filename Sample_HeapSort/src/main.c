@@ -11,7 +11,13 @@
 //#include "mt.h"
 #include <string.h>
 
-typedef char * data;
+typedef struct {
+	char * name;
+	char gender;
+	char * dateofbirth;
+} MemberData;
+
+typedef MemberData * data;
 typedef struct {
 	data * elem;
 	unsigned int length;
@@ -115,11 +121,16 @@ dataseq input_array(int argc, char * argv[]) {
 */
 
 int main(int argc, char * argv[]) {
-	char * member[] = { "Ito, Taro/M/1998-9-17", "Hayata, Masako/F/2001-3-2",
-			"Tanaka, Rio/F/1984-8-18", "Sasaki, Jyouji/M/1978-10-27",
-			"Agata, Maresuke/M/1952-2-29", "Sumi, Reika/F/1990-5-12",
-			"Ooe, Marika/F/1978-11-21", "Takeda, Tesuji/M/1965-10-8" };
-	dataseq d = { member, 8};
+	MemberData members[] = {
+			{ "Ito, Taro", 'M', "1998-9-17" },
+			{ "Hayata, Masako", 'F', "2001-3-2"},
+			{ "Tanaka, Rio", 'F', "1984-8-18"},
+			{ "Sasaki, Jyouji", 'M', "1978-10-27"},
+			{ "Agata, Maresuke", 'M' "1952-2-29"},
+			{ "Sumi, Reika", 'F', "1990-5-12"},
+			{"Ooe, Marika", 'F', "1978-11-21"},
+			{"Takeda, Tesuji", 'M', "1965-10-8"} };
+	dataseq d = { members, 8};
 
 //	dataseq a = input_array(argc, argv);
 	unsigned int i;
