@@ -108,8 +108,8 @@ int main(int argc, char * argv[]) {
 			{"Takeda, Tesuji", 'M', 0x19651008},
 	};
 	unsigned int n = 8;
-	data memberlist[8];
 
+	data memberlist[8];
 	for(unsigned int i = 0; i < n; ++i) {
 		memberlist[i] = &members[i];
 		printf("%s, ", memberlist[i]->name);
@@ -121,7 +121,9 @@ int main(int argc, char * argv[]) {
 
 	printf("sort has finished.\n");
 	for(unsigned int i = 0; i < n; ++i) {
-		printf("%s, %c, %d; ", memberlist[i]->name, memberlist[i]->gender, memberlist[i]->dateofbirth);
+		data p = memberlist[i];
+		printf("%s, %c, %04x/%02x/%02x\n", p->name, p->gender,
+				p->dateofbirth>>16&0xffff, p->dateofbirth>>8 & 0xff, p->dateofbirth&0xff);
 	}
 	printf("\n");
 

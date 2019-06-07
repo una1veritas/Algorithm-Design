@@ -23,6 +23,9 @@ int main(int argc, char * argv[]) {
 		intset.insert(rand() % 10000);
 	}
 
+	// iterator はコンテナ（データの入れ物）型の要素を指すポインタのようなもの。
+	// 要素の順序を使わないコンテナでも、内部の格納順序で begin() で最初の要素を指し、
+	// end() に等しくなると枚挙を終了。
 	for(set<int>::iterator i = intset.begin(); i != intset.end(); ++i ) {
 		printf("%d, ", *i);
 	}
@@ -44,9 +47,6 @@ int main(int argc, char * argv[]) {
 		vecset.insert(vec);
 	}
 
-	// iterator はコンテナ（データの入れ物）型の要素を指すポインタのようなもの。
-	// 要素に順序を持たないコンテナでも、要素を枚挙する順序で begin() で最初の要素を指し、
-	// end() に等しくなると枚挙を終えている。
 	for(set<vector<int> >::iterator i = vecset.begin(); i != vecset.end(); ++i ) {
 		for (vector<int>::const_iterator v = i->begin(); v != i->end(); ++v) {
 			printf("%d, ", *v);
