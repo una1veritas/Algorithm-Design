@@ -19,24 +19,28 @@ using namespace std;
 int main(int argc, char * argv[]) {
 	set<int> intset; 			// set of ints.
 
+	// 乱数で整数を作り intset に追加する
 	for(int i = 0; i < 10; ++i) {
 		intset.insert(rand() % 10000);
 	}
 
+	// 要素を一つずつ枚挙して印刷．要素には iterator をポインタのように見なしてアクセスできる
 	for(set<int>::iterator i = intset.begin(); i != intset.end(); ++i ) {
 		printf("%d, ", *i);
 	}
 	printf("\n\n");
 
-	set<vector<int> > vecset; 	// 整数の列（を表す vector ）の集合
+	// 整数の列（を表す vector ）の集合 set
+	set<vector<int> > vecset;
 
-	vector<int> args; 	// プログラム main の引数を整数の列として解釈して vector を作る
+	vector<int> args; 	// プログラム main の引数を整数の列として解釈し vector を作る
 	for(int i = 1; i < argc; ++i) {
 		long t = strtol(argv[i], NULL, 10);
 		args.push_back((int)t);
 	}
 	vecset.insert(args);
 
+	// 乱数で整数の列を作り vecset に追加する
 	for(int i = 0; i < 10; ++i) {
 		vector<int> vec;
 		for(int j = 0; j < i + 1; ++j)
