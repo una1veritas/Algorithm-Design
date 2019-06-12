@@ -19,7 +19,8 @@ void make_random_array(data array[], unsigned int nsize, unsigned int range) {
 
 int main(int argc, char * argv[]) {
 	data * dt;
-	unsigned int * ix;
+	long * ix, size = 1000;
+
 	stopwatch sw;
 	long elapsed;
 	unsigned int nsize = 1000, range = 1317, rep = 1000;

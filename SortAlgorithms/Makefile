@@ -1,6 +1,9 @@
 CC = gcc
 CXX = g++
 
+CC += -O -g -Wall
+CXX +=	-O2 -g -Wall -fmessage-length=0
+
 OBJS =	main.o sortalgorithms.o stopwatch.o
 LIBS = 
 INCDIRS = -I./src/

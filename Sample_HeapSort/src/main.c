@@ -12,15 +12,20 @@
 #include <string.h>
 #include <inttypes.h>
 
+typedef void * data;
 typedef struct {
-	char * name;
-	char gender;
-	uint32_t dateofbirth;
-} Member;
-typedef Member * data;
+	unsigned int x, y;
+} Point;
 
-int lt_or_eqs(data x, data y) {
-	return x->dateofbirth <= y->dateofbirth;
+/*
+int lt_or_eqs(data a, data b) {
+	return ((Point *)a)->x < ((Point*)b)->x
+			|| (((Point *)a)->x == ((Point*)b)->x && ((Point *)a)->y < ((Point*)b)->y);
+}
+*/
+int lt_or_eqs(data a, data b) {
+	return ((Point *)a)->x > ((Point*)b)->x
+			|| (((Point *)a)->x == ((Point*)b)->x && ((Point *)a)->y > ((Point*)b)->y);
 }
 
 /* passage counters */
@@ -37,9 +42,10 @@ void down_to_leaf(data a[], unsigned int i, unsigned int n) {
 			if ( lt_or_eqs(a[j], a[j+1]) )
 				j += 1; // select the right child
 		}
-		//printf("%d -> %d, ", i, j);
+		//printf("%d(%d, %d) -> %d(%d, %d), ", i, ((Point*)a[i])->x, ((Point*)a[i])->y, j, ((Point*)a[j])->x, ((Point*)a[j])->y);
 		if ( lt_or_eqs(a[j], a[i]) )
 			break;
+		//printf("<-> ");
 		t = a[i]; a[i] = a[j]; a[j] = t;
 		i = j;
 	}
@@ -48,28 +54,32 @@ void down_to_leaf(data a[], unsigned int i, unsigned int n) {
 
 void make_heap(data a[], unsigned int n) {
 	for(unsigned int i = (n-1)>>1; ; --i) {
-		printf("%d: ", i);
 		down_to_leaf(a, i, n);
+		//printf("from %d: ", i);
+		//for(unsigned int i = 0; i < n; ++i) {
+		//	printf("%u(%u, %u), ", i, ((Point*)a[i])->x, ((Point*)a[i])->y );
+		//}
+		//printf("\n");
 		if ( i == 0 )
 			break;
 	};
-	printf("\n");
 }
 
 void heapSort(data a[], unsigned int n) {
 	unsigned int i;
 	data t;
 	make_heap(a, n);
-	for(unsigned int i = 0; i < n; ++i) {
-		printf("%s, %c, %x; ", a[i]->name, a[i]->gender, a[i]->dateofbirth);
-	}
 	printf("\nheap constructed.\n");
-	printf("\n");
+	for(unsigned int i = 0; i < n; ++i) {
+		printf("(%u, %u), ", ((Point*)a[i])->x, ((Point*)a[i])->y );
+	}
+	printf("\n\n");
 	for(i = n - 1; i > 0; --i) {
 		t = a[i]; a[i] = a[0]; a[0] = t;
 		down_to_leaf(a, 0, i);
 		for(unsigned int j = 0; j < n; ++j) {
-			printf("%s, %c, %x; ", a[j]->name, a[j]->gender, a[j]->dateofbirth);
+			printf("(%u, %u), ", ((Point*)a[j])->x, ((Point*)a[j])->y );
+			if (i == j+1) printf("/ ");
 		}
 		printf("\n");
 	}
@@ -97,36 +107,26 @@ dataseq input_array(int argc, char * argv[]) {
 */
 
 int main(int argc, char * argv[]) {
-	Member members[] = {
-			{ "Ito, Taro", 'M', 0x19980917 },
-			{ "Hayata, Masako", 'F', 0x20010302 },
-			{ "Tanaka, Rio", 'F', 0x19840818 },
-			{ "Sasaki, Jyouji", 'M', 0x19781027 },
-			{ "Agata, Maresuke", 'M', 0x19520229 },
-			{ "Sumi, Reika", 'F', 0x19900512 },
-			{"Ooe, Marika", 'F', 0x19781121 },
-			{"Takeda, Tesuji", 'M', 0x19651008},
+	Point points[] = {
+			{5,6}, {3,8}, {5,7}, {6,2}, {4,2}, {5,6}, {6,6}, {4,2}, {6,8}, {6,2},
 	};
-	unsigned int n = 8;
-	data memberlist[8];
+	unsigned int n = sizeof(points)/sizeof(Point);
 
+	data a[n];
 	for(unsigned int i = 0; i < n; ++i) {
-		memberlist[i] = &members[i];
-		printf("%s, ", memberlist[i]->name);
+		a[i] = (void*) & points[i];
+		Point * p = (Point *) a[i];
+		printf("(%u, %u), ", p->x, p->y);
 	}
 	printf("\n%d data.\n", n);
 
-	heapSort(memberlist, n);
+	heapSort(a, n);
 	//insertionSort(a.elem, a.length);
 
 	printf("sort has finished.\n");
 	for(unsigned int i = 0; i < n; ++i) {
-		printf("%s, %c, %03x-%02x-%02x\n",
-				memberlist[i]->name,
-				memberlist[i]->gender,
-				memberlist[i]->dateofbirth>>16,
-				memberlist[i]->dateofbirth>>8 & 0xff,
-				memberlist[i]->dateofbirth & 0xff);
+		Point * p = (Point *) a[i];
+		printf("(%u, %u), ", p->x, p->y);
 	}
 	printf("\n");
 
