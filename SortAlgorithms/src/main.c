@@ -13,13 +13,13 @@ void make_random_array(data array[], unsigned int nsize, unsigned int range) {
 	unsigned long r;
 	r =  (rand() % range) + 2;
 	for (int i = 0; i < nsize; i++) {
-		array[i] = (void*)(rand() % r);
+		array[i] = NULL + (rand() % r);
 	}
 }
 
 int main(int argc, char * argv[]) {
 	data * dt;
-	long * ix, size = 1000;
+	unsigned int * ix;
 
 	stopwatch sw;
 	long elapsed;
@@ -69,7 +69,7 @@ int main(int argc, char * argv[]) {
 			nsize, range, seed, rep);
 
 	dt = (data *)malloc(sizeof(data)*nsize);
-	ix = (unsigned int *)malloc(sizeof(index)*nsize);
+	ix = (unsigned int *)malloc(sizeof(unsigned int)*nsize);
 
 	// Merge Sort
 	srand(seed);
@@ -112,7 +112,7 @@ int main(int argc, char * argv[]) {
 	}
 	printf("\n--------\n");
 	for (int i = 0; i < nsize; i++) {
-		printf("%lu ", (unsigned long) dt[ix[i]]);
+		printf("%lu ", (unsigned long) (0xffffffffLL & (unsigned long long) dt[ix[i]]) );
 		if (i > 32) {
 			printf("... ");
 			break;

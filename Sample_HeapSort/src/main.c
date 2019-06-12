@@ -17,16 +17,17 @@ typedef struct {
 	unsigned int x, y;
 } Point;
 
-/*
+#ifndef DESCENDING
 int lt_or_eqs(data a, data b) {
 	return ((Point *)a)->x < ((Point*)b)->x
 			|| (((Point *)a)->x == ((Point*)b)->x && ((Point *)a)->y < ((Point*)b)->y);
 }
-*/
+#else
 int lt_or_eqs(data a, data b) {
 	return ((Point *)a)->x > ((Point*)b)->x
 			|| (((Point *)a)->x == ((Point*)b)->x && ((Point *)a)->y > ((Point*)b)->y);
 }
+#endif
 
 /* passage counters */
 long passcount[] = { 0, 0, };
