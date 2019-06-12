@@ -1,9 +1,9 @@
 
-CC = gcc -O -g
-CXX = g++ -O -g
+CC = /opt/local/bin/gcc 
+CXX = /opt/local/bin/g++ 
 
-CCFLAGS = -O -g -Wall
-CXXFLAGS =	-O2 -g -Wall -fmessage-length=0
+CC += -O -g -Wall
+CXX +=	-O2 -g -Wall -fmessage-length=0
 
 OBJS =	main.o sortalgorithms.o stopwatch.o
 LIBS = 

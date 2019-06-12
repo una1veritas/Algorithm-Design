@@ -14,7 +14,7 @@ void make_randarray(long array[], long size, long range) {
 
 int main(int argc, char * args[]) {
 	data * dt;
-	index * ix, size = 1000;
+	long * ix, size = 1000;
 
 	stopwatch sw;
 	long elapsed;
@@ -47,13 +47,13 @@ int main(int argc, char * args[]) {
 			size, range, seed, rep);
 
 	dt = (data *)malloc(sizeof(data)*size);
-	ix = (index *)malloc(sizeof(index)*size);
+	ix = (long *)malloc(sizeof(long)*size);
 
 	// Merge Sort
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		for(long i = 0; i < size; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
@@ -101,7 +101,7 @@ int main(int argc, char * args[]) {
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		for(long i = 0; i < size; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
@@ -140,7 +140,7 @@ int main(int argc, char * args[]) {
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		for(long i = 0; i < size; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
@@ -167,7 +167,7 @@ int main(int argc, char * args[]) {
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		for(long i = 0; i < size; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
@@ -197,7 +197,7 @@ int main(int argc, char * args[]) {
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		for(long i = 0; i < size; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);

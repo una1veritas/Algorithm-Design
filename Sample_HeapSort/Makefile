@@ -1,5 +1,8 @@
-CC = gcc -O0 -g -Wall
-CXX =	g++ -O0 -g -Wall -fmessage-length=0
+CC = 	gcc 
+CXX =	g++ 
+
+CC  += -O0 -g -Wall
+CXX += -O0 -g -Wall -fmessage-length=0
 
 OBJS =	main.o
 LIBS = 
