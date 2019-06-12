@@ -19,8 +19,8 @@ int main(void) {
 	LinkedList_init(&list);
 	printf("List size = %d\n", list.elemcount);
 	LinkedList_append(&list, "Hello.");
-	LinkedList_append(&list,"-3");
-	LinkedList_append(&list,"800,000,000");
+	LinkedList_append(&list, "-3");
+	LinkedList_append(&list, "800,000,000");
 	LinkedList_printf(&list, "; ");
 	printf("\n");
 	for(ListNode * ptr = list.head.next; ptr != NULL; ptr = ptr->next) {

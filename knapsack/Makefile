@@ -1,25 +1,25 @@
-CC = gcc 
-CXX = g++ 
+CC = 	gcc 
+CXX = 	g++ 
 
 OBJS =		knapsack.o main.o
 INCS = 		knapsack.h
 LIBS =
+SRC  =  ./src
 
 TARGET =	knapsack.exe
 
-CXXFLAGS =	-O0 -g -Wall -fmessage-length=0
-#CCFLAGS = -O2 -Wall
-CCFLAGS = -O0 -g -Wall
+CXX +=	-O0 -g -Wall -fmessage-length=0
+CC  += 	-O0 -g -Wall
 
 
-%.o:%.c $(INCLUDES)
-	$(CC) -c $(CCFLAGS) $<
+%.o: $(SRC)/%.c $(INCLUDES)
+	$(CC)  -c $<
 
-%.o:%.cpp $(INCLUDES)
-	$(CXX) -c $(CXXFLAGS) $<
+%.o: $(SRC)/%.cpp $(INCLUDES)
+	$(CXX) -c $<
 	
 $(TARGET):	$(OBJS)
-	$(CC) $(CCFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
 all:	$(TARGET)
 

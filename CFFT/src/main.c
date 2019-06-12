@@ -23,27 +23,6 @@
 int get_values(int argc, char * argv[], int * n, dcomplex * v[]);
 void print_vector(const char *title, dcomplex *x, int n);
 
-int main(int argc, char * argv[]) {
-	int n;
-	dcomplex * v;
-
-	/* Get N and fill v[] with program inputs. */
-	if ( !get_values(argc, argv, &n, &v) )
-		exit(EXIT_FAILURE);
-
-	//mini_test(N);
-
-	/* FFT, iFFT of v[]: */
-	print_vector("Orig", v, n);
-	cfft(v, n, v+n);
-	print_vector(" FFT", v, n);
-	ifft(v, n, v+n);
-	print_vector("iFFT", v, n);
-
-	free(v);
-
-	exit(EXIT_SUCCESS);
-}
 
 
 int get_values(int argc, char * argv[], int * n, dcomplex * v[]) {
@@ -105,3 +84,26 @@ void print_vector(const char *title, dcomplex *x, int n) {
 	printf("\n\n");
 	return;
 }
+
+int main(int argc, char * argv[]) {
+	int n;
+	dcomplex * v;
+
+	/* Get N and fill v[] with program inputs. */
+	if ( !get_values(argc, argv, &n, &v) )
+		exit(EXIT_FAILURE);
+
+	//mini_test(N);
+
+	/* FFT, iFFT of v[]: */
+	print_vector("Orig", v, n);
+	cfft(v, n, v+n);
+	print_vector(" FFT", v, n);
+	ifft(v, n, v+n);
+	print_vector("iFFT", v, n);
+
+	free(v);
+
+	exit(EXIT_SUCCESS);
+}
+

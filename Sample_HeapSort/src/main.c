@@ -121,7 +121,12 @@ int main(int argc, char * argv[]) {
 
 	printf("sort has finished.\n");
 	for(unsigned int i = 0; i < n; ++i) {
-		printf("%s, %c, %d; ", memberlist[i]->name, memberlist[i]->gender, memberlist[i]->dateofbirth);
+		printf("%s, %c, %03x-%02x-%02x\n",
+				memberlist[i]->name,
+				memberlist[i]->gender,
+				memberlist[i]->dateofbirth>>16,
+				memberlist[i]->dateofbirth>>8 & 0xff,
+				memberlist[i]->dateofbirth & 0xff);
 	}
 	printf("\n");
 

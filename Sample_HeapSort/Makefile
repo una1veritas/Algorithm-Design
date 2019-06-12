@@ -1,11 +1,11 @@
-CC = gcc -O0 -g -Wall
+CC = 	gcc -O0 -g -Wall
 CXX =	g++ -O0 -g -Wall -fmessage-length=0
 
-OBJS =	main.o
+OBJS =		main.o
 LIBS = 
 INCDIRS = 
-SRCDIR = ./src/
-TARGET = sample_heap.exe
+SRCDIR = 	./src/
+TARGET = 	sample_heap.exe
 
 %.o: $(SRCDIR)%.c $(INCLUDES)
 	$(CC) -c $(INCLIDRS) $<

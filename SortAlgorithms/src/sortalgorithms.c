@@ -5,12 +5,8 @@
 #include <stdio.h>
 #include "sortalgorithms.h"
 
-int data_greaterThan(data * a, data * b) {
-	return *a > *b;
-}
-
-void maxHeapify(data d[], index a[], index i, index end) {
-	index larger, tmp;
+void maxHeapify(const data d[], unsigned int a[], unsigned int i, unsigned int end) {
+	unsigned int larger, tmp;
 		
 		while ( (i<<1) + 1 < end ) {
 			larger = (i<<1) + 1;
@@ -27,7 +23,7 @@ void maxHeapify(data d[], index a[], index i, index end) {
 		return;
     }
 	
-void buildMaxHeap(data d[], index a[], index n) {
+void buildMaxHeap(const data d[], unsigned int a[], unsigned int n) {
 	long i;
 		
 		for (i = (n>>1) - 1 ; ! (i < 0); i--) {
@@ -36,7 +32,7 @@ void buildMaxHeap(data d[], index a[], index n) {
 		return;
     }
 	
-void heapSort(data d[], index a[], index n) {
+void heapSort(const data d[], unsigned int a[], unsigned int n) {
 	long i;
 	long t;
 
@@ -50,7 +46,7 @@ void heapSort(data d[], index a[], index n) {
 }
 
 
-void selectionSort_range(data d[], index a[], index start, index end){
+void selectionSort_range(const data d[], unsigned int a[], unsigned int start, unsigned int end){
 	long i, j, max, t; // i for the length (end+1) of sorted-array.
 		
 	for(i = end - 1; i > start; i--){
@@ -64,14 +60,14 @@ void selectionSort_range(data d[], index a[], index start, index end){
 	return;
 }
 	
-void selectionSort(data d[], index a[], index n) {
+void selectionSort(const data d[], unsigned int a[], unsigned int n) {
 	return selectionSort_range(d, a, 0, n);
 }
 
 
-void quickSort_range(data d[], index array[], index start, index end) {
-	index smaller, larger, mid;
-	index tmp;
+void quickSort_range(const data d[], unsigned int array[], unsigned int start, unsigned int end) {
+	unsigned int smaller, larger, mid;
+	unsigned int tmp;
 		
 	// do nothing if the size of array equals one.
 	if (! (end - start > 1)) {
@@ -102,10 +98,10 @@ void quickSort_range(data d[], index array[], index start, index end) {
 	larger = end - 1;
 	while ( smaller < larger) {
 		if ( !data_greaterThan(d+array[smaller], d+array[start]) ) {
-			smaller++;
+			++smaller;
 		} else {
 			// swap array[smaller] with array[larger - 1].
-			larger--;
+			--larger;
 			SWAP(array[smaller], array[larger], tmp);
 		}
 	}
@@ -116,12 +112,12 @@ void quickSort_range(data d[], index array[], index start, index end) {
 	return;
 }
     
-void quickSort(data d[], index array[], index n) {
+void quickSort(const data d[], unsigned int array[], unsigned int n) {
 	quickSort_range(d, array, 0, n);
 }
 
 
-void bubbleSort(data d[], index a[], index n){
+void bubbleSort(const data d[], unsigned int a[], unsigned int n){
 	int i, j, tmp;
 
 	for(i = 1; i < n; i++){
@@ -136,8 +132,8 @@ void bubbleSort(data d[], index a[], index n){
 	return;
 }
 	
-void insertionSort(data d[], index a[], index n){
-	index i, j, t; // j for the length (end+1) of sorted-array.
+void insertionSort(const data d[], unsigned int a[], unsigned int n){
+	unsigned int i, j, t; // j for the length (end+1) of sorted-array.
 
 	for(j = 1; j < n; j++) {
 		t = a[j];
@@ -154,9 +150,9 @@ void insertionSort(data d[], index a[], index n){
 	
 	
 
-void merge(data d[], index dst[], index lsrc[], index llen, index rsrc[], index rlen) {
-	index dstlen = llen + rlen;
-	index left, right, temp;
+void merge(const data d[], unsigned int dst[], unsigned int lsrc[], unsigned int llen, unsigned int rsrc[], unsigned int rlen) {
+	unsigned int dstlen = llen + rlen;
+	unsigned int left, right, temp;
 	for (left = 0, right = 0, temp = 0; temp < dstlen; temp++) {
 		if (left < llen && right < rlen) {
 			if (data_greaterThan(d+rsrc[right], d+lsrc[left]) ) {
@@ -178,10 +174,10 @@ void merge(data d[], index dst[], index lsrc[], index llen, index rsrc[], index 
 	}
 }
 
-void mergeSort_recursive(data d[], index array[], index n) {
-	index i, l, r;
-	index bufl[n/2];
-	index bufr[n/2+(n % 2)];
+void mergeSort_recursive(const data d[], unsigned int array[], unsigned int n) {
+	unsigned int i, l, r;
+	unsigned int bufl[n/2];
+	unsigned int bufr[n/2+(n % 2)];
 
 	if (n <= 1)
 		return;
@@ -214,10 +210,10 @@ void mergeSort_recursive(data d[], index array[], index n) {
 }
     
 
-void mergeSort(data d[], index array[], index n) {
-	index buf[n];
-	index i, len, start, llen, rstart, rlen;
-	const index bubble_len = 8;
+void mergeSort(const data d[], unsigned int array[], unsigned int n) {
+	unsigned int buf[n];
+	unsigned int i, len, start, llen, rstart, rlen;
+	const unsigned int bubble_len = 8;
 
 	for (len = bubble_len; len < n; len = len<<1) {
 		for (start = 0; start < n; start += (len<<1)) {

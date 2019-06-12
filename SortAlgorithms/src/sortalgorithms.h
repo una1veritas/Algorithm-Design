@@ -11,21 +11,20 @@
 #define MIN(a,b) ((a) < (b)? (a) : (b))
 #define SWAP(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
 
-typedef long data;
-typedef unsigned long index;
-int data_greaterThan(data * a, data * b);
+typedef void * data;
+int data_greaterThan(const data * a, const data * b);
 
-void heapSort(data d[], index a[], index n);
-void selectionSort(data d[], index a[], index n);
-void selectionSort_range(data d[], index a[], index start, index end);
+void heapSort(const data d[], unsigned int a[], unsigned int n);
+void selectionSort(const data d[], unsigned int a[], unsigned int n);
+void selectionSort_range(const data d[], unsigned int a[], unsigned int start, unsigned int end);
 
-void quickSort(data d[], index a[], index n);
-void quickSort_range(data d[], index array[], index start, index end);
+void quickSort(const data d[], unsigned int a[], unsigned int n);
+void quickSort_range(const data d[], unsigned int array[], unsigned int start, unsigned int end);
 
-void bubbleSort(data d[], index a[], index n);
-void insertionSort(data d[],index a[], index n);
-void mergeSort_recursive(data d[], index a[], index n);
-void mergeSort(data d[], index a[], index n);
+void bubbleSort(const data d[], unsigned int a[], unsigned int n);
+void insertionSort(const data d[],unsigned int a[], unsigned int n);
+void mergeSort_recursive(const data d[], unsigned int a[], unsigned int n);
+void mergeSort(const data d[], unsigned int a[], unsigned int n);
 
 
 #endif /* SRC_SORTALGORITHMS_H_ */

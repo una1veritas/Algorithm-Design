@@ -1,63 +1,84 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "stopwatch.h"
 #include "sortalgorithms.h"
 
-void make_randarray(long array[], long size, long range) {
-	long r;
-	r = (rand() % range) + 2;
-	for (int i = 0; i < size; i++) {
-		array[i] = rand() % r;
+int data_greaterThan(const data * a, const data * b) {
+	return *a > *b;
+}
+
+void make_random_array(data array[], unsigned int nsize, unsigned int range) {
+	unsigned long r;
+	r =  (rand() % range) + 2;
+	for (int i = 0; i < nsize; i++) {
+		array[i] = (void*)(rand() % r);
 	}
 }
 
-int main(int argc, char * args[]) {
+int main(int argc, char * argv[]) {
 	data * dt;
-	index * ix, size = 1000;
-
+	unsigned int * ix;
 	stopwatch sw;
 	long elapsed;
-
-	long range = 1317;
-	long seed = 7;
-
-	long rep = 1000;
-	long t;
-	long worst, best;
+	unsigned int nsize = 1000, range = 1317, rep = 1000;
+	unsigned int seed = (unsigned int) time(NULL);
+	long t, worst, best;
 	double sum;
 
-	if (argc >= 2) {
-		size = atol
-				(args[1]);
-	}
-	if (argc >= 3) {
-		range = atol(args[2]);
+	char * ptr;
+	for(int i = 1; i < argc; ++i) {
+		ptr = argv[i];
+		if ( *ptr == '-' ) {
+			++ptr;
+			switch(*ptr) {
+			case 'n':
+				nsize = strtol(++ptr, NULL, 10);
+				break;
+			case 'i':
+				rep = strtol(++ptr, NULL, 10);
+				break;
+			case 's':
+				seed = strtol(++ptr, NULL, 10);
+				break;
+			case 'r':
+				range = strtol(++ptr, NULL, 10);
+				break;
+			}
+		} else {
+			switch(i) {
+			case 1:
+				nsize = strtol(ptr, NULL, 10);
+				break;
+			case 2:
+				range = strtol(ptr, NULL, 10);
+				break;
+			case 3:
+				seed = strtol(ptr, NULL, 10);
+				break;
+			case 4:
+				rep = strtol(ptr, NULL, 10);
+				break;
+			}
+		}
 	}
 
-	if (argc >= 4) {
-		seed = atol(args[3]);
-	}
+	printf("Size: %u, Range within: 0 -- %u, Initial Seed: %u, Number of trials: %u\n",
+			nsize, range, seed, rep);
 
-	if (argc >= 5) {
-		rep = atol(args[4]);
-	}
-
-	printf("Size: %ld, Range within: 0 -- %ld, Initial Seed: %ld, Number of trials: %ld\n",
-			size, range, seed, rep);
-
-	dt = (data *)malloc(sizeof(data)*size);
-	ix = (index *)malloc(sizeof(index)*size);
+	dt = (data *)malloc(sizeof(data)*nsize);
+	ix = (unsigned int *)malloc(sizeof(index)*nsize);
 
 	// Merge Sort
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		make_random_array(dt, nsize, range);
+		for(unsigned int i = 0; i < nsize; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		mergeSort(dt, ix, size);
+		mergeSort(dt, ix, nsize);
 		stopwatch_stop(&sw);
 
 		elapsed = stopwatch_clocks(&sw);
@@ -81,16 +102,16 @@ int main(int argc, char * args[]) {
 
 	// showing the last sorted contents
 	printf("\n");
-	for (int i = 0; i < size; i++) {
-		printf("%3ld ", ix[i]);
+	for (int i = 0; i < nsize; i++) {
+		printf("%u ", ix[i]);
 		if (i > 32) {
 			printf("... ");
 			break;
 		}
 	}
 	printf("\n--------\n");
-	for (int i = 0; i < size; i++) {
-		printf("%3ld ", dt[ix[i]]);
+	for (int i = 0; i < nsize; i++) {
+		printf("%lu ", (unsigned long) dt[ix[i]]);
 		if (i > 32) {
 			printf("... ");
 			break;
@@ -100,12 +121,12 @@ int main(int argc, char * args[]) {
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		make_random_array(dt, nsize, range);
+		for(unsigned int i = 0; i < nsize; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		quickSort(dt, ix, size);
+		quickSort(dt, ix, nsize);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		// showing the contents
@@ -139,12 +160,12 @@ int main(int argc, char * args[]) {
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		make_random_array(dt, nsize, range);
+		for(unsigned int i = 0; i < nsize; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		heapSort(dt, ix, size);
+		heapSort(dt, ix, nsize);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		//
@@ -166,12 +187,12 @@ int main(int argc, char * args[]) {
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		make_random_array(dt, nsize, range);
+		for(unsigned int i = 0; i < nsize; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		insertionSort(dt, ix, size);
+		insertionSort(dt, ix, nsize);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
@@ -196,12 +217,12 @@ int main(int argc, char * args[]) {
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
-		make_randarray(dt, size, range);
-		for(index i = 0; i < size; ++i)
+		make_random_array(dt, nsize, range);
+		for(unsigned int i = 0; i < nsize; ++i)
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		selectionSort(dt, ix, size);
+		selectionSort(dt, ix, nsize);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
