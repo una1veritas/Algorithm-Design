@@ -8,26 +8,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-//#include "mt.h"
 #include <string.h>
 #include <inttypes.h>
 
-typedef void * data;
 typedef struct {
 	unsigned int x, y;
 } Point;
+typedef Point * data;
 
-#ifndef DESCENDING
-int lt_or_eqs(data a, data b) {
-	return ((Point *)a)->x < ((Point*)b)->x
-			|| (((Point *)a)->x == ((Point*)b)->x && ((Point *)a)->y < ((Point*)b)->y);
+int lessthan(data a, data b) {
+	return (a->x < b->x)
+			|| (a->x == b->x && a->y < b->y);
 }
-#else
-int lt_or_eqs(data a, data b) {
-	return ((Point *)a)->x > ((Point*)b)->x
-			|| (((Point *)a)->x == ((Point*)b)->x && ((Point *)a)->y > ((Point*)b)->y);
+
+int equals(data a, data b) {
+	return (a->x == b->x && a->y == b->y);
 }
-#endif
 
 /* passage counters */
 long passcount[] = { 0, 0, };
@@ -40,11 +36,11 @@ void down_to_leaf(data a[], unsigned int i, unsigned int n) {
 		if ( !(j < n) )
 			break;
 		if ( j+1 < n ) { // i has the right child
-			if ( lt_or_eqs(a[j], a[j+1]) )
+			if ( lessthan(a[j], a[j+1]) )
 				j += 1; // select the right child
 		}
 		//printf("%d(%d, %d) -> %d(%d, %d), ", i, ((Point*)a[i])->x, ((Point*)a[i])->y, j, ((Point*)a[j])->x, ((Point*)a[j])->y);
-		if ( lt_or_eqs(a[j], a[i]) )
+		if ( lessthan(a[j], a[i]) )
 			break;
 		//printf("<-> ");
 		t = a[i]; a[i] = a[j]; a[j] = t;
@@ -115,16 +111,15 @@ int main(int argc, char * argv[]) {
 
 	data a[n];
 	for(unsigned int i = 0; i < n; ++i) {
-		a[i] = (void*) & points[i];
-		Point * p = (Point *) a[i];
-		printf("(%u, %u), ", p->x, p->y);
+		a[i] = (data) & points[i];
+		printf("(%u, %u), ", a[i]->x, a[i]->y);
 	}
 	printf("\n%d data.\n", n);
 
-	heapSort(a, n);
-	//insertionSort(a.elem, a.length);
+	//heapSort(a, n);
+	selectionSort(a, n);
 
-	printf("sort has finished.\n");
+	printf("sorting done.\n");
 	for(unsigned int i = 0; i < n; ++i) {
 		Point * p = (Point *) a[i];
 		printf("(%u, %u), ", p->x, p->y);
