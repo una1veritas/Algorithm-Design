@@ -8,27 +8,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>
-#include <inttypes.h>
 
+typedef void * data;
 typedef struct {
 	unsigned int x, y;
 } Point;
-typedef Point * data;
 
-int lessthan(data a, data b) {
-	return (a->x < b->x)
-			|| (a->x == b->x && a->y < b->y);
+int Point_compare(const void * a, const void * b) {
+	Point * pa = *(Point **) a, * pb = *(Point**) b;
+	if ( (pa->x < pb->x) || (pa->x == pb->x && pa->y < pb->y) )
+	 return -1;
+	if ( pa->x == pb->x && pa->y == pb->y )
+		return 0;
+	return 1;
 }
 
-int equals(data a, data b) {
-	return (a->x == b->x && a->y == b->y);
-}
-
-/* passage counters */
-long passcount[] = { 0, 0, };
-
-void down_to_leaf(data a[], unsigned int i, unsigned int n) {
+void down_to_leaf(data a[], unsigned int i, unsigned int n, int (*comp)(const void *, const void *)) {
 	unsigned int j;
 	data t;
 	while ( 1 ) {
@@ -36,11 +31,11 @@ void down_to_leaf(data a[], unsigned int i, unsigned int n) {
 		if ( !(j < n) )
 			break;
 		if ( j+1 < n ) { // i has the right child
-			if ( lessthan(a[j], a[j+1]) )
+			if ( comp(&a[j], &a[j+1]) < 0 )
 				j += 1; // select the right child
 		}
 		//printf("%d(%d, %d) -> %d(%d, %d), ", i, ((Point*)a[i])->x, ((Point*)a[i])->y, j, ((Point*)a[j])->x, ((Point*)a[j])->y);
-		if ( lessthan(a[j], a[i]) )
+		if ( comp(&a[j], &a[i]) < 0 )
 			break;
 		//printf("<-> ");
 		t = a[i]; a[i] = a[j]; a[j] = t;
@@ -49,9 +44,9 @@ void down_to_leaf(data a[], unsigned int i, unsigned int n) {
 	//printf("\n");
 }
 
-void make_heap(data a[], unsigned int n) {
+void make_heap(data a[], unsigned int n, int (*comp)(const void *, const void *) ) {
 	for(unsigned int i = (n-1)>>1; ; --i) {
-		down_to_leaf(a, i, n);
+		down_to_leaf(a, i, n, comp);
 		//printf("from %d: ", i);
 		//for(unsigned int i = 0; i < n; ++i) {
 		//	printf("%u(%u, %u), ", i, ((Point*)a[i])->x, ((Point*)a[i])->y );
@@ -62,10 +57,10 @@ void make_heap(data a[], unsigned int n) {
 	};
 }
 
-void heapSort(data a[], unsigned int n) {
+void heapSort(data a[], unsigned int n, int (*comp)(const void *, const void *) ){
 	unsigned int i;
 	data t;
-	make_heap(a, n);
+	make_heap(a, n, comp);
 	printf("\nheap constructed.\n");
 	for(unsigned int i = 0; i < n; ++i) {
 		printf("(%u, %u), ", ((Point*)a[i])->x, ((Point*)a[i])->y );
@@ -73,7 +68,7 @@ void heapSort(data a[], unsigned int n) {
 	printf("\n\n");
 	for(i = n - 1; i > 0; --i) {
 		t = a[i]; a[i] = a[0]; a[0] = t;
-		down_to_leaf(a, 0, i);
+		down_to_leaf(a, 0, i, comp);
 		for(unsigned int j = 0; j < n; ++j) {
 			printf("(%u, %u), ", ((Point*)a[j])->x, ((Point*)a[j])->y );
 			if (i == j+1) printf("/ ");
@@ -103,6 +98,10 @@ dataseq input_array(int argc, char * argv[]) {
 }
 */
 
+int comp(const void * a, const void * b) {
+	return *(int*)a - *(int*)b;
+}
+
 int main(int argc, char * argv[]) {
 	Point points[] = {
 			{5,6}, {3,8}, {5,7}, {6,2}, {4,2}, {5,6}, {6,6}, {4,2}, {6,8}, {6,2},
@@ -112,12 +111,13 @@ int main(int argc, char * argv[]) {
 	data a[n];
 	for(unsigned int i = 0; i < n; ++i) {
 		a[i] = (data) & points[i];
-		printf("(%u, %u), ", a[i]->x, a[i]->y);
+		printf("(%u, %u), ", ((Point*)a[i])->x, ((Point*)a[i])->y);
 	}
 	printf("\n%d data.\n", n);
 
-	//heapSort(a, n);
-	selectionSort(a, n);
+	//qsort(a, n, sizeof(Point*), Point_compare);
+	heapSort(a, n, Point_compare);
+	//selectionSort(a, n);
 
 	printf("sorting done.\n");
 	for(unsigned int i = 0; i < n; ++i) {
@@ -126,7 +126,13 @@ int main(int argc, char * argv[]) {
 	}
 	printf("\n");
 
-	//printf("passing counter [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
+	int d[] = {2, 3, -1, 4, 55, 32, 4 };
+	int m = sizeof(d)/sizeof(int);
+	qsort(d, m, sizeof(int), comp);
+	for(int i = 0; i < m; ++i) {
+		printf("%d, ", d[i]);
+	}
+	printf("\n");
 
 	return 0;
 }
