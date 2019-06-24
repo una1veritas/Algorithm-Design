@@ -20,7 +20,7 @@ TARGET = 	sample_heap.exe
 $(TARGET):	$(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
-all:	sample_heap.exe
+all:	 $(TARGET)
 
 clean:
 	rm -f $(OBJS) $(TARGET)

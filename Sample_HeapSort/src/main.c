@@ -17,6 +17,8 @@ typedef struct {
 	int x, y;
 } Point2D;
 
+int get_Point2D(Point2D ** a, int argc, char * argv[]);
+
 /* void == int  */
 int int_lessthan(const void * a, const void * b) {
 	return *(int*)a - *(int*)b;
@@ -37,40 +39,6 @@ int Point2D_lessthan(const void * a, const void * b) {
 	return 1;
 }
 
-int get_Point2D(Point2D ** a, int argc, char * argv[]) {
-	unsigned int n = argc - 1, i;
-	for(int i = 0; i < argc; ++i) {
-		printf("%s, ", argv[i]);
-	}
-	printf("\n");
-	if (n == 0) {
-		a = NULL;
-		return n;
-	}
-	if ( argc == 2 && strncmp("-random=", argv[1], 8) == 0 ) {
-		*a = NULL;
-		return 0;
-	}
-	Point2D * d = (Point2D*) malloc(sizeof(Point2D) * n);
-	for(i = 0; i < n; ++i) {
-		char * p = argv[1+i];
-		printf("%s ", p);
-		fflush(stdout);
-		d[i].x = strtol(p, &p, 10);
-		fflush(stdout);
-		while ( !(isdigit(*p) || *p == '-') ) {
-			if (*p == 0 ) break;
-			++p; }
-		fflush(stdout);
-		d[i].y = strtol(p, &p, 10);
-		fflush(stdout);
-		printf("(%d, %d), ", d[i].x, d[i].y);
-	}
-	printf("\n");
-	fflush(stdout);
-	*a = d;
-	return n;
-}
 
 
 Point2D fixed_points[] = {
@@ -109,4 +77,40 @@ int main(int argc, char * argv[]) {
 	printf("\n\n");
 
 	return 0;
+}
+
+
+int get_Point2D(Point2D ** a, int argc, char * argv[]) {
+	unsigned int n = argc - 1, i;
+	for(int i = 0; i < argc; ++i) {
+		printf("%s, ", argv[i]);
+	}
+	printf("\n");
+	if (n == 0) {
+		a = NULL;
+		return n;
+	}
+	if ( argc == 2 && strncmp("-random=", argv[1], 8) == 0 ) {
+		*a = NULL;
+		return 0;
+	}
+	Point2D * d = (Point2D*) malloc(sizeof(Point2D) * n);
+	for(i = 0; i < n; ++i) {
+		char * p = argv[1+i];
+		printf("%s ", p);
+		fflush(stdout);
+		d[i].x = strtol(p, &p, 10);
+		fflush(stdout);
+		while ( !(isdigit(*p) || *p == '-') ) {
+			if (*p == 0 ) break;
+			++p; }
+		fflush(stdout);
+		d[i].y = strtol(p, &p, 10);
+		fflush(stdout);
+		printf("(%d, %d), ", d[i].x, d[i].y);
+	}
+	printf("\n");
+	fflush(stdout);
+	*a = d;
+	return n;
 }
