@@ -5,7 +5,7 @@ CXX =	g++
 CC  += -O0 -g -Wall
 CXX += -O0 -g -Wall -fmessage-length=0
 
-OBJS =		main.o
+OBJS =		main.o heapsort.o stdlib_qsort.o selectionsort.o
 LIBS = 
 INCDIRS = 
 SRCDIR = 	./src/
