@@ -42,7 +42,7 @@ public:
 				break;
 			--boundary;
 		}
-		std::cout << "boundary = " << boundary << std::endl;
+		//std::cout << "boundary = " << boundary << std::endl;
 		if (boundary == 0) {
 			// has no more permutations.
 			return false;
@@ -53,7 +53,7 @@ public:
 			if (elems[pos] > new_elem)
 				break;
 		}
-		std::cout << "pos = " << pos << std::endl;
+		//std::cout << "pos = " << pos << std::endl;
 		elems[boundary-1] = elems[pos];
 		elems[pos] = new_elem;
 		// sort [boundary, size() ) in asc. order.
@@ -74,12 +74,134 @@ public:
 int main(int argc, char **argv) {
 	intseq seq(5);
 
+	do {
 	std::cout << seq << std::endl;
-	seq.nextPermutation();
-	std::cout << seq << std::endl;
-	seq.nextPermutation();
-	std::cout << seq << std::endl;
+	} while( seq.nextPermutation() );
 
 	printf("Bye.\n");
 	return EXIT_SUCCESS;
 }
+
+/*
+intseq(1, 2, 3, 4, 5, )
+intseq(1, 2, 3, 5, 4, )
+intseq(1, 2, 4, 3, 5, )
+intseq(1, 2, 4, 5, 3, )
+intseq(1, 2, 5, 3, 4, )
+intseq(1, 2, 5, 4, 3, )
+intseq(1, 3, 2, 4, 5, )
+intseq(1, 3, 2, 5, 4, )
+intseq(1, 3, 4, 2, 5, )
+intseq(1, 3, 4, 5, 2, )
+intseq(1, 3, 5, 2, 4, )
+intseq(1, 3, 5, 4, 2, )
+intseq(1, 4, 2, 3, 5, )
+intseq(1, 4, 2, 5, 3, )
+intseq(1, 4, 3, 2, 5, )
+intseq(1, 4, 3, 5, 2, )
+intseq(1, 4, 5, 2, 3, )
+intseq(1, 4, 5, 3, 2, )
+intseq(1, 5, 2, 3, 4, )
+intseq(1, 5, 2, 4, 3, )
+intseq(1, 5, 3, 2, 4, )
+intseq(1, 5, 3, 4, 2, )
+intseq(1, 5, 4, 2, 3, )
+intseq(1, 5, 4, 3, 2, )
+intseq(2, 1, 3, 4, 5, )
+intseq(2, 1, 3, 5, 4, )
+intseq(2, 1, 4, 3, 5, )
+intseq(2, 1, 4, 5, 3, )
+intseq(2, 1, 5, 3, 4, )
+intseq(2, 1, 5, 4, 3, )
+intseq(2, 3, 1, 4, 5, )
+intseq(2, 3, 1, 5, 4, )
+intseq(2, 3, 4, 1, 5, )
+intseq(2, 3, 4, 5, 1, )
+intseq(2, 3, 5, 1, 4, )
+intseq(2, 3, 5, 4, 1, )
+intseq(2, 4, 1, 3, 5, )
+intseq(2, 4, 1, 5, 3, )
+intseq(2, 4, 3, 1, 5, )
+intseq(2, 4, 3, 5, 1, )
+intseq(2, 4, 5, 1, 3, )
+intseq(2, 4, 5, 3, 1, )
+intseq(2, 5, 1, 3, 4, )
+intseq(2, 5, 1, 4, 3, )
+intseq(2, 5, 3, 1, 4, )
+intseq(2, 5, 3, 4, 1, )
+intseq(2, 5, 4, 1, 3, )
+intseq(2, 5, 4, 3, 1, )
+intseq(3, 1, 2, 4, 5, )
+intseq(3, 1, 2, 5, 4, )
+intseq(3, 1, 4, 2, 5, )
+intseq(3, 1, 4, 5, 2, )
+intseq(3, 1, 5, 2, 4, )
+intseq(3, 1, 5, 4, 2, )
+intseq(3, 2, 1, 4, 5, )
+intseq(3, 2, 1, 5, 4, )
+intseq(3, 2, 4, 1, 5, )
+intseq(3, 2, 4, 5, 1, )
+intseq(3, 2, 5, 1, 4, )
+intseq(3, 2, 5, 4, 1, )
+intseq(3, 4, 1, 2, 5, )
+intseq(3, 4, 1, 5, 2, )
+intseq(3, 4, 2, 1, 5, )
+intseq(3, 4, 2, 5, 1, )
+intseq(3, 4, 5, 1, 2, )
+intseq(3, 4, 5, 2, 1, )
+intseq(3, 5, 1, 2, 4, )
+intseq(3, 5, 1, 4, 2, )
+intseq(3, 5, 2, 1, 4, )
+intseq(3, 5, 2, 4, 1, )
+intseq(3, 5, 4, 1, 2, )
+intseq(3, 5, 4, 2, 1, )
+intseq(4, 1, 2, 3, 5, )
+intseq(4, 1, 2, 5, 3, )
+intseq(4, 1, 3, 2, 5, )
+intseq(4, 1, 3, 5, 2, )
+intseq(4, 1, 5, 2, 3, )
+intseq(4, 1, 5, 3, 2, )
+intseq(4, 2, 1, 3, 5, )
+intseq(4, 2, 1, 5, 3, )
+intseq(4, 2, 3, 1, 5, )
+intseq(4, 2, 3, 5, 1, )
+intseq(4, 2, 5, 1, 3, )
+intseq(4, 2, 5, 3, 1, )
+intseq(4, 3, 1, 2, 5, )
+intseq(4, 3, 1, 5, 2, )
+intseq(4, 3, 2, 1, 5, )
+intseq(4, 3, 2, 5, 1, )
+intseq(4, 3, 5, 1, 2, )
+intseq(4, 3, 5, 2, 1, )
+intseq(4, 5, 1, 2, 3, )
+intseq(4, 5, 1, 3, 2, )
+intseq(4, 5, 2, 1, 3, )
+intseq(4, 5, 2, 3, 1, )
+intseq(4, 5, 3, 1, 2, )
+intseq(4, 5, 3, 2, 1, )
+intseq(5, 1, 2, 3, 4, )
+intseq(5, 1, 2, 4, 3, )
+intseq(5, 1, 3, 2, 4, )
+intseq(5, 1, 3, 4, 2, )
+intseq(5, 1, 4, 2, 3, )
+intseq(5, 1, 4, 3, 2, )
+intseq(5, 2, 1, 3, 4, )
+intseq(5, 2, 1, 4, 3, )
+intseq(5, 2, 3, 1, 4, )
+intseq(5, 2, 3, 4, 1, )
+intseq(5, 2, 4, 1, 3, )
+intseq(5, 2, 4, 3, 1, )
+intseq(5, 3, 1, 2, 4, )
+intseq(5, 3, 1, 4, 2, )
+intseq(5, 3, 2, 1, 4, )
+intseq(5, 3, 2, 4, 1, )
+intseq(5, 3, 4, 1, 2, )
+intseq(5, 3, 4, 2, 1, )
+intseq(5, 4, 1, 2, 3, )
+intseq(5, 4, 1, 3, 2, )
+intseq(5, 4, 2, 1, 3, )
+intseq(5, 4, 2, 3, 1, )
+intseq(5, 4, 3, 1, 2, )
+intseq(5, 4, 3, 2, 1, )
+Bye.
+ */
