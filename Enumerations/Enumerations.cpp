@@ -12,7 +12,16 @@ private:
 		return *(int*)a - *(int*)b;
 	}
 
+	int boundary() const {
+		int boundary = size() - 1;
+		while ( (boundary > 0) && !(elems[boundary - 1] < elems[boundary]) ) {
+			--boundary;
+		}
+		return boundary;
+	}
+
 public:
+	// initializes the sequence as the first one.
 	intseq(const int & n) {
 		elems = new int[n];
 		count = n;
@@ -35,29 +44,28 @@ public:
 		delete [] elems;
 	}
 
+	bool hasNextPermutation() const {
+		return boundary() > 0;
+	}
+
 	bool nextPermutation() {
-		int boundary = size() - 1;
-		while ( boundary > 0 ) {
-			if ( elems[boundary - 1] < elems[boundary] )
-				break;
-			--boundary;
-		}
-		std::cout << "boundary = " << boundary << std::endl;
-		if (boundary == 0) {
+		int bd = boundary();
+		std::cout << "boundary = " << bd << std::endl;
+		if (bd == 0) {
 			// has no more permutations.
 			return false;
 		}
-		int new_elem = elems[boundary - 1];
+		int new_elem = elems[bd - 1];
 		int pos;
-		for(pos = size() - 1; pos > boundary - 1; --pos) {
+		for(pos = size() - 1; pos > bd - 1; --pos) {
 			if (elems[pos] > new_elem)
 				break;
 		}
 		std::cout << "pos = " << pos << std::endl;
-		elems[boundary-1] = elems[pos];
+		elems[bd-1] = elems[pos];
 		elems[pos] = new_elem;
 		// sort [boundary, size() ) in asc. order.
-		qsort(elems+boundary, size() - boundary, sizeof(*elems), int_lessthan);
+		qsort(elems+bd, size() - bd, sizeof(*elems), int_lessthan);
 		return true;
 	}
 
@@ -71,15 +79,37 @@ public:
 	}
 };
 
+void k_subset(int subset[], int to_go, int from, int n) {
+	if (to_go == 0) {
+		std::cout << "finished." << std::endl;
+		for(int i = 0; i < n; ++i) {
+			if ( subset[i] != 0)
+				std::cout << i << ", ";
+		}
+		std::cout << std::endl;
+		return;
+	}
+	if ( to_go > (n - from) ) {
+		//std::cout << "exhausted." << std::endl;
+		return;
+	}
+	for(int i = from; i < n; ++i) {
+		subset[i] = 1;
+		k_subset(subset, to_go - 1, i+1, n);
+		subset[i] = 0;
+	}
+	return;
+}
+
 int main(int argc, char **argv) {
 	intseq seq(5);
 
-	std::cout << seq << std::endl;
-	seq.nextPermutation();
-	std::cout << seq << std::endl;
-	seq.nextPermutation();
-	std::cout << seq << std::endl;
+	do {
+		std::cout << seq << std::endl;
+	} while ( seq.nextPermutation() );
 
+	int set[5];
+	k_subset(set, 3, 0, 5);
 	printf("Bye.\n");
 	return EXIT_SUCCESS;
 }
