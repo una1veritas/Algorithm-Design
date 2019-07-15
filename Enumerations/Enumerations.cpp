@@ -30,7 +30,7 @@ public:
 		}
 	}
 
-	const int & size() const { return count; }
+	const int size() const { return count; }
 
 	int & operator[](const int & i) {
 		return elems[i];
@@ -79,27 +79,58 @@ public:
 	}
 };
 
-void k_subset(int subset[], int to_go, int from, int n) {
-	if (to_go == 0) {
-		std::cout << "finished." << std::endl;
-		for(int i = 0; i < n; ++i) {
-			if ( subset[i] != 0)
-				std::cout << i << ", ";
+struct intset {
+private:
+	bool * flags;
+	int count;
+
+public:
+	intset(int n) {
+		count = n;
+		flags = new bool[count];
+		clear();
+	}
+
+	~intset() {
+		delete [] flags;
+	}
+
+	void clear() {
+		for(int i = 0; i < count; ++i)
+			flags[i] = 0;
+	}
+
+	const int size() const { return count; }
+
+	bool & operator[](const int & i) {
+		return flags[i];
+	}
+	const bool & operator[](const int & i) const {
+		return flags[i];
+	}
+
+	void k_subset(int k, int from, int to) {
+		if (k == 0) {
+			std::cout << "{";
+			for(int i = 0; i < to; ++i) {
+				if ( (*this)[i] != 0)
+					std::cout << i << ", ";
+			}
+			std::cout << "}, " << std::endl;
+			return;
 		}
-		std::cout << std::endl;
+		if ( k > (to - from) ) {
+			//std::cout << "exhausted." << std::endl;
+			return;
+		}
+		for(int i = from; i < to; ++i) {
+			(*this)[i] = true;
+			k_subset(k - 1, i+1, to);
+			(*this)[i] = false;
+		}
 		return;
 	}
-	if ( to_go > (n - from) ) {
-		//std::cout << "exhausted." << std::endl;
-		return;
-	}
-	for(int i = from; i < n; ++i) {
-		subset[i] = 1;
-		k_subset(subset, to_go - 1, i+1, n);
-		subset[i] = 0;
-	}
-	return;
-}
+};
 
 int main(int argc, char **argv) {
 	intseq seq(5);
@@ -107,8 +138,11 @@ int main(int argc, char **argv) {
 	do {
 		std::cout << seq << std::endl;
 	} while ( seq.nextPermutation() );
-	int set[5];
-	k_subset(set, 3, 0, 5);
+
+	intset set(6);
+	for(int k = 1; k <= 6; ++k) {
+		set.k_subset(k, 0, 6);
+	}
 	printf("Bye.\n");
 	return EXIT_SUCCESS;
 }
