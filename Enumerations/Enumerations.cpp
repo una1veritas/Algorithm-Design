@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include <cinttypes>
+
 struct intseq {
 private:
 	int * elems;
@@ -139,6 +141,7 @@ int main(int argc, char **argv) {
 		std::cout << seq << std::endl;
 	} while ( seq.nextPermutation() );
 
+	std::cout << "bool size = " << sizeof(bool) << std::endl;
 	intset set(6);
 	for(int k = 1; k <= 6; ++k) {
 		set.k_subset(k, 0, 6);
