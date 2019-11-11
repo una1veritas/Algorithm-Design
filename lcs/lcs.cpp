@@ -5,15 +5,21 @@
 
 #include <vector>
 
-#define DEG2RAD(x)  ((M_PI / 180.0) * (x))
+/* DEBUG SYMBOL DEFINITIONS */
+//#define SHOW_SEQ
+#define SHOW_TABLE
 
-struct gpspt {
+/* light-weight functions by MACRO */
+#define DEG2RAD(x)  ((M_PI / 180.0) * (x))
+#define MAX_AMONG3(x, y, z)  ((x) > (y) ? ((x) > (z) ? (x) : (z)): ((y) > (z) ? (y) : (z)))
+
+struct gpspoint {
 	double time, lat, lon;
 
 public:
-	gpspt(const double & t, const double & la, const double & lo) : time(t), lat(la), lon(lo) {}
+	gpspoint(const double & t, const double & la, const double & lo) : time(t), lat(la), lon(lo) {}
 
-	double distanceTo(const gpspt & q) {
+	double distanceTo(const gpspoint & q) {
 		//http://dtan4.hatenablog.com/entry/2013/06/10/013724
 		//https://en.wikipedia.org/wiki/Geographical_distance#Ellipsoidal_Earth_projected_to_a_plane
 		//https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
@@ -46,10 +52,57 @@ public:
 		return sqrt((t1*t1) + (t2*t2));
 	}
 
+	static int lcs(std::vector<gpspoint> & pseq, std::vector<gpspoint> & qseq, const double & epsilon = 50.0) {
+		unsigned int cslength[pseq.size()][qseq.size()];
+		int ip, iq;
+		// computing the left- and top- frame cells as base-steps
+		for(ip = 0; ip < pseq.size(); ++ip) {
+#ifdef SHOW_TABLE
+			printf("(%lf, %lf) - (%lf, %lf): %lf, \n",
+					pseq[ip].lat, pseq[ip].lon, qseq[0].lat, qseq[0].lon,
+					pseq[ip].distanceTo(qseq[0]));
+#endif
+			if ( pseq[ip].distanceTo(qseq[0]) <= epsilon ) {
+				cslength[ip][0] = 1;
+			} else {
+				cslength[ip][0] = 0;
+			}
+		}
+		for(iq = 0; iq < qseq.size(); ++iq) {
+			if ( pseq[0].distanceTo(qseq[iq]) <= epsilon ) {
+				cslength[0][iq] = 1;
+			} else {
+				cslength[0][iq] = 0;
+			}
+		}
+		// computing inner cells by the inductive relation
+		for(iq = 1; iq < qseq.size(); ++iq) {
+			for(ip = 1; ip < pseq.size(); ++ip) {
+				if ( pseq[ip].distanceTo(qseq[iq]) <= epsilon ) {
+					cslength[ip][iq] = cslength[ip - 1][iq - 1] + 1;
+				} else {
+					cslength[ip][iq] = MAX_AMONG3(cslength[ip - 1][iq - 1],
+							cslength[ip][iq - 1], cslength[ip - 1][iq]);
+				}
+			}
+		}
+#ifdef SHOW_TABLE
+		for(iq = 0; iq < qseq.size(); ++iq) {
+			printf("%u:\t", iq);
+			for(ip = 0; ip < pseq.size(); ++ip) {
+				printf("%u, ", cslength[ip][iq]);
+			}
+			printf("\n");
+		}
+#endif
+		printf("cslength[%u, %u] = %u,\n", (int)pseq.size() - 1 , (int)qseq.size() - 1 ,
+				cslength[pseq.size() -1][qseq.size() - 1]);
+		return cslength[pseq.size() -1][qseq.size() - 1];
+	}
 };
 
 
-int read_gpspt_csv(char * filename, std::vector<gpspt> & array) {
+int read_gpspt_csv(char * filename, std::vector<gpspoint> & array) {
 	char buff[1024];
 	FILE * fp = fopen(filename, "r");
 	if (fp == NULL) {
@@ -59,7 +112,7 @@ int read_gpspt_csv(char * filename, std::vector<gpspt> & array) {
 	double t, la, lo;
 	while (fgets(buff, 1024, fp) != NULL) {
 		sscanf(buff,"%lf,%lf,%lf",&t, &la, &lo);
-		array.push_back(gpspt(t, la, lo));
+		array.push_back(gpspoint(t, la, lo));
 	}
 	fclose(fp);
 	return 1; // succeeded
@@ -70,19 +123,21 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "two file names requested.\n");
 		return EXIT_FAILURE;
 	}
-	std::vector<gpspt> parray, qarray;
+	std::vector<gpspoint> parray, qarray;
 	read_gpspt_csv(argv[1], parray);
 	read_gpspt_csv(argv[2], qarray);
 
 	printf("\n%s:\n", argv[1]);
+#ifdef SHOW_SEQ
 	for(int i = 0; i < parray.size(); ++i) {
 		printf("%d: %lf, %lf, %lf", i, parray[i].time, parray[i].lat, parray[i].lon);
 		if ( i > 0 )
 			printf("; (%lf)", parray[i-1].distanceTo(parray[i]));
 		printf("\n");
 	}
-
+#endif
 	printf("%s:\n", argv[2]);
+#ifdef SHOW_SEQ
 	for(int i = 0; i < qarray.size(); ++i) {
 		printf("%d: %lf, %lf, %lf",
 				i, qarray[i].time, qarray[i].lat, qarray[i].lon);
@@ -90,6 +145,7 @@ int main(int argc, char **argv) {
 			printf("; (%lf)", qarray[i-1].distanceTo(qarray[i]));
 		printf("\n");
 	}
-
+#endif
+	gpspoint::lcs(parray, qarray);
 	return EXIT_SUCCESS; // return 0;
 }
