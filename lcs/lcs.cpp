@@ -4,10 +4,11 @@
 #include <math.h>
 
 #include <vector>
+#include <algorithm>
 
-/* DEBUG SYMBOL DEFINITIONS */
+/* Symbols for debug switches */
 //#define SHOW_SEQ
-#define SHOW_TABLE
+//#define SHOW_TABLE
 
 /* light-weight functions by MACRO */
 #define DEG2RAD(x)  ((M_PI / 180.0) * (x))
@@ -24,19 +25,20 @@ public:
 		//https://en.wikipedia.org/wiki/Geographical_distance#Ellipsoidal_Earth_projected_to_a_plane
 		//https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
 		//const int mode = 1;
-		// 緯度，経度をラジアンに
+
+		// convert degree values to radians
 		double  plat = DEG2RAD(lat),
 				plon = DEG2RAD(lon),
 				qlat = DEG2RAD(q.lat),
 				qlon = DEG2RAD(q.lon);
 		// 緯度と経度の差
 		//double latdiff = plat - qlat, londiff = plon - qlon;
-		// 平均緯度
+		// the average of lattitude values
 		double latavr = (plat + qlat) / 2.0;
 
 		// 測地系による値の違い
 		double a = 6378137.0; //mode ? 6378137.0 : 6377397.155; // 赤道半径
-		double b = 6356752.314140356; //mode ? 6356752.314140356 : 6356078.963; // 極半径
+		//double b = 6356752.314140356; //mode ? 6356752.314140356 : 6356078.963; // 極半径
 		//$e2 = ($a*$a - $b*$b) / ($a*$a);
 		double e2 = 0.00669438002301188; //mode ? 0.00669438002301188 : 0.00667436061028297; // 第一離心率^2
 		//$a1e2 = $a * (1 - $e2);
@@ -52,11 +54,12 @@ public:
 		return sqrt((t1*t1) + (t2*t2));
 	}
 
-	static int lcs(std::vector<gpspoint> & pseq, std::vector<gpspoint> & qseq, const double & epsilon = 50.0) {
-		unsigned int cslength[pseq.size()][qseq.size()];
-		int ip, iq;
+	typedef std::pair<unsigned int, unsigned int>  uintpair;
+	static std::pair<int, std::vector<uintpair> > lcs(std::vector<gpspoint> & pseq, std::vector<gpspoint> & qseq, const double & epsilon = 50.0) {
+		unsigned short int cslength[pseq.size()][qseq.size()];
+		unsigned int ip, iq;
 		// computing the left- and top- frame cells as base-steps
-		for(ip = 0; ip < pseq.size(); ++ip) {
+		for(unsigned ip = 0; ip < pseq.size(); ++ip) {
 #ifdef SHOW_TABLE
 			printf("(%lf, %lf) - (%lf, %lf): %lf, \n",
 					pseq[ip].lat, pseq[ip].lon, qseq[0].lat, qseq[0].lon,
@@ -96,8 +99,36 @@ public:
 		}
 #endif
 		// back track the subsequence
-
-		return cslength[pseq.size() - 1][qseq.size() - 1];
+		std::vector<uintpair> matchedpairs;
+		ip = pseq.size() - 1;
+		iq = qseq.size() - 1;
+		while ( ip > 0 && iq > 0 ) {
+			if ( cslength[ip][iq] == cslength[ip - 1][iq - 1] ) {
+				ip -= 1;
+				iq -= 1;
+				continue;
+			}
+			if ( cslength[ip][iq] == cslength[ip][iq - 1] ) {
+				iq -= 1;
+				continue;
+			}
+			if ( cslength[ip][iq] == cslength[ip - 1][iq] ) {
+				ip -= 1;
+				continue;
+			}
+			if ( cslength[ip][iq] == cslength[ip - 1][iq - 1] + 1 ) {
+				ip -= 1;
+				iq -= 1;
+				matchedpairs.push_back(uintpair(ip, iq));
+				continue;
+			}
+			printf("error!\n");
+			break;
+			//printf("(%d, %d), ", ip, iq);
+		}
+		//printf("\n");
+		//std::reverse(matchedpairs.begin(), matchedpairs.end());
+		return std::pair<int, std::vector<uintpair> >(cslength[pseq.size() - 1][qseq.size() - 1], matchedpairs);
 	}
 };
 
@@ -146,7 +177,12 @@ int main(int argc, char **argv) {
 		printf("\n");
 	}
 #endif
-	int cslength = gpspoint::lcs(parray, qarray);
-	printf("the length of a longest common subsequence is %d.\n", cslength);
+	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray);
+	printf("the length of a longest common subsequence is %d.\n", result.first);
+	for(auto i = result.second.begin(); i != result.second.end(); ++i) {
+		gpspoint p = parray[i->first], q = qarray[i->second];
+		printf("(%d [%lf, %lf], %d [%lf, %lf]) %lf, \n", i->first, p.lat, p.lon, i->second, q.lat, q.lon, p.distanceTo(q));
+	}
+	printf("\n");
 	return EXIT_SUCCESS; // return 0;
 }
