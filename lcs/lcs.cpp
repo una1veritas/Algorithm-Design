@@ -95,9 +95,9 @@ public:
 			printf("\n");
 		}
 #endif
-		printf("cslength[%u, %u] = %u,\n", (int)pseq.size() - 1 , (int)qseq.size() - 1 ,
-				cslength[pseq.size() -1][qseq.size() - 1]);
-		return cslength[pseq.size() -1][qseq.size() - 1];
+		// back track the subsequence
+
+		return cslength[pseq.size() - 1][qseq.size() - 1];
 	}
 };
 
@@ -146,6 +146,7 @@ int main(int argc, char **argv) {
 		printf("\n");
 	}
 #endif
-	gpspoint::lcs(parray, qarray);
+	int cslength = gpspoint::lcs(parray, qarray);
+	printf("the length of a longest common subsequence is %d.\n", cslength);
 	return EXIT_SUCCESS; // return 0;
 }
