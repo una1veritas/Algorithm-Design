@@ -55,11 +55,12 @@ public:
 	}
 
 	typedef std::pair<unsigned int, unsigned int>  uintpair;
+
 	static std::pair<int, std::vector<uintpair> > lcs(std::vector<gpspoint> & pseq, std::vector<gpspoint> & qseq, const double & epsilon = 50.0) {
 		unsigned short int cslength[pseq.size()][qseq.size()];
 		unsigned int ip, iq;
 		// computing the left- and top- frame cells as base-steps
-		for(unsigned ip = 0; ip < pseq.size(); ++ip) {
+		for(ip = 0; ip < pseq.size(); ++ip) {
 #ifdef SHOW_TABLE
 			printf("(%lf, %lf) - (%lf, %lf): %lf, \n",
 					pseq[ip].lat, pseq[ip].lon, qseq[0].lat, qseq[0].lon,
@@ -90,9 +91,9 @@ public:
 			}
 		}
 #ifdef SHOW_TABLE
-		for(iq = 0; iq < qseq.size(); ++iq) {
+		for(iq = 320; iq < qseq.size(); ++iq) {
 			printf("%u:\t", iq);
-			for(ip = 0; ip < pseq.size(); ++ip) {
+			for(ip = 210; ip < pseq.size(); ++ip) {
 				printf("%u, ", cslength[ip][iq]);
 			}
 			printf("\n");
@@ -106,20 +107,24 @@ public:
 			if ( cslength[ip][iq] == cslength[ip - 1][iq - 1] ) {
 				ip -= 1;
 				iq -= 1;
+				// printf("\\");
 				continue;
 			}
 			if ( cslength[ip][iq] == cslength[ip][iq - 1] ) {
 				iq -= 1;
+				// printf("^");
 				continue;
 			}
 			if ( cslength[ip][iq] == cslength[ip - 1][iq] ) {
 				ip -= 1;
+				// printf("<");
 				continue;
 			}
 			if ( cslength[ip][iq] == cslength[ip - 1][iq - 1] + 1 ) {
+				matchedpairs.push_back(uintpair(ip, iq));
+				// printf("(%d, %d)", ip, iq);
 				ip -= 1;
 				iq -= 1;
-				matchedpairs.push_back(uintpair(ip, iq));
 				continue;
 			}
 			printf("error!\n");
@@ -127,7 +132,7 @@ public:
 			//printf("(%d, %d), ", ip, iq);
 		}
 		//printf("\n");
-		//std::reverse(matchedpairs.begin(), matchedpairs.end());
+		std::reverse(matchedpairs.begin(), matchedpairs.end());
 		return std::pair<int, std::vector<uintpair> >(cslength[pseq.size() - 1][qseq.size() - 1], matchedpairs);
 	}
 };
@@ -159,6 +164,7 @@ int main(int argc, char **argv) {
 	read_gpspt_csv(argv[2], qarray);
 
 	printf("\n%s:\n", argv[1]);
+	printf("%lu points.\n", parray.size());
 #ifdef SHOW_SEQ
 	for(int i = 0; i < parray.size(); ++i) {
 		printf("%d: %lf, %lf, %lf", i, parray[i].time, parray[i].lat, parray[i].lon);
@@ -168,6 +174,7 @@ int main(int argc, char **argv) {
 	}
 #endif
 	printf("%s:\n", argv[2]);
+	printf("%lu points.\n", qarray.size());
 #ifdef SHOW_SEQ
 	for(int i = 0; i < qarray.size(); ++i) {
 		printf("%d: %lf, %lf, %lf",
@@ -177,8 +184,8 @@ int main(int argc, char **argv) {
 		printf("\n");
 	}
 #endif
-	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray);
-	printf("the length of a longest common subsequence is %d.\n", result.first);
+	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray, 33);
+	printf("\nthe length of a longest common subsequence is %d.\n", result.first);
 	for(auto i = result.second.begin(); i != result.second.end(); ++i) {
 		gpspoint p = parray[i->first], q = qarray[i->second];
 		printf("(%d [%lf, %lf], %d [%lf, %lf]) %lf, \n", i->first, p.lat, p.lon, i->second, q.lat, q.lon, p.distanceTo(q));
