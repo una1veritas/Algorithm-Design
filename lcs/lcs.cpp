@@ -17,6 +17,15 @@ struct gpspoint {
 	double time, lat, lon;
 
 public:
+	static double norm_outer_prod(const gpspoint & p, const gpspoint & q) {
+		return (p.lat * q.lon) - (p.lon - q.lat);
+	}
+
+	static double inner_prod(const gpspoint & p, const gpspoint & q) {
+		return (p.lat * q.lat) + (p.lon + q.lon);
+	}
+
+public:
 	gpspoint(const double &t, const double &la, const double &lo) :
 			time(t), lat(la), lon(lo) {
 	}
