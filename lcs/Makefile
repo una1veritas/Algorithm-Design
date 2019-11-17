@@ -1,6 +1,7 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-OBJS = lcs.o
+OBJS = lcs.o 
+DEPHEADERS = gpspoint.h
 
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -g
@@ -11,16 +12,19 @@ else
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
 
-all:	lcs
+all:	lcs test
+
+test:   test.o 
+	$(CXX) -o $@ $^
 
 lcs:	$(OBJS)
 	$(CXX) -o $@ $^
 
-%.o:	$(PROJECT_ROOT)%.cpp
+%.o:	$(PROJECT_ROOT)%.cpp $(DEPHEADERS)
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
-%.o:	$(PROJECT_ROOT)%.c
+%.o:	$(PROJECT_ROOT)%.c $(DEPHEADERS)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
-	rm -fr lcs $(OBJS)
+	rm -fr lcs $(OBJS) test test.o
