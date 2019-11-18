@@ -46,12 +46,6 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 	unsigned int ip, iq;
 	// computing the left- and top- frame cells as base-steps
 	for (ip = 0; ip < (pseq.size()<<1)-1; ++ip) {
-
-#ifdef SHOW_TABLE
-		printf("(%lf, %lf) - (%lf, %lf): %lf, \n",
-				pseq[ip].lat, pseq[ip].lon, qseq[0].lat, qseq[0].lon,
-				pseq[ip].distanceTo(qseq[0]));
-#endif
 		if ( (ip & 1) == 0 ) {
 			if (pseq[ip>>1].distanceTo(qseq[0]) <= bound) {
 				dtable[ip][0] = 1;
@@ -94,48 +88,49 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 		}
 	}
 #ifdef SHOW_TABLE
-		for(iq = 320; iq < qseq.size(); ++iq) {
-			printf("%u:\t", iq);
-			for(ip = 210; ip < pseq.size(); ++ip) {
-				printf("%u, ", dtable[ip][iq]);
-			}
-			printf("\n");
+	const int ip_start = 300;//72;
+	const int ip_stop = MIN(400, (pseq.size()<<1)-1);
+	printf("   :\t");
+	for(ip = ip_start; ip < ip_stop ; ++ip) {
+		printf("%3u, ", ip);
+	}
+	printf("\n");
+	for(iq = 256; iq < (qseq.size()<<1)-1; ++iq) {
+		printf("%3u:\t", iq);
+		for(ip = ip_start; ip < ip_stop ; ++ip) {
+			printf("%3u, ", dtable[ip][iq]);
 		}
+		printf("\n");
+	}
 #endif
 	// back track the subsequence
 	std::vector<uintpair> matchedpairs;
-	ip = (pseq.size()<<1) - 1;
-	iq = (qseq.size()<<1) - 1;
+	ip = (pseq.size()<<1) - 1 - 1;
+	iq = (qseq.size()<<1) - 1 - 1;
 	while (ip > 0 && iq > 0) {
+		//printf("(%d, %d), ", ip, iq);
 		if (dtable[ip][iq] == dtable[ip - 1][iq - 1]) {
 			ip -= 1;
 			iq -= 1;
 			// printf("\\");
-			continue;
-		}
-		if (dtable[ip][iq] == dtable[ip][iq - 1]) {
+		} else if (dtable[ip][iq] == dtable[ip][iq - 1]) {
 			iq -= 1;
 			// printf("^");
-			continue;
-		}
-		if (dtable[ip][iq] == dtable[ip - 1][iq]) {
+		} else if (dtable[ip][iq] == dtable[ip - 1][iq]) {
 			ip -= 1;
 			// printf("<");
-			continue;
-		}
-		if (dtable[ip][iq] == dtable[ip - 1][iq - 1] + 1) {
+		} else if (dtable[ip][iq] == dtable[ip - 1][iq - 1] + 1) {
 			matchedpairs.push_back(uintpair(ip, iq));
-			// printf("(%d, %d)", ip, iq);
+			printf("(%d, %d)", ip, iq);
 			ip -= 1;
 			iq -= 1;
-			continue;
+		} else {
+			printf("error!\n");
+			break;
 		}
-		printf("error!\n");
-		break;
-		//printf("(%d, %d), ", ip, iq);
 	}
 	//printf("\n");
 	std::reverse(matchedpairs.begin(), matchedpairs.end());
 	return std::pair<int, std::vector<uintpair>>(
-			dtable[pseq.size() - 1][qseq.size() - 1], matchedpairs);
+			dtable[(pseq.size()<<1) - 2][(qseq.size()<<1) - 2], matchedpairs);
 }

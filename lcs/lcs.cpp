@@ -6,6 +6,8 @@
 #include <vector>
 #include "gpspoint.h"
 
+//#define SHOW_SEQ
+
 int read_gpspoint_csv(char *filename, std::vector<gpspoint> &array) {
 	char buff[1024];
 	FILE *fp = fopen(filename, "r");
@@ -56,16 +58,19 @@ int main(int argc, char **argv) {
 	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray, 33);
 	printf("\nthe length of a lcs: %d\n\n", result.first);
 	for (auto i = result.second.begin(); i != result.second.end(); ++i) {
-		gpspoint p = parray[i->first], q = qarray[i->second];
-		printf("(%d [%lf, %lf], %d [%lf, %lf]) %lf, \n", i->first, p.lat, p.lon,
-				i->second, q.lat, q.lon, p.distanceTo(q));
+		gpspoint p = parray[i->first>>1], q = qarray[i->second>>1];
+		printf("(%d [%lf, %lf], %d [%lf, %lf]) %lf, \n", i->first>>1, p.lat, p.lon,
+				i->second>>1, q.lat, q.lon, p.distanceTo(q));
 	}
 	std::cout << std::endl << std::endl;
 
+	/* write in csv format */
+	/*
 	for (auto i = result.second.begin(); i != result.second.end(); ++i) {
 		gpspoint p = parray[i->first];
 		printf("%lf,%lf,%lf\n", p.time, p.lat, p.lon);
 	}
 	printf("\n");
+	*/
 	return EXIT_SUCCESS; // return 0;
 }

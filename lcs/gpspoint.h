@@ -9,13 +9,13 @@
 #include <cmath>
 
 /* Symbols for debug switches */
-//#define SHOW_SEQ
-//#define SHOW_TABLE
+#define SHOW_TABLE
 /* light-weight functions by MACRO */
 
 #define DEG2RAD(x)  ((M_PI / 180.0) * (x))
-#define MAX_AMONG3(x, y, z)  ((x) > (y) ? ((x) > (z) ? (x) : (z)): ((y) > (z) ? (y) : (z)))
 #define ABS(x)  ((x) >= 0 ? (x) : -(x))
+#define MAX_AMONG3(x, y, z)  ((x) > (y) ? ((x) > (z) ? (x) : (z)): ((y) > (z) ? (y) : (z)))
+#define MIN(x, y)  ((y) < (x) ? (y) : (x))
 
 struct gpspoint {
 	double time, lat, lon;
