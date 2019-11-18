@@ -3,9 +3,9 @@ PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 OBJS = lcs.o
 
 ifeq ($(BUILD_MODE),debug)
-	CFLAGS += -g
+	CFLAGS += -std=c++11 -g
 else ifeq ($(BUILD_MODE),run)
-	CFLAGS += -O2
+	CFLAGS += -std=c++11 -O2
 else 
 	CFLAGS += -std=c++11 -g -Wall
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
