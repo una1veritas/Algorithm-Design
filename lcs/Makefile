@@ -1,7 +1,7 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-OBJS = lcs.o 
-DEPHEADERS = gpspoint.h
+OBJS = lcs.o gpspoint.o
+HEADERS = gpspoint.h
 
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -std=c++11 -g
@@ -14,16 +14,20 @@ endif
 
 all:	lcs test
 
-test:   test.o 
+test:   test.o gpspoint.o
 	$(CXX) -o $@ $^
 
 lcs:	$(OBJS)
 	$(CXX) -o $@ $^
 
-%.o:	$(PROJECT_ROOT)%.cpp $(DEPHEADERS)
+#gpspoint.o:	gpspoint.h 
+#	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+
+
+%.o:	$(PROJECT_ROOT)%.cpp 
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
-%.o:	$(PROJECT_ROOT)%.c $(DEPHEADERS)
+%.o:	$(PROJECT_ROOT)%.c 
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
