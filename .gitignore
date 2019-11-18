@@ -14,4 +14,6 @@ a.out
 .settings
 .metadata
 language.settings.xml
+build
+
 .DS_Store
