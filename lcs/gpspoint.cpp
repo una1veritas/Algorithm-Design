@@ -88,8 +88,8 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 		}
 	}
 #ifdef SHOW_TABLE
-	const int ip_start = 300;//72;
-	const int ip_stop = MIN(400, (pseq.size()<<1)-1);
+	const unsigned int ip_start = 300;//72;
+	const unsigned int ip_stop = MIN(400, (pseq.size()<<1)-1);
 	printf("   :\t");
 	for(ip = ip_start; ip < ip_stop ; ++ip) {
 		printf("%3u, ", ip);

@@ -12,7 +12,7 @@ else
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
 
-all:	lcs test
+all:	lcs 
 
 test:   test.o gpspoint.o
 	$(CXX) -o $@ $^
