@@ -70,15 +70,7 @@ public:
 	}
 
 	double distanceTo(const gpspoint &q) const;
-	double distanceToLine(const gpspoint &q1, const gpspoint &q2) const {
-		if ( inner_prod(q1, q2, *this) < epsilon ) { // < 0.0
-			return q1.distanceTo(*this);
-		}
-		if ( inner_prod(q2, q1, *this) < epsilon ) { // < 0.0
-			return q2.distanceTo(*this);
-		}
-		return ABS(norm_outer_prod(q1, q2, *this)) / q1.distanceTo(q2);
-	}
+	double distanceTo(const gpspoint &q1, const gpspoint &q2) const;
 
 	typedef std::pair<unsigned int, unsigned int> uintpair;
 	static std::pair<int, std::vector<uintpair>> lcs(std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,const double &bound = 50.0);
