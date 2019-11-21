@@ -107,9 +107,9 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 					dtable[ip][iq] = 1;
 				}
 				dtable[ip][iq] += MAX_AMONG3(
-						dtable[ip-1][iq-1], ??
-						dtable[ip-2][iq-1], ??
-						dtable[ip-1][iq]); ??
+						dtable[ip-1][iq-1],
+						dtable[ip-1][iq],
+						dtable[ip-2][iq-1]);
 
 			} else if ( (iq & 1) == 0 && (ip & 1) == 1 ) {
 				dtable[ip][iq] = 0;
