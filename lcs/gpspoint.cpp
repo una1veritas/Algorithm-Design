@@ -99,14 +99,23 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 							dtable[ip][iq - 2],
 							dtable[ip - 2][iq]);
 				}
-			} else {
+			} else if ( (iq & 1) == 1 && (ip & 1) == 1 ) {
 				dtable[ip][iq] = 0;
-				/*
-				dtable[ip][iq] = MAX_AMONG3(
-						dtable[ip-1][iq-1],
-						dtable[ip][iq-1],
-						dtable[ip-1][iq]);
-						*/
+			} else if ( (iq & 1) == 1 && (ip & 1) == 0 ) {
+				dtable[ip][iq] = 0;
+				if ( pseq[ip>>1].distanceTo(qseq[iq>>1], qseq[(iq>>1)+1]) <= bound ) {
+					dtable[ip][iq] = 1;
+				}
+				dtable[ip][iq] += MAX_AMONG3(
+						dtable[ip-1][iq-1], ??
+						dtable[ip-2][iq-1], ??
+						dtable[ip-1][iq]); ??
+
+			} else if ( (iq & 1) == 0 && (ip & 1) == 1 ) {
+				dtable[ip][iq] = 0;
+				if ( pseq[iq>>1].distanceTo(qseq[ip>>1], qseq[(ip>>1)+1]) <= bound ) {
+					dtable[ip][iq] = 1;
+				}
 			}
 		}
 	}
