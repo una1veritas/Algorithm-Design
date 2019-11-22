@@ -12,12 +12,12 @@ else
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
 
-all:	lcs 
+all:	lcs.exe
 
-test:   test.o gpspoint.o
+test.exe:   test.o gpspoint.o
 	$(CXX) -o $@ $^
 
-lcs:	$(OBJS)
+lcs.exe:	$(OBJS)
 	$(CXX) -o $@ $^
 
 #gpspoint.o:	gpspoint.h 
@@ -31,4 +31,4 @@ lcs:	$(OBJS)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
-	rm -fr lcs $(OBJS) test test.o
+	rm -fr lcs.exe test.exe $(OBJS) test test.o

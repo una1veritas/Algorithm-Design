@@ -81,28 +81,23 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 	for (iq = 1; iq < (qseq.size()<<1)-1; ++iq) {
 		for (ip = 1; ip < (pseq.size()<<1)-1; ++ip) {
 			dtable[iq][ip] = 0;
-			if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
+			switch ( (iq & 1)<<1 | (ip & 1) ) {
+			case 0: // if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
 				if ( qseq[iq>>1].distanceTo(pseq[ip>>1]) <= bound ) {
 					dtable[iq][ip] = 2;
 				}
-				if ( ip == 2 && iq == 4 )
-					std::cerr << iq << ", " << ip << ": " << dtable[iq][ip] << std::endl;
 				dtable[iq][ip] = MAX_AMONG3(
 						dtable[iq-1][ip],
 						dtable[iq-1][ip-1] + dtable[iq][ip],
 						dtable[iq][ip-1] );
-				if ( ip == 2 && iq == 4 ) {
-					std::cerr << dtable[iq-1][ip] << ", "
-							<< dtable[iq-1][ip-1] + dtable[iq][ip] << ", "
-							<< dtable[iq][ip-1];
-					std::cerr << " --> " << dtable[iq][ip] << std::endl;
-				}
-			} else if ( (iq & 1) == 1 && (ip & 1) == 1 ) {
+				break;
+			case 3: // else if ( (iq & 1) == 1 && (ip & 1) == 1 ) {
 				dtable[iq][ip] = MAX_AMONG3(
 						dtable[iq-1][ip-1],
 						dtable[iq][ip-1],
 						dtable[iq-1][ip] );
-			} else if ( (iq & 1) == 0 && (ip & 1) == 1 ) {
+				break;
+			case 1: // else if ( (iq & 1) == 0 && (ip & 1) == 1 ) {
 				if ( qseq[iq>>1].distanceTo(pseq[ip>>1],pseq[(ip>>1)+1]) <= bound ) {
 					dtable[iq][ip] = 1;
 				}
@@ -110,7 +105,8 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 						dtable[iq][ip-1],
 						dtable[iq-1][ip-1] + dtable[iq][ip],
 						dtable[iq-1][ip]);
-			} else if ( (iq & 1) == 1 && (ip & 1) == 0 ) {
+				break;
+			case 2: // else if ( (iq & 1) == 1 && (ip & 1) == 0 ) {
 				if ( pseq[ip>>1].distanceTo(qseq[iq>>1],pseq[(iq>>1)+1]) <= bound ) {
 					dtable[iq][ip] = 1;
 				}
@@ -118,6 +114,7 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 						dtable[iq][ip-1],
 						dtable[iq-1][ip-1] + dtable[iq][ip],
 						dtable[iq-1][ip]);
+				break;
 			}
 		}
 	}
@@ -147,8 +144,14 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 	ip = (pseq.size()<<1) - 2;
 	iq = (qseq.size()<<1) - 2;
 	while (ip > 0 && iq > 0) {
-		//printf("(%d, %d), ", ip, iq);
-		if (dtable[iq][ip] == dtable[iq - 1][ip - 1]) {
+		printf("(%d, %d), ", iq, ip);
+
+		if (dtable[iq][ip] == dtable[iq - 1][ip - 1] + 2) {
+			matchedpairs.push_back(uintpair(ip, iq));
+			printf("(%d, %d)", iq, ip);
+			ip -= 1;
+			iq -= 1;
+		} else if (dtable[iq][ip] == dtable[iq - 1][ip - 1]) {
 			ip -= 1;
 			iq -= 1;
 			printf("\\");
@@ -158,11 +161,6 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 		} else if (dtable[iq][ip] == dtable[iq - 1][ip]) {
 			ip -= 1;
 			printf("<");
-		} else if (dtable[iq][ip] == dtable[iq - 1][ip - 1] + 2) {
-			matchedpairs.push_back(uintpair(ip, iq));
-			printf("(%d, %d)", ip, iq);
-			ip -= 1;
-			iq -= 1;
 		} else {
 			printf("error!\n");
 			break;
