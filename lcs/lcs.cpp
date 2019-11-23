@@ -15,9 +15,11 @@ int read_gpspoint_csv(char *filename, std::vector<gpspoint> &array) {
 		fprintf(stderr, "file open failed.\n");
 		return 0; // failed
 	}
+	char tstr[1024];
 	double t, la, lo;
 	while (fgets(buff, 1024, fp) != NULL) {
-		sscanf(buff, "%lf,%lf,%lf", &t, &la, &lo);
+		sscanf(buff, "%[^,],%lf,%lf", tstr, &la, &lo);
+		t = atof(tstr);
 		array.push_back(gpspoint(t, la, lo));
 	}
 	fclose(fp);
@@ -58,9 +60,27 @@ int main(int argc, char **argv) {
 	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray, 33);
 	printf("\nthe length of a lcs: %d\n\n", result.first);
 	for (auto i = result.second.begin(); i != result.second.end(); ++i) {
-		gpspoint p = parray[i->first>>1], q = qarray[i->second>>1];
-		printf("(%d [%lf, %lf], %d [%lf, %lf]) %lf, \n", i->first>>1, p.lat, p.lon,
-				i->second>>1, q.lat, q.lon, p.distanceTo(q));
+		int16_t iq = i->first, ip = i->second;
+		if ( iq & 1 ) {
+			printf("%d-%d ([%lf, %lf]-[%lf, %lf]) ", iq>>1, (iq>>1)+1, qarray[iq>>1].lat, qarray[iq>>1].lon, qarray[iq>>1].lat, qarray[(iq>>1)+1].lon);
+		} else {
+			printf("%d ([%lf, %lf]) ",  iq>>1, qarray[iq>>1].lat, qarray[(iq>>1)+1].lon);
+		}
+		if ( ip & 1 ) {
+			printf(", %d-%d ([%lf, %lf]-[%lf, %lf]) ", ip>>1, (ip>>1)+1, parray[ip>>1].lat, parray[ip>>1].lon, parray[ip>>1].lat, parray[(ip>>1)+1].lon);
+		} else {
+			printf(", %d ([%lf, %lf]) ",  ip>>1, parray[ip>>1].lat, parray[(ip>>1)+1].lon);
+		}
+		if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
+			printf("%lf", qarray[iq>>1].distanceTo(parray[ip>>1]) );
+		} else if ( (iq & 1) == 0 && (ip & 1) == 1 ) {
+			printf("%lf", qarray[iq>>1].distanceTo(parray[ip>>1],parray[(ip>>1)+1]) );
+		} else if ( (iq & 1) == 1 && (ip & 1) == 0 ) {
+			printf("%lf", parray[ip>>1].distanceTo(qarray[iq>>1],qarray[(iq>>1)+1]) );
+		} else {
+			printf("error!");
+		}
+		printf("\n");
 	}
 	std::cout << std::endl << std::endl;
 

@@ -34,11 +34,11 @@ int main(int argc, char **argv) {
 	read_gpspoint_csv(argv[1], qarray);
 
 	const gpspoint p = gpspoint(58793.167049, 33.595154, 130.403929);
-	for (int i = 0; i < qarray.size() - 1; ++i) {
+	for (unsigned int i = 0; i < qarray.size() - 1; ++i) {
 		std::cout << i << ": " << p << std::endl << " <--> " << qarray[i] << " = "
 				<< p.distanceTo(qarray[i]) << std::endl
 				<< " <--> " << qarray[i] << ", " << qarray[i+1] << " = "
-				<< p.distanceToLine(qarray[i],qarray[i+1]);
+				<< p.distanceTo(qarray[i],qarray[i+1]);
 		std::cout << std::endl;
 	}
 	std::cout << std::endl;

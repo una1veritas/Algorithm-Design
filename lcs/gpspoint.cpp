@@ -53,7 +53,7 @@ double gpspoint::distanceTo(const gpspoint &q1, const gpspoint &q2) const {
 std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 		std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,
 		const double &bound) {
-	short int dtable[(pseq.size() << 1) - 1][(qseq.size() << 1) - 1];
+	int16_t dtable[(pseq.size() << 1) - 1][(qseq.size() << 1) - 1];
 	unsigned int ip, iq;
 	// computing the left- and top- frame cells as base-steps
 	for (ip = 0; ip < (pseq.size()<<1)-1; ++ip) {
@@ -144,26 +144,39 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 	ip = (pseq.size()<<1) - 2;
 	iq = (qseq.size()<<1) - 2;
 	while (ip > 0 && iq > 0) {
-		printf("(%d, %d), ", iq, ip);
-
-		if (dtable[iq][ip] == dtable[iq - 1][ip - 1] + 2) {
-			matchedpairs.push_back(uintpair(ip, iq));
-			printf("(%d, %d)", iq, ip);
+		//skip through
+		if (dtable[iq][ip] == dtable[iq - 1][ip - 1]) {
 			ip -= 1;
 			iq -= 1;
-		} else if (dtable[iq][ip] == dtable[iq - 1][ip - 1]) {
-			ip -= 1;
-			iq -= 1;
-			printf("\\");
+			printf("\\ ");
 		} else if (dtable[iq][ip] == dtable[iq][ip - 1]) {
-			iq -= 1;
-			printf("^");
-		} else if (dtable[iq][ip] == dtable[iq - 1][ip]) {
 			ip -= 1;
-			printf("<");
+			printf("< ");
+		} else if (dtable[iq][ip] == dtable[iq - 1][ip]) {
+			iq -= 1;
+			printf("^ ");
+		}
+		// point-to-point or point-to-line match
+		else if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
+			if ( dtable[iq][ip] == dtable[iq - 1][ip - 1] + 2 ) {
+				matchedpairs.push_back(uintpair(iq, ip));
+				printf("(%d, %d) ", iq, ip);
+				ip -= 1;
+				iq -= 1;
+			} else {
+				printf("%d, %d error!\n", iq, ip);
+				break;
+			}
 		} else {
-			printf("error!\n");
-			break;
+			if ( dtable[iq][ip] == dtable[iq - 1][ip - 1] + 1 ) {
+				matchedpairs.push_back(uintpair(iq, ip));
+				printf("{%d, %d} ", iq, ip);
+				ip -= 1;
+				iq -= 1;
+			} else {
+				printf("%d, %d error!\n", iq, ip);
+				break;
+			}
 		}
 	}
 	//printf("\n");

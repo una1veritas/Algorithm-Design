@@ -1,12 +1,13 @@
 #ifndef _GPSPOINT_H_
 #define _GPSPOINT_H_
 
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <iomanip>
 
+#include <cmath>
 #include <vector>
 #include <algorithm>
-#include <cmath>
 
 /* Symbols for debug switches */
 #define SHOW_TABLE
@@ -16,6 +17,8 @@
 #define ABS(x)  ((x) >= 0 ? (x) : -(x))
 #define MAX_AMONG3(x, y, z)  ((x) > (y) ? ((x) > (z) ? (x) : (z)): ((y) > (z) ? (y) : (z)))
 #define MIN(x, y)  ((y) < (x) ? (y) : (x))
+
+typedef int16_t fp164;
 
 struct gpspoint {
 	double time, lat, lon;

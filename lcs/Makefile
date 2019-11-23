@@ -31,4 +31,4 @@ lcs.exe:	$(OBJS)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
-	rm -fr lcs.exe test.exe $(OBJS) test test.o
+	rm -fr lcs.exe test.exe $(OBJS) test.o
