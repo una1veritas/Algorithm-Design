@@ -55,6 +55,7 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 		const double &bound) {
 	dptable dtable((pseq.size() << 1) - 1, (qseq.size() << 1) - 1); //[(pseq.size() << 1) - 1][(qseq.size() << 1) - 1];
 	unsigned int ip, iq;
+	std::cerr << "table area." << std::flush << std::endl;
 	// computing the left- and top- frame cells as base-steps
 	for (ip = 0; ip < (pseq.size()<<1)-1; ++ip) {
 		dtable(0,ip) = 0;
@@ -66,8 +67,10 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 				dtable(0, ip) = 1;
 		}
 	}
+	std::cerr << "table frame top." << std::flush << std::endl;
 	for (iq = 0; iq < (qseq.size()<<1)-1; ++iq) {
 		dtable(iq,0) = 0;
+		std::cerr << "(" << iq << ") " << std::flush << std::endl;
 		if ( (iq & 1) == 0 ) {
 			if ( pseq[0].distanceTo(qseq[iq>>1]) <= bound)
 				dtable(iq,0) = 2;
@@ -75,7 +78,9 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 			if ( pseq[0].distanceTo(pseq[ip>>1], pseq[(ip>>1)+1]) <= bound )
 				dtable(iq,0) = 1;
 		}
+		std::cerr << iq << ", " << std::flush << std::endl;
 	}
+	std::cerr << "table frame left." << std::flush << std::endl;
 	// computing inner cells by the inductive relation
 	// iq -- row, ip -- column
 	for (iq = 1; iq < (qseq.size()<<1)-1; ++iq) {
@@ -125,7 +130,7 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 			}
 		}
 	}
-	//std::cerr << "table, " << std::flush << std::endl;
+	std::cerr << "table completed, " << std::flush << std::endl;
 #ifdef SHOW_TABLE
 	const unsigned int ip_start = 0;//72;
 	const unsigned int ip_stop = MIN(400, (pseq.size()<<1)-1);
@@ -190,9 +195,10 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 			}
 		}
 	}
-	//std::cerr << "backtrack, " << std::flush << std::endl;
+	std::cerr << "backtrack finished." << std::flush << std::endl;
 	//printf("\n");
 	std::reverse(matchedpairs.begin(), matchedpairs.end());
+	std::cerr << "lcs finished." << std::flush << std::endl;
 	return std::pair<int, std::vector<uintpair>>(
 			dtable((pseq.size()<<1) - 2,(qseq.size()<<1) - 2), matchedpairs);
 }

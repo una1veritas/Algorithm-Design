@@ -32,8 +32,8 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 	std::vector<gpspoint> parray, qarray;
-	read_gpspoint_csv(argv[1], parray);
-	read_gpspoint_csv(argv[2], qarray);
+	read_gpspoint_csv(argv[2], parray);
+	read_gpspoint_csv(argv[1], qarray);
 
 	printf("\n%s:\n", argv[1]);
 	printf("%lu points.\n", parray.size());
