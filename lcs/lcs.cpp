@@ -57,19 +57,20 @@ int main(int argc, char **argv) {
 	}
 #endif
 
-	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray, 33);
+	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray, 30);
+
 	printf("\nthe length of a lcs: %d\n\n", result.first);
 	for (auto i = result.second.begin(); i != result.second.end(); ++i) {
 		int16_t iq = i->first, ip = i->second;
 		if ( iq & 1 ) {
-			printf("%d-%d ([%lf, %lf]-[%lf, %lf]) ", iq>>1, (iq>>1)+1, qarray[iq>>1].lat, qarray[iq>>1].lon, qarray[iq>>1].lat, qarray[(iq>>1)+1].lon);
+			printf("%.1lf ([%lf, %lf]-[%lf, %lf]) ", iq/2.0, qarray[iq>>1].lat, qarray[iq>>1].lon, qarray[(iq>>1)+1].lat, qarray[(iq>>1)+1].lon);
 		} else {
-			printf("%d ([%lf, %lf]) ",  iq>>1, qarray[iq>>1].lat, qarray[(iq>>1)+1].lon);
+			printf("%d ([%lf, %lf]) ",  iq>>1, qarray[iq>>1].lat, qarray[iq>>1].lon);
 		}
 		if ( ip & 1 ) {
-			printf(", %d-%d ([%lf, %lf]-[%lf, %lf]) ", ip>>1, (ip>>1)+1, parray[ip>>1].lat, parray[ip>>1].lon, parray[ip>>1].lat, parray[(ip>>1)+1].lon);
+			printf(", %.1lf ([%lf, %lf]-[%lf, %lf]) ", ip/2.0, parray[ip>>1].lat, parray[ip>>1].lon, parray[(ip>>1)+1].lat, parray[(ip>>1)+1].lon);
 		} else {
-			printf(", %d ([%lf, %lf]) ",  ip>>1, parray[ip>>1].lat, parray[(ip>>1)+1].lon);
+			printf(", %d ([%lf, %lf]) ",  ip>>1, parray[ip>>1].lat, parray[ip>>1].lon);
 		}
 		if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
 			printf("%lf", qarray[iq>>1].distanceTo(parray[ip>>1]) );

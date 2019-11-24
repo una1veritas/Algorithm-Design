@@ -10,15 +10,13 @@
 #include <algorithm>
 
 /* Symbols for debug switches */
-#define SHOW_TABLE
+//#define SHOW_TABLE
 /* light-weight functions by MACRO */
 
 #define DEG2RAD(x)  ((M_PI / 180.0) * (x))
 #define ABS(x)  ((x) >= 0 ? (x) : -(x))
 #define MAX_AMONG3(x, y, z)  ((x) > (y) ? ((x) > (z) ? (x) : (z)): ((y) > (z) ? (y) : (z)))
 #define MIN(x, y)  ((y) < (x) ? (y) : (x))
-
-typedef int16_t fp164;
 
 struct gpspoint {
 	double time, lat, lon;
@@ -66,6 +64,22 @@ private:
 		metvector ab(a, b), ac(a, c);
 		return (ab.x * ac.y) - (ab.y * ac.x);
 	}
+
+	struct dptable {
+		std::vector<std::vector<uint16_t>> rows;
+
+		dptable(uint16_t r, uint16_t c) {
+			rows.resize(r);
+			for(uint16_t i = 0; i < rows.size(); ++i)
+				rows[i].resize(c);
+		}
+
+		~dptable() { }
+
+		uint16_t & operator()(const uint16_t & row, const uint16_t col) {
+			return rows[row][col];
+		}
+	};
 
 public:
 	gpspoint(const double &t, const double &la, const double &lo) :
