@@ -4,11 +4,11 @@ OBJS = lcs.o gpspoint.o
 HEADERS = gpspoint.h
 
 ifeq ($(BUILD_MODE),debug)
-	CFLAGS += -std=c++11 -g
+	CXXFLAGS += -std=c++11 -g
 else ifeq ($(BUILD_MODE),run)
-	CFLAGS += -std=c++11 -O2
+	CXXFLAGS += -std=c++11 -O2
 else 
-	CFLAGS += -std=c++11 -g -Wall
+	CXXFLAGS += -std=c++11 -g -Wall
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
 

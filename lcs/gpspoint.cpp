@@ -53,12 +53,13 @@ double gpspoint::distanceTo(const gpspoint &q1, const gpspoint &q2) const {
 std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 		std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,
 		const double &bound) {
-	dptable dtable((pseq.size() << 1) - 1, (qseq.size() << 1) - 1); //[(pseq.size() << 1) - 1][(qseq.size() << 1) - 1];
+	dptable dtable((qseq.size() << 1) - 1, (pseq.size() << 1) - 1); //[(pseq.size() << 1) - 1][(qseq.size() << 1) - 1];
 	unsigned int ip, iq;
-	std::cerr << "table area." << std::flush << std::endl;
+	//std::cerr << "table area." << std::flush << std::endl;
 	// computing the left- and top- frame cells as base-steps
 	for (ip = 0; ip < (pseq.size()<<1)-1; ++ip) {
 		dtable(0,ip) = 0;
+		//std::cout << "(" << ip << ") " << std::flush;
 		if ( (ip & 1) == 0 ) {
 			if ( qseq[0].distanceTo(pseq[ip>>1]) <= bound )
 				dtable(0, ip) = 2;
@@ -67,28 +68,23 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 				dtable(0, ip) = 1;
 		}
 	}
-	std::cerr << "table frame top." << std::flush << std::endl;
+	//std::cerr << "frame top finished." << std::endl << std::flush;
 	for (iq = 0; iq < (qseq.size()<<1)-1; ++iq) {
 		dtable(iq,0) = 0;
-		std::cerr << "(" << iq << ") " << std::flush << std::endl;
+		//std::cout << "(" << iq << ") " << std::flush;
 		if ( (iq & 1) == 0 ) {
 			if ( pseq[0].distanceTo(qseq[iq>>1]) <= bound)
 				dtable(iq,0) = 2;
 		} else {
-			if ( pseq[0].distanceTo(pseq[ip>>1], pseq[(ip>>1)+1]) <= bound )
+			if ( pseq[0].distanceTo(qseq[ip>>1], qseq[(ip>>1)+1]) <= bound )
 				dtable(iq,0) = 1;
 		}
-		std::cerr << iq << ", " << std::flush << std::endl;
 	}
-	std::cerr << "table frame left." << std::flush << std::endl;
+	//std::cerr << "table frame left finished." << std::flush << std::endl;
 	// computing inner cells by the inductive relation
 	// iq -- row, ip -- column
 	for (iq = 1; iq < (qseq.size()<<1)-1; ++iq) {
 		for (ip = 1; ip < (pseq.size()<<1)-1; ++ip) {
-			if ( iq == 10 && ip == 5 ) {
-				std::cerr << qseq[iq>>1] << ", " << pseq[ip>>1] << ", " << pseq[(ip>>1)+1] << std::endl;
-				std::cerr << qseq[iq>>1].distanceTo(pseq[ip>>1],pseq[(ip>>1)+1]) << std::endl;
-			}
 			dtable(iq,ip) = 0;
 			switch ( (iq & 1)<<1 | (ip & 1) ) {
 			case 0: // if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
@@ -130,7 +126,7 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 			}
 		}
 	}
-	std::cerr << "table completed, " << std::flush << std::endl;
+	//std::cerr << std::endl << "table completed, " << std::flush << std::endl;
 #ifdef SHOW_TABLE
 	const unsigned int ip_start = 0;//72;
 	const unsigned int ip_stop = MIN(400, (pseq.size()<<1)-1);
@@ -195,10 +191,10 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 			}
 		}
 	}
-	std::cerr << "backtrack finished." << std::flush << std::endl;
+	//std::cerr << std::endl << "backtrack finished." << std::endl << std::flush ;
 	//printf("\n");
 	std::reverse(matchedpairs.begin(), matchedpairs.end());
-	std::cerr << "lcs finished." << std::flush << std::endl;
+	//std::cerr <<  "lcs finished." << std::endl << std::flush ;
 	return std::pair<int, std::vector<uintpair>>(
-			dtable((pseq.size()<<1) - 2,(qseq.size()<<1) - 2), matchedpairs);
+			dtable((qseq.size()<<1) - 2, (pseq.size()<<1) - 2), matchedpairs);
 }
