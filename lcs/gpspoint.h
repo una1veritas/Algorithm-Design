@@ -66,15 +66,20 @@ private:
 	}
 
 	struct dptable {
-		std::vector<std::vector<uint16_t>> rows;
+		std::vector<uint16_t *> rows;
+		uint16_t column_size;
 
 		dptable(uint16_t r, uint16_t c) {
+			column_size = c;
 			rows.resize(r);
 			for(uint16_t i = 0; i < rows.size(); ++i)
-				rows[i].resize(c);
+				rows[i] = new uint16_t[column_size];
 		}
 
-		~dptable() { }
+		~dptable() {
+			for(uint16_t i = 0; i < rows.size(); ++i)
+				delete [] rows[i];
+		}
 
 		uint16_t & operator()(const uint16_t & row, const uint16_t col) {
 			return rows[row][col];

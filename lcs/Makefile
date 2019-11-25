@@ -25,10 +25,10 @@ lcs.exe:	$(OBJS)
 
 
 %.o:	$(PROJECT_ROOT)%.cpp 
-	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 %.o:	$(PROJECT_ROOT)%.c 
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
 	rm -fr lcs.exe test.exe $(OBJS) test.o

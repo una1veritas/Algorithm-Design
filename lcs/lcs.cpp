@@ -58,8 +58,6 @@ int main(int argc, char **argv) {
 #endif
 
 	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray, 30);
-	printf("lcs computed.\n");
-	fflush(stdout);
 
 	printf("\nthe length of a lcs: %d\n\n", result.first);
 	for (auto i = result.second.begin(); i != result.second.end(); ++i) {
