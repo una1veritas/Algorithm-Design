@@ -9,16 +9,29 @@
 #include "gpspoint.h"
 
 int read_gpspoint_csv(char *filename, std::vector<gpspoint> &array) {
-	char buff[1024];
+	char buff[1024], datetime[1024];
 	FILE *fp = fopen(filename, "r");
 	if (fp == NULL) {
 		fprintf(stderr, "file open failed.\n");
 		return 0; // failed
 	}
-	double t, la, lo;
+	double dt, la, lo;
+	char * strptr;
 	while (fgets(buff, 1024, fp) != NULL) {
-		sscanf(buff, "%lf,%lf,%lf", &t, &la, &lo);
-		array.push_back(gpspoint(t, la, lo));
+		sscanf(buff, "%[^,],%lf,%lf", datetime, &la, &lo);
+		strptr = datetime;
+		dt = strtod(strptr, &strptr);
+		if ( dt > 10000.0 ) {
+			printf("Julian ? = %f\n", dt);
+		} else {
+			int year = dt;
+			printf("Gregorian? = %d\n", (int)dt);
+			for ( ;!isdigit(strptr); strptr++ );
+			int month = strtod(strptr, &strptr);
+			for ( ;!isdigit(strptr); strptr++ );
+			int date = strtod(strptr, &strptr);
+		}
+		array.push_back(gpspoint(dt, la, lo));
 	}
 	fclose(fp);
 	return 1; // succeeded
@@ -26,20 +39,17 @@ int read_gpspoint_csv(char *filename, std::vector<gpspoint> &array) {
 
 int main(int argc, char **argv) {
 
-	if ( !(argc > 1) ) {
-		fprintf(stderr, "two file names requested.\n");
+	if ( argc == 1 ) {
+		fprintf(stderr, "One file names requested.\n");
 		return EXIT_FAILURE;
 	}
-	std::vector<gpspoint> qarray;
-	read_gpspoint_csv(argv[1], qarray);
+	std::vector<gpspoint> parray;
+	if ( !read_gpspoint_csv(argv[1], parray) ) {
+		return EXIT_FAILURE;
+	}
 
-	const gpspoint p = gpspoint(58793.167049, 33.595154, 130.403929);
-	for (unsigned int i = 0; i < qarray.size() - 1; ++i) {
-		std::cout << i << ": " << p << std::endl << " <--> " << qarray[i] << " = "
-				<< p.distanceTo(qarray[i]) << std::endl
-				<< " <--> " << qarray[i] << ", " << qarray[i+1] << " = "
-				<< p.distanceTo(qarray[i],qarray[i+1]);
-		std::cout << std::endl;
+	for (unsigned int i = 0; i < parray.size() - 1; ++i) {
+		std::cout << i << ": " << parray[i] << std::endl;
 	}
 	std::cout << std::endl;
 

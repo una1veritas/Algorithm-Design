@@ -14,7 +14,9 @@ endif
 
 all:	lcs.exe
 
-test.exe:   test.o gpspoint.o
+TESTOBJ = test.o
+
+test.exe:   $(TESTOBJ)
 	$(CXX) -o $@ $^
 
 lcs.exe:	$(OBJS)
@@ -31,4 +33,4 @@ lcs.exe:	$(OBJS)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
-	rm -fr lcs.exe test.exe $(OBJS) test.o
+	rm -fr lcs.exe test.exe $(OBJS) $(TESTOBJ)
