@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "gpspoint.h"
+#include <cctype>
 
 int read_gpspoint_csv(char *filename, std::vector<gpspoint> &array) {
 	char buff[1024], datetime[1024];
@@ -26,9 +27,9 @@ int read_gpspoint_csv(char *filename, std::vector<gpspoint> &array) {
 		} else {
 			int year = dt;
 			printf("Gregorian? = %d\n", (int)dt);
-			for ( ;!isdigit(strptr); strptr++ );
+			for ( ;!std::isdigit(*strptr); strptr++ );
 			int month = strtod(strptr, &strptr);
-			for ( ;!isdigit(strptr); strptr++ );
+			for ( ;!std::isdigit(*strptr); strptr++ );
 			int date = strtod(strptr, &strptr);
 		}
 		array.push_back(gpspoint(dt, la, lo));

@@ -12,7 +12,7 @@ else
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
 
-all:	lcs.exe
+all:	test.exe
 
 TESTOBJ = test.o
 
