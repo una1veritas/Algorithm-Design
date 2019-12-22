@@ -26,11 +26,22 @@ int read_gpspoint_csv(char *filename, std::vector<gpspoint> &array) {
 			printf("Julian ? = %f\n", dt);
 		} else {
 			int year = dt;
-			printf("Gregorian? = %d\n", (int)dt);
-			for ( ;!std::isdigit(*strptr); strptr++ );
+			for(; !std::isdigit(*strptr); strptr++);
 			int month = strtod(strptr, &strptr);
-			for ( ;!std::isdigit(*strptr); strptr++ );
+			for(; !std::isdigit(*strptr); strptr++);
 			int date = strtod(strptr, &strptr);
+			for(; !std::isdigit(*strptr); strptr++);
+			int hour = strtod(strptr, &strptr);
+			for(; !std::isdigit(*strptr); strptr++);
+			int minu = strtod(strptr, &strptr);
+			for(; !std::isdigit(*strptr); strptr++);
+			int sec = strtod(strptr, &strptr);
+			//for(; !std::isdigit(*strptr); strptr++);
+			int tzhour = strtod(strptr, &strptr);
+			for(; !std::isdigit(*strptr); strptr++);
+			int tzmin = strtod(strptr, &strptr);
+			for(; !std::isdigit(*strptr); strptr++);
+			printf("Gregorian? = %d %d %d %d %d %d %d %d\n", year, month, date, hour, minu, sec, tzhour, tzmin);
 		}
 		array.push_back(gpspoint(dt, la, lo));
 	}
