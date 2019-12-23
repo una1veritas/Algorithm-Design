@@ -66,14 +66,17 @@ private:
 	}
 
 	struct dptable {
-		std::vector<uint16_t *> rows;
+		struct triplet {
+			uint16_t p2p, l2p, p2l;
+		};
+		std::vector<triplet *> rows;
 		uint16_t column_size;
 
 		dptable(uint16_t r, uint16_t c) {
 			column_size = c;
 			rows.resize(r);
 			for(uint16_t i = 0; i < rows.size(); ++i)
-				rows[i] = new uint16_t[column_size];
+				rows[i] = new triplet[column_size];
 		}
 
 		~dptable() {
@@ -81,7 +84,7 @@ private:
 				delete [] rows[i];
 		}
 
-		uint16_t & operator()(const uint16_t & row, const uint16_t col) {
+		triplet & operator()(const uint16_t & row, const uint16_t col) {
 			return rows[row][col];
 		}
 	};
@@ -96,6 +99,7 @@ public:
 
 	typedef std::pair<unsigned int, unsigned int> uintpair;
 	static std::pair<int, std::vector<uintpair>> lcs(std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,const double &bound = 50.0);
+	static std::pair<int, std::vector<uintpair>> lcs1(std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,const double &bound = 50.0);
 
 	friend std::ostream & operator<<(std::ostream & os, const gpspoint & p) {
 		os << "[" << std::fixed << std::setprecision(6) << p.time << ", " << p.lat << ", " << p.lon << "] ";

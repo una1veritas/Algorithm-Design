@@ -53,6 +53,153 @@ double gpspoint::distanceTo(const gpspoint &q1, const gpspoint &q2) const {
 std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 		std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,
 		const double &bound) {
+	dptable table(qseq.size(), pseq.size());
+	unsigned int ip, iq; // column, row
+	// computing the left- and top- frame cells as base-steps
+
+	for (ip = 0; ip < pseq.size(); ++ip) {
+		table(0,ip).l2p = 0;
+		table(0,ip).p2l = 0;
+		table(0,ip).p2p = 0;
+		//std::cout << "(" << ip << ") " << std::flush;
+		if ( qseq[0].distanceTo(pseq[ip]) <= bound )
+			table(0, ip).p2p = 2;
+		if ( qseq[0].distanceTo(pseq[ip], pseq[ip+1]) <= bound )
+			table(0, ip).p2l = 1;
+		if ( qseq[0].distanceTo(pseq[ip], pseq[ip+1]) <= bound )
+			table(0, ip).l2p = 1;
+	}
+	/*
+	for (iq = 0; iq < (qseq.size()<<1)-1; ++iq) {
+		dtable(iq,0) = 0;
+		if ( (iq & 1) == 0 ) {
+			if ( pseq[0].distanceTo(qseq[iq>>1]) <= bound)
+				dtable(iq,0) = 2;
+		} else {
+			if ( pseq[0].distanceTo(qseq[ip>>1], qseq[(ip>>1)+1]) <= bound )
+				dtable(iq,0) = 1;
+		}
+	}
+	*/
+	// computing inner cells by the inductive relation
+	// iq -- row, ip -- column
+	for (iq = 1; iq < qseq.size(); ++iq) {
+		for (ip = 1; ip < pseq.size(); ++ip) {
+			table(iq,ip).p2p = 0;
+			switch ( (iq & 1)<<1 | (ip & 1) ) {
+			case 0: // if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
+				if ( qseq[iq].distanceTo(pseq[ip]) <= bound ) {
+					table(iq,ip).p2p = 2;
+					//std::cerr << iq << ", " << ip << ": " << 2 << std::endl;
+				}
+				table(iq,ip).p2p = MAX_AMONG3(
+						table(iq-1,ip).p2p,
+						table(iq-1,ip-1).p2p + table(iq,ip).p2p,
+						table(iq,ip-1).p2p );
+				break;
+				/*
+			case 3: // else if ( (iq & 1) == 1 && (ip & 1) == 1 ) {
+				table(iq,ip) = MAX_AMONG3(
+						table(iq-1,ip-1),
+						table(iq,ip-1),
+						table(iq-1,ip) );
+				break;
+				*/
+			case 1: // else if ( (iq & 1) == 0 && (ip & 1) == 1 ) {
+				if ( qseq[iq].distanceTo(pseq[ip],pseq[ip+1]) <= bound ) {
+					dtable(iq,ip).p2l = 1;
+					//std::cerr << iq << ", " << ip << ": " << 1 << std::endl;
+				}
+				table(iq,ip).p2l = MAX_AMONG3(
+						table(iq,ip-1),
+						table(iq-1,ip-1) + dtable(iq,ip),
+						table(iq-1,ip) );
+				break;
+			case 2: // else if ( (iq & 1) == 1 && (ip & 1) == 0 ) {
+				if ( pseq[ip>>1].distanceTo(qseq[iq>>1],qseq[(iq>>1)+1]) <= bound ) {
+					dtable(iq,ip) = 1;
+					//std::cerr << iq << ", " << ip << ": " << 1 << std::endl;
+				}
+				dtable(iq,ip) = MAX_AMONG3(
+						dtable(iq,ip-1),
+						dtable(iq-1,ip-1) + dtable(iq,ip),
+						dtable(iq-1,ip) );
+				break;
+			}
+		}
+	}
+#ifdef SHOW_TABLE
+	const unsigned int ip_start = 0;//72;
+	const unsigned int ip_stop = MIN(400, (pseq.size()<<1)-1);
+	printf("     ");
+	for(ip = ip_start; ip < ip_stop ; ++ip) {
+		printf("%3d, ", ip);
+	}
+	printf("\n");
+	printf("     ");
+	for(ip = ip_start; ip < ip_stop ; ++ip) {
+		printf("-----");
+	}
+	printf("\n");
+	for(iq = 0; iq < (qseq.size()<<1)-1; ++iq) {
+		printf("%3d| ", iq);
+		for(ip = ip_start; ip < ip_stop ; ++ip) {
+			printf("%3d, ", dtable(iq,ip));
+		}
+		printf("\n");
+	}
+#endif
+	// back track the subsequence
+	std::vector<uintpair> matchedpairs;
+	ip = (pseq.size()<<1) - 2;
+	iq = (qseq.size()<<1) - 2;
+	while (ip > 0 && iq > 0) {
+		//skip through
+		if (dtable(iq,ip) == dtable(iq - 1,ip - 1)) {
+			ip -= 1;
+			iq -= 1;
+			printf("\\");
+		} else if (dtable(iq,ip) == dtable(iq,ip - 1)) {
+			ip -= 1;
+			printf("<");
+		} else if (dtable(iq,ip) == dtable(iq - 1,ip)) {
+			iq -= 1;
+			printf("^");
+		}
+		// point-to-point or point-to-line match
+		else if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
+			if ( dtable(iq,ip) == dtable(iq - 1,ip - 1) + 2 ) {
+				matchedpairs.push_back(uintpair(iq, ip));
+				printf("(%d, %d: %.1lf)", iq>>1, ip>>1, qseq[iq>>1].distanceTo(pseq[ip>>1]));
+				ip -= 1;
+				iq -= 1;
+			} else {
+				printf("%d, %d error!\n", iq, ip);
+				break;
+			}
+		} else {
+			if ( dtable(iq,ip) == dtable(iq - 1,ip - 1) + 1 ) {
+				matchedpairs.push_back(uintpair(iq, ip));
+				if ( (ip & 1) == 0 )
+					printf("{%d, %d: %.1lf}", iq, ip, pseq[ip>>1].distanceTo(qseq[iq>>1], qseq[(iq>>1)+1]) );
+				else if ( (iq & 1) == 0 )
+					printf("{%d, %d: %.1lf} ", iq, ip, qseq[iq>>1].distanceTo(pseq[ip>>1], pseq[(ip>>1)+1]) );
+				ip -= 1;
+				iq -= 1;
+			} else {
+				printf("%d, %d error!\n", iq, ip);
+				break;
+			}
+		}
+	}
+	std::reverse(matchedpairs.begin(), matchedpairs.end());
+	return std::pair<int, std::vector<uintpair>>(
+			dtable((qseq.size()<<1) - 2, (pseq.size()<<1) - 2), matchedpairs);
+}
+
+std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs1(
+		std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,
+		const double &bound) {
 	dptable dtable((qseq.size() << 1) - 1, (pseq.size() << 1) - 1); //[(pseq.size() << 1) - 1][(qseq.size() << 1) - 1];
 	unsigned int ip, iq;
 	// computing the left- and top- frame cells as base-steps
