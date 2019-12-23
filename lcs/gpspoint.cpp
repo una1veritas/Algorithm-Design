@@ -14,8 +14,8 @@ double gpspoint::distanceTo(const gpspoint &q) const {
 	//const int mode = 1;
 
 	// convert degree values to radians
-	double plat = DEG2RAD(lat), plon = DEG2RAD(lon), qlat = DEG2RAD(q.lat),
-			qlon = DEG2RAD(q.lon);
+	double plat = DEG2RAD(lat), plon = DEG2RAD(lon),
+			qlat = DEG2RAD(q.lat), qlon = DEG2RAD(q.lon);
 	// 緯度と経度の差
 	//double latdiff = plat - qlat, londiff = plon - qlon;
 	// the average of lattitude values
