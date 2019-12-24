@@ -67,7 +67,7 @@ private:
 
 	struct dptable {
 		struct triplet {
-			uint16_t p2p, l2p, p2l;
+			uint16_t pp, pl, lp;
 		};
 		std::vector<triplet *> rows;
 		uint16_t column_size;
