@@ -67,7 +67,12 @@ private:
 
 	struct dptable {
 		struct triplet {
-			uint16_t pp, pl, lp;
+			uint16_t lp, ql, qp;
+
+			triplet & clear(uint16_t & val = 0) {
+				lp = val; ql = val; qp = 0;
+				return *this;
+			}
 		};
 		std::vector<triplet *> rows;
 		uint16_t column_size;

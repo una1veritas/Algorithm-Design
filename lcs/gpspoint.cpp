@@ -59,7 +59,7 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 	 *    |        |        ip          |
 	 * -----------------------------------------
 	 *    |        |              lp    |
-	 *    |        |  pl          pp    |
+	 *    |        |  ql          qp    |
 	 * -----------------------------------------
 	 *    |        |          :iq-1,iq  |
 	 *    |        |          :   <-> ip|
@@ -73,22 +73,18 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 	for (ip = 0; ip < pseq.size(); ++ip) {
 		// iq == 0
 		//std::cout << "(" << ip << ") " << std::flush;
-		table(0, ip).pl = 0;
-		table(0, ip).lp = 0;
-		table(0, ip).pp = 0;
+		table(0, ip).clear();
 		if ( qseq[0].distanceTo(pseq[ip]) <= bound )
-			table(0, ip).pp = 2;
+			table(0, ip).qp = 2;
 		if ( ip != 0 &&
 				qseq[0].distanceTo(pseq[ip-1], pseq[ip]) <= bound )
-			table(0, ip).pl = 1;
+			table(0, ip).ql = 1;
 	}
 	for (iq = 0; iq < qseq.size(); ++iq) {
 		// ip == 0
-		table(iq, 0).pl = 0;
-		table(iq, 0).lp = 0;
-		table(iq, 0).pp = 0;
+		table(iq, 0).clear();
 		if ( pseq[0].distanceTo(qseq[iq]) <= bound)
-			table(iq,0).pp = 2;
+			table(iq,0).qp = 2;
 		if ( iq != 0 && pseq[0].distanceTo(qseq[iq-1], qseq[iq]) <= bound )
 			table(iq,0).lp = 1;
 	}
@@ -97,10 +93,7 @@ std::pair<int, std::vector<gpspoint::uintpair>> gpspoint::lcs(
 	// iq -- row, ip -- column
 	for (iq = 1; iq < qseq.size(); ++iq) {
 		for (ip = 1; ip < pseq.size(); ++ip) {
-			table(iq,ip).pl = 0;
-			table(iq,ip).lp = 0;
-			table(iq,ip).pp = 0;
-
+			table(iq,ip).clear();
 			if ( qseq[iq].distanceTo(pseq[ip]) <= bound )
 				table(iq,ip).pp = 2;
 			table(iq,ip).pp = MAX_AMONG3(
