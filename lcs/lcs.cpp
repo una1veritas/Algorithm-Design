@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+#include <cmath>
+#include <chrono>
 
 #include <vector>
 #include "gpspoint.h"
 
 //#define SHOW_SEQ
+#define FRAC(x)  ((x) - (int)(x))
 
 int read_gpspoint_csv(char *filename, std::vector<gpspoint> &array) {
 	char buff[1024];
@@ -57,32 +59,40 @@ int main(int argc, char **argv) {
 	}
 #endif
 
-	std::pair<int, std::vector<gpspoint::uintpair>> result = gpspoint::lcs(parray, qarray, 30);
+	auto sw = std::chrono::system_clock::now();
+	std::vector<std::pair<float,float>> result = gpspoint::lcs(parray, qarray, 30);
+	auto dur = std::chrono::system_clock::now() - sw;
 
-	printf("\nthe length of a lcs: %d\n\n", result.first);
-	for (auto i = result.second.begin(); i != result.second.end(); ++i) {
-		int16_t iq = i->first, ip = i->second;
-		if ( iq & 1 ) {
-			printf("%.1lf ([%lf, %lf]-[%lf, %lf]) ", iq/2.0, qarray[iq>>1].lat, qarray[iq>>1].lon, qarray[(iq>>1)+1].lat, qarray[(iq>>1)+1].lon);
+	double similarity = 0;
+	std::cout << "took " << std::chrono::duration_cast<std::chrono::milliseconds>(dur).count() << " millis." << std::endl;
+	printf("\nthe length of a lcs: %ld\n\n", result.size());
+	for (auto i = result.begin(); i != result.end(); ++i) {
+		float iq = i->first, ip = i->second;
+		if ( FRAC(iq) != 0 ) {
+			printf("%.1lf ([%lf, %lf]-[%lf, %lf]) ", iq, qarray[(int)iq].lat, qarray[(int)iq].lon, qarray[1+(int)iq].lat, qarray[1+(int)iq].lon);
 		} else {
-			printf("%d ([%lf, %lf]) ",  iq>>1, qarray[iq>>1].lat, qarray[iq>>1].lon);
+			printf("%d ([%lf, %lf]) ",  (int)iq, qarray[iq].lat, qarray[iq].lon);
 		}
-		if ( ip & 1 ) {
-			printf(", %.1lf ([%lf, %lf]-[%lf, %lf]) ", ip/2.0, parray[ip>>1].lat, parray[ip>>1].lon, parray[(ip>>1)+1].lat, parray[(ip>>1)+1].lon);
+		if ( FRAC(ip) != 0 ) {
+			printf(", %.1lf ([%lf, %lf]-[%lf, %lf]) ", ip, parray[ip].lat, parray[ip].lon, parray[1+(int)ip].lat, parray[1+(int)ip].lon);
 		} else {
-			printf(", %d ([%lf, %lf]) ",  ip>>1, parray[ip>>1].lat, parray[ip>>1].lon);
+			printf(", %d ([%lf, %lf]) ",  (int)ip, parray[ip].lat, parray[ip].lon);
 		}
-		if ( (iq & 1) == 0 && (ip & 1) == 0 ) {
-			printf("%lf", qarray[iq>>1].distanceTo(parray[ip>>1]) );
-		} else if ( (iq & 1) == 0 && (ip & 1) == 1 ) {
-			printf("%lf", qarray[iq>>1].distanceTo(parray[ip>>1],parray[(ip>>1)+1]) );
-		} else if ( (iq & 1) == 1 && (ip & 1) == 0 ) {
-			printf("%lf", parray[ip>>1].distanceTo(qarray[iq>>1],qarray[(iq>>1)+1]) );
+		if ( FRAC(iq) == 0 && FRAC(ip) == 0 ) {
+			printf("%lf", qarray[iq].distanceTo(parray[ip]) );
+			similarity += 1;
+		} else if ( FRAC(iq) == 0 && FRAC(ip) != 0 ) {
+			printf("%lf", qarray[(int)iq].distanceTo(parray[(int)ip],parray[1+(int)ip]) );
+			similarity += 0.5;
+		} else if ( FRAC(iq) != 0 && FRAC(ip) == 0 ) {
+			printf("%lf", parray[ip].distanceTo(qarray[(int)iq],qarray[1+(int)iq]) );
+			similarity += 0.5;
 		} else {
 			printf("error!");
 		}
 		printf("\n");
 	}
+	printf("similarity = %.1lf\n\n", similarity);
 
 	/* write in csv format */
 	/*

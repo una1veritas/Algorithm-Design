@@ -69,11 +69,12 @@ private:
 		struct triplet {
 			uint16_t lp, ql, qp;
 
-			triplet & clear(uint16_t & val = 0) {
+			triplet & clear(const uint16_t & val = 0) {
 				lp = val; ql = val; qp = 0;
 				return *this;
 			}
 		};
+
 		std::vector<triplet *> rows;
 		uint16_t column_size;
 
@@ -102,9 +103,9 @@ public:
 	double distanceTo(const gpspoint &q) const;
 	double distanceTo(const gpspoint &q1, const gpspoint &q2) const;
 
-	typedef std::pair<unsigned int, unsigned int> uintpair;
-	static std::pair<int, std::vector<uintpair>> lcs(std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,const double &bound = 50.0);
-	static std::pair<int, std::vector<uintpair>> lcs1(std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,const double &bound = 50.0);
+//	typedef std::pair<unsigned int, unsigned int> uintpair;
+	static std::vector<std::pair<float,float>> lcs(std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,const double &bound = 50.0);
+//	static std::pair<int, std::vector<uintpair>> lcs1(std::vector<gpspoint> &pseq, std::vector<gpspoint> &qseq,const double &bound = 50.0);
 
 	friend std::ostream & operator<<(std::ostream & os, const gpspoint & p) {
 		os << "[" << std::fixed << std::setprecision(6) << p.time << ", " << p.lat << ", " << p.lon << "] ";

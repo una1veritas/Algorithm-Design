@@ -24,11 +24,8 @@ test.exe:   $(TESTOBJ)
 lcs.exe:	$(OBJS)
 	$(CXX) -o $@ $^
 
-#gpspoint.o:	gpspoint.h 
-#	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
-
-%.o:	$(PROJECT_ROOT)%.cpp 
+%.o:	$(PROJECT_ROOT)%.cpp $(HEADERS)
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 %.o:	$(PROJECT_ROOT)%.c 
