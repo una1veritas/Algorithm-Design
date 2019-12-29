@@ -16,7 +16,7 @@ def adjacent_points(G, point):
             N.add(w) # the other (2nd) end point
         elif w == point :
             N.add(v)  # the 1st end point
-    return N
+    return sorted(list(N))
 
 def BreadthFirstSearch(G, start, show = False):
     (V, E) = G
@@ -43,15 +43,16 @@ def DepthFirstSearch(G, start, show = False):
     E_T = set()
     U = set()
     S = [ start ]
-    if not start in V :
+    if start in V :
         U.add(start)
     while len(S) != 0 :
         if show: print('S = '+str(S) + ', U = '+str(U)) # show the current front line 
-        v = S[-1]
+        v = S[-1] # pop the last element
         for w in adjacent_points(G, v):
             if w not in U :
                 U.add(w)
                 S.append(w)
+                print( (v, w) )
                 E_T.add( (v,w) )
                 break
         else:

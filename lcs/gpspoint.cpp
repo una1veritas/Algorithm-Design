@@ -76,8 +76,7 @@ std::vector<std::pair<float,float>> gpspoint::lcs(
 		table(0, ip).clear();
 		if ( qseq[0].distanceTo(pseq[ip]) <= bound )
 			table(0, ip).qp = 2;
-		if ( ip != 0 &&
-				qseq[0].distanceTo(pseq[ip-1], pseq[ip]) <= bound )
+		if ( ip != 0 && qseq[0].distanceTo(pseq[ip-1], pseq[ip]) <= bound )
 			table(0, ip).ql = 1;
 	}
 	for (iq = 0; iq < qseq.size(); ++iq) {
@@ -156,6 +155,7 @@ std::vector<std::pair<float,float>> gpspoint::lcs(
 				ip -= 1;
 				iq -= 1;
 				//std::cout << "\\";
+				continue;
 			} else if ( table(iq,ip).qp == table(iq, ip).lp ) {
 				qpmode = lp;
 				//std::cout << "|";
@@ -168,12 +168,13 @@ std::vector<std::pair<float,float>> gpspoint::lcs(
 				ip -= 1;
 				iq -= 1;
 				//std::cout << "*";
+				continue;
 			} else {
 				std::cerr << "back trace error qp @ " << iq << ", " << ip << std::endl;
 				break;
 			}
-			continue;
-		} else if (qpmode == lp) {
+		}
+		if (qpmode == lp) {
 			if ( table(iq,ip).lp == table(iq-1,ip).ql ) {
 				iq -= 1;
 				qpmode = ql;

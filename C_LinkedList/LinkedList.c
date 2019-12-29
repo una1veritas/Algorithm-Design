@@ -57,7 +57,7 @@ void * LinkedList_pop(LinkedList * list) {
 }
 
 ListNode * LinkedList_begin(LinkedList * list) {
-	return &list->head;
+	return &(list->head);
 }
 
 ListNode * LinkedList_end(LinkedList * list) {
