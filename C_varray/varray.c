@@ -1,4 +1,5 @@
 #include "varray.h"
+#include <ctype.h>
 
 void varray_init(varray * v, unsigned int minsize) {
 	if ( minsize < 8 ) minsize = 8;
@@ -13,7 +14,15 @@ void varray_free(varray * v) {
 	v->size = 0;
 }
 
-void varray_resize(varray * v) {
+int varray_capacity(varray * v) {
+	return v->capacity;
+}
+
+int varray_size(varray * v) {
+	return v->size;
+}
+
+void varray_reallocate(varray * v) {
 	unsigned int newcapa = 8;
 	while ( newcapa <= v->capacity ) {
 		newcapa <<= 1;
@@ -37,8 +46,23 @@ data varray_back(varray * v) {
 
 void varray_pushback(varray * v, data d) {
 	if ( !(v->size < v->capacity) ) {
-		varray_resize(v);
+		varray_reallocate(v);
 	}
 	v->array[v->size] = d;
 	v->size += 1;
+}
+
+int varray_strscan(varray * v, char * ptr) {
+	int cnt = 0;
+	while ( *ptr != 0 ) {
+		//printf("'%s'\n", ptr);
+		while ( !isdigit(*ptr) && *ptr != '-' && *ptr != 0 ) { ++ptr; }
+		if ( *ptr == 0 )
+			break;
+		long val = strtol(ptr, &ptr, 10);
+		//printf("%ld, '%s'\n", val, ptr);
+		varray_pushback(v, val);
+		++cnt;
+	}
+	return cnt;
 }
