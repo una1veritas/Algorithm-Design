@@ -1,6 +1,6 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-OBJS = StringMatching.o
+OBJS = main.o
 
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -g
@@ -22,4 +22,4 @@ StringMatching:	$(OBJS)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
-	rm -fr StringMatching $(OBJS)
+	rm -fr StringMatching $(OBJS) 
