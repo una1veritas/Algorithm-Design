@@ -120,31 +120,19 @@ public:
 	}
 
 	int compare(const std::string txt, const int pos) {
-		int patpos = 0, rpos = pos + pattern.size();
+		int i, rpos;
 		matched = false;
-		for (patpos = 0;
-				patpos < pattern.size() &&
-						(pattern[pattern.size() - 1 - patpos] == txt[rpos - 1 - patpos]);
-				++patpos);
-		if ( patpos == pattern.size() ) {
+		for (i = 0, rpos = pos + pattern.size();
+				i < pattern.size() &&
+						(pattern[(pattern.size() - 1) - i] == txt[rpos - 1 - i]);
+				++i);
+		std::cout << "pos, rpos-1 = " << pos << ", " << rpos-1 << ", i = " << i << ", delta(x) = " << skip[txt[rpos - 1 - i]] << " (" << txt[rpos - 1 - i] << ")" << std::endl;
+		if ( i == pattern.size() ) {
+			std::cout << "*" << std::endl;
 			matched = true;
 			return 1;
 		}
-		//std::cout << "pos (pos+size-1) = " << pos << ", state = " << patpos << ", delta = " << skip[txt[rpos - 1 - patpos]] << std::endl;
-		return skip[txt[rpos - 1 - patpos]];
-
-	}
-
-	int compare(const std::string::const_reverse_iterator & pos) {
-		std::string::const_reverse_iterator patpos = pattern.crbegin();
-		std::string::const_reverse_iterator txtpos = pos + (pattern.size() - 1);
-		matched = false;
-		for ( ; patpos != pattern.crend() && *patpos == *txtpos; --patpos, --txtpos);
-		if ( patpos == pattern.crend() ) {
-			matched = true;
-			return 1;
-		}
-		return skip[*txtpos];
+		return skip[txt[rpos - 1 - i]];
 
 	}
 
@@ -177,11 +165,7 @@ public:
 
 	friend std::ostream & operator<<(std::ostream & ost, const horspool & hors) {
 		int count = 0;
-		ost << "horspool([";
-		for (int i = 0; i < hors.pattern.size(); i++) {
-			ost << hors.pattern[i] << ", ";
-		}
-		ost << "], [";
+		ost << "horspool('" << hors.pattern << "', [";
 		for (int i = 0; i < hors.skip.size(); i++) {
 			if ( hors.skip[i] != hors.pattern.size() ) {
 				if ( count != 0 )
@@ -197,15 +181,27 @@ public:
 };
 
 int main(const int argc, const char *argv[]) {
-	kmp p("abcabc");
-	horspool h("abcabc");
-	std::string text("abcababcabcabcababacabcabc");
+	const char p[] = "abaa", * pat;
+	const char t[] = "baabaabaabaababbaaba", *txt;
+	if ( argc >= 3 ) {
+		txt = argv[1];
+		pat = argv[2];
+	} else {
+		txt = t;
+		pat = p;
+	}
+	kmp pm(pat);
+	horspool hm(pat);
+	std::string text(txt);
 
-	std::cout << p << std::endl;
+	std::cout << pm << std::endl;
+	std::cout << hm << std::endl;
 	std::cout << text << " (" << text.size() << ")" << std::endl;
 
+	std::vector<int> res;
+	/*
 	std::cout << "kmp search: " << std::endl;
-	std::vector<int> res = p.find_all(text);
+	res = p.find_all(text);
 	if ( res.size() ) {
 		for(std::vector<int>::iterator i = res.begin(); i != res.end(); ++i) {
 			std::cout << *i << ", ";
@@ -215,9 +211,11 @@ int main(const int argc, const char *argv[]) {
 	}
 	//std::cout << p.find(text);
 	std::cout << std::endl << std::endl;
+	*/
 
 	std::cout << "horspool search: " << std::endl;
-	res = h.find_all(text);
+
+	res = hm.find_all(text);
 	if ( res.size() ) {
 		for(std::vector<int>::iterator i = res.begin(); i != res.end(); ++i) {
 			std::cout << *i << ", ";
@@ -225,6 +223,7 @@ int main(const int argc, const char *argv[]) {
 	} else {
 		std::cout << "not found.";
 	}
+	//std::cout << h.find(text);
 	std::cout << std::endl << std::endl;
 
 	return 0;
