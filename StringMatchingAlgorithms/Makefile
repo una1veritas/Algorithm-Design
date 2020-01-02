@@ -1,6 +1,7 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 OBJS = main.o
+HEADERS = stringmatching.h
 
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -g
@@ -12,13 +13,13 @@ endif
 
 all:	StringMatching
 
-StringMatching:	$(OBJS)
+StringMatching:	$(OBJS) 
 	$(CXX) -o $@ $^
 
-%.o:	$(PROJECT_ROOT)%.cpp
+%.o:	$(PROJECT_ROOT)%.cpp $(PROJECT_ROOT)$(HEADERS)
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
-%.o:	$(PROJECT_ROOT)%.c
+%.o:	$(PROJECT_ROOT)%.c 
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
