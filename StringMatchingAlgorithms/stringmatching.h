@@ -63,6 +63,7 @@ public:
 
 };
 
+// An implementation of Knuth-Morris-Pratt algorithm
 class kmp {
 	std::string pattern;
 	std::vector<int> failure;
@@ -97,12 +98,17 @@ public:
 		int pos = 0;
 		state = 0;
 		while (pos < txt.size() - pattern.size() + 1) {
-			//std::cout << pos << ", " << state << std::endl;
+#ifdef FIND_DEBUG
+			std::cout << pos << ", " << state << std::endl;
+#endif
 			if ( txt[pos] == pattern[state]) {
 				++state;
 				++pos;
 				if (state == pattern.size()) {
-					//std::cout << "matched. " << pos << ", " << state << std::endl;
+#ifdef FIND_DEBUG
+					std::cout << "matched. " << pos << ", " << state << std::endl;
+#endif
+					state = failure[state-1];
 					return pos - pattern.size();
 				}
 			} else {
@@ -110,7 +116,9 @@ public:
 					++pos;
 				} else {
 					state = failure[state-1];
-					//std::cout << "failed: " << pos << ", " << state << std::endl;
+#ifdef FIND_DEBUG
+					std::cout << "failed: " << pos << ", " << state << " (" << failure[state-1] << ") " << std::endl;
+#endif
 				}
 			}
 		}
@@ -122,21 +130,27 @@ public:
 		int pos = 0;
 		state = 0;
 		while (pos < txt.size()) {
-			//std::cout << pos << ", " << state << std::endl;
+#ifdef FIND_DEBUG
+			std::cout << pos << ", " << state << std::endl;
+#endif
 			if ( txt[pos] == pattern[state]) {
 				state++;
 				pos++;
 				if (state == pattern.size()) {
-					//std::cout << "matched. " << pos << ", " << state << std::endl;
 					occurrs.push_back(pos - pattern.size());
 					state = failure[state-1];
+#ifdef FIND_DEBUG
+					std::cout << "matched: " << pos << ", " << state << std::endl;
+#endif
 				}
 			} else {
 				if ( state == 0 ) {
 					++pos;
 				} else {
 					state = failure[state-1];
-					//std::cout << "failured " << state << std::endl;
+#ifdef FIND_DEBUG
+					std::cout << "failed: " << pos << ", " << state << " (" << failure[state-1] << ") " << std::endl;
+#endif
 				}
 			}
 		}
@@ -155,6 +169,7 @@ public:
 	}
 };
 
+// An implementation of (Boyer-Moore-) Horspool algorithm
 class horspool {
 	std::string pattern;
 	std::vector<int> delta;
