@@ -16,20 +16,21 @@ int main(const int argc, const char *argv[]) {
 		txt = t;
 		pat = p;
 	}
-	naive nm(pat);
+	//naive nm(pat);
 	kmp pm(pat);
 	horspool hm(pat);
 	std::string text(txt);
 
 //	std::cout << nm << std::endl;
-	std::cout << pm << std::endl;
 	std::cout << hm << std::endl;
+	std::cout << pm << std::endl;
 	std::cout << text << " (" << text.size() << ")" << std::endl;
+
 
 	std::vector<int> res;
 
-	std::cout << "kmp search: " << std::endl;
-	res = pm.find_all(text);
+	std::cout << "horspool search: " << std::endl;
+	res = hm.find_all(text);
 	if ( res.size() ) {
 		for(std::vector<int>::iterator i = res.begin(); i != res.end(); ++i) {
 			std::cout << *i << ", ";
@@ -39,6 +40,7 @@ int main(const int argc, const char *argv[]) {
 	}
 	//std::cout << p.find(text);
 	std::cout << std::endl << std::endl;
+
 
 /*
 	std::cout << "naive search: " << std::endl;
@@ -54,9 +56,9 @@ int main(const int argc, const char *argv[]) {
 	//std::cout << h.find(text);
 	std::cout << std::endl << std::endl;
 */
-	std::cout << "horspool search: " << std::endl;
+	std::cout << "kmp search: " << std::endl;
 
-	res = hm.find_all(text);
+	res = pm.find_all(text);
 	if ( res.size() ) {
 		for(std::vector<int>::iterator i = res.begin(); i != res.end(); ++i) {
 			std::cout << *i << ", ";

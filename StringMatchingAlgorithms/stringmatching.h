@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-
+#define max(a, b) ((a) < (b) ? (b) : (a))
 class naive {
 	std::string pattern;
 	int state;
@@ -175,14 +175,11 @@ class horspool {
 	std::vector<int> delta;
 	int state;
 
-//	char pattern[], alphabet[];
-//	int skip[];
-
 	void initialize() {
-		delta.clear();
+		delta.resize( 256 );
+		for (int i = 0; i < 256; ++i)
+			delta[i] = pattern.size();
 		for (int i = 0; i < pattern.size() - 1; i++) {
-			for (int j = delta.size(); j <= (int)pattern[i]; ++j)
-				delta.push_back(pattern.size());
 			delta[pattern[i]] = pattern.size() - i - 1;
 		}
 	}
@@ -195,46 +192,45 @@ public:
 
 	int size() const { return pattern.size(); }
 
-	// function for the inner-loop.
-	bool compare(const std::string & txt, const int & pos) {
-		for (state = 0; state < pattern.size() && (pattern[state] == txt[pos + state]);
-				++state);
-		return ( state == pattern.size() );
-	}
-
 	// find the 1st occurrence.
 	// function for the outer-loop.
 	int find(const std::string & txt) {
-		int pos; // pos represents the place to which the 1st character of the pattern must be matched.
-		for (pos = 0; pos < txt.size() - pattern.size() + 1; pos += delta[txt[pos + pattern.size() - 1]]) {
-			if ( compare(txt, pos) ) {
+		int ix; // pos represents the place corresponds to the head of the pattern.
+		for (ix = pattern.size() - 1; ix < txt.size(); ix += delta[txt[ix]]) {
+			for (state = 0;
+					state < pattern.size() && (pattern[pattern.size() - state - 1] == txt[ix - state]);
+					++state);
+			if ( state == pattern.size() ) {
 #ifdef FIND_DEBUG
 				std::cout << "*" << std::endl;
 #endif
-				return pos;
+				return ix;
 			}
 #ifdef FIND_DEBUG
-			std::cout << "pos = " << pos << ", state = " << state << ", delta["<< txt[pos] << "] = " << delta[txt[pos]] << std::endl;
+			std::cout << "pos = " << ix << ", state = " << state << ", delta["<< txt[ix] << "] = " << delta[txt[ix]] << std::endl;
 #endif
 		}
-		return pos;
+		return ix + 1 - pattern.size();
 	}
 
 	// find all the occurrences.
 	std::vector<int> find_all(const std::string & txt) {
 		std::vector<int> occurrences;
-		int pos;
-		for (pos = 0; pos < txt.size() - pattern.size() + 1; pos += delta[txt[pos + pattern.size() - 1]]) {
-			if ( compare(txt, pos) ) {
+		int ix;
+		for (ix = pattern.size() - 1; ix < txt.size(); ix += delta[txt[ix]]) {
+			for (state = 0;
+					state < pattern.size() && (pattern[pattern.size() - state - 1] == txt[ix - state]);
+					++state);
+			if ( state == pattern.size() ) {
 #ifdef FIND_DEBUG
 				std::cout << "*";
 #endif
-				occurrences.push_back(pos);
+				occurrences.push_back(ix+1-pattern.size());
 			}
 #ifdef FIND_DEBUG
-			std::cout << "pos = " << pos << ", state = " << state << ", delta["<< txt[pos] << "] = " << delta[txt[pos]] << std::endl;
+			std::cout << "pos = " << ix << ", state = " << state << ", delta["<< txt[ix] << "] = " << delta[txt[ix]] << std::endl;
 #endif
-			}
+		}
 		return occurrences;
 	}
 
