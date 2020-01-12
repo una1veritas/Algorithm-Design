@@ -5,6 +5,7 @@
 #include "varray.h"
 
 int main(int argc, char *argv[]) {
+
 	char * str = " {-1, 3,-5,4,0, 2 }";
 	char * ptr;
 	varray a;
@@ -12,7 +13,7 @@ int main(int argc, char *argv[]) {
 	int count = varray_strscan(&a, str);
 	printf("Got %d integers.\n", count);
 	for(int i = 0; i < varray_size(&a); ++i) {
-		printf("%d, ", varray_at(&a,i));
+		printf("%d, ", (int)varray_at(&a,i));
 	}
 	printf("\n");
 

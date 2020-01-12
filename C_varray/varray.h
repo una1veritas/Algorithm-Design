@@ -4,8 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef int data;
-
+typedef void * data;
 typedef struct {
 	data * array;
 	unsigned int capacity;
