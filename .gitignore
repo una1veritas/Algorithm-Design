@@ -15,5 +15,6 @@ a.out
 .metadata
 language.settings.xml
 build
+*.pyc
 
 .DS_Store
