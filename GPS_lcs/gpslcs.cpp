@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
 	read_gpspoint_csv(argv[2], parray);
 
 	printf("\n%s:\n", argv[1]);
-	printf("%lu points.\n", qarray.size());
+	printf("%lu points.\n", (unsigned long) qarray.size());
 #ifdef SHOW_SEQ
 	for(int i = 0; i < qarray.size(); ++i) {
 		printf("%d: %lf, %lf, %lf",
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 	}
 #endif
 	printf("%s:\n", argv[2]);
-	printf("%lu points.\n", parray.size());
+	printf("%lu points.\n", (unsigned long) parray.size());
 #ifdef SHOW_SEQ
 	for(int i = 0; i < parray.size(); ++i) {
 		printf("%d: %lf, %lf, %lf", i, parray[i].time, parray[i].lat, parray[i].lon);
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
 
 	double similarity = 0;
 	std::cout << "took " << std::chrono::duration_cast<std::chrono::milliseconds>(dur).count() << " millis." << std::endl;
-	printf("\nthe length of a lcs: %ld\n\n", result.size());
+	printf("\nthe length of a lcs: %ld\n\n", (unsigned long)result.size());
 	for (auto i = result.begin(); i != result.end(); ++i) {
 		float iq = i->first, ip = i->second;
 		if ( FRAC(iq) != 0 ) {

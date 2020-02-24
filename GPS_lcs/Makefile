@@ -1,18 +1,18 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-OBJS = lcs.o gpspoint.o
+OBJS = gpslcs.o gpspoint.o
 HEADERS = gpspoint.h
 
 ifeq ($(BUILD_MODE),debug)
-	CXXFLAGS += -std=c++11 -g
+	CXXFLAGS += -std=c++1z -g
 else ifeq ($(BUILD_MODE),run)
-	CXXFLAGS += -std=c++11 -O2
+	CXXFLAGS += -std=c++1z -O2
 else 
-	CXXFLAGS += -std=c++11 -g -Wall
+	CXXFLAGS += -std=c++1z -g -Wall
 #	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
 
-TARGET = lcs.exe
+TARGET = gpslcs.exe
 
 all:	$(TARGET)
 
@@ -21,7 +21,7 @@ TESTOBJ = test.o
 test.exe:   $(TESTOBJ)
 	$(CXX) -o $@ $^
 
-lcs.exe:	$(OBJS)
+gpslcs.exe:	$(OBJS)
 	$(CXX) -o $@ $^
 
 
@@ -32,4 +32,4 @@ lcs.exe:	$(OBJS)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
-	rm -fr lcs.exe test.exe $(OBJS) $(TESTOBJ)
+	rm -fr *.exe $(OBJS) $(TESTOBJ)
