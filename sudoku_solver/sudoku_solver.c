@@ -6,8 +6,8 @@ const static int rows = 9;
 void show_cells(const int rows, const int * cells);
 int read_input(const int argc, const char * argv[], int * cells);
 void init_ans(int * ans, const int * cells);
-void sort_except0(int * begin, int * end);
-int next_except0(int * begin, int * end);
+void sort_row(int * begin, int * end);
+int next_row(int * begin, int * end);
 
 int main(const int argc, const char * argv[]) {
 	int cells[rows*rows];
@@ -20,36 +20,42 @@ int main(const int argc, const char * argv[]) {
 	int ans[rows*rows];
 	init_ans(ans, cells);
 
-	do {
-		show_cells(rows, (const int *) ans);
-		printf("\n");
-	} while (next_except0(ans, ans+rows) );
+	show_cells(rows, (const int *) ans);
+	printf("\n");
+	while ( next_row(ans, ans+rows) );
+
+	show_cells(rows, (const int *) ans);
+	printf("\n");
 
 	return 0;
 }
 
-void next_except0(int * begin, int * end) {
+int next_row(int * begin, int * end) {
 	int cnt;
 	int t;
-	int * ptr, * next;
+	int * ptr, * prev;
+
+	for(ptr = end - 1; *ptr == 0; --ptr) {
+		if ( ptr == begin )
+			return 0;
+	}
 	do {
-		cnt = 0;
-		for(ptr = begin; ptr+1 != end; ++ptr) {
-			if ( *ptr == 0 )
-				continue;
-			if ( *(ptr+1) == 0 && ptr+2 != end ) {
-				next = ptr + 2;
-			} else {
-				next = ptr + 1;
-			}
-			if ( *ptr > *next ) {
-				t = *ptr;
-				*ptr = *next;
-				*next = t;
-				++cnt;
-			}
+		prev = ptr;
+		for( ptr -= 1; *ptr == 0; --ptr) {
+			if ( ptr == begin )
+				return 0;
 		}
-	} while ( cnt > 0 );
+		//printf("%d > %d?\n", *ptr, *prev);
+	} while ( *ptr > *prev && ptr != begin);
+	if ( ptr == begin && *ptr > *prev )
+		return 0;
+	sort_row(prev, end);
+	for( ; *ptr > *prev || *prev == 0 ; ++prev);
+	t = *ptr;
+	*ptr = *prev;
+	*prev = t;
+
+	return 1;
 }
 
 
@@ -83,7 +89,7 @@ void init_ans(int * ans, const int * cells) {
 	}
 }
 
-void sort_except0(int * begin, int * end) {
+void sort_row(int * begin, int * end) {
 	int cnt;
 	int t;
 	int * ptr, * next;
@@ -92,11 +98,12 @@ void sort_except0(int * begin, int * end) {
 		for(ptr = begin; ptr+1 != end; ++ptr) {
 			if ( *ptr == 0 )
 				continue;
-			if ( *(ptr+1) == 0 && ptr+2 != end ) {
-				next = ptr + 2;
-			} else {
-				next = ptr + 1;
+			for(next = ptr + 1; *next == 0; ++next) {
+				if ( next == end)
+					break;
 			}
+			if ( next == end )
+				continue;
 			if ( *ptr > *next ) {
 				t = *ptr;
 				*ptr = *next;
