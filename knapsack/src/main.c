@@ -5,44 +5,43 @@
 #include "knapsack.h"
 
 int main (int argc, const char * argv[]) {
-	unsigned int budget;
-	unsigned int totalPrice;
+	int budget;
+	int totalPrice;
 	
 	budget = atoi(argv[1]);
-	PriceList pricelist = { argc - 2, NULL };
-	pricelist.price = (unsigned int *) malloc(sizeof(unsigned int)*pricelist.count);
-	for (unsigned int i = 0; i < pricelist.count; i++) {
-		pricelist.price[i] = atoi(argv[i+2]);
+	PriceList plist = { argc - 2, NULL };
+	plist.price = (int *) malloc(sizeof(int)*plist.number);
+	for (int i = 0; i < plist.number; i++) {
+		plist.price[i] = atoi(argv[i+2]);
 	}
 	
 	// Show our input.
-	printf("%d yen, %d items.\n", budget, pricelist.count);
-	for (unsigned int i = 0; i < pricelist.count; i++) {
-		printf("%d, ", pricelist.price[i]);
+	printf("%d yen, %d items.\n", budget, plist.number);
+	for (int i = 0; i < plist.number; i++) {
+		printf("%d, ", plist.price[i]);
 	}
 	printf("\n\n");
-	fflush(stdout);
 	
-	unsigned char bestCart[pricelist.count];
-	for(int i = 0; i < pricelist.count; ++i)
+	char bestCart[plist.number];
+	for(int i = 0; i < plist.number; ++i)
 		bestCart[i] = 0;
 
 	clock_t swatch = clock();
-	totalPrice = bestcart_recursive(pricelist, budget, bestCart);
+	totalPrice = bestcart_recursive(plist, budget, bestCart);
 	swatch = clock() - swatch;
 	printf("spent %g ms.\n", swatch/(double)CLOCKS_PER_SEC * 1000);
 	printf("buy items: ");
 	int sum = 0;
-	for (unsigned int i = 0; i < pricelist.count; i++) {
+	for (int i = 0; i < plist.number; i++) {
 		if ( bestCart[i] ) {
-			sum += pricelist.price[i];
-			printf("%d (%d), ", i, pricelist.price[i]);
+			sum += plist.price[i];
+			printf("%d (%d), ", i, plist.price[i]);
 		}
 	}
 	if (sum != totalPrice)
 		printf("Error: totalPrice and sum %d do not agree with.", sum);
 	printf("\ntotally %d yen.\n", totalPrice);
 
-	free(pricelist.price);
+	free(plist.price);
     return 0;
 }
