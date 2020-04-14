@@ -60,6 +60,9 @@ void add(char * x, char * y, char * z) {
 	*z = '\0';
 }
 
+void multiply(char * x, char * y, char * z) {
+}
+
 int rputs(char * ptr) {
 	char * h = ptr;
 	int cnt = 0;
