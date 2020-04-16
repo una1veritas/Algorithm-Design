@@ -9,14 +9,13 @@
 #define KNAPSACK_H_
 
 typedef struct {
-	unsigned int count;
-	unsigned int * price;
+	int number;
+	int * price;
 } PriceList;
 
-unsigned int bestcart_recursive(PriceList list, unsigned int budget, unsigned char cart[]);
-unsigned int bestprice_recursive(PriceList list, unsigned int budget);
-unsigned int bestcart_dp(PriceList list, unsigned int budget, unsigned char cart[]);
-
-unsigned int bestcart_enumerate(PriceList list, unsigned int budget, unsigned char cart[] );
+int bestcart_recursive(PriceList list, int budget, char cart[]);
+int bestprice_recursive(PriceList list, int budget);
+int bestcart_dp(PriceList list, int budget, char cart[]);
+int bestcart_enumerate(PriceList list, int budget, char cart[] );
 
 #endif /* KNAPSACK_H_ */

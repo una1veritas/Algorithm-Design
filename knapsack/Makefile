@@ -1,5 +1,5 @@
 CC = 	gcc 
-CXX = 	g++ 
+CXX = 	g++ -std=c1y
 
 OBJS =		knapsack.o main.o
 INCS = 		knapsack.h
@@ -12,10 +12,10 @@ CXX +=	-O0 -g -Wall -fmessage-length=0
 CC  += 	-O0 -g -Wall
 
 
-%.o: $(SRC)/%.c $(INCLUDES)
+%.o: $(SRC)/%.c $(SRC)/$(INCS)
 	$(CC)  -c $<
 
-%.o: $(SRC)/%.cpp $(INCLUDES)
+%.o: $(SRC)/%.cpp $(SRC)/$(INCS)
 	$(CXX) -c $<
 	
 $(TARGET):	$(OBJS)

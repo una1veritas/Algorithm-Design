@@ -4,15 +4,15 @@
 
 #include "knapsack.h"
 
-unsigned int bestcart_enumerate(PriceList list, unsigned int budget, unsigned char cart[]) {
-	unsigned int bestPrice = 0, sum;
-	unsigned int n = list.count;
-	unsigned char tempcart[n+1];
+int bestcart_enumerate(PriceList list, int budget, char cart[]) {
+	int bestPrice = 0, sum;
+	int n = list.number;
+	char tempcart[n+1];
 	memset(tempcart, 0, n+1);
 
 	for (;;) {
 		sum = 0;
-		for(unsigned int i = 0; i < n; ++i) {
+		for(int i = 0; i < n; ++i) {
 			if ( tempcart[i] )
 				sum += list.price[i];
 #ifdef STATUS_PRINT_STDOUT
@@ -28,7 +28,7 @@ unsigned int bestcart_enumerate(PriceList list, unsigned int budget, unsigned ch
 #endif
 		if ( tempcart[n] ) // check (n+1)th digit
 			break;
-		for(unsigned int i = 0; i < n + 1; ++i) {
+		for(int i = 0; i < n + 1; ++i) {
 			if ( tempcart[i] == 0 ) {
 				tempcart[i] = 1;
 				break;
@@ -40,32 +40,32 @@ unsigned int bestcart_enumerate(PriceList list, unsigned int budget, unsigned ch
 	return bestPrice;
 }
 
-unsigned int bestcart_recursive(PriceList list, unsigned int budget, unsigned char cart[]) {
-	unsigned int sum_skip, sum_buy;
-	if ( list.count == 0 )
+int bestcart_recursive(PriceList list, int budget, char cart[]) {
+	int sum_skip, sum_buy;
+	if ( list.number == 0 )
 		return 0;
-	unsigned char tcart_buy[list.count], tcart_dont[list.count];
-	PriceList remained = { list.count - 1, list.price + 1};
+	char tcart_buy[list.number], tcart_dont[list.number];
+	PriceList remained = { list.number - 1, list.price + 1};
 	sum_skip = bestcart_recursive(remained, budget, tcart_dont);
 	// default --- don't buy it
 	*cart = 0;
-	memcpy(cart+1, tcart_dont, remained.count);
+	memcpy(cart+1, tcart_dont, remained.number);
 	if ( *list.price > budget)
 		return sum_skip;
 	sum_buy = *list.price + bestcart_recursive(remained, budget - *list.price, tcart_buy);
 	if (sum_buy > sum_skip) {
 		*cart = 1; // buy it
-		memcpy(cart+1, tcart_buy, remained.count);
+		memcpy(cart+1, tcart_buy, remained.number);
 		return sum_buy;
 	}
 	return sum_skip;
 }
 
-unsigned int bestprice_recursive(PriceList list, unsigned int budget) {
-	unsigned int sum_skip, sum_buy;
-	if ( list.count == 0 )
+int bestprice_recursive(PriceList list, int budget) {
+	int sum_skip, sum_buy;
+	if ( list.number == 0 )
 		return 0;
-	PriceList remained = { list.count - 1, list.price+1 };
+	PriceList remained = { list.number - 1, list.price+1 };
 	sum_skip = bestprice_recursive(remained, budget);
 	// default --- don't buy it
 	if ( *list.price > budget)
@@ -76,11 +76,11 @@ unsigned int bestprice_recursive(PriceList list, unsigned int budget) {
 	return sum_skip;
 }
 
-unsigned int bestcart_dp(PriceList list, unsigned int budget, unsigned char cart[]) {
-	unsigned int best[list.count][budget+1];
+int bestcart_dp(PriceList list, int budget, char cart[]) {
+	int best[list.number][budget+1];
 
 	// filling the only-1st-item row.
-	for (unsigned int b = 0; b <= budget; b++) {
+	for (int b = 0; b <= budget; b++) {
 		if (list.price[0] > b)
 			best[0][b] = 0;
 		else
@@ -88,8 +88,8 @@ unsigned int bestcart_dp(PriceList list, unsigned int budget, unsigned char cart
 	}
 
 	// filling rows from the 2nd-item to the last-item.
-	for (unsigned int i = 1; i < list.count; i++) {
-		for (unsigned int b = 0; b <= budget; b++) {
+	for (int i = 1; i < list.number; i++) {
+		for (int b = 0; b <= budget; b++) {
 			if (list.price[i] > b) {
 				best[i][b] = best[i-1][b];
 				continue;
@@ -102,8 +102,8 @@ unsigned int bestcart_dp(PriceList list, unsigned int budget, unsigned char cart
 	}
 	
 	// back tracking on the dp table.
-	unsigned int total = best[list.count-1][budget];
-	for(unsigned int itemcount = list.count; itemcount > 1; --itemcount) {
+	int total = best[list.number-1][budget];
+	for(int itemcount = list.number; itemcount > 1; --itemcount) {
 		if ( best[itemcount - 1][total] == best[itemcount - 2][total] ) {
 			cart[itemcount - 1] = 0;
 		} else {
@@ -113,6 +113,6 @@ unsigned int bestcart_dp(PriceList list, unsigned int budget, unsigned char cart
 	}
 	cart[0] = ( best[0][total] == list.price[0] );
 
-	return best[list.count-1][budget];
+	return best[list.number-1][budget];
 }
 
