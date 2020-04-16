@@ -6,8 +6,8 @@ const static int rows = 9;
 void show_cells(const int rows, const int * cells);
 int read_input(const int argc, const char * argv[], int * cells);
 void init_ans(int * ans, const int * cells);
-void sort_row(int * begin, int * end);
-int next_row(int * begin, int * end);
+void row_sort(int * begin, int * end);
+int row_next(int * begin, int * end);
 
 int main(const int argc, const char * argv[]) {
 	int cells[rows*rows];
@@ -22,7 +22,32 @@ int main(const int argc, const char * argv[]) {
 
 	show_cells(rows, (const int *) ans);
 	printf("\n");
-	while ( next_row(ans, ans+rows) );
+
+	int cnt = 0;
+	for (int r = 0 ; ; ) {
+		cnt += 1;
+		if ( r > 2 ) {
+			show_cells(rows, (const int *) ans);
+			printf("\n");
+		}
+		if ( ! row_next(ans + r*rows, ans + (r+1)*rows) ) {
+			// carry up
+			++r;
+			//    if no row above then exit the loop and finish.
+			if ( r == rows )
+				break;
+				//combination (permutation) is exhosted.
+			continue;
+		}
+		// if increasing the row succeeded
+		// 2. sort rows below the increased one (clear)
+		for ( ; r > 0 ; ) {
+			r -= 1;
+			row_sort(ans + r*rows, ans + (r+1)*rows );
+		}
+		// execute a test.
+		// if a solution has been found, exit the loop.
+	}
 
 	show_cells(rows, (const int *) ans);
 	printf("\n");
@@ -30,7 +55,7 @@ int main(const int argc, const char * argv[]) {
 	return 0;
 }
 
-int next_row(int * begin, int * end) {
+int row_next(int * begin, int * end) {
 	int cnt;
 	int t;
 	int * ptr, * prev;
@@ -45,11 +70,15 @@ int next_row(int * begin, int * end) {
 			if ( ptr == begin )
 				return 0;
 		}
+		/* if ( *ptr < 0 || *ptr >= rows || *prev < 0 || *prev >= rows )
+			return 0; */
 		//printf("%d > %d?\n", *ptr, *prev);
 	} while ( *ptr > *prev && ptr != begin);
-	if ( ptr == begin && *ptr > *prev )
+	if ( ptr == begin && *ptr > *prev ) {
+		//printf("exhausted.\n");
 		return 0;
-	sort_row(prev, end);
+	}
+	row_sort(prev, end);
 	for( ; *ptr > *prev || *prev == 0 ; ++prev);
 	t = *ptr;
 	*ptr = *prev;
@@ -89,7 +118,7 @@ void init_ans(int * ans, const int * cells) {
 	}
 }
 
-void sort_row(int * begin, int * end) {
+void row_sort(int * begin, int * end) {
 	int cnt;
 	int t;
 	int * ptr, * next;
