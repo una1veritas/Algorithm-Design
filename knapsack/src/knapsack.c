@@ -3,8 +3,8 @@
 #include <string.h>
 
 #include "knapsack.h"
-
-int bestcart_enumerate(PriceList list, int budget, char cart[]) {
+/*
+int bestcart_enumerate(Knapsack * list, int budget, char cart[]) {
 	int bestPrice = 0, sum;
 	int n = list.number;
 	char tempcart[n+1];
@@ -40,12 +40,12 @@ int bestcart_enumerate(PriceList list, int budget, char cart[]) {
 	return bestPrice;
 }
 
-int bestcart_recursive(PriceList list, int budget, char cart[]) {
+int bestcart_recursive(Knapsack * list, int fromindex, Knapsack * best) {
 	int sum_skip, sum_buy;
-	if ( list.number == 0 )
+	if ( fromindex == list->number ) {
 		return 0;
-	char tcart_buy[list.number], tcart_dont[list.number];
-	PriceList remained = { list.number - 1, list.price + 1};
+	}
+	char tcart_buy[list->number], tcart_dont[list->number];
 	sum_skip = bestcart_recursive(remained, budget, tcart_dont);
 	// default --- don't buy it
 	*cart = 0;
@@ -60,23 +60,25 @@ int bestcart_recursive(PriceList list, int budget, char cart[]) {
 	}
 	return sum_skip;
 }
+*/
 
-int bestprice_recursive(PriceList list, int budget) {
+int bestprice_recursive(Knapsack * inst, int fromIndex, int rbudget) {
 	int sum_skip, sum_buy;
-	if ( list.number == 0 )
-		return 0;
-	PriceList remained = { list.number - 1, list.price+1 };
-	sum_skip = bestprice_recursive(remained, budget);
+	if ( fromIndex >= inst->number ) {
+		return inst->budget - rbudget;
+	}
+	sum_skip = bestprice_recursive(inst, fromIndex+1, rbudget);
 	// default --- don't buy it
-	if ( *list.price > budget)
+	if ( inst->price[fromIndex] > rbudget)
 		return sum_skip;
-	sum_buy = *list.price + bestprice_recursive(remained, budget - *list.price);
+	sum_buy = inst->price[fromIndex] + bestprice_recursive(inst, fromIndex + 1, rbudget - inst->price[fromIndex]);
 	if (sum_buy > sum_skip)
 		return sum_buy;
 	return sum_skip;
 }
 
-int bestcart_dp(PriceList list, int budget, char cart[]) {
+/*
+int bestcart_dp(Knapsack * list, char cart[]) {
 	int best[list.number][budget+1];
 
 	// filling the only-1st-item row.
@@ -115,4 +117,4 @@ int bestcart_dp(PriceList list, int budget, char cart[]) {
 
 	return best[list.number-1][budget];
 }
-
+*/

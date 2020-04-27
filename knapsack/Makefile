@@ -1,4 +1,4 @@
-CC = 	gcc 
+CC = 	gcc -std=c11
 CXX = 	g++ -std=c1y
 
 OBJS =		knapsack.o main.o
