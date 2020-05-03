@@ -62,16 +62,16 @@ int bestcart_recursive(Knapsack * list, int fromindex, Knapsack * best) {
 }
 */
 
-int bestprice_recursive(Knapsack * inst, int fromIndex, int rbudget) {
+int bestprice_recursive(Knapsack * inst, int startIndex, int rbudget) {
 	int sum_skip, sum_buy;
-	if ( fromIndex >= inst->number ) {
+	if ( startIndex >= inst->number ) {
 		return inst->budget - rbudget;
 	}
-	sum_skip = bestprice_recursive(inst, fromIndex+1, rbudget);
+	sum_skip = bestprice_recursive(inst, startIndex+1, rbudget);
 	// default --- don't buy it
-	if ( inst->price[fromIndex] > rbudget)
+	if ( inst->price[startIndex] > rbudget)
 		return sum_skip;
-	sum_buy = inst->price[fromIndex] + bestprice_recursive(inst, fromIndex + 1, rbudget - inst->price[fromIndex]);
+	sum_buy = inst->price[startIndex] + bestprice_recursive(inst, startIndex + 1, rbudget - inst->price[startIndex]);
 	if (sum_buy > sum_skip)
 		return sum_buy;
 	return sum_skip;
