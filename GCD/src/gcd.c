@@ -10,25 +10,21 @@ static long _loop_counter;
 
 
 long gcd_naive(long a, long b) {
-	long c, max_a_b;
-	max_a_b = (a >= b ? b : a);
-	for(long i = 1; i < max_a_b; ++i ) {
+	long min_a_b = (a <= b ? a : b);
+	for(long i = min_a_b; i > 1; --i ) {
 		countup;
 		if ( (a % i) == 0 && (b % i) == 0 )
-			c = i;
+			return i;
 	}
-	return c;
+	return 1;
 }
 
 
 long gcd_Euclidean(long a, long b) {
 	long c;
-	do {
-		c = a % b;
-		a = b;
-		b = c;
+	for( ; (c = a % b) != 0; a = b, b = c) {
 		countup;
-	} while ( c );
+	}
 	return b;
 }
 
