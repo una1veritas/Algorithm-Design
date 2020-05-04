@@ -1,6 +1,0 @@
-a = 312312299, b = 437717388
-gcd_euclidean(a,b) = 1
-elapsed time 0.004
-gcd_naive(a,b) = 1
-elapsed time 4035.39
-loop_Euclidean = 23 loop_naive = 312312298

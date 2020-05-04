@@ -5,6 +5,14 @@
 #include <stdio.h>
 #include "sortalgorithms.h"
 
+int verify_sorted(const data *d, const unsigned int ix[], unsigned int n) {
+	for(unsigned int i = 0; i < n - 1; ++i) {
+		if ( data_greaterThan(d+ix[i], d+ix[i]) )
+			return 0;
+	}
+	return 1;
+}
+
 void maxHeapify(const data d[], unsigned int a[], unsigned int i, unsigned int end) {
 	unsigned int larger, tmp;
 		

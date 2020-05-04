@@ -11,23 +11,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int sieveOfEratosthenes(int n) {
-	char sieve[n+1];
+int sieve(int n) {
+	char sv[n+1];
 	int i;
-	for(i = 2; i <= n; ++i) sieve[i] = 1;
+	for(i = 2; i <= n; ++i)
+		sv[i] = 1;
 	for(i = 2; i <= n/2; ++i ) {
-		if (! sieve[i] ) continue;
+		if (! sv[i] ) continue;
 		for(int j = i*2; j <= n; j += i)
-			sieve[j] = 0;
+			sv[j] = 0;
 	}
 	// sieve[2] == 1
-	for(i = n; i > 2 && !sieve[i]; --i);
+	for(i = n; i > 2 && !sv[i]; --i);
 	return i;
 }
 
 int main(const int argc, const char * argv[]) {
 	if (argc < 2) { puts("error: give a limit number.\n"); return EXIT_FAILURE; }
 	int n = atoi(argv[1]);
-	printf("the largest prime no more than %d is: %d.\n", n, sieveOfEratosthenes(n));
+	printf("the largest prime no more than %d is: %d.\n", n, sieve(n));
 	return EXIT_SUCCESS;
 }
