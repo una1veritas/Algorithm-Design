@@ -53,7 +53,7 @@ void heapSort(const data d[], unsigned int a[], unsigned int n) {
 	return;
 }
 
-
+/*
 void selectionSort_range(const data d[], unsigned int a[], unsigned int start, unsigned int end){
 	long i, j, max, t; // i for the length (end+1) of sorted-array.
 		
@@ -67,11 +67,24 @@ void selectionSort_range(const data d[], unsigned int a[], unsigned int start, u
 		}
 	return;
 }
-	
+
 void selectionSort(const data d[], unsigned int a[], unsigned int n) {
 	return selectionSort_range(d, a, 0, n);
 }
+*/
 
+void selectionSort(const data d[], unsigned int a[], unsigned int n) {
+	long t, x;
+	for(long i = 0; i < n - 1; ++i) {
+		x = i;
+		for(long j = i + 1; j < n; ++j) {
+			if ( d[a[x]] > d[a[j]] )
+				x = j;
+		}
+		SWAP(a[i], a[x], t);
+	}
+	return;
+}
 
 void quickSort_range(const data d[], unsigned int array[], unsigned int start, unsigned int end) {
 	unsigned int smaller, larger, mid;

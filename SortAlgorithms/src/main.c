@@ -22,7 +22,9 @@ void make_random_array(data array[], unsigned int nsize, unsigned int range) {
 	}
 }
 
-int main(int argc, char * argv[]) {
+int getargs(const int argc, const char * argv[], unsigned int *nsize, unsigned int *range, unsigned int *rep, unsigned int *seed);
+
+int main(const int argc, const char * argv[]) {
 	data * dt;
 	unsigned int * ix;
 
@@ -31,44 +33,9 @@ int main(int argc, char * argv[]) {
 	unsigned int nsize = 1000, range = 1317, rep = 1000;
 	unsigned int seed = (unsigned int) time(NULL);
 	long t, worst, best;
-	double sum;
+	long sum;
 
-	char * ptr;
-	for(int i = 1; i < argc; ++i) {
-		ptr = argv[i];
-		if ( *ptr == '-' ) {
-			++ptr;
-			switch(*ptr) {
-			case 'n':
-				nsize = strtol(++ptr, NULL, 10);
-				break;
-			case 'i':
-				rep = strtol(++ptr, NULL, 10);
-				break;
-			case 's':
-				seed = strtol(++ptr, NULL, 10);
-				break;
-			case 'r':
-				range = strtol(++ptr, NULL, 10);
-				break;
-			}
-		} else {
-			switch(i) {
-			case 1:
-				nsize = strtol(ptr, NULL, 10);
-				break;
-			case 2:
-				range = strtol(ptr, NULL, 10);
-				break;
-			case 3:
-				seed = strtol(ptr, NULL, 10);
-				break;
-			case 4:
-				rep = strtol(ptr, NULL, 10);
-				break;
-			}
-		}
-	}
+	getargs(argc, argv, &nsize, &range, &rep, &seed);
 
 	printf("Size: %u, Range within: 0 -- %u, Initial Seed: %u, Number of trials: %u\n",
 			nsize, range, seed, rep);
@@ -269,4 +236,45 @@ int main(int argc, char * argv[]) {
 	free(dt);
 	free(ix);
 	return EXIT_SUCCESS;
+}
+
+
+int getargs(const int argc, const char * argv[], unsigned int *nsize, unsigned int *range, unsigned int *rep, unsigned int *seed) {
+	const char * ptr;
+	for(int i = 1; i < argc; ++i) {
+		ptr = argv[i];
+		if ( *ptr == '-' ) {
+			++ptr;
+			switch(*ptr) {
+			case 'n':
+				*nsize = strtol(++ptr, NULL, 10);
+				break;
+			case 'i':
+				*rep = strtol(++ptr, NULL, 10);
+				break;
+			case 's':
+				*seed = strtol(++ptr, NULL, 10);
+				break;
+			case 'r':
+				*range = strtol(++ptr, NULL, 10);
+				break;
+			}
+		} else {
+			switch(i) {
+			case 1:
+				*nsize = strtol(ptr, NULL, 10);
+				break;
+			case 2:
+				*range = strtol(ptr, NULL, 10);
+				break;
+			case 3:
+				*seed = strtol(ptr, NULL, 10);
+				break;
+			case 4:
+				*rep = strtol(ptr, NULL, 10);
+				break;
+			}
+		}
+	}
+	return 0;
 }
