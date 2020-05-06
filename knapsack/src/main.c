@@ -2,16 +2,7 @@
 #include <stdlib.h>
 #include <time.h> /* 時間計測用 */
 
-typedef struct {
-	int * price;
-	int number;
-	int budget;
-} Knapsack;
-
-int bestprice_recursive(
-		Knapsack * instance,
-		int fromIndex,
-		int remainingbudget);
+#include "knapsack.h"
 
 int main (int argc, const char * argv[]) {
 	int budget = atoi(argv[1]);

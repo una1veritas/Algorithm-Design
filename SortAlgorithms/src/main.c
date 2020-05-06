@@ -9,6 +9,11 @@ int data_greaterThan(const data * a, const data * b) {
 	return *a > *b;
 }
 
+data * darray;
+int q_gt(const void *c1, const void *c2){
+	return darray[*(int*)c1] - darray[*(int*)c2];
+}
+
 void make_random_array(data array[], unsigned int nsize, unsigned int range) {
 	unsigned long r;
 	r =  (rand() % range) + 2;
@@ -71,6 +76,7 @@ int main(int argc, char * argv[]) {
 	dt = (data *)malloc(sizeof(data)*nsize);
 	ix = (unsigned int *)malloc(sizeof(unsigned int)*nsize);
 
+	printf("algorithm \tworst \tbest \tavr\n");
 	// Merge Sort
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
@@ -84,10 +90,12 @@ int main(int argc, char * argv[]) {
 
 		elapsed = stopwatch_clocks(&sw);
 		//printf("Merge:      \t %ld\n",elapsed);
-
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
+			if ( !verify_sorted(dt, ix, nsize) ) {
+				printf("error: sort failure!\n");
+			}
 		} else {
 			if (elapsed > worst) {
 				worst = elapsed;
@@ -98,9 +106,9 @@ int main(int argc, char * argv[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Merge:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
-			worst, best, sum / (float)rep);
+	printf("Merge:    \t%ld\t%ld\t%.1f\n", worst, best, sum / (float)rep);
 
+#ifdef SHOW_SORTED
 	// showing the last sorted contents
 	printf("\n");
 	for (int i = 0; i < nsize; i++) {
@@ -119,6 +127,7 @@ int main(int argc, char * argv[]) {
 		}
 	}
 	printf("\n\n");
+#endif
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
@@ -126,8 +135,10 @@ int main(int argc, char * argv[]) {
 		for(unsigned int i = 0; i < nsize; ++i)
 			ix[i] = i;
 		//
+		darray = dt;
 		stopwatch_start(&sw);
-		quickSort(dt, ix, nsize);
+		qsort(ix, nsize, sizeof(unsigned int), q_gt);
+		//quickSort(dt, ix, nsize);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		// showing the contents
@@ -135,6 +146,9 @@ int main(int argc, char * argv[]) {
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
+			if ( !verify_sorted(dt, ix, nsize) ) {
+				printf("error: sort failure!\n");
+			}
 		} else {
 			if (elapsed > worst) {
 				worst = elapsed;
@@ -145,8 +159,7 @@ int main(int argc, char * argv[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Quick:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
-			worst, best, sum / (float)rep);
+	printf("qsort:    \t%ld \t%ld \t%.1f\n", worst, best, sum / (float)rep);
 	/*
 	// showing the last sorted contents
 	for (int i = 0; i < size; i++) {
@@ -170,9 +183,13 @@ int main(int argc, char * argv[]) {
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		//
+		//
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
+			if ( !verify_sorted(dt, ix, nsize) ) {
+				printf("error: sort failure!\n");
+			}
 		} else {
 			if (elapsed > worst) {
 				worst = elapsed;
@@ -183,9 +200,8 @@ int main(int argc, char * argv[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Heap:    \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
-			worst, best, sum / (float)rep);
-
+	printf("Heap:    \t%ld\t%ld\t%.1f\n", worst, best, sum / (float)rep);
+/*
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		make_random_array(dt, nsize, range);
@@ -198,6 +214,9 @@ int main(int argc, char * argv[]) {
 		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
 		// showing the result
+		if ( !verify_sorted(dt, ix, nsize) ) {
+			printf("error: sort failure!\n");
+		}
 		//
 		if (t == 0) {
 			worst = elapsed;
@@ -214,7 +233,7 @@ int main(int argc, char * argv[]) {
 	}
 	printf("Insertion: \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
 			worst, best, sum / (float)rep);
-
+*/
 
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
@@ -232,6 +251,9 @@ int main(int argc, char * argv[]) {
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
+			if ( !verify_sorted(dt, ix, nsize) ) {
+				printf("error: sort failure!\n");
+			}
 		} else {
 			if (elapsed > worst)
 				worst = elapsed;
@@ -240,8 +262,7 @@ int main(int argc, char * argv[]) {
 		}
 		sum += elapsed;
 	}
-	printf("Selection: \tworst %ld clk., \tbest %ld clk., \tavr. %.1f clk.\n",
-			worst, best, sum / (float)rep);
+	printf("Selection: \t%ld \t%ld \t%.1f\n", worst, best, sum / (float)rep);
 
 	printf("1 clk = 1/%ld sec.\n", (long) CLOCKS_PER_SEC);
 
