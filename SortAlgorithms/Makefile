@@ -19,7 +19,12 @@ TARGET =	sortalgorithms.exe
 $(TARGET):	$(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
-all:	$(TARGET)
+#all:	$(TARGET)
+all:	selection_asm
+
+selection_asm:
+	gcc -O0 -S ./src/selection.c
+	gcc -O0 -o selection.exe ./src/selection.c
 
 clean:
 	rm -f $(OBJS) $(TARGET)
