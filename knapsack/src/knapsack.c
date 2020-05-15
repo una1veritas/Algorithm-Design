@@ -3,43 +3,42 @@
 #include <string.h>
 
 #include "knapsack.h"
-/*
-int bestcart_enumerate(Knapsack * list, int budget, char cart[]) {
+
+int bestprice_enumerate(Knapsack * inst) {
 	int bestPrice = 0, sum;
-	int n = list.number;
-	char tempcart[n+1];
-	memset(tempcart, 0, n+1);
+	char cart[inst->number + 1];
+	memset(cart, 0, inst->number + 1);
 
 	for (;;) {
 		sum = 0;
-		for(int i = 0; i < n; ++i) {
-			if ( tempcart[i] )
-				sum += list.price[i];
+		for(int i = 0; i < inst->number; ++i) {
+			if ( cart[i] )
+				sum += inst->price[i];
 #ifdef STATUS_PRINT_STDOUT
-			printf("%d, ", tempcart[i] );
+			printf("%d, ", cart[i] );
 #endif
 		}
-		if ( sum <= budget && sum > bestPrice ) {
+		if ( sum <= inst->budget && sum > bestPrice ) {
 			bestPrice = sum;
-			memcpy(cart, tempcart, n);
 		}
 #ifdef STATUS_PRINT_STDOUT
 		printf(": %d\n", sum);
 #endif
-		if ( tempcart[n] ) // check (n+1)th digit
-			break;
-		for(int i = 0; i < n + 1; ++i) {
-			if ( tempcart[i] == 0 ) {
-				tempcart[i] = 1;
+		for(int i = 0; i < inst->number + 1; ++i) {
+			if ( cart[i] == 0 ) {
+				cart[i] = 1;
 				break;
+			} else {
+				cart[i] = 0;
 			}
-			tempcart[i] = 0;
-			continue;
 		}
+		if ( cart[inst->number] ) // check (n+1)th digit
+			break;
 	}
 	return bestPrice;
 }
 
+/*
 int bestcart_recursive(Knapsack * list, int fromindex, Knapsack * best) {
 	int sum_skip, sum_buy;
 	if ( fromindex == list->number ) {
@@ -65,7 +64,7 @@ int bestcart_recursive(Knapsack * list, int fromindex, Knapsack * best) {
 int bestprice_recursive(Knapsack * inst, int startIndex, int rbudget) {
 	int sum_skip, sum_buy;
 	if ( startIndex >= inst->number ) {
-		return inst->budget - rbudget;
+		return 0;
 	}
 	sum_skip = bestprice_recursive(inst, startIndex+1, rbudget);
 	// default --- don't buy it

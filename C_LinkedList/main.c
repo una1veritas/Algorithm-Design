@@ -23,7 +23,7 @@ int main(void) {
 	LinkedList_append(&list, "800,000,000");
 	LinkedList_printf(&list, "; ");
 	printf("\n");
-	for(ListNode * ptr = LinkedList_begin(&list); ptr != NULL; ptr = ptr->next) {
+	for(ListNode * ptr = LinkedList_begin(&list); ptr != LinkedList_end(&list); ptr = ptr->next) {
 		printf("%s -> ", (char *) ptr->data );
 	}
 	printf("\n");
@@ -32,8 +32,14 @@ int main(void) {
 	LinkedList_push(&list,"CAGR");
 	LinkedList_printf(&list, "; ");
 	printf("\n");
-	for(ListNode * ptr = LinkedList_begin(&list); ptr != NULL; ptr = ptr->next) {
-		printf("%s ", (char *) ptr->data );
+	void * data;
+	while ( !LinkedList_is_empty(&list) ) {
+		data = LinkedList_pop(&list);
+		printf("%s \n", (char *) data );
+		for(ListNode * ptr = LinkedList_begin(&list); ptr != LinkedList_end(&list); ptr = ptr->next) {
+			printf("%s -> ", (char *) ptr->data );
+		}
+		printf("\n");
 	}
 	printf("\n");
 	printf("List size = %d\n", list.elemcount);

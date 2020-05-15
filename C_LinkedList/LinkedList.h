@@ -27,7 +27,10 @@ ListNode * LinkedList_append(LinkedList * list, void*);
 ListNode * LinkedList_push(LinkedList * list, void*);
 void * LinkedList_pop(LinkedList * list);
 ListNode * LinkedList_begin(LinkedList * list);
+ListNode * LinkedList_last(LinkedList * list);
 ListNode * LinkedList_end(LinkedList * list);
 ListNode * LinkedList_find(LinkedList * list, void*);
+
+int LinkedList_is_empty(LinkedList * list);
 
 #endif /* LINKEDLIST_H_ */
