@@ -2,29 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "knapsack.h"
-
-int bestprice_enumerate(Knapsack * inst) {
-	int bestPrice = 0, sum;
-	char cart[inst->number + 1];
-	memset(cart, 0, inst->number + 1);
-
-	for (;;) {
+int bestprice_enumerate(int pricelist[], int n, int budget) {
+	int best = 0, sum;
+	char cart[n + 1]; /* 0 と 1 しか使わない */
+	memset(cart, 0, n + 1); /* 全部 0 で埋める */
+	while ( !cart[n] ) {
 		sum = 0;
-		for(int i = 0; i < inst->number; ++i) {
+		for(int i = 0; i < n; ++i) {
 			if ( cart[i] )
-				sum += inst->price[i];
-#ifdef STATUS_PRINT_STDOUT
-			printf("%d, ", cart[i] );
-#endif
+				sum += pricelist[i];
 		}
-		if ( sum <= inst->budget && sum > bestPrice ) {
-			bestPrice = sum;
+		if ( sum <= budget && sum > best ) {
+			best = sum;
 		}
-#ifdef STATUS_PRINT_STDOUT
-		printf(": %d\n", sum);
-#endif
-		for(int i = 0; i < inst->number + 1; ++i) {
+		for(int i = 0; i < n + 1; ++i) {
 			if ( cart[i] == 0 ) {
 				cart[i] = 1;
 				break;
@@ -32,10 +23,8 @@ int bestprice_enumerate(Knapsack * inst) {
 				cart[i] = 0;
 			}
 		}
-		if ( cart[inst->number] ) // check (n+1)th digit
-			break;
 	}
-	return bestPrice;
+	return best;
 }
 
 /*
@@ -77,7 +66,7 @@ int bestprice_recursive(Knapsack * inst, int startIndex, int rbudget) {
 }
 
 /*
-int bestcart_dp(Knapsack * list, char cart[]) {
+int bestcart_dp(Knapsack * inst, char cart[]) {
 	int best[list.number][budget+1];
 
 	// filling the only-1st-item row.

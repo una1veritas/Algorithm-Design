@@ -19,7 +19,7 @@ typedef struct {
 int bestcart_recursive(Knapsack * list, int fromIndex, Knapsack * best);
 */
 int bestprice_recursive(Knapsack * instance, int startIndex, int rembudget);
-int bestprice_enumerate(Knapsack * instance);
+int bestprice_enumerate(int pricelist[], int number, int budget);
 /*
 int bestcart_dp(PriceList list, int budget, char cart[]);
 */

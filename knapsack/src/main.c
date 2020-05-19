@@ -28,7 +28,7 @@ int main (int argc, const char * argv[]) {
 	printf("\ntotally %d yen.\n", totalPrice);
 
 	swatch = clock(); 	/* 時間計測用 */
-	totalPrice = bestprice_enumerate(&inst);
+	totalPrice = bestprice_enumerate(inst.price, inst.number, inst.budget);
 	swatch = clock() - swatch; 	/* 時間計測用 */
 	printf("spent %g ms.\n", swatch/(double)CLOCKS_PER_SEC * 1000); /* for stop watch */
 	printf("buy items: ");
