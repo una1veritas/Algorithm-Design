@@ -23,10 +23,9 @@ uint64_t counter_fibo = 0;
 uint64_t counter_fibo_loop = 0;
 
 uint64_t fibo(uint64_t n) {
-	counter_fibo++;
-
 	if ( n < 2 )
 		return 1;
+	counter_fibo++;
 	return fibo(n-1) + fibo(n-2);
 }
 
