@@ -10,46 +10,46 @@ _selectionSort:                         ## @selectionSort
 	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register %rbp
-	movq	%rdi, -8(%rbp) 				# a
-	movq	%rsi, -16(%rbp)				# n
-	movq	$0, -32(%rbp) 				# i := 0
+	movq	%rdi, -8(%rbp)
+	movq	%rsi, -16(%rbp)
+	movq	$0, -32(%rbp)
 LBB0_1:                                 ## =>This Loop Header: Depth=1
                                         ##     Child Loop BB0_3 Depth 2
-	movq	-32(%rbp), %rax				# i
-	cmpq	-16(%rbp), %rax				# i < n ?
-	jge	LBB0_10							# i >= n goto LBB0_10 (return)
+	movq	-32(%rbp), %rax
+	cmpq	-16(%rbp), %rax
+	jge	LBB0_10
 ## %bb.2:                               ##   in Loop: Header=BB0_1 Depth=1
-	movq	-32(%rbp), %rax				# i
-	addq	$1, %rax					# + 1
-	movq	%rax, -40(%rbp)				# j :=
+	movq	-32(%rbp), %rax
+	addq	$1, %rax
+	movq	%rax, -40(%rbp)
 LBB0_3:                                 ##   Parent Loop BB0_1 Depth=1
                                         ## =>  This Inner Loop Header: Depth=2
-	movq	-40(%rbp), %rax				# j
-	cmpq	-16(%rbp), %rax				# j < n ?
+	movq	-40(%rbp), %rax
+	cmpq	-16(%rbp), %rax
 	jge	LBB0_8
 ## %bb.4:                               ##   in Loop: Header=BB0_3 Depth=2
-	movq	-8(%rbp), %rax				# a
-	movq	-32(%rbp), %rcx				# i
-	movq	(%rax,%rcx,8), %rax			# a[i]
-	movq	-8(%rbp), %rcx				# a
-	movq	-40(%rbp), %rdx				# j
-	cmpq	(%rcx,%rdx,8), %rax 		# a[i] > a[j] ?
+	movq	-8(%rbp), %rax
+	movq	-32(%rbp), %rcx
+	movq	(%rax,%rcx,8), %rax
+	movq	-8(%rbp), %rcx
+	movq	-40(%rbp), %rdx
+	cmpq	(%rcx,%rdx,8), %rax
 	jle	LBB0_6
 ## %bb.5:                               ##   in Loop: Header=BB0_3 Depth=2
 	movq	-8(%rbp), %rax
 	movq	-32(%rbp), %rcx
-	movq	(%rax,%rcx,8), %rax 		# a[i]
-	movq	%rax, -24(%rbp) 			# a[i] --> t 
-	movq	-8(%rbp), %rax 				
+	movq	(%rax,%rcx,8), %rax
+	movq	%rax, -24(%rbp)
+	movq	-8(%rbp), %rax
 	movq	-40(%rbp), %rcx
-	movq	(%rax,%rcx,8), %rax 		# a[j]
+	movq	(%rax,%rcx,8), %rax
 	movq	-8(%rbp), %rcx
 	movq	-32(%rbp), %rdx
-	movq	%rax, (%rcx,%rdx,8)			# a[j] --> a[i]
-	movq	-24(%rbp), %rax				# t
+	movq	%rax, (%rcx,%rdx,8)
+	movq	-24(%rbp), %rax
 	movq	-8(%rbp), %rcx
 	movq	-40(%rbp), %rdx
-	movq	%rax, (%rcx,%rdx,8) 		# t --> a[j]
+	movq	%rax, (%rcx,%rdx,8)
 LBB0_6:                                 ##   in Loop: Header=BB0_3 Depth=2
 	jmp	LBB0_7
 LBB0_7:                                 ##   in Loop: Header=BB0_3 Depth=2
