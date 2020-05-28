@@ -35,7 +35,7 @@ int main(const int argc, char *argv[]) {
 	long n = argc - 1;
 	int a[n];
 	for (int i = 0; i < n; ++i) {
-		a[i] = argv[1 + i];
+		a[i] = atoi(argv[1 + i]);
 		printf("%d, ", a[i]);
 	}
 	printf("\n");
