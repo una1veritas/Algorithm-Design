@@ -9,9 +9,9 @@
 
 #include <stdio.h>
 
-unsigned int insertionSort(data a[], unsigned int n) {
+unsigned int insertionSort(int a[], unsigned int n) {
 	unsigned int sorted_end;
-	data t;
+	int t;
 	for (sorted_end = 1; sorted_end < n
 			&& lessthan_or_equal(a[sorted_end-1], a[sorted_end]); ++sorted_end);
 	if ( sorted_end == n )
@@ -28,9 +28,9 @@ unsigned int insertionSort(data a[], unsigned int n) {
 }
 
 
-unsigned int selectionSort(data a[], unsigned int n) {
+unsigned int selectionSort(int a[], unsigned int n) {
 	unsigned int i, imin, sorted_end;
-	data t;
+	int t;
 	for (sorted_end = 1; sorted_end < n
 			&& lessthan_or_equal(a[sorted_end-1], a[sorted_end]); ++sorted_end);
 //	printf("sorted_end: %d\n", sorted_end);
@@ -51,7 +51,7 @@ unsigned int selectionSort(data a[], unsigned int n) {
 	return 1;
 }
 
-void merge(data a[], unsigned int left, unsigned int right, unsigned int right_end, data buffer[]) {
+void merge(int a[], unsigned int left, unsigned int right, unsigned int right_end, int buffer[]) {
 	unsigned int mp = 0, lp = left, rp = right;
 	while ( lp < right || rp < right_end ) {
 		if (  lp < right && rp < right_end ) {
@@ -79,8 +79,8 @@ void merge(data a[], unsigned int left, unsigned int right, unsigned int right_e
 
 }
 
-unsigned int mergeSort(data a[], unsigned int n) {
-	data t[n];
+unsigned int mergeSort(int a[], unsigned int n) {
+	int t[n];
 	unsigned int left_begin, left_end, right_begin, right_end;
 	left_begin = 0;
 	while (left_begin < n) {

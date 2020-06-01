@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "sortalgorithms.h"
 
-int verify_sorted(const data *d, const unsigned int ix[], unsigned int n) {
+int verify_sorted(const int *d, const unsigned int ix[], unsigned int n) {
 	for(unsigned int i = 0; i < n - 1; ++i) {
 		if ( data_greaterThan(d+ix[i], d+ix[i]) )
 			return 0;
@@ -13,7 +13,7 @@ int verify_sorted(const data *d, const unsigned int ix[], unsigned int n) {
 	return 1;
 }
 
-void maxHeapify(const data d[], unsigned int a[], unsigned int i, unsigned int end) {
+void maxHeapify(const int d[], unsigned int a[], unsigned int i, unsigned int end) {
 	unsigned int larger, tmp;
 		
 		while ( (i<<1) + 1 < end ) {
@@ -31,7 +31,7 @@ void maxHeapify(const data d[], unsigned int a[], unsigned int i, unsigned int e
 		return;
     }
 	
-void buildMaxHeap(const data d[], unsigned int a[], unsigned int n) {
+void buildMaxHeap(const int d[], unsigned int a[], unsigned int n) {
 	long i;
 		
 		for (i = (n>>1) - 1 ; ! (i < 0); i--) {
@@ -40,7 +40,7 @@ void buildMaxHeap(const data d[], unsigned int a[], unsigned int n) {
 		return;
     }
 	
-void heapSort(const data d[], unsigned int a[], unsigned int n) {
+void heapSort(const int d[], unsigned int a[], unsigned int n) {
 	long i;
 	long t;
 
@@ -73,7 +73,7 @@ void selectionSort(const data d[], unsigned int a[], unsigned int n) {
 }
 */
 
-void selectionSort(const data d[], unsigned int a[], unsigned int n) {
+void selectionSort(const int d[], unsigned int a[], unsigned int n) {
 	long t, x;
 	for(long i = 0; i < n - 1; ++i) {
 		x = i;
@@ -86,7 +86,7 @@ void selectionSort(const data d[], unsigned int a[], unsigned int n) {
 	return;
 }
 
-void quickSort_range(const data d[], unsigned int array[], unsigned int start, unsigned int end) {
+void quickSort_range(const int d[], unsigned int array[], unsigned int start, unsigned int end) {
 	unsigned int smaller, larger, mid;
 	unsigned int tmp;
 		
@@ -133,12 +133,12 @@ void quickSort_range(const data d[], unsigned int array[], unsigned int start, u
 	return;
 }
     
-void quickSort(const data d[], unsigned int array[], unsigned int n) {
+void quickSort(const int d[], unsigned int array[], unsigned int n) {
 	quickSort_range(d, array, 0, n);
 }
 
 
-void bubbleSort(const data d[], unsigned int a[], unsigned int n){
+void bubbleSort(const int d[], unsigned int a[], unsigned int n){
 	int i, j, tmp;
 
 	for(i = 1; i < n; i++){
@@ -153,7 +153,7 @@ void bubbleSort(const data d[], unsigned int a[], unsigned int n){
 	return;
 }
 	
-void insertionSort(const data d[], unsigned int a[], unsigned int n){
+void insertionSort(const int d[], unsigned int a[], unsigned int n){
 	unsigned int i, j, t; // j for the length (end+1) of sorted-array.
 
 	for(j = 1; j < n; j++) {
@@ -171,7 +171,7 @@ void insertionSort(const data d[], unsigned int a[], unsigned int n){
 	
 	
 
-void merge(const data d[], unsigned int dst[], unsigned int lsrc[], unsigned int llen, unsigned int rsrc[], unsigned int rlen) {
+void merge(const int d[], unsigned int dst[], unsigned int lsrc[], unsigned int llen, unsigned int rsrc[], unsigned int rlen) {
 	unsigned int dstlen = llen + rlen;
 	unsigned int left, right, temp;
 	for (left = 0, right = 0, temp = 0; temp < dstlen; temp++) {
@@ -195,7 +195,7 @@ void merge(const data d[], unsigned int dst[], unsigned int lsrc[], unsigned int
 	}
 }
 
-void mergeSort_recursive(const data d[], unsigned int array[], unsigned int n) {
+void mergeSort_recursive(const int d[], unsigned int array[], unsigned int n) {
 	unsigned int i, l, r;
 	unsigned int bufl[n/2];
 	unsigned int bufr[n/2+(n % 2)];
@@ -231,7 +231,7 @@ void mergeSort_recursive(const data d[], unsigned int array[], unsigned int n) {
 }
     
 
-void mergeSort(const data d[], unsigned int array[], unsigned int n) {
+void mergeSort(const int d[], unsigned int array[], unsigned int n) {
 	unsigned int buf[n];
 	unsigned int i, len, start, llen, rstart, rlen;
 	const unsigned int bubble_len = 8;

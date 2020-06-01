@@ -54,9 +54,9 @@ int main(int argc, char * argv[]) {
 		n = sizeof(fixed_points)/sizeof(Point2D);
 	}
 
-	data a[n]; // sort not the original data array, but the array of pointers to the data
+	int a[n]; // sort not the original data array, but the array of pointers to the data
 	for(unsigned int i = 0; i < n; ++i)
-		a[i] = (data) & points[i];
+		a[i] = (int) & points[i];
 
 	printf("input: %d data,\n", n);
 	for(unsigned int i = 0; i < n; ++i) {

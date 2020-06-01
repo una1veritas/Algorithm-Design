@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 		length = atoi(argv[1]);
 	}
 
-	data array[length];
+	int array[length];
 	if (length == argc - 1) {
 		for(unsigned int i = 0; i < length; ++i)
 			array[i] = atoi(argv[1+i]);

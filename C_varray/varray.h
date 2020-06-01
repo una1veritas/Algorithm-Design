@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef void * data;
+typedef void * int;
 typedef struct {
-	data * array;
+	int * array;
 	unsigned int capacity;
 	unsigned int size;
 } varray;
@@ -17,9 +17,9 @@ void varray_free(varray * v);
 int varray_capacity(varray * v);
 int varray_size(varray * v);
 void varray_reallocate(varray * v);
-data varray_at(varray * v, unsigned int i);
-data varray_back(varray * v);
-void varray_pushback(varray * v, data d);
+int varray_at(varray * v, unsigned int i);
+int varray_back(varray * v);
+void varray_pushback(varray * v, int d);
 
 int varray_strscan(varray * v, char * str);
 

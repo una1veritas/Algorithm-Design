@@ -5,16 +5,16 @@
 #include "stopwatch.h"
 #include "sortalgorithms.h"
 
-int data_greaterThan(const data * a, const data * b) {
+int data_greaterThan(const int * a, const int * b) {
 	return *a > *b;
 }
 
-data * darray;
+int * darray;
 int q_gt(const void *c1, const void *c2){
 	return darray[*(int*)c1] - darray[*(int*)c2];
 }
 
-void make_random_array(data array[], unsigned int nsize, unsigned int range) {
+void make_random_array(int array[], unsigned int nsize, unsigned int range) {
 	unsigned long r;
 	r =  (rand() % range) + 2;
 	for (int i = 0; i < nsize; i++) {
@@ -25,7 +25,7 @@ void make_random_array(data array[], unsigned int nsize, unsigned int range) {
 int getargs(const int argc, const char * argv[], unsigned int *nsize, unsigned int *range, unsigned int *rep, unsigned int *seed);
 
 int main(const int argc, const char * argv[]) {
-	data * dt;
+	int * dt;
 	unsigned int * ix;
 
 	stopwatch sw;
@@ -40,7 +40,7 @@ int main(const int argc, const char * argv[]) {
 	printf("Size: %u, Range within: 0 -- %u, Initial Seed: %u, Number of trials: %u\n",
 			nsize, range, seed, rep);
 
-	dt = (data *)malloc(sizeof(data)*nsize);
+	dt = (int *)malloc(sizeof(int)*nsize);
 	ix = (unsigned int *)malloc(sizeof(unsigned int)*nsize);
 
 	printf("algorithm \tworst \tbest \tavr\n");

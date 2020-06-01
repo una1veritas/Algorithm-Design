@@ -4,7 +4,7 @@
 void varray_init(varray * v, unsigned int minsize) {
 	if ( minsize < 8 ) minsize = 8;
 	v->capacity = minsize;
-	v->array = (data*) malloc(sizeof(data) * v->capacity);
+	v->array = (int*) malloc(sizeof(int) * v->capacity);
 	v->size = 0;
 }
 
@@ -27,7 +27,7 @@ void varray_reallocate(varray * v) {
 	while ( newcapa <= v->capacity ) {
 		newcapa <<= 1;
 	}
-	data * newarray = (data*)malloc(sizeof(data)*newcapa);
+	int * newarray = (int*)malloc(sizeof(int)*newcapa);
 	v->capacity = newcapa;
 	for(int i = 0; i < v->size; ++i) {
 		newarray[i] = v->array[i];
@@ -36,15 +36,15 @@ void varray_reallocate(varray * v) {
 	v->array = newarray;
 }
 
-data varray_at(varray * v, unsigned int i) {
+int varray_at(varray * v, unsigned int i) {
 	return v->array[i];
 }
 
-data varray_back(varray * v) {
+int varray_back(varray * v) {
 	return v->array[v->size - 1];
 }
 
-void varray_pushback(varray * v, data d) {
+void varray_pushback(varray * v, int d) {
 	if ( !(v->size < v->capacity) ) {
 		varray_reallocate(v);
 	}
