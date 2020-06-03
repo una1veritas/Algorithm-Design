@@ -5,31 +5,32 @@
 #include <stdio.h>
 #include "sortalgorithms.h"
 
-int verify_sorted(const int *d, const unsigned int ix[], unsigned int n) {
+int verify_sorted(const data d[], const unsigned int idx[], unsigned int n) {
 	for(unsigned int i = 0; i < n - 1; ++i) {
-		if ( data_greaterThan(d+ix[i], d+ix[i]) )
+		if ( data_greaterThan(d, idx[i], idx[i]) )
 			return 0;
 	}
 	return 1;
 }
 
-void maxHeapify(const int d[], unsigned int a[], unsigned int i, unsigned int end) {
+void maxHeapify(const data d[], unsigned int idx[], unsigned int i, unsigned int end) {
 	unsigned int larger, tmp;
-		
-		while ( (i<<1) + 1 < end ) {
-			larger = (i<<1) + 1;
-			if ( ((i<<1) + 2 < end) && (a[(i<<1) + 1] < a[(i<<1) + 2]) ) {
-				larger = (i<<1) + 2;
-			}
-			if ( data_greaterThan(d+a[larger], d+a[i]) ) {
-				SWAP(a[larger], a[i], tmp);
-				i = larger;
-			} else {
-				return;
-			}
+
+	while ((i << 1) + 1 < end) {
+		larger = (i << 1) + 1;
+		if (((i << 1) + 2 < end)
+				&& (greaterThan(d, idx[(i << 1) + 1], idx[(i << 1) + 2] ))) {
+			larger = (i << 1) + 2;
 		}
-		return;
-    }
+		if (data_greaterThan(d, idx[larger], idx[i])) {
+			SWAP(idx[larger], idx[i], tmp);
+			i = larger;
+		} else {
+			return;
+		}
+	}
+	return;
+}
 	
 void buildMaxHeap(const int d[], unsigned int a[], unsigned int n) {
 	long i;

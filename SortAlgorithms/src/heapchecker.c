@@ -5,30 +5,36 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* 文字列の後ろから見た辞書式順序 */
-/*
-int order(const void * a, const void * b) {
-	const char * stra = *(const char**)a, * strb = *(const char**)b;
-	int lena = strlen(stra), lenb = strlen(strb);
-	int d;
-	for (; lena && lenb; ) {
-		--lena, --lenb;
-		d = stra[lena] - strb[lenb];
-		if ( d != 0 )
-			return d;
+int unlhd_str5cmp(const char * stra, const char * strb) {
+	int res = strncmp(stra, strb, 5);
+	return (res == 0) ? 0 : (res < 0 ? 1 : 0);
+}
+
+int down_to_leaf(const char * data[], int a[], int i, int n) {
+	int j, right, t;
+	for ( ; ; i = j) {
+		j = (i<<1) + 1;
+		if ( !(j < n) )
+			break;
+		right = (i<<1) + 2;
+		if ( (right < n) && (unlhd_str5cmp(data[a[j]], data[a[right]])) )
+			j = right;
+		t = a[i], a[i] = a[j], a[j] = t;
+		printf("%d <--> %d, ", i, j);
 	}
-	if ( lena < lenb )
-		return -1;
-	if ( lena > lenb )
-		return 1;
-	return 0;
+	return 1;
 }
-*/
-/*
-int unlhd(const int ptra, const int ptrb) {
-	return ptra <= ptrb;
+
+void make_heap(const char * data[], int a[], int n) {
+	int i;
+	for (i = (n>>1); i > 0; --i) {
+		printf("%d: ",i-1);
+		down_to_leaf(data, a, i-1, n);
+		printf("\n");
+	}
+	return;
 }
-*/
+
 int heapcheck(const int a[], const int n) {
 	for(int i = 0; i < n>>1; ++i) {
 		if ( ! (a[(i<<1)+1] <= a[i]) )
@@ -43,18 +49,20 @@ int heapcheck(const int a[], const int n) {
 
 int main(const int argc, char *argv[]) {
 	int n = argc - 1;
-	int a[n];
+	int idx[n];
 	for (int i = 0; i < n; ++i) {
-		a[i] = atoi(argv[1 + i]);
-		printf("%d, ", a[i]);
+		idx[i] = i;
+	}
+	for (int i = 0; i < n; ++i) {
+		printf("'%s', ", (argv+1)[idx[i]]);
 	}
 	printf("\n");
 
-	printf("this is ");
-	if ( heapcheck(a, n) ) {
-		printf("a heap.");
-	} else {
-		printf("not a heap.");
+	make_heap((const char **)argv+1, idx, n);
+
+	printf("\n");
+	for (int i = 0; i < n; ++i) {
+		printf("'%s', ", (argv+1)[idx[i]]);
 	}
 	printf("\n");
 

@@ -17,6 +17,7 @@ INCDIRS = -I./src/
 
 TARGET =	heapchecker.exe
 #TARGET =	libcqsort.exe
+#TARGET =	sortalgorithms.exe
 
 $(TARGET):	$(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LIBS)

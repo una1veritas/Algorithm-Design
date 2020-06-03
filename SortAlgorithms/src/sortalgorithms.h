@@ -11,10 +11,11 @@
 #define MIN(a,b) ((a) < (b)? (a) : (b))
 #define SWAP(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
 
-typedef void * int;
-int data_greaterThan(const int * a, const int * b);
+typedef void * data;
 
-int verify_sorted(const int *d, const unsigned ix[], const unsigned int n);
+int data_greaterThan(const data d[], const int a, const int b);
+
+int verify_sorted(const data d[], const unsigned int idx[], unsigned int n);
 
 void heapSort(const int d[], unsigned int a[], unsigned int n);
 void selectionSort(const int d[], unsigned int a[], unsigned int n);

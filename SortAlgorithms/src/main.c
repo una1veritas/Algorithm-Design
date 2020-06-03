@@ -5,8 +5,8 @@
 #include "stopwatch.h"
 #include "sortalgorithms.h"
 
-int data_greaterThan(const int * a, const int * b) {
-	return *a > *b;
+int data_greaterThan(const data[], const int a, const int b) {
+	return d[a] > d[b];
 }
 
 int * darray;
@@ -14,7 +14,7 @@ int q_gt(const void *c1, const void *c2){
 	return darray[*(int*)c1] - darray[*(int*)c2];
 }
 
-void make_random_array(int array[], unsigned int nsize, unsigned int range) {
+void make_random_index_array(int array[], unsigned int nsize, unsigned int range) {
 	unsigned long r;
 	r =  (rand() % range) + 2;
 	for (int i = 0; i < nsize; i++) {
