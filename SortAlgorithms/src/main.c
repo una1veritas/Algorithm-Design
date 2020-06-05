@@ -5,33 +5,35 @@
 #include "stopwatch.h"
 #include "sortalgorithms.h"
 
-int data_greaterThan(const data[], const int a, const int b) {
-	return d[a] > d[b];
+int unlhd_int(const void * d[], const int a, const int b) {
+	return (const int *) d[a] > (const int *) d[b];
 }
 
+/*
 int * darray;
 int q_gt(const void *c1, const void *c2){
 	return darray[*(int*)c1] - darray[*(int*)c2];
 }
+*/
 
-void make_random_index_array(int array[], unsigned int nsize, unsigned int range) {
+void make_random_array(int array[], int nsize, int range) {
 	unsigned long r;
 	r =  (rand() % range) + 2;
 	for (int i = 0; i < nsize; i++) {
-		array[i] = NULL + (rand() % r);
+		array[i] =  (rand() % r);
 	}
 }
 
-int getargs(const int argc, const char * argv[], unsigned int *nsize, unsigned int *range, unsigned int *rep, unsigned int *seed);
+int getargs(const int argc, const char * argv[], int *nsize, int *range, int *rep, int *seed);
 
 int main(const int argc, const char * argv[]) {
 	int * dt;
-	unsigned int * ix;
+	int * ix;
 
 	stopwatch sw;
 	long elapsed;
-	unsigned int nsize = 1000, range = 1317, rep = 1000;
-	unsigned int seed = (unsigned int) time(NULL);
+	int nsize = 1000, range = 1317, rep = 1000;
+	int seed = (unsigned int) time(NULL);
 	long t, worst, best;
 	long sum;
 
@@ -41,7 +43,7 @@ int main(const int argc, const char * argv[]) {
 			nsize, range, seed, rep);
 
 	dt = (int *)malloc(sizeof(int)*nsize);
-	ix = (unsigned int *)malloc(sizeof(unsigned int)*nsize);
+	ix = (int *)malloc(sizeof(unsigned int)*nsize);
 
 	printf("algorithm \tworst \tbest \tavr\n");
 	// Merge Sort
@@ -52,7 +54,7 @@ int main(const int argc, const char * argv[]) {
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		mergeSort(dt, ix, nsize);
+		mergeSort((const data *)dt, ix, nsize, unlhd_int);
 		stopwatch_stop(&sw);
 
 		elapsed = stopwatch_clocks(&sw);
@@ -60,7 +62,7 @@ int main(const int argc, const char * argv[]) {
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
-			if ( !verify_sorted(dt, ix, nsize) ) {
+			if ( !verify_sorted((const data *)dt, ix, nsize, unlhd_int) ) {
 				printf("error: sort failure!\n");
 			}
 		} else {
@@ -96,6 +98,7 @@ int main(const int argc, const char * argv[]) {
 	printf("\n\n");
 #endif
 
+/* qsort
 	srand(seed);
 	for (worst = 0, best = 0, sum = 0, t = 0; t < rep; t++) {
 		make_random_array(dt, nsize, range);
@@ -127,6 +130,7 @@ int main(const int argc, const char * argv[]) {
 		sum += elapsed;
 	}
 	printf("qsort:    \t%ld \t%ld \t%.1f\n", worst, best, sum / (float)rep);
+	*/
 	/*
 	// showing the last sorted contents
 	for (int i = 0; i < size; i++) {
@@ -146,7 +150,7 @@ int main(const int argc, const char * argv[]) {
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		heapSort(dt, ix, nsize);
+		heapSort((const data *)dt, ix, nsize, unlhd_int);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		//
@@ -154,7 +158,7 @@ int main(const int argc, const char * argv[]) {
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
-			if ( !verify_sorted(dt, ix, nsize) ) {
+			if ( !verify_sorted((const data *)dt, ix, nsize, unlhd_int) ) {
 				printf("error: sort failure!\n");
 			}
 		} else {
@@ -209,7 +213,7 @@ int main(const int argc, const char * argv[]) {
 			ix[i] = i;
 		//
 		stopwatch_start(&sw);
-		selectionSort(dt, ix, nsize);
+		selectionSort((const data *)dt, ix, nsize, unlhd_int);
 		stopwatch_stop(&sw);
 		elapsed = stopwatch_clocks(&sw);
 		// System.out.println("Heap:   \t"+ (((float)ela)/1000));
@@ -218,7 +222,7 @@ int main(const int argc, const char * argv[]) {
 		if (t == 0) {
 			worst = elapsed;
 			best = elapsed;
-			if ( !verify_sorted(dt, ix, nsize) ) {
+			if ( !verify_sorted((const data *)dt, ix, nsize, unlhd_int) ) {
 				printf("error: sort failure!\n");
 			}
 		} else {
@@ -239,7 +243,7 @@ int main(const int argc, const char * argv[]) {
 }
 
 
-int getargs(const int argc, const char * argv[], unsigned int *nsize, unsigned int *range, unsigned int *rep, unsigned int *seed) {
+int getargs(const int argc, const char * argv[], int *nsize, int *range, int *rep, int *seed) {
 	const char * ptr;
 	for(int i = 1; i < argc; ++i) {
 		ptr = argv[i];

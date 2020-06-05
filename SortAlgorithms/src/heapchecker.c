@@ -5,46 +5,66 @@
 #include <stdlib.h>
 #include <string.h>
 
-int unlhd_str5cmp(const char * stra, const char * strb) {
-	int res = strncmp(stra, strb, 5);
+typedef int data;
+
+/*
+int unlhd_str5cmp(const data * stra, const data * strb) {
+	int res = strncmp(*stra, *strb, 5);
 	return (res == 0) ? 1 : (res < 0 ? 1 : 0);
 }
+*/
 
-int down_to_leaf(const char * data[], int a[], int i, int n) {
+int unlhd_intasc(const data * a, const data * b) {
+	return *a <= *b;
+}
+
+
+int down_to_leaf(const data data[], int a[], int i, int n) {
 	int j, t;
 	for ( ;(j = (i<<1) + 1) < n ; i = j) {
-		//printf("i = %d, ", i);
+		//printf("%s ", data[a[i]]);
 		if ( (j + 1 < n) ) {
-			//printf("r a[%d] <= a[%d]", j, j+1);
-			if (unlhd_str5cmp(data[a[j]], data[a[j+1]]) ) {
+			if ( unlhd_intasc(data+a[j], data+a[j+1]) ) {
 				j += 1;
 			}
 		}
-		if ( unlhd_str5cmp(data[a[j]], data[a[i]]) )
+		if ( unlhd_intasc(data+a[j], data+a[i]) )
 			break;
 		t = a[i], a[i] = a[j], a[j] = t;
-		//printf("%d <-- %d, ", j, i);
 	}
+#ifdef DEBUG
+	for (int j = 0; j < n; ++j) {
+		printf("%d, ", data[a[j]]);
+	}
+	printf("\n");
+#endif
 	return 1;
 }
 
-void make_heap(const char * data[], int a[], int n) {
+void make_heap(const data data[], int a[], int n) {
 	int i;
 	for (i = (n>>1); i > 0; --i) {
-		//printf("%d: ",i-1);
 		down_to_leaf(data, a, i-1, n);
-		//printf("\n");
 	}
 	return;
 }
 
-void heap_sort(const char * data[], int a[], int n) {
+void heap_sort(const data data[], int a[], int n) {
 	int i, t;
 	make_heap(data, a, n);
+	for(int j = 0; j < n; ++j) {
+		printf("%d, ", data[a[j]]);
+	}
+	printf("\n");
 	for (i = n - 1; i > 0; --i) {
 		// a[0] is always the maximum.
 		t = a[0], a[0] = a[i], a[i] = t;
 		down_to_leaf(data, a, 0, i);
+
+		for(int j = 0; j < n; ++j) {
+			printf("%d, ", data[a[j]]);
+		}
+		printf("\n");
 	}
 	return;
 }
@@ -63,20 +83,23 @@ int heapcheck(const int a[], const int n) {
 
 int main(const int argc, const char *argv[]) {
 	int n = argc - 1;
+	data d[n];
 	int idx[n];
 	for (int i = 0; i < n; ++i) {
+		d[i] = atoi(argv[1+i]);
 		idx[i] = i;
 	}
+	printf("input: \n");
 	for (int i = 0; i < n; ++i) {
-		printf("'%s', ", (argv+1)[idx[i]]);
+		printf("%d, ", d[idx[i]]);
 	}
-	printf("\n");
+	printf("\n\n");
 
-	heap_sort(argv+1, idx, n);
+	heap_sort(d, idx, n);
 
 	printf("\n");
 	for (int i = 0; i < n; ++i) {
-		printf("'%s', ", (argv+1)[idx[i]]);
+		printf("%d, ", d[idx[i]]);
 	}
 	printf("\n");
 

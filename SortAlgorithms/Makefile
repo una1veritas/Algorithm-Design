@@ -5,7 +5,8 @@ CC += -O0 -g -Wall
 CXX +=	-O0 -g -Wall -fmessage-length=0
 
 #OBJS =	main.o sortalgorithms.o stopwatch.o
-OBJS =	heapchecker.o
+#OBJS =	heapchecker.o
+OBJS =	radixsort.o
 LIBS = 
 INCDIRS = -I./src/
 
@@ -15,7 +16,7 @@ INCDIRS = -I./src/
 %.o:%.cpp $(INCLUDES)
 	$(CXX) -c $(INCLIDRS) $<
 
-TARGET =	heapchecker.exe
+TARGET =	radixsort.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
 

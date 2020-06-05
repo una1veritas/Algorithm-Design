@@ -13,21 +13,25 @@
 
 typedef void * data;
 
-int data_greaterThan(const data d[], const int a, const int b);
+int unlhd(const void * d[], const int a, const int b);
 
-int verify_sorted(const data d[], const unsigned int idx[], unsigned int n);
+int verify_sorted(const data d[], const int idx[], int n, int (*compare)(const data *, const int, const int));
 
-void heapSort(const int d[], unsigned int a[], unsigned int n);
-void selectionSort(const int d[], unsigned int a[], unsigned int n);
-void selectionSort_range(const int d[], unsigned int a[], unsigned int start, unsigned int end);
+void heapSort(const data d[], int a[], int n,
+		int (*compare)(const data *, const int, const int));
+void selectionSort(const data d[], int a[], int n,
+		int (*compare)(const data *, const int, const int));
+void selectionSort_range(const data d[], int a[], int start, int end);
 
-void quickSort(const int d[], unsigned int a[], unsigned int n);
-void quickSort_range(const int d[], unsigned int array[], unsigned int start, unsigned int end);
+void quickSort(const data d[], int a[], int n,
+		int (*compare)(const data *, const int, const int));
+void quickSort_range(const data d[], int array[], int start, int end,
+		int (*compare)(const data *, const int, const int));
 
-void bubbleSort(const int d[], unsigned int a[], unsigned int n);
-void insertionSort(const int d[],unsigned int a[], unsigned int n);
-void mergeSort_recursive(const int d[], unsigned int a[], unsigned int n);
-void mergeSort(const int d[], unsigned int a[], unsigned int n);
+void bubbleSort(const data d[], int a[], int n, int (*compare)(const data *, const int, const int));
+void insertionSort(const data d[], int a[], int n, int (*compare)(const data *, const int, const int));
+void mergeSort_recursive(const data d[], int a[], int n, int (*compare)(const data *, const int, const int));
+void mergeSort(const data d[], int a[], int n, int (*compare)(const data *, const int, const int));
 
 
 #endif /* SRC_SORTALGORITHMS_H_ */
