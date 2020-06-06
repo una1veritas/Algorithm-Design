@@ -5,8 +5,8 @@ CXXFLAGS =  -std=c++11 -O0 -g -Wall -fmessage-length=0
 
 #PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-TARGET = linkedlist.exe
-OBJS = main.o LinkedList.o
+TARGET = llist.exe
+OBJS = main.o llist.o
 INCLUDES = 
 
 #ifeq ($(BUILD_MODE),debug)

@@ -10,14 +10,14 @@
 #include <string.h>
 #include "LinkedList.h"
 
-LinkedList * LinkedList_init(LinkedList * list) {
+LList * LinkedList_init(LList * list) {
 	list->head.next = NULL;
 	list->tailptr = &list->head;
 	list->elemcount = 0;
 	return list;
 }
 
-void LinkedList_free(LinkedList * list) {
+void LinkedList_free(LList * list) {
 	ListNode * ptr = list->head.next;
 	ListNode * t;
 	while ( ptr != NULL ) {
@@ -27,7 +27,7 @@ void LinkedList_free(LinkedList * list) {
 	}
 }
 
-ListNode * LinkedList_append(LinkedList * list, void * data) {
+ListNode * LinkedList_append(LList * list, void * data) {
 	ListNode * newnode = (ListNode*) malloc(sizeof(ListNode));
 	newnode->data = data;
 	newnode->next = NULL;
@@ -37,7 +37,7 @@ ListNode * LinkedList_append(LinkedList * list, void * data) {
 	return newnode;
 }
 
-ListNode * LinkedList_push(LinkedList * list, void * data) {
+ListNode * LinkedList_push(LList * list, void * data) {
 	ListNode * newnode = (ListNode*) malloc(sizeof(ListNode));
 	newnode->data = data;
 	newnode->next = list->head.next;
@@ -47,7 +47,7 @@ ListNode * LinkedList_push(LinkedList * list, void * data) {
 	return newnode;
 }
 
-void * LinkedList_pop(LinkedList * list) {
+void * LinkedList_pop(LList * list) {
 	ListNode * ptr = list->head.next;
 	void * d = ptr->data;
 	list->head.next = ptr->next;
@@ -56,15 +56,15 @@ void * LinkedList_pop(LinkedList * list) {
 	return d;
 }
 
-ListNode * LinkedList_begin(LinkedList * list) {
+ListNode * LinkedList_begin(LList * list) {
 	return &list->head;
 }
 
-ListNode * LinkedList_end(LinkedList * list) {
+ListNode * LinkedList_end(LList * list) {
 	return list->tailptr;
 }
 
-ListNode * LinkedList_find(LinkedList * list, void * data) {
+ListNode * LinkedList_find(LList * list, void * data) {
 	ListNode * preptr = &list->head;
 	while ( preptr != list->tailptr ) {
 		if ( preptr->next->data == data ) {
@@ -74,7 +74,7 @@ ListNode * LinkedList_find(LinkedList * list, void * data) {
 	return NULL;
 }
 
-void * LinkedList_remove(LinkedList * list, void * data) {
+void * LinkedList_remove(LList * list, void * data) {
 	ListNode * preptr = &list->head;
 	while ( preptr != list->tailptr ) {
 		if ( preptr->next->data == data ) {
@@ -88,7 +88,7 @@ void * LinkedList_remove(LinkedList * list, void * data) {
 }
 
 
-void LinkedList_printf(LinkedList * list, char * sep) {
+void LinkedList_printf(LList * list, char * sep) {
 	ListNode * ptr = list->head.next;
 	while ( ptr != NULL ) {
 		printf("%p%s", ptr->data, sep);

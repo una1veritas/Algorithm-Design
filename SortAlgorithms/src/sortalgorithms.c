@@ -13,7 +13,7 @@ int verify_sorted(const data d[], const int idx[], int n, int (*compare)(const d
 	return 1;
 }
 
-void maxHeapify(const data d[], int idx[], int i, int end,
+void down_to_leaf(const data d[], int idx[], int i, int end,
 		int (*compare)(const data *, const int, const int)) {
 	unsigned int larger, tmp;
 
@@ -33,12 +33,12 @@ void maxHeapify(const data d[], int idx[], int i, int end,
 	return;
 }
 	
-void buildMaxHeap(const data d[], int a[], int n,
+void build_heap(const data d[], int a[], int n,
 		int (*compare)(const data *, const int, const int) ) {
 	long i;
 		
 		for (i = (n>>1) - 1 ; ! (i < 0); i--) {
-			maxHeapify(d, a, i, n, compare);
+			down_to_leaf(d, a, i, n, compare);
 		}
 		return;
     }
@@ -48,11 +48,11 @@ void heapSort(const data d[], int a[], int n,
 	long i;
 	long t;
 
-	buildMaxHeap(d, a, n, compare);
+	build_heap(d, a, n, compare);
 	for (i = n - 1; i > 0; i--) {
 		// a[0] is always the maximum.
 		SWAP(a[0], a[i], t);
-		maxHeapify(d, a, 0, i, compare);
+		down_to_leaf(d, a, 0, i, compare);
 	}
 	return;
 }

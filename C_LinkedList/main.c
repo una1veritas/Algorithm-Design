@@ -11,32 +11,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "LinkedList.h"
+#include "llist.h"
 
 int main(void) {
-	LinkedList list;
+	LList list;
 
-	LinkedList_init(&list);
+	LList_init(&list);
 	printf("List size = %d\n", list.elemcount);
-	LinkedList_append(&list, "Hello.");
-	LinkedList_append(&list, "-3");
-	LinkedList_append(&list, "800,000,000");
-	LinkedList_printf(&list, "; ");
+	LList_append(&list, "Hello.");
+	LList_append(&list, "-3");
+	LList_append(&list, "800,000,000");
+	printf("List size = %d\n", list.elemcount);
+	LList_printf(&list, "; ");
+
 	printf("\n");
-	for(ListNode * ptr = LinkedList_begin(&list); ptr != LinkedList_end(&list); ptr = ptr->next) {
+	for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
 		printf("%s -> ", (char *) ptr->data );
 	}
 	printf("\n");
-	fflush(stdout);
-	LinkedList_pop(&list);
-	LinkedList_push(&list,"CAGR");
-	LinkedList_printf(&list, "; ");
+
+	LList_pop(&list);
+	LList_push(&list,"CAGR");
+	LList_printf(&list, "; ");
 	printf("\n");
+
 	void * data;
-	while ( !LinkedList_is_empty(&list) ) {
-		data = LinkedList_pop(&list);
+	while ( !LList_is_empty(&list) ) {
+		data = LList_pop(&list);
 		printf("%s \n", (char *) data );
-		for(ListNode * ptr = LinkedList_begin(&list); ptr != LinkedList_end(&list); ptr = ptr->next) {
+		for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
 			printf("%s -> ", (char *) ptr->data );
 		}
 		printf("\n");
@@ -44,6 +47,6 @@ int main(void) {
 	printf("\n");
 	printf("List size = %d\n", list.elemcount);
 
-	LinkedList_free(&list);
+	LList_free(&list);
 	return EXIT_SUCCESS;
 }

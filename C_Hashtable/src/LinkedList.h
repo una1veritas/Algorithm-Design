@@ -13,22 +13,22 @@ typedef struct ListNode {
 	struct ListNode * next;
 } ListNode;
 
-typedef struct LinkedList {
+typedef struct LList {
 	ListNode head;
 	ListNode * tailptr;
 	unsigned int elemcount;
-} LinkedList;
+} LList;
 
-LinkedList * LinkedList_init(LinkedList *);
-void LinkedList_free(LinkedList *);
-void LinkedList_printf(LinkedList *, char * sep);
+LList * LinkedList_init(LList *);
+void LinkedList_free(LList *);
+void LinkedList_printf(LList *, char * sep);
 
-ListNode * LinkedList_append(LinkedList * list, void*);
-ListNode * LinkedList_push(LinkedList * list, void*);
-void * LinkedList_pop(LinkedList * list);
-ListNode * LinkedList_begin(LinkedList * list);
-ListNode * LinkedList_end(LinkedList * list);
-ListNode * LinkedList_find(LinkedList * list, void*);
-void * LinkedList_remove(LinkedList * list, void*);
+ListNode * LinkedList_append(LList * list, void*);
+ListNode * LinkedList_push(LList * list, void*);
+void * LinkedList_pop(LList * list);
+ListNode * LinkedList_begin(LList * list);
+ListNode * LinkedList_end(LList * list);
+ListNode * LinkedList_find(LList * list, void*);
+void * LinkedList_remove(LList * list, void*);
 
 #endif /* LINKEDLIST_H_ */

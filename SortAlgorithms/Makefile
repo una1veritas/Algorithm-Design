@@ -1,22 +1,24 @@
 CC = gcc
 CXX = g++
 
-CC += -O0 -g -Wall
-CXX +=	-O0 -g -Wall -fmessage-length=0
-
 #OBJS =	main.o sortalgorithms.o stopwatch.o
 #OBJS =	heapchecker.o
-OBJS =	radixsort.o
+OBJS =	bucketsort.o llist.o
 LIBS = 
-INCDIRS = -I./src/
+INCLUDES = ../C_LinkedList/llist.h
+INCDIRS = -I./src/ -I../C_LinkedList
 
-%.o: ./src/%.c $(INCLUDES)
-	$(CC) -c $(INCLIDRS) $<
+CC += -O0 -g -Wall $(INCDIRS)
+CXX +=	-O0 -g -Wall -fmessage-length=0
+
+
+%.o:./src/%.c $(INCLUDES)
+	$(CC) -c $<
 
 %.o:%.cpp $(INCLUDES)
-	$(CXX) -c $(INCLIDRS) $<
+	$(CXX) -c $<
 
-TARGET =	radixsort.exe
+TARGET =	bucketsort.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
 
@@ -26,10 +28,13 @@ $(TARGET):	$(OBJS)
 all:	$(TARGET)
 #all:	selection_asm
 
+llist.o: ../C_LinkedList/llist.h
+	$(CC) -c ../C_LinkedList/llist.c
+
 selection_asm:
 	gcc -O0 -S ./src/selection.c
 	gcc -O0 -o selection.exe ./src/selection.c
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(OBJS) $(TARGET) *.exe *.o
 

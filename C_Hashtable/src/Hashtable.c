@@ -15,13 +15,13 @@
 #include "LinkedList.h"
 
 typedef struct {
-	LinkedList * table;
+	LList * table;
 	unsigned int tablesize;
 	unsigned int elemcount;
 } Hashtable;
 
 typedef struct {
-	LinkedList * list;
+	LList * list;
 	ListNode * node;
 } LNPair;
 
@@ -37,7 +37,7 @@ unsigned long hash_str(char * str) {
 
 void Hashtable_allocate(Hashtable * h, unsigned int n) {
 	h->tablesize = n;
-	h->table = (void*) malloc(sizeof(LinkedList) * h->tablesize);
+	h->table = (void*) malloc(sizeof(LList) * h->tablesize);
 	for(unsigned int i = 0; i < h->tablesize; ++i) {
 		LinkedList_init(&h->table[i]);
 	}
@@ -72,7 +72,7 @@ void Hashtable_add(Hashtable * h, char * str) {
 
 void Hashtable_remove(Hashtable * h, char * str) {
 	unsigned long hashcode = hash_str(str);
-	LinkedList * list = & h->table[hashcode % h->tablesize];
+	LList * list = & h->table[hashcode % h->tablesize];
 	if ( LinkedList_remove(list, str) != NULL )
 		h->elemcount -= 1;
 }

@@ -13,7 +13,7 @@
 
 typedef void * data;
 
-int unlhd(const void * d[], const int a, const int b);
+int unlhd(const data d[], const int a, const int b);
 
 int verify_sorted(const data d[], const int idx[], int n, int (*compare)(const data *, const int, const int));
 
