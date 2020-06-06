@@ -21,13 +21,13 @@ void bucketsort(const data d[], LList * outlist, int n, int bsize, int (*key)(co
 	for(int i = 0; i < bsize; ++i) {
 		while ( ! LList_is_empty(&list[i]) ) {
 			LList_append_node(outlist, LList_pop_node(&list[i]));
-			printf("%d ",list[k].elemcount);
+			printf("%d ",list[i].elemcount);
 		}
 	}
 }
 
 int key(const data d) {
-	return (long)d;
+	return (int) d;
 }
 
 int main(const int argc, const char *argv[]) {
