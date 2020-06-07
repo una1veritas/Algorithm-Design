@@ -12,47 +12,36 @@
 #include "llist.h"
 
 LList * LList_init(LList * list) {
-	list->head = NULL;        // the last node has NULL next.
-	list->tail = NULL;  // got the end then prev == list->head
+	list->head.next = &list->tail;
+	list->head.prev = NULL;
+	list->tail.next = NULL;
+	list->tail.prev = &list->head;
 	list->elemcount = 0;
 	return list;
 }
 
 void LList_free(LList * list) {
-	ListNode * last;
-	while ( list->head != NULL ) {
-		last = list->head;
-		list->head = last->next;
-		free(last);
+	ListNode * t;
+	while ( list->head.next != &list->tail ) {
+		t = list->head.next;
+		list->head.next = t->next;
+		free(t);
 	}
-	list->tail = NULL;
 }
 
 // append as the last node
 ListNode * LList_append(LList * list, data d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
 	node->data = d;
-	node->next = NULL;
-	node->prev = list->tail;
-	if ( list->tail == NULL ) {
-		list->head = node;
-	} else {
-		list->tail->next = node;
-	}
-	list->tail = node;
-	list->elemcount += 1;
+	LList_append_node(list, node);
 	return node;
 }
 
 ListNode * LList_append_node(LList * list, ListNode * node) {
-	node->next = NULL;
-	node->prev = list->tail;
-	if ( list->tail == NULL ) {
-		list->head = node;
-	} else {
-		list->tail->next = node;
-	}
-	list->tail = node;
+	node->next = &list->tail;
+	node->prev = list->tail.prev;
+	node->prev->next = node;
+	list->tail.prev = node;
 	list->elemcount += 1;
 	return node;
 }
@@ -61,33 +50,18 @@ ListNode * LList_append_node(LList * list, ListNode * node) {
 ListNode * LList_push(LList * list, data d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
 	node->data = d;
-	node->next = list->head;
-	node->prev = NULL;
-	list->head = node;
-	if ( list->elemcount == 0 ) {
-		// ( list->tail == NULL )
-		list->tail = node;
-	} else {
-		// ( node->next != NULL )
-		node->next->prev = node;
-	}
+	node->next = list->head.next;
+	list->head.next = node;
+	node->next->prev = node;
+	node->prev = &list->head;
 	list->elemcount += 1;
 	return node;
 }
 
 data LList_pop(LList * list) {
-	data d;
-	if ( list->elemcount == 0 ) {
-		/* tried pop an empty list */
-		fprintf(stderr, "Error: LList_pop: list is empty.\n");
-		return NULL;
-	}
-	ListNode * node = list->head;
-	list->head = node->next;
-	list->head->prev = NULL;
-	d = node->data;
+	ListNode * node = LList_pop_node(list);
+	data d = node->data;
 	free(node);
-	list->elemcount -= 1;
 	return d;
 }
 
@@ -97,43 +71,32 @@ ListNode * LList_pop_node(LList * list) {
 		fprintf(stderr, "Error: LList_pop: list is empty.\n");
 		return NULL;
 	}
-	ListNode * node = list->head;
-	list->head = node->next;
-	list->head->prev = NULL;
+	ListNode * node = list->head.next;
+	list->head.next = node->next;
+	node->next->prev = &list->head;
 	list->elemcount -= 1;
 	return node;
 }
 
 ListNode * LList_begin(LList * list) {
-	return list->head;
+	return list->head.next;
 }
 
 ListNode * LList_last(LList * list) {
-	return list->tail;
+	return list->tail.prev;
 }
 
 ListNode * LList_end(LList * list) {
-	return NULL;
+	return &list->tail;
 }
-
-ListNode * LList_find(LList * list, data d) {
-	for(ListNode * node = list->head;
-			node != NULL; node = node->next ) {
-		if ( node->data == d ) {
-			return node;
-		}
-	}
-	return NULL;
-}
-
 
 int LList_is_empty(LList * list) {
 	return list->elemcount == 0;
 }
 
 void LList_printf(LList * list, char * sep) {
-	ListNode * node = list->head;
-	while ( node != NULL ) {
+	ListNode * node = list->head.next;
+	while ( node->next != &list->tail ) {
 		printf("%p %s ", node->data, sep);
 		node = node->next;
 	}

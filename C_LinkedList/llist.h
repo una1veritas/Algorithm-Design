@@ -16,8 +16,8 @@ typedef struct ListNode {
 } ListNode;
 
 typedef struct LList {
-	ListNode * head;
-	ListNode * tail;
+	ListNode head;
+	ListNode tail;
 	int elemcount;
 } LList;
 
@@ -33,7 +33,6 @@ ListNode * LList_pop_node(LList * list);
 ListNode * LList_begin(LList * list);
 ListNode * LList_last(LList * list);
 ListNode * LList_end(LList * list);
-ListNode * LList_find(LList * list, data);
 
 int LList_is_empty(LList * list);
 

@@ -10,19 +10,18 @@ typedef void * data;
 
 void bucketsort(const data d[], LList * outlist, int n, int bsize, int (*key)(const data)) {
 	LList list[bsize];
-	int k;
 	for(int i = 0; i < bsize; ++i) {
 		LList_init(&list[i]);
 	}
 	for(int i = 0; i < n; ++i) {
-		k = key(d[i]);
-		LList_append(&list[k],d[i]);
+		LList_append(&list[key(d[i])],d[i]);
 	}
 	for(int i = 0; i < bsize; ++i) {
-		while ( ! LList_is_empty(&list[i]) ) {
-			LList_append_node(outlist, LList_pop_node(&list[i]));
-			printf("%d ",list[i].elemcount);
+		for(ListNode * ptr = LList_begin(&list[i]);
+				ptr != LList_end(&list[i]); ptr = ptr->next) {
+			LList_append(outlist, ptr->data);
 		}
+		LList_free(&list[i]);
 	}
 }
 
@@ -46,12 +45,12 @@ int main(const int argc, const char *argv[]) {
 	LList_init(&result);
 	bucketsort((data *)d, &result, n, 100, key);
 
-	printf("\n");
 	for(ListNode * litr = LList_begin(&result);
-			litr != LList_end(&result); litr = litr->next) {
+			litr->next != NULL; litr = litr->next) {
 		printf("%ld, ", (long) litr->data);
 	}
-	printf(".\n");
+	printf("\n");
+	printf("size %d\n", result.elemcount);
 
 	LList_free(&result);
 	return 0;

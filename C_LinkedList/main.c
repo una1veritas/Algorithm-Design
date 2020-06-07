@@ -31,8 +31,11 @@ int main(void) {
 	printf("\n");
 
 	LList_pop(&list);
-	LList_push(&list,"CAGR");
-	LList_printf(&list, "; ");
+	LList_push(&list,"Car");
+	LList_push(&list,"Bag");
+	for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
+		printf("%s -> ", (char *) ptr->data );
+	}
 	printf("\n");
 
 	void * data;
