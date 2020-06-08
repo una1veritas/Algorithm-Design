@@ -4,24 +4,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define DATA int
+
 #include "llist.h"
 
-typedef void * data;
-
-void bucketsort(const data d[], LList * outlist, int n, int bsize, int (*key)(const data)) {
+void bucketsort(LList * dlist, int n, int bsize, int (*key)(const data)) {
 	LList list[bsize];
+	ListNode * node;
 	for(int i = 0; i < bsize; ++i) {
 		LList_init(&list[i]);
 	}
-	for(int i = 0; i < n; ++i) {
-		LList_append(&list[key(d[i])],d[i]);
+	while ( !LList_is_empty(dlist) ) {
+		node = LList_pop_node(dlist);
+		LList_append_node(&list[key(node->data)], node);
 	}
 	for(int i = 0; i < bsize; ++i) {
-		for(ListNode * ptr = LList_begin(&list[i]);
-				ptr != LList_end(&list[i]); ptr = ptr->next) {
-			LList_append(outlist, ptr->data);
+		while ( ! LList_is_empty(&list[i]) ) {
+			node = LList_pop_node(&list[i]);
+			LList_append_node(dlist, node);
 		}
-		LList_free(&list[i]);
 	}
 }
 
@@ -31,27 +32,28 @@ int key(const data d) {
 
 int main(const int argc, const char *argv[]) {
 	int n = argc - 1;
-	long d[n];
+	LList list;
+	LList_init(&list);
 	for (int i = 0; i < n; ++i) {
-		d[i] = atoi(argv[1+i]);
+		LList_append(&list, (data)(long long) atoi(argv[1+i]));
 	}
 	printf("input: \n");
-	for (int i = 0; i < n; ++i) {
-		printf("%ld, ", d[i]);
+	for (ListNode * i = LList_begin(&list);
+			i != LList_end(&list); i = i->next) {
+		printf("%d, ", (int) (long long) i->data);
 	}
 	printf("\n\n");
+	fflush(stdout);
 
-	LList result;
-	LList_init(&result);
-	bucketsort((data *)d, &result, n, 100, key);
+	bucketsort(&list, n, 100, key);
 
-	for(ListNode * litr = LList_begin(&result);
-			litr->next != NULL; litr = litr->next) {
-		printf("%ld, ", (long) ((long long) litr->data));
+	for(ListNode * i = LList_begin(&list);
+			i->next != NULL; i = i->next) {
+		printf("%d, ", (int) (long long) i->data );
 	}
 	printf("\n");
-	printf("size %d\n", result.elemcount);
+	printf("size %d\n", list.elemcount);
 
-	LList_free(&result);
+	LList_free(&list);
 	return 0;
 }

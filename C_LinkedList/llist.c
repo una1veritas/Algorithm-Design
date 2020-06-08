@@ -27,6 +27,8 @@ void LList_free(LList * list) {
 		list->head.next = t->next;
 		free(t);
 	}
+	list->tail.prev = &list->head;
+	list->elemcount = 0;
 }
 
 // append as the last node

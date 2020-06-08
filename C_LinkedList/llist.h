@@ -8,10 +8,14 @@
 #ifndef LLIST_H_
 #define LLIST_H_
 
+#if defined(DATA)
+typedef DATA data;
+#else
 typedef void * data;
+#endif
 
 typedef struct ListNode {
-	void * data;
+	data data;
 	struct ListNode * next, * prev;
 } ListNode;
 

@@ -6,8 +6,8 @@ CXX = g++
 OBJS =	bucketsort.o llist.o
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h
-INCDIRS = -I./src/ 
-#INCDIRS = -I./src/ -I../C_LinkedList
+#INCDIRS = -I./src/ 
+INCDIRS = -I./src/ -I../C_LinkedList
 
 CC += -O0 -g -Wall $(INCDIRS)
 CXX +=	-O0 -g -Wall -fmessage-length=0
