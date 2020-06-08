@@ -21,29 +21,11 @@ void countingsort(int d[], int n, int m) {
 	for(int i = 0; i < n; ++i) {
 		number[d[i]] += 1;
 	}
-	/*
-	printf("number:\n");
-	for(int i = 0; i < m; ++i) {
-		printf("%d, ", number[i]);
-	}
-	printf("\n");
-	*/
 	for(int i = 1; i < m; ++i) {
 		number[i] += number[i-1];
 		counter[i] = number[i-1];
 	}
 	counter[0] = 0;
-	/*
-	for(int i = 0; i < m; ++i) {
-		printf("%d, ", number[i]);
-	}
-	printf("\n");
-	printf("counter\n");
-	for(int i = 0; i < m; ++i) {
-		printf("%d, ", counter[i]);
-	}
-	printf("\n");
-	*/
 	for(int i = 0; i < n; ) {
 		int idx = d[i];
 		if ( counter[idx] != number[idx] ) {
@@ -51,17 +33,9 @@ void countingsort(int d[], int n, int m) {
 			d[counter[idx]] = d[i];
 			d[i] = t;
 			counter[idx] += 1;
-			//printf("d[%d]<-->d[%d]\n", i, counter[idx]);
 		} else {
 			i += 1;
 		}
-		/*
-		printf("i = %d elem:\n", i);
-		for(int j = 0; j < n; ++j) {
-			printf("%d, ", d[j]);
-		}
-		printf("\n\n");
-		*/
 	}
 }
 
