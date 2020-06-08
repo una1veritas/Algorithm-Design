@@ -26,7 +26,7 @@ void bucketsort(const data d[], LList * outlist, int n, int bsize, int (*key)(co
 }
 
 int key(const data d) {
-	return (int) d;
+	return (int)((long long) d);
 }
 
 int main(const int argc, const char *argv[]) {
@@ -47,7 +47,7 @@ int main(const int argc, const char *argv[]) {
 
 	for(ListNode * litr = LList_begin(&result);
 			litr->next != NULL; litr = litr->next) {
-		printf("%ld, ", (long) litr->data);
+		printf("%ld, ", (long) ((long long) litr->data));
 	}
 	printf("\n");
 	printf("size %d\n", result.elemcount);
