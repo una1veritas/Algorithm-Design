@@ -13,6 +13,52 @@ int verify_sorted(const data d[], const int idx[], int n, int (*compare)(const d
 	return 1;
 }
 
+void countingSort(data d[], long n, long m, long (*key)(const data)) {
+	long number[m];
+	long counter[m];
+
+	for(long i = 0; i < m; ++i) {
+		number[i] = 0;
+	}
+	for(long i = 0; i < n; ++i) {
+		number[key(d[i]) % m] += 1;
+	}
+	for(long i = 1; i < m; ++i) {
+		number[i] += number[i-1];
+		counter[i] = number[i-1];
+	}
+	counter[0] = 0;
+	for(long i = 0; i < n; ) {
+		long idx = key(d[i]) % m;
+		if ( counter[idx] != number[idx] ) {
+			data t = d[counter[idx]];
+			d[counter[idx]] = d[i];
+			d[i] = t;
+			counter[idx] += 1;
+		} else {
+			i += 1;
+		}
+	}
+}
+
+void bucketSort(LList * dlist, int n, int bsize, int (*key)(const data)) {
+	LList list[bsize];
+	ListNode * node;
+	for(int i = 0; i < bsize; ++i) {
+		LList_init(&list[i]);
+	}
+	while ( !LList_is_empty(dlist) ) {
+		node = LList_pop_node(dlist);
+		LList_append_node(&list[key(node->data) % bsize], node);
+	}
+	for(int i = 0; i < bsize; ++i) {
+		while ( ! LList_is_empty(&list[i]) ) {
+			node = LList_pop_node(&list[i]);
+			LList_append_node(dlist, node);
+		}
+	}
+}
+
 void down_to_leaf(const data d[], int idx[], int i, int end,
 		int (*compare)(const data *, const int, const int)) {
 	unsigned int larger, tmp;

@@ -3,7 +3,8 @@ CXX = g++
 
 #OBJS =	main.o sortalgorithms.o stopwatch.o
 #OBJS =	heapchecker.o
-OBJS =	bucketsort.o llist.o
+#OBJS =	bucketsort.o llist.o sortalgorithms.o 
+OBJS =	countingsort.o sortalgorithms.o llist.o 
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h
 #INCDIRS = -I./src/ 
@@ -19,7 +20,8 @@ CXX +=	-O0 -g -Wall -fmessage-length=0
 %.o:%.cpp $(INCLUDES)
 	$(CXX) -c $<
 
-TARGET =	bucketsort.exe
+TARGET =	countingsort.exe
+#TARGET =	bucketsort.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
 
@@ -29,8 +31,8 @@ $(TARGET):	$(OBJS)
 all:	$(TARGET)
 #all:	selection_asm
 
-#llist.o: ../C_LinkedList/llist.h
-#	$(CC) -c ../C_LinkedList/llist.c
+llist.o: ../C_LinkedList/llist.h
+	$(CC) -c ../C_LinkedList/llist.c
 
 selection_asm:
 	gcc -O0 -S ./src/selection.c

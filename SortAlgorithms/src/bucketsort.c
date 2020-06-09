@@ -4,27 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DATA int
-
 #include "llist.h"
-
-void bucketsort(LList * dlist, int n, int bsize, int (*key)(const data)) {
-	LList list[bsize];
-	ListNode * node;
-	for(int i = 0; i < bsize; ++i) {
-		LList_init(&list[i]);
-	}
-	while ( !LList_is_empty(dlist) ) {
-		node = LList_pop_node(dlist);
-		LList_append_node(&list[key(node->data)], node);
-	}
-	for(int i = 0; i < bsize; ++i) {
-		while ( ! LList_is_empty(&list[i]) ) {
-			node = LList_pop_node(&list[i]);
-			LList_append_node(dlist, node);
-		}
-	}
-}
+#include "sortalgorithms.h"
 
 int key(const data d) {
 	return (int)((long long) d);
