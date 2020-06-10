@@ -12,18 +12,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "LinkedList.h"
+#include "llist.h"
 
 typedef struct {
 	LList * table;
 	unsigned int tablesize;
 	unsigned int elemcount;
 } Hashtable;
-
-typedef struct {
-	LList * list;
-	ListNode * node;
-} LNPair;
 
 unsigned long hash_str(char * str) {
 	unsigned long t = 0;
@@ -39,22 +34,20 @@ void Hashtable_allocate(Hashtable * h, unsigned int n) {
 	h->tablesize = n;
 	h->table = (void*) malloc(sizeof(LList) * h->tablesize);
 	for(unsigned int i = 0; i < h->tablesize; ++i) {
-		LinkedList_init(&h->table[i]);
+		LList_init(&h->table[i]);
 	}
 	h->elemcount = 0;
 }
 
 void Hashtable_free(Hashtable * h) {
 	for(unsigned int i = 0; i < h->tablesize; ++i)
-		LinkedList_free(&h->table[i]);
+		LList_free(&h->table[i]);
 	free(h->table);
 }
 
-LNPair Hashtable_find(Hashtable * h, char * str) {
-	LNPair pair;
+ListNode * Hashtable_find(Hashtable * h, char * str) {
 	unsigned long hashcode = hash_str(str);
-	pair.list = & h->table[hashcode % h->tablesize];
-	for(pair.node = LinkedList_begin(pair.list); pair.node != LinkedList_end(pair.list);
+	por(pair.node = LList_begin(h->table); pair.node != LinkedList_end(pair.list);
 			pair.node = pair.node->next) {
 		if ( strcmp((char*)pair.node->next->data, str) == 0 )
 			break;
@@ -73,7 +66,7 @@ void Hashtable_add(Hashtable * h, char * str) {
 void Hashtable_remove(Hashtable * h, char * str) {
 	unsigned long hashcode = hash_str(str);
 	LList * list = & h->table[hashcode % h->tablesize];
-	if ( LinkedList_remove(list, str) != NULL )
+	if ( LList_remove(list, str) != NULL )
 		h->elemcount -= 1;
 }
 

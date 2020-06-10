@@ -13,7 +13,7 @@ int verify_sorted(const data d[], const int idx[], int n, int (*compare)(const d
 	return 1;
 }
 
-void countingSort(data d[], long n, long m, long (*key)(const data)) {
+void countingSort(data d[], int n, int m, int (*key)(const data)) {
 	long number[m];
 	long counter[m];
 
@@ -37,24 +37,6 @@ void countingSort(data d[], long n, long m, long (*key)(const data)) {
 			counter[idx] += 1;
 		} else {
 			i += 1;
-		}
-	}
-}
-
-void bucketSort(LList * dlist, int n, int bsize, int (*key)(const data)) {
-	LList list[bsize];
-	ListNode * node;
-	for(int i = 0; i < bsize; ++i) {
-		LList_init(&list[i]);
-	}
-	while ( !LList_is_empty(dlist) ) {
-		node = LList_pop_node(dlist);
-		LList_append_node(&list[key(node->data) % bsize], node);
-	}
-	for(int i = 0; i < bsize; ++i) {
-		while ( ! LList_is_empty(&list[i]) ) {
-			node = LList_pop_node(&list[i]);
-			LList_append_node(dlist, node);
 		}
 	}
 }

@@ -96,10 +96,10 @@ int LList_is_empty(LList * list) {
 	return list->elemcount == 0;
 }
 
-void LList_printf(LList * list, char * sep) {
+void LList_fprintf(FILE * f, LList * list, const char * fmt) {
 	ListNode * node = list->head.next;
-	while ( node->next != &list->tail ) {
-		printf("%p %s ", node->data, sep);
+	while ( node != &list->tail ) {
+		fprintf(f, fmt, node->data);
 		node = node->next;
 	}
 }

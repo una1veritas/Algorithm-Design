@@ -5,10 +5,27 @@
 #include <stdlib.h>
 
 #include "llist.h"
-#include "sortalgorithms.h"
 
-int key(const data d) {
-	return (int)((long long) d);
+long key(const data d) {
+	return (long) d;
+}
+
+void bucketSort(LList * dlist, long m, long (*key)(const data)) {
+	LList list[m];
+	ListNode * node;
+	for(int i = 0; i < m; ++i) {
+		LList_init(&list[i]);
+	}
+	while ( !LList_is_empty(dlist) ) {
+		node = LList_pop_node(dlist);
+		LList_append_node(&list[key(node->data)], node);
+	}
+	for(int i = 0; i < m; ++i) {
+		while ( ! LList_is_empty(&list[i]) ) {
+			node = LList_pop_node(&list[i]);
+			LList_append_node(dlist, node);
+		}
+	}
 }
 
 int main(const int argc, const char *argv[]) {
@@ -16,22 +33,16 @@ int main(const int argc, const char *argv[]) {
 	LList list;
 	LList_init(&list);
 	for (int i = 0; i < n; ++i) {
-		LList_append(&list, (data)(long long) atoi(argv[1+i]));
+		LList_append(&list, (long) atoi(argv[1+i]));
 	}
 	printf("input: \n");
-	for (ListNode * i = LList_begin(&list);
-			i != LList_end(&list); i = i->next) {
-		printf("%d, ", (int) (long long) i->data);
-	}
+	LList_fprintf(stdout, &list, "%ld, ");
 	printf("\n\n");
 	fflush(stdout);
 
-	bucketsort(&list, n, 100, key);
+	bucketSort(&list, 100, key);
 
-	for(ListNode * i = LList_begin(&list);
-			i->next != NULL; i = i->next) {
-		printf("%d, ", (int) (long long) i->data );
-	}
+	LList_fprintf(stdout, &list, "%ld, ");
 	printf("\n");
 	printf("size %d\n", list.elemcount);
 

@@ -8,11 +8,7 @@
 #ifndef LLIST_H_
 #define LLIST_H_
 
-#if defined(DATA)
-typedef DATA data;
-#else
-typedef void * data;
-#endif
+typedef int data;
 
 typedef struct ListNode {
 	data data;
@@ -27,7 +23,7 @@ typedef struct LList {
 
 LList * LList_init(LList *);
 void LList_free(LList *);
-void LList_printf(LList *, char * sep);
+void LList_fprintf(FILE *, LList *, const char * fmt);
 
 ListNode * LList_append(LList * list, data);
 ListNode * LList_push(LList * list, data);

@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 int main() {
-  printf("void * %d\n", sizeof(void *));
-  printf("long long  %d\n", sizeof(long long));
+  char s[] = "THIS IS A PEN.";
+  printf("%0x\n", *((int *) s));
 
   return 0;
 }

@@ -13,18 +13,12 @@
 #define MIN(a,b) ((a) < (b)? (a) : (b))
 #define SWAP(a, b, t) 	{ (t) = (a); (a) = (b); (b) = (t); }
 
-#if defined(DATA)
-typedef DATA data;
-#else
-typedef void * data;
-#endif
-
-int unlhd(const data d[], const int a, const int b);
-
 int verify_sorted(const data d[], const int idx[], int n, int (*compare)(const data *, const int, const int));
 
-void countingSort(data d[], long n, long keyrange, long (*key)(const data));
-void bucketSort(LList * dlist, int n, int bsize, int (*key)(const data));
+void countingSort(data d[], int n, int keyrange,
+		int (*key)(const data));
+void bucketSort(LList * dlist, int n, int bsize,
+		int (*key)(const data));
 
 void heapSort(const data d[], int a[], int n,
 		int (*compare)(const data *, const int, const int));

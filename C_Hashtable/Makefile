@@ -1,15 +1,15 @@
 CC = gcc
 CXX = g++
-CCFLAGS =  -O0 -g -Wall
+CCFLAGS =  -O0 -g -Wall -I../C_LinkedList/
 CXXFLAGS =  -std=c++11 -O0 -g -Wall -fmessage-length=0
 
 #PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-SRCDIR = src/
+SRCDIR = ./src/
 
-OBJS = Hashtable.o LinkedList.o
-INCLUDES = LinkedList.h
-TARGET = Hashtable.exe
+OBJS = hashtable.o llist.o
+INCLUDES = llist.h
+TARGET = hashtable.exe
 
 #ifeq ($(BUILD_MODE),debug)
 #	CFLAGS += -g
@@ -21,11 +21,15 @@ TARGET = Hashtable.exe
 
 all:	$(TARGET)
 
+llist.o: ../C_LinkedList/llist.c
+	$(CC) -c $(CCFLAGS) -o $@ $<
+
+
 %.o:	$(SRCDIR)%.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 %.o:	$(SRCDIR)%.c
-	$(CC) -c $(CFLAGS)  -o $@ $<
+	$(CC) -c $(CCFLAGS) -o $@ $<
 
 $(TARGET):	$(OBJS)
 	$(CXX) -o $@ $^
