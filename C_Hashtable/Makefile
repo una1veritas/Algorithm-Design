@@ -1,16 +1,15 @@
 CC = gcc
 CXX = g++
-CCFLAGS =  -O0 -g -Wall -I../C_LinkedList/
+CCFLAGS =  -O1 -g -Wall -I../C_LinkedList/
 CXXFLAGS =  -std=c++11 -O0 -g -Wall -fmessage-length=0
 
 #PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 SRCDIR = ./src/
 
-#OBJS = hashtable.o llist.o
-OBJS =  asciisum.o
+OBJS = hashtable.o llist.o
 #INCLUDES = llist.h
-TARGET = asciisum.exe
+TARGET = hashtable.exe
 
 #ifeq ($(BUILD_MODE),debug)
 #	CFLAGS += -g
@@ -36,4 +35,4 @@ $(TARGET):	$(OBJS)
 	$(CXX) -o $@ $^
 
 clean:
-	rm -fr $(TARGET) $(OBJS)
+	rm -fr $(TARGET) $(OBJS) *.exe *.o a.out

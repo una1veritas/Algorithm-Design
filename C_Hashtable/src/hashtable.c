@@ -12,73 +12,83 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "datadef.h"
 #include "llist.h"
 
-typedef struct {
-	LList * table;
-	unsigned int tablesize;
-	unsigned int elemcount;
-} Hashtable;
-
-unsigned long hash_str(char * str) {
-	unsigned long t = 0;
-	unsigned int i = 0;
-	for(char * p = str; *p != (char) 0 && i < 8; ++p, ++i) {
+long keycode(const data d) {
+	long t = 0;
+//	char c = 0;
+	for(const char * p = (const char *) d->id; *p != (char) 0 ; ++p) {
+		t = (t << 5) - t;
 		t ^= *p;
-		t <<= 5;
 	}
+	printf("%ld, ", t);
 	return t;
 }
 
-void Hashtable_allocate(Hashtable * h, unsigned int n) {
+int equals(const data d1, const data d2) {
+	return 0 == strcmp((const char *) d1->id, (const char *) d2->id);
+}
+
+typedef struct Hashtable {
+	LList * table;
+	long tablesize, elemcount;
+} Hashtable;
+
+typedef struct ListNodePair {
+	LList * listptr;
+	ListNode * nodeptr;
+} ListNodePair;
+
+void Hashtable_init(Hashtable * h, long n) {
 	h->tablesize = n;
 	h->table = (void*) malloc(sizeof(LList) * h->tablesize);
-	for(unsigned int i = 0; i < h->tablesize; ++i) {
+	for(long i = 0; i < h->tablesize; ++i) {
 		LList_init(&h->table[i]);
 	}
 	h->elemcount = 0;
 }
 
 void Hashtable_free(Hashtable * h) {
-	for(unsigned int i = 0; i < h->tablesize; ++i)
+	for(long i = 0; i < h->tablesize; ++i)
 		LList_free(&h->table[i]);
 	free(h->table);
 }
 
-ListNode * Hashtable_find(Hashtable * h, char * str) {
-	unsigned long hashcode = hash_str(str);
-	por(pair.node = LList_begin(h->table); pair.node != LinkedList_end(pair.list);
-			pair.node = pair.node->next) {
-		if ( strcmp((char*)pair.node->next->data, str) == 0 )
-			break;
-	}
+ListNodePair Hashtable_findList(Hashtable * h, const data d) {
+	long hashcode = keycode(d) % h->tablesize;
+	ListNodePair pair;
+	pair.listptr = & h->table[hashcode];
+	pair.nodeptr = LList_find(pair.listptr, d, equals);
 	return pair;
 }
 
-void Hashtable_add(Hashtable * h, char * str) {
-	LNPair pair = Hashtable_find(h, str);
-	if ( pair.node->next == NULL ) {
-		LinkedList_append(pair.list, str);
+ListNode * Hashtable_find(Hashtable * h, const data d) {
+	ListNodePair pair = Hashtable_findList(h, d);
+	return pair.nodeptr;
+}
+
+void Hashtable_add(Hashtable * h, const data d) {
+	ListNodePair pair = Hashtable_findList(h, d);
+	if ( pair.nodeptr == LList_end(pair.listptr) ) {
+		LList_append(pair.listptr, d);
 		h->elemcount += 1;
 	}
 }
 
-void Hashtable_remove(Hashtable * h, char * str) {
-	unsigned long hashcode = hash_str(str);
-	LList * list = & h->table[hashcode % h->tablesize];
-	if ( LList_remove(list, str) != NULL )
+void Hashtable_remove(Hashtable * h, const data d) {
+	ListNodePair pair = Hashtable_findList(h, d);
+	if ( pair.nodeptr != LList_end(pair.listptr) ) {
+		LList_remove(pair.listptr, d, equals);
 		h->elemcount -= 1;
+	}
 }
 
-void Hashtable_print(Hashtable * h) {
-	printf("tablesize = %d\ntable = \n", h->tablesize);
-	for(unsigned int i = 0; i < h->tablesize; ++i) {
-		printf("%d: ", i);
-		for(ListNode * p = h->table[i].head.next;
-				p != NULL;
-				p = p->next) {
-			printf("%s (0x%lX), ", (char*) p->data, hash_str((char*)p->data));
-		}
+void Hashtable_fprintf(FILE * f, Hashtable * h, const char * fmt) {
+	printf("tablesize = %ld\ntable = \n", h->tablesize);
+	for(long i = 0; i < h->tablesize; ++i) {
+		printf("%ld: ", i);
+		LList_fprintf(f, &h->table[i], fmt);
 		printf("\n");
 	}
 	printf("\n");
@@ -86,15 +96,22 @@ void Hashtable_print(Hashtable * h) {
 
 int main(int argc, char * argv[]) {
 	Hashtable tbl;
-	unsigned int tblsize = atoi(argv[1]);
-	tblsize = (tblsize < 11 ? 11 : tblsize );
+	long tblsize = argc;
+	idname * d = (idname *) malloc(sizeof(idname));
+	long n = 0;
+	for(long i = 0; 1+2*i < argc; ++i) {
+		strncpy(d[i].id, argv[1+2*i], 8);
+		strncpy(d[i].name, argv[1+2*i + 1], 8);
+		n += 1;
+	}
+	tblsize = (tblsize < 211 ? 211 : tblsize );
 
-	Hashtable_allocate(&tbl, tblsize);
-	for(unsigned int i = 2; i < argc; ++i)
-		Hashtable_add(&tbl, argv[i]);
+	Hashtable_init(&tbl, tblsize);
+	for(long i = 0; i < n; ++i)
+		Hashtable_add(&tbl, &d[i]);
 
-	printf("the number of words = %d\n", tbl.elemcount);
-	Hashtable_print(&tbl);
+	printf("the number of words = %ld\n", tbl.elemcount);
+	//Hashtable_fprintf(stdout, &tbl, "%s, ");
 
 	Hashtable_free(&tbl);
 	printf("finished. quit.\n");

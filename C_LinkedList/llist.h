@@ -8,7 +8,7 @@
 #ifndef LLIST_H_
 #define LLIST_H_
 
-typedef int data;
+#include "datadef.h"
 
 typedef struct ListNode {
 	data data;
@@ -31,9 +31,10 @@ data LList_pop(LList * list);
 ListNode * LList_append_node(LList * list, ListNode * node);
 ListNode * LList_pop_node(LList * list);
 ListNode * LList_begin(LList * list);
-ListNode * LList_last(LList * list);
 ListNode * LList_end(LList * list);
-
+ListNode * LList_find(LList * list, const data d, int (*equals)(const data, const data) );
+ListNode * LList_remove(LList * list, const data d, int (*equals)(const data, const data) );
+ListNode * LList_last(LList * list);
 int LList_is_empty(LList * list);
 
 #endif /* LLIST_H_ */

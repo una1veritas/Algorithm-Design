@@ -60,13 +60,6 @@ ListNode * LList_push(LList * list, data d) {
 	return node;
 }
 
-data LList_pop(LList * list) {
-	ListNode * node = LList_pop_node(list);
-	data d = node->data;
-	free(node);
-	return d;
-}
-
 ListNode * LList_pop_node(LList * list) {
 	if ( list->elemcount == 0 ) {
 		/* tried pop an empty list */
@@ -80,16 +73,45 @@ ListNode * LList_pop_node(LList * list) {
 	return node;
 }
 
+data LList_pop(LList * list) {
+	ListNode * node = LList_pop_node(list);
+	data d = node->data;
+	free(node);
+	return d;
+}
+
 ListNode * LList_begin(LList * list) {
 	return list->head.next;
 }
 
-ListNode * LList_last(LList * list) {
-	return list->tail.prev;
-}
-
 ListNode * LList_end(LList * list) {
 	return &list->tail;
+}
+
+ListNode * LList_find(LList * list, const data d, int (*equals)(const data, const data) ) {
+	ListNode * node;
+	for(node = LList_begin(list);
+			node != LList_end(list); node = node->next) {
+		if ( equals(d, node->data) )
+			return node;
+	}
+	return node;
+}
+
+ListNode * LList_remove(LList * list, const data d, int (*equals)(const data, const data) ) {
+	ListNode * node = LList_find(list, d, equals);
+	if ( node != LList_end(list) ) {
+		node->next->prev = node->prev;
+		node->prev->next = node->next;
+		free(node);
+		node = NULL;
+		list->elemcount -= 1;
+	}
+	return node;
+}
+
+ListNode * LList_last(LList * list) {
+	return list->tail.prev;
 }
 
 int LList_is_empty(LList * list) {

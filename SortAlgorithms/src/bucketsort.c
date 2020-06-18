@@ -4,13 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "datadef.h"
 #include "llist.h"
 
-long key(const data d) {
+long keycode(const data d) {
 	return (long) d;
 }
 
-void bucketSort(LList * dlist, long m, long (*key)(const data)) {
+void bucketSort_list(LList * dlist, long m, long (*key)(const data)) {
 	LList list[m];
 	ListNode * node;
 	for(int i = 0; i < m; ++i) {
@@ -28,24 +29,43 @@ void bucketSort(LList * dlist, long m, long (*key)(const data)) {
 	}
 }
 
+void bucketSort(data a[], long n, long m, long (*key)(const data)) {
+	LList list[m];
+	for(long i = 0; i < m; ++i) {
+		LList_init(&list[i]);
+	}
+	for (long i = 0; i < n; ++i) {
+		LList_append(&list[key(a[i])], a[i]);
+	}
+	long count = 0;
+	for(int i = 0; i < m; ++i) {
+		while ( ! LList_is_empty(&list[i]) ) {
+			a[count] = LList_pop(&list[i]);
+			count += 1;
+		}
+		LList_free(&list[i]);
+	}
+}
+
 int main(const int argc, const char *argv[]) {
 	int n = argc - 1;
-	LList list;
-	LList_init(&list);
+	data a[n];
 	for (int i = 0; i < n; ++i) {
-		LList_append(&list, (long) atoi(argv[1+i]));
+		a[i] = (long) atoi(argv[1+i]);
 	}
 	printf("input: \n");
-	LList_fprintf(stdout, &list, "%ld, ");
-	printf("\n\n");
-	fflush(stdout);
-
-	bucketSort(&list, 100, key);
-
-	LList_fprintf(stdout, &list, "%ld, ");
+	for(int i = 0; i < n; ++i) {
+		printf("%ld, ", a[i]);
+	}
 	printf("\n");
-	printf("size %d\n", list.elemcount);
+	printf("size %d\n\n", n);
 
-	LList_free(&list);
+	bucketSort(a, n, 100, keycode);
+
+	for(int i = 0; i < n; ++i) {
+		printf("%ld, ", a[i]);
+	}
+	printf("\n\n");
+
 	return 0;
 }
