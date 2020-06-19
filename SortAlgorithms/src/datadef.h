@@ -10,8 +10,8 @@
 
 typedef long data;
 
-unsigned long key(const data d1);
-int equals(const data d1, const data d2);
-int lessthan(const data d1, const data d2);
+long keycode(const data * d1);
+int equals(const data * d1, const data * d2);
+int lessthan(const data * d1, const data * d2);
 
 #endif /* DATADEF_H_ */
