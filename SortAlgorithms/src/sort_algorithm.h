@@ -10,5 +10,6 @@
 
 void insertion_sort(const data d[], long a[],  long n);
 void heap_sort(const data d[], long a[], long n);
+void selection_sort(const data d[], long a[], long n);
 
 #endif /* SRC_SORT_ALGORITHM_H_ */

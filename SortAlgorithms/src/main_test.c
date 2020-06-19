@@ -33,6 +33,7 @@ int main(int argc, char **argv) {
 	printf("\n");
 
 	insertion_sort(db, idx, num);
+	//selection_sort(db, idx, num);
 	//heap_sort(db, idx, num);
 
 	for(long i = 0; i < num; ++i) {

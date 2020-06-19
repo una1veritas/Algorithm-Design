@@ -2,7 +2,7 @@ CC = gcc
 CXX = g++
 
 #OBJS =	main.o sortalgorithms.o stopwatch.o
-OBJS =	insertion_sort.o heap_sort.o main_test.o
+OBJS =	insertion_sort.o heap_sort.o selection_sort.o main_test.o
 #OBJS =	bucketsort.o llist.o 
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h 
