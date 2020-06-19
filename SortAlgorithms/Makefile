@@ -2,8 +2,8 @@ CC = gcc
 CXX = g++
 
 #OBJS =	main.o sortalgorithms.o stopwatch.o
-#OBJS =	heapchecker.o
-OBJS =	bucketsort.o llist.o 
+OBJS =	test.o
+#OBJS =	bucketsort.o llist.o 
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h 
 INCDIRS = -I./src/ -I../C_LinkedList/
@@ -12,17 +12,17 @@ CC += -O0 -g -Wall $(INCDIRS)
 CXX +=	-O0 -g -Wall -fmessage-length=0
 
 
-llist.o:../C_LinkedList/llist.c $(INCLUDES)
-	$(CC) -c $<
-
 %.o:./src/%.c $(INCLUDES)
 	$(CC) -c $<
 
 %.o:%.cpp $(INCLUDES)
 	$(CXX) -c $<
 
+llist.o:../C_LinkedList/llist.c $(INCLUDES)
+	$(CC) -c $<
+
 #TARGET =	countingsort.exe
-TARGET =	bucketsort.exe
+TARGET =	test.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
 
