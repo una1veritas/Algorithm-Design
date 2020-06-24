@@ -8,6 +8,8 @@
 #ifndef DATADEF_H_
 #define DATADEF_H_
 
+#include "datadef.h"
+
 typedef long data;
 
 long keycode(const data * d1);

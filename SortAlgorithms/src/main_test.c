@@ -18,6 +18,10 @@ int lessthan(const data * x, const data * y) {
 	return *x < *y;
 }
 
+long keyval(const data * x) {
+	return *x;
+}
+
 long passcount[] = { 0, 0 };
 
 int main(int argc, char **argv) {
@@ -32,7 +36,9 @@ int main(int argc, char **argv) {
 	}
 	printf("\n");
 
-	insertion_sort(db, idx, num);
+	long range = 100;
+	counting_sort(db, idx, num, range, keyval);
+	//insertion_sort(db, idx, num);
 	//selection_sort(db, idx, num);
 	//heap_sort(db, idx, num);
 

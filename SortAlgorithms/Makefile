@@ -1,8 +1,8 @@
 CC = gcc
 CXX = g++
 
-#OBJS =	main.o sortalgorithms.o stopwatch.o
-OBJS =	insertion_sort.o heap_sort.o selection_sort.o main_test.o
+#OBJS =	test.o
+OBJS =	insertion_sort.o heap_sort.o selection_sort.o counting_sort.o main_test.o
 #OBJS =	bucketsort.o llist.o 
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h 
@@ -22,7 +22,7 @@ llist.o:../C_LinkedList/llist.c $(INCLUDES)
 	$(CC) -c $<
 
 #TARGET =	countingsort.exe
-TARGET =	sort.exe
+TARGET =	test.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
 
@@ -38,5 +38,5 @@ selection_asm:
 	gcc -O0 -o selection.exe ./src/selection.c
 
 clean:
-	rm -f $(OBJS) $(TARGET) *.exe *.o
+	rm -f $(OBJS) $(TARGET) *.exe *.o a.out
 
