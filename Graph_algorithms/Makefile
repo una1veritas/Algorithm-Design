@@ -1,25 +1,25 @@
-PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+CC = gcc -std=c11
+CXX = g++ -std=c++17
 
-OBJS = Graph_algorithms.o
+CFLAGS = -O0 -g -Wall -fmessage-length=0
+CPPFLAGS = -O0 -g -Wall
 
-ifeq ($(BUILD_MODE),debug)
-	CFLAGS += -g
-else ifeq ($(BUILD_MODE),run)
-	CFLAGS += -O2
-else
-	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
-endif
+INCLUDES =
 
-all:	Graph_algorithms
+TARGET = kruskal.exe
+OBJS = kruskal.o
+LIBS = 
 
-Graph_algorithms:	$(OBJS)
-	$(CXX) -o $@ $^
+%.o:	%.c $(INCLUDES)
+	$(CC) -c $(CFLAGS) -c $<
 
-%.o:	$(PROJECT_ROOT)%.cpp
-	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+%.o:	%.cpp $(INCLUDES)
+	$(CXX) -c $(CPPFLAGS) -c $<
 
-%.o:	$(PROJECT_ROOT)%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+$(TARGET): 	$(OBJS)
+	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
+
+all:	$(TARGET)
 
 clean:
-	rm -fr Graph_algorithms $(OBJS)
+	rm -f $(TARGET) $(OBJS)
