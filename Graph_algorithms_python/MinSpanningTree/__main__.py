@@ -5,21 +5,30 @@ Created on 2020/01/14
 '''
 
 import sys
+from numpy import pv
+from termios import VREPRINT
 
-def cc_root(ccparent, v):
-    # find the root and update the parent = the root
-    parent = ccparent[v]
-    while ccparent[parent] != parent :
-        parent = ccparent[parent]
-    else:
-        ccparent[v] = parent
+def unionfind_init(vertices):
+    parent = dict()
+    for v in vertices:
+        parent[v] = v
     return parent
-
-def cc_connect(ccparent, u, v):
-    if cc_root(ccparent, u) < cc_root(ccparent, v) :
-        ccparent[ccparent[v]] = ccparent[u]
+    
+def unionfind_find(parent, v):
+    # find the root and update the parent = the root
+    vrep = parent[v]
+    while parent[vrep] != vrep:
+        parent[v] = parent[vrep]
+        vrep = parent[parent[vrep]]
     else:
-        ccparent[ccparent[u]] = ccparent[v]
+        parent[v] = vrep
+    return vrep
+
+def unionfind_union(parent, u, v):
+    if unionfind_find(parent, u) < unionfind_find(parent, v) :
+        parent[v] = parent[u]
+    else:
+        parent[u] = parent[v]
 #入力を点集合と重み付き辺（辞書）として解釈
 if len(sys.argv) == 4 : 
     #引数から入力を得る場合
@@ -35,25 +44,23 @@ weight = eval(westr)
 edges = set(weight.keys())
 
 #グラフを定義（G に (V, E) を代入）
-G = (vertices, edges)
-print('G =',G)
-print('w =',weight)
+a_graph = (vertices, edges)
+print('G =', a_graph)
+print('w =', weight)
 
 # 重みの昇順でソート
 q = sorted(weight.items(), key=lambda elem:elem[1])
 
 #最小領域木を計算
-ccparent = dict()
-for i in vertices:
-    ccparent[i] = i  # the root is itself
-treeedges = set()
+ufparent = unionfind_init(vertices)
+tree_edges = set()
 for (anedge, aweight) in q:
     (u, v) = anedge
     # check wether u and v are in the same connected components
-    if cc_root(ccparent, u) != cc_root(ccparent, v) :
-        treeedges.add(anedge)
+    if unionfind_find(ufparent, u) != unionfind_find(ufparent, v) :
+        tree_edges.add(anedge)
         #merge the components
-        cc_connect(ccparent, u, v)
-        print(ccparent)
+        unionfind_union(ufparent, u, v)
+        print(ufparent)
 
-print("Et = ", treeedges)
+print("Et = ", tree_edges)
