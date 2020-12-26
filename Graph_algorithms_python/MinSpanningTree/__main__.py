@@ -5,8 +5,6 @@ Created on 2020/01/14
 '''
 
 import sys
-from numpy import pv
-from termios import VREPRINT
 
 def unionfind_init(vertices):
     parent = dict()
@@ -30,8 +28,9 @@ def unionfind_union(parent, u, v):
     else:
         parent[u] = parent[v]
 #入力を点集合と重み付き辺（辞書）として解釈
-if len(sys.argv) == 4 : 
+if len(sys.argv) == 3 : 
     #引数から入力を得る場合
+    print('reading arg vales.')
     vstr = sys.argv[1]
     westr = sys.argv[2]
 else:
@@ -59,6 +58,7 @@ for (anedge, aweight) in q:
     # check wether u and v are in the same connected components
     if unionfind_find(ufparent, u) != unionfind_find(ufparent, v) :
         tree_edges.add(anedge)
+        print(anedge)
         #merge the components
         unionfind_union(ufparent, u, v)
         print(ufparent)
