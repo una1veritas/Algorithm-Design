@@ -14,19 +14,19 @@ def unionfind_init(vertices):
     
 def unionfind_find(parent, v):
     # find the root and update the parent = the root
-    vrep = parent[v]
-    while parent[vrep] != vrep:
-        parent[v] = parent[vrep]
-        vrep = parent[parent[vrep]]
-    else:
-        parent[v] = vrep
-    return vrep
+    while parent[v] != parent[parent[v]] :
+        parent[v] = parent[parent[v]]
+        v = parent[v]
+    return parent[v]
 
 def unionfind_union(parent, u, v):
-    if unionfind_find(parent, u) < unionfind_find(parent, v) :
-        parent[v] = parent[u]
+    urep = unionfind_find(parent, u)
+    vrep = unionfind_find(parent, v) 
+    if urep < vrep :
+        parent[vrep] = parent[urep]
     else:
-        parent[u] = parent[v]
+        parent[urep] = parent[vrep]
+
 #入力を点集合と重み付き辺（辞書）として解釈
 if len(sys.argv) == 3 : 
     #引数から入力を得る場合
