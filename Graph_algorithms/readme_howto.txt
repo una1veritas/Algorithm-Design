@@ -1,6 +1,11 @@
 プログラムのコンパイル，実行のしかた (202/12/27)
 
 (1) kruskal.c のコンパイルと入力の与え方
+オリジナルは Kruskal’s Minimum Spanning Tree Algorithm | Greedy Algo-2
+ - GeeksforGeeks で，
+真剣な Set union-find を使った実装のプログラムを C コンパイラでコンパイルできるよう
+手を加えたもの．
+
 まずCコンパイラでコンパイルする．
 % gcc kruskal.c -o kruskal.exe
 % ls
@@ -17,6 +22,8 @@ C:\(省略)>.\kruskal.exe
 入力の変更はプログラムの変更とコンパイルのしなおしが必要です．
 
 (2) kruskal.py の実行と入力の与え方
+Python バージョンは完全オリジナルの簡易 Set union-find 使用のプログラムです．
+
 Python3 プログラムです．Python 3.x が必要ですが，
 プログラミング演習用 VirtualBOX の linux にはインストール済みのようです．
 プログラム内に定義されたグラフを入力として実行
