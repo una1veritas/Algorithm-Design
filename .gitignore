@@ -17,4 +17,6 @@ language.settings.xml
 build
 *.pyc
 
+*.dSym
+
 .DS_Store
