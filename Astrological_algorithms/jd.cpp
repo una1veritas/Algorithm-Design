@@ -10,6 +10,7 @@
 #include <iomanip>
 
 #include <cstdlib>
+#include <cmath>
 
 using namespace std;
 
@@ -18,7 +19,8 @@ double CalendarDate(double);
 unsigned int DayofWeek(double);
 
 // integer part of (possibly) FP value w/ the same sign
-#define INT(x) 	((long int) (x))
+//#define INT(x) 	((long int) (x)) <-- worng
+#define INT(x)  ((long) floor(x))
 // fractional part of (possibly) FP value w/ the same sign
 #define FRAC(x) ((x) - ((long int) (x)))
 // -1 for values less than 0, 0 for 0, and 1 for others
