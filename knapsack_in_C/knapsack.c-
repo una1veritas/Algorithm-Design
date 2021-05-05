@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "knapsack.h"
 
-int bestprice_enumerate(int pricelist[], int n, int budget) {
+int best_by_enumeration(int pricelist[], int n, int budget) {
 	int best = 0, sum;
 	char cart[n + 1]; /* 0 と 1 しか使わない */
 	memset(cart, 0, n + 1); /* 全部 0 で埋める */
@@ -27,30 +28,7 @@ int bestprice_enumerate(int pricelist[], int n, int budget) {
 	return best;
 }
 
-/*
-int bestcart_recursive(Knapsack * list, int fromindex, Knapsack * best) {
-	int sum_skip, sum_buy;
-	if ( fromindex == list->number ) {
-		return 0;
-	}
-	char tcart_buy[list->number], tcart_dont[list->number];
-	sum_skip = bestcart_recursive(remained, budget, tcart_dont);
-	// default --- don't buy it
-	*cart = 0;
-	memcpy(cart+1, tcart_dont, remained.number);
-	if ( *list.price > budget)
-		return sum_skip;
-	sum_buy = *list.price + bestcart_recursive(remained, budget - *list.price, tcart_buy);
-	if (sum_buy > sum_skip) {
-		*cart = 1; // buy it
-		memcpy(cart+1, tcart_buy, remained.number);
-		return sum_buy;
-	}
-	return sum_skip;
-}
-*/
-
-int bestprice_recursive(Knapsack * inst, int startIndex, int rbudget) {
+int bes_by_recursion(Knapsack * inst, int startIndex, int rbudget) {
 	int sum_skip, sum_buy;
 	if ( startIndex >= inst->number ) {
 		return 0;
