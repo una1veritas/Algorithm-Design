@@ -10,7 +10,8 @@ else ifeq ($(BUILD_MODE),linuxtools)
 	CFLAGS += -g -pg -fprofile-arcs -ftest-coverage
 	LDFLAGS += -pg -fprofile-arcs -ftest-coverage
 else
-    $(error Build mode $(BUILD_MODE) not supported by this Makefile)
+	CFLAGS += -g -O0
+#    $(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
 
 all:	levdist.exe
