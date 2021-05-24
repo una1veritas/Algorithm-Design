@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 unsigned int modPower(unsigned int, unsigned int, unsigned int);
 
