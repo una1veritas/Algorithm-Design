@@ -8,7 +8,7 @@ CXXFLAGS =  -std=c++11 -O0 -g -Wall -fmessage-length=0
 SRCDIR = ./src/
 
 OBJS = hashtable.o llist.o
-#INCLUDES = llist.h
+INCLUDES = llist.h
 TARGET = hashtable.exe
 
 #ifeq ($(BUILD_MODE),debug)
@@ -21,9 +21,8 @@ TARGET = hashtable.exe
 
 all:	$(TARGET)
 
-llist.o: ../C_LinkedList/llist.c
-	$(CC) -c $(CCFLAGS) -o $@ $<
-
+#llist.o: ../C_LinkedList/llist.c
+#	$(CC) -c $(CCFLAGS) -o $@ $<
 
 %.o:	$(SRCDIR)%.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<

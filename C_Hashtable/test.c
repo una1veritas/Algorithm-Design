@@ -1,15 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
+
 int main(int argc, char * argv[]) {
   if (argc == 1) {
-    return 1;
+    return EXIT_FAILURE;
   }
-  int sum = 0;
-  for(char * p = argv[1]; *p; ++p) {
-    sum += *p;
+  for(char ** p = &argv[1]; *p; ++p) {
+    printf("%s = %d\n", *p, *((int*)*p));
   }
-  printf("sum = %d\n",sum);
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
  

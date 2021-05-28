@@ -40,23 +40,25 @@ void make_heap(const data data[], long a[], long n) {
 
 void heap_sort(const data data[], long a[], long n) {
 	long i, t;
+	fprintf(stderr, "heap_sort\n");
 	make_heap(data, a, n);
-	/*
+
+	fprintf(stderr,"heap:\n");
 	for(int j = 0; j < n; ++j) {
-		printf("%d, ", data[a[j]]);
+		fprintf(stderr,"%ld, ", data[a[j]]);
 	}
-	printf("\n");
-	*/
+	fprintf(stderr,"\n");
+
 	for (i = n - 1; i > 0; --i) {
 		// a[0] is always the maximum.
 		t = a[0], a[0] = a[i], a[i] = t;
 		down_to_leaf(data, a, 0, i);
-		/*
+
+		fprintf(stderr,"heap and sorted suffix:\n");
 		for(int j = 0; j < n; ++j) {
-			printf("%d, ", data[a[j]]);
+			fprintf(stderr,"%ld, ", data[a[j]]);
 		}
-		printf("\n");
-		*/
+		fprintf(stderr,"\n");
 	}
 	return;
 }

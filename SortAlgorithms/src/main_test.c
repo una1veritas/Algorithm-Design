@@ -37,10 +37,10 @@ int main(int argc, char **argv) {
 	printf("\n");
 
 	long range = 100;
-	counting_sort(db, idx, num, range, keyval);
+	//counting_sort(db, idx, num, range, keyval);
 	//insertion_sort(db, idx, num);
 	//selection_sort(db, idx, num);
-	//heap_sort(db, idx, num);
+	heap_sort(db, idx, num);
 
 	for(long i = 0; i < num; ++i) {
 		printf("%ld, ", db[idx[i]]);
