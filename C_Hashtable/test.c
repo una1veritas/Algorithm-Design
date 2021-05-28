@@ -2,12 +2,15 @@
 #include <stdlib.h>
 
 int main(int argc, char * argv[]) {
-  if (argc == 1) {
-    return EXIT_FAILURE;
+  if (argc < 3) {
+    return 1;
   }
-  for(char ** p = &argv[1]; *p; ++p) {
-    printf("%s = %d\n", *p, *((int*)*p));
+  long tablesize = atol(argv[1]);
+  for(char ** p = argv+2; *p; ++p) {
+    long k = atol(*p);
+    printf("%4ld to %4ld \n", k, k % tablesize);
   }
+  printf("\n");
 
   return EXIT_SUCCESS;
 }
