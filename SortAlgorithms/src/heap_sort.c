@@ -21,12 +21,6 @@ int down_to_leaf(const data data[], long a[], long i, long n) {
 			break;
 		t = a[i], a[i] = a[j], a[j] = t;
 	}
-#ifdef DEBUG
-	for (int j = 0; j < n; ++j) {
-		printf("%d, ", data[a[j]]);
-	}
-	printf("\n");
-#endif
 	return 1;
 }
 
@@ -48,7 +42,7 @@ void heap_sort(const data data[], long a[], long n) {
 		fprintf_data(stderr, & data[a[j]]);
 		fprintf(stderr, " ");
 	}
-	fprintf(stderr,"\n");
+	fprintf(stderr,"\n\n");
 
 	for (i = n - 1; i > 0; --i) {
 		// a[0] is always the maximum.
