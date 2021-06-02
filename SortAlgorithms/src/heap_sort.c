@@ -45,7 +45,8 @@ void heap_sort(const data data[], long a[], long n) {
 
 	fprintf(stderr,"heap:\n");
 	for(int j = 0; j < n; ++j) {
-		fprintf(stderr,"%ld, ", data[a[j]]);
+		fprintf_data(stderr, & data[a[j]]);
+		fprintf(stderr, " ");
 	}
 	fprintf(stderr,"\n");
 
@@ -56,7 +57,8 @@ void heap_sort(const data data[], long a[], long n) {
 
 		fprintf(stderr,"heap and sorted suffix:\n");
 		for(int j = 0; j < n; ++j) {
-			fprintf(stderr,"%ld, ", data[a[j]]);
+			fprintf_data(stderr, &data[a[j]]);
+			fprintf(stderr, " ");
 		}
 		fprintf(stderr,"\n");
 	}

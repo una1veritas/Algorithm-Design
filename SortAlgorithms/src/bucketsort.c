@@ -1,10 +1,10 @@
 /*
  * bucketsort.c
  */
+#include <datadef_long.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "datadef.h"
 #include "llist.h"
 
 long keycode(const data d) {

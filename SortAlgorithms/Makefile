@@ -3,7 +3,7 @@ CXX = g++
 
 #OBJS =	test.o
 OBJS =	insertion_sort.o heap_sort.o selection_sort.o counting_sort.o main_test.o
-#OBJS =	bucketsort.o llist.o 
+OBJS += datadef.o
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h 
 INCDIRS = -I./src/ -I../C_LinkedList/
