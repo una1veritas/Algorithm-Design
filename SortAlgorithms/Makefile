@@ -37,6 +37,9 @@ selection_asm:
 	gcc -O0 -S ./src/selection.c
 	gcc -O0 -o selection.exe ./src/selection.c
 
+test_strsort:
+	$(CC) -o test_strsort.exe test_strsort.c
+	
 clean:
 	rm -f $(OBJS) $(TARGET) *.exe *.o a.out
 
