@@ -8,6 +8,7 @@
 
 #include "datadef.h"
 
+
 void selection_sort(const data d[], long a[], long n) {
 	long t;
 	for (long i = 0; i < n; ++i) {

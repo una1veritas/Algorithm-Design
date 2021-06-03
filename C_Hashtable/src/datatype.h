@@ -15,6 +15,8 @@ typedef struct {
 typedef idname * datatype;
 
 
-
+long key(const datatype d);
+int equals(const datatype d1, const datatype d2);
+int sprint(char * buf, datatype d);
 
 #endif /* SRC_DATATYPE_H_ */

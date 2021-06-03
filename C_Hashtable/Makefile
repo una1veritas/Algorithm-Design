@@ -7,8 +7,8 @@ CXXFLAGS =  -std=c++11 -O0 -g -Wall -fmessage-length=0
 
 SRCDIR = ./src/
 
-OBJS = hashtable.o llist.o
-INCLUDES = llist.h
+OBJS = hashtable.o llist.o datatype.o
+INCLUDES = llist.h datatype.h
 TARGET = hashtable.exe
 
 #ifeq ($(BUILD_MODE),debug)

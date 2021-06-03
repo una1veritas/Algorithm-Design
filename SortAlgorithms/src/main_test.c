@@ -14,14 +14,6 @@
 #include "datadef.h"
 #include "sort_algorithm.h"
 
-int lessthan(const data * x, const data * y) {
-	return *x < *y;
-}
-
-long keyval(const data * x) {
-	return *x;
-}
-
 long passcount[] = { 0, 0 };
 
 int main(int argc, char **argv) {
@@ -31,8 +23,8 @@ int main(int argc, char **argv) {
 
 	for(long i = 0; i < num; ++i) {
 		idx[i] = i;
-		db[i] = atoi(argv[1+i]);
-		printf("%ld, ", db[i]);
+		db[i] = argv[1+i];
+		printf("%s, ", db[i]);
 	}
 	printf("\n");
 
@@ -43,7 +35,7 @@ int main(int argc, char **argv) {
 	heap_sort(db, idx, num);
 
 	for(long i = 0; i < num; ++i) {
-		printf("%ld, ", db[idx[i]]);
+		printf("%s, ", db[idx[i]]);
 	}
 	printf("\n");
 

@@ -16,14 +16,6 @@
 
 #include "llist.h"
 
-long key(const datatype d) {
-	return d->id;
-}
-
-int equals(const datatype d1, const datatype d2) {
-	return d1->id == d2->id;
-}
-
 typedef struct Hashtable {
 	LList * table;
 	long tablesize, elemcount;
@@ -79,6 +71,7 @@ void Hashtable_remove(Hashtable * h, const datatype d) {
 }
 
 void Hashtable_fprintf(FILE * f, Hashtable * h, const char * fmt) {
+	char buf[256];
 	printf("tablesize = %ld\ntable = \n", h->tablesize);
 	for(long i = 0; i < h->tablesize; ++i) {
 		printf("%ld: ", i);
@@ -87,8 +80,8 @@ void Hashtable_fprintf(FILE * f, Hashtable * h, const char * fmt) {
 		for(ListNode * node = LList_begin(list);
 				node != LList_end(list);
 				node = node->next) {
-			fprintf(f, "id: %ld name: %s", node->data->id, node->data->name);
-			fprintf(f,", ");
+			sprint(buf, node->data);
+			fprintf(f,"%s, ", buf);
 		}
 		fprintf(f,"\n");
 	}
