@@ -34,31 +34,31 @@ void make_heap(const data data[], long a[], long n) {
 
 void heap_sort(const data data[], long a[], long n) {
 	long i, t;
-	fprintf(stderr, "making heap..\n");
+	fprintf(stdout, "making heap..\n");
 	make_heap(data, a, n);
 
-	fprintf(stderr,"heap:\n");
+	fprintf(stdout,"heap:\n");
 	for(int j = 0; j < n; ++j) {
-		fprintf_data(stderr, & data[a[j]]);
-		fprintf(stderr, " ");
+		fprintf_data(stdout, & data[a[j]]);
+		fprintf(stdout, " ");
 	}
-	fprintf(stderr, "\n\n");
+	fprintf(stdout, "\n\n");
 
 	for (i = n - 1; i > 0; --i) {
 		// a[0] is always the maximum.
 		t = a[0], a[0] = a[i], a[i] = t;
 		down_to_leaf(data, a, 0, i);
 
-		fprintf(stderr,"heap and sorted suffix [%ld, %ld):\n",i,n);
+		fprintf(stdout,"heap and sorted suffix [%ld, %ld):\n",i,n);
 		for(int j = 0; j < n; ++j) {
-			fprintf_data(stderr, &data[a[j]]);
+			fprintf_data(stdout, &data[a[j]]);
 			if (j+1 == i) {
-				fprintf(stderr, "| ");
+				fprintf(stdout, "| ");
 			} else {
-				fprintf(stderr, " ");
+				fprintf(stdout, " ");
 			}
 		}
-		fprintf(stderr,"\n");
+		fprintf(stdout,"\n");
 	}
 	return;
 }

@@ -1,0 +1,22 @@
+Cotyledon, Lapidaria, Albuca, Fenestraria, Corpuscularia, Lithops, Conophytum, Haworthia, Lapidaria, 
+making heap..
+heap:
+Lithops Lapidaria Cotyledon Lapidaria Corpuscularia Albuca Conophytum Haworthia Fenestraria 
+
+heap and sorted suffix [8, 9):
+Lapidaria Lapidaria Cotyledon Haworthia Corpuscularia Albuca Conophytum Fenestraria| Lithops 
+heap and sorted suffix [7, 9):
+Lapidaria Haworthia Cotyledon Fenestraria Corpuscularia Albuca Conophytum| Lapidaria Lithops 
+heap and sorted suffix [6, 9):
+Haworthia Fenestraria Cotyledon Conophytum Corpuscularia Albuca| Lapidaria Lapidaria Lithops 
+heap and sorted suffix [5, 9):
+Fenestraria Corpuscularia Cotyledon Conophytum Albuca| Haworthia Lapidaria Lapidaria Lithops 
+heap and sorted suffix [4, 9):
+Cotyledon Corpuscularia Albuca Conophytum| Fenestraria Haworthia Lapidaria Lapidaria Lithops 
+heap and sorted suffix [3, 9):
+Corpuscularia Conophytum Albuca| Cotyledon Fenestraria Haworthia Lapidaria Lapidaria Lithops 
+heap and sorted suffix [2, 9):
+Conophytum Albuca| Corpuscularia Cotyledon Fenestraria Haworthia Lapidaria Lapidaria Lithops 
+heap and sorted suffix [1, 9):
+Albuca| Conophytum Corpuscularia Cotyledon Fenestraria Haworthia Lapidaria Lapidaria Lithops 
+Albuca, Conophytum, Corpuscularia, Cotyledon, Fenestraria, Haworthia, Lapidaria, Lapidaria, Lithops, 
