@@ -1,23 +1,31 @@
 import sys
+from decimal import *
 #import math
 
 #ライプニッツの式は π/4 を求めるものである．
 #ここでは i 番目の pi4 とその直前の値 prev の平均の 4 倍（和の2倍）としてπを求める
-def pi(err = 0.01):
+def pi(prec = 6):
+    err = float('1E-'+str(prec))
     piquarter = 1
     sgn = -1
     prev = 0
     i = 1
+    chk = 1024
     while abs(prev - piquarter) * 2 > err:
+        if i % chk == 0:
+            print(i, 4*piquarter, 4*prev)
+            chk *= 2
         prev = piquarter
-        piquarter += sgn/(2*i+1)
-        sgn = -sgn
+        piquarter -= 1/float((i<<1)+1)
+        i += 1
+        prev = piquarter
+        piquarter += 1/float((i<<1)+1)
         i += 1
     return 2*(prev + piquarter)
 
 #ネイピア数 e をテイラー展開で求める．
 #剰余項の幅を定数の誤差範囲として評価する. 
-def napier(err = 0.01):
+def napier(err = Decimal('0.001')):
     esum = 1
     fac = 1
     i = 1
@@ -45,8 +53,8 @@ def goldenratio(err = 0.0001):
 if len(sys.argv) > 1 and sys.argv[1] == 'pi' :
     err = 0.01
     if len(sys.argv) == 3 :
-        err = float(sys.argv[2])
-    print(pi(err))
+        prec = int(sys.argv[2])
+    print(pi(prec))
 elif len(sys.argv) > 1 and sys.argv[1] == 'napier' :
     err = 0.01
     if len(sys.argv) == 3 :
