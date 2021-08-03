@@ -21,10 +21,12 @@ long keyval(const data * x) {
 #include <string.h>
 
 int lessthan(const data * x, const data * y) {
-	return strcmp(*x, *y) < 0;
+//	return strcmp(*x, *y) < 0;
+	return (*x < *y);
 }
 
 long keyval(const data * x) {
+	/*
 	char * str = *x;
 	long t = 0;
 	long f = 31;
@@ -33,8 +35,11 @@ long keyval(const data * x) {
 		f *= 31;
 	}
 	return t;
+	*/
+	return (long) *x;
 }
 
 int  fprintf_data(FILE * fp, const data * d) {
-	return fprintf(fp, "%s", *d);
+	//return fprintf(fp, "%s", *d);
+	return fprintf(fp, "%ld", *d);
 }

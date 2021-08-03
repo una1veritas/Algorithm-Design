@@ -23,8 +23,8 @@ int main(int argc, char **argv) {
 
 	for(long i = 0; i < num; ++i) {
 		idx[i] = i;
-		db[i] = argv[1+i];
-		printf("%s, ", db[i]);
+		db[i] = atol(argv[1+i]);
+		printf("%ld, ", db[i]);
 	}
 	printf("\n");
 
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 	heap_sort(db, idx, num);
 
 	for(long i = 0; i < num; ++i) {
-		printf("%s, ", db[idx[i]]);
+		printf("%ld, ", db[idx[i]]);
 	}
 	printf("\n");
 
