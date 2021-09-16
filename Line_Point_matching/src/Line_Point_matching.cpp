@@ -70,12 +70,27 @@ struct Line {
 		return d;
 	}
 
-	 double matching_point_distance(const Point & p, const double & proximity) {
+	 double matching_point_distance(const Point & p, const double & proximity) const {
 		double len = length();
 		if (len == 0)
 			return 0;
-		double parallel_dist = to.norm_outer_prod(from, p) / length();
-		return parallel_dist;
+		double dist = distanceto(p);
+		if (dist > proximity)
+			return dist;
+		double para_dist = to.norm_outer_prod(from, p) / length();
+		double base = sqrt(proximity*proximity - para_dist*para_dist);
+		double inprod = to.norm_inner_prod(from, p);
+		if ( inprod < 0.0 ) {
+			// p is to-side's outer
+			return length() - inprod - base;
+		}
+		inprod = from.norm_inner_prod(to, p);
+		if ( inprod < 0.0 ) {
+			// p is from-side's outer
+			return 0;
+		}
+		// inter from-to
+		return (inprod - base) < 0.0 ? 0.0 : (inprod - base);
 	}
 
 	friend std::ostream & operator<<(std::ostream & out, const Line & me) {
