@@ -30,13 +30,13 @@ struct Point {
 		return sqrt(dx*dx + dy*dy);
 	}
 
-	double norm_outer_prod(const Point & o, const Point & q) const {
-		Point op(*this - o), oq(q-o);
+	double norm_outer_prod(const Point & p, const Point & q) const {
+		Point op(p - *this), oq(q - *this);
 		return (op.x * oq.y) - (op.y * oq.x);
 	}
 
-	double norm_inner_prod(const Point & o, const Point & q) const {
-		Point op(*this - o), oq(q-o);
+	double norm_inner_prod(const Point & p, const Point & q) const {
+		Point op(p - *this), oq(q - *this);
 		return (op.x * oq.x) + (op.y * oq.y);
 	}
 
@@ -70,20 +70,12 @@ struct Line {
 		return d;
 	}
 
-	 double nearest_matching_point_distance(const Point & p, const double & proximity) {
+	 double matching_point_distance(const Point & p, const double & proximity) {
 		double len = length();
 		if (len == 0)
 			return 0;
-		double along = to.norm_inner_prod(from, p) / len;
-		double rev_along = from.norm_inner_prod(to, p) / len;
-		if (along < 0)
-			return 0;
-		if (along > len)
-			return len;
-		double dist = distanceto(p);
-		double base = sqrt(proximity*proximity - dist*dist);
-		std::cout << "proximity " << proximity << " along " << along << " dist " << dist << " base " << base << std::endl;
-		return along - base;
+		double parallel_dist = to.norm_outer_prod(from, p) / length();
+		return parallel_dist;
 	}
 
 	friend std::ostream & operator<<(std::ostream & out, const Line & me) {
@@ -130,7 +122,7 @@ int main() {
 	Point & p = points[0];
 	std::cout << l.length() << std::endl;
 	std::cout << l.distanceto(p) << std::endl;
-	std::cout << l.nearest_matching_point_distance(p, 0.5) << std::endl;
+	std::cout << l.matching_point_distance(p, 0.5) << std::endl;
 	return 0;
 }
 
