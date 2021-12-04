@@ -28,7 +28,7 @@ const int CONJ_REVERSE = 1;
 
 struct text {
 	char * str;
-	int textsize;
+	int length;
 };
 typedef struct text text;
 
@@ -46,7 +46,7 @@ long smallestpow2(const long n) {
 #define abs(x)  ( (x) < 0 ? (-(x)) : (x) )
 
 int make_signal(text * text1, int dimsize, dcompvec * vec, const int flag);
-int get_values(int argc, const char * argv[], text * text1, text * text2);
+int get_args(int argc, const char * argv[], text * text1, text * text2);
 void print_vector(const char *title, dcomplex *x, int n);
 
 
@@ -55,12 +55,12 @@ int main(int argc, const char * argv[]) {
 	dcompvec vec1, vec2;
 
 	/* Get N and fill v[] with program inputs. */
-	if ( !get_values(argc, argv, &text1, &text2) )
+	if ( !get_args(argc, argv, &text1, &text2) )
 		exit(EXIT_FAILURE);
 
 	printf("inputs: \"%s\", \"%s\" \n", text1.str, text2.str);
-	int pow2len = smallestpow2(max(text1.textsize, text2.textsize));
-	int pattlen = min(text1.textsize, text2.textsize);
+	int pow2len = smallestpow2(max(text1.length, text2.length));
+	int pattlen = min(text1.length, text2.length);
 
 	make_signal(&text1, pow2len, &vec1, !CONJ_REVERSE);
 	make_signal(&text2, pow2len, &vec2, CONJ_REVERSE);
@@ -98,25 +98,25 @@ int main(int argc, const char * argv[]) {
 	exit(EXIT_SUCCESS);
 }
 
-int get_values(int argc, const char * argv[], text * text1, text * text2) {
+int get_args(int argc, const char * argv[], text * text1, text * text2) {
 	if ( argc <= 2 ) {
 		fprintf(stdout, "No or an invalid number of inputs specified; quit.\n");
 		return 0;
 	} else if( argc == 3 ) {
 		fprintf(stdout, "Take pattern and text from the command line arguments.\n");
 		if ( strlen(argv[1]) > strlen(argv[2]) ) {
-			text1->textsize = strlen(argv[1]);
-			text1->str = (char *) malloc(sizeof(char) * text1->textsize);
+			text1->length = strlen(argv[1]);
+			text1->str = (char *) malloc(sizeof(char) * text1->length);
 			strcpy(text1->str, argv[1]);
-			text2->textsize = strlen(argv[2]);
-			text2->str = (char *) malloc(sizeof(char) * text2->textsize);
+			text2->length = strlen(argv[2]);
+			text2->str = (char *) malloc(sizeof(char) * text2->length);
 			strcpy(text2->str, argv[2]);
 		} else {
-			text1->textsize = strlen(argv[2]);
-			text1->str = (char *) malloc(sizeof(char) * text1->textsize);
+			text1->length = strlen(argv[2]);
+			text1->str = (char *) malloc(sizeof(char) * text1->length);
 			strcpy(text1->str, argv[2]);
-			text2->textsize = strlen(argv[1]);
-			text2->str = (char *) malloc(sizeof(char) * text2->textsize);
+			text2->length = strlen(argv[1]);
+			text2->str = (char *) malloc(sizeof(char) * text2->length);
 			strcpy(text2->str, argv[1]);
 		}
 	}
@@ -131,7 +131,7 @@ int make_signal(text * str, const int dimsize, dcompvec * vec, const int flag) {
 	// the first as normal
 	vec->dimsize = dimsize;
 	vec->elem = (dcomplex*) malloc(sizeof(dcomplex)*dimsize);
-	len = str->textsize;
+	len = str->length;
 	for(int i = 0; i < vec->dimsize; ++i) {
 		if ( !flag ) {
 			dst = i;
@@ -169,7 +169,8 @@ void print_vector(const char *title, dcomplex *x, int n) {
 }
 
 void dcompvec_mulinto(dcompvec * x, const dcompvec * y) {
+	/* assume x and y are the same length */
 	for(int i = 0; i < x->dimsize; i++) {
-		x->elem[i] = x->elem[i] * y->elem[i];
+		x->elem[i] *= y->elem[i];
 	}
 }
