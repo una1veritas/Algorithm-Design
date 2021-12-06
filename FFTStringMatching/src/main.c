@@ -19,20 +19,27 @@
 
 #include "cfft.h"
 
+/* array of double-complex */
 struct dcompvec {
 	dcomplex * elem;
 	int dimsize;
 };
 typedef struct dcompvec dcompvec;
+
+/* constant for flag */
 const int CONJ_REVERSE = 1;
 
+/* char array with size info */
 struct text {
 	char * str;
 	int length;
 };
 typedef struct text text;
 
+/* make inner product in the first vector */
 void dcompvec_mulinto(dcompvec * x, const dcompvec * y);
+
+/* ceiling of log 2 */
 long smallestpow2(const long n) {
 	long t = 1;
 	while ( t < n ) {
@@ -45,7 +52,9 @@ long smallestpow2(const long n) {
 #define max(x,y)  ( ((x) < (y) ? (y) : (x)) )
 #define abs(x)  ( (x) < 0 ? (-(x)) : (x) )
 
+/* make dcompvec from string */
 int make_signal(text * text1, int dimsize, dcompvec * vec, const int flag);
+
 int get_args(int argc, const char * argv[], text * text1, text * text2);
 void print_vector(const char *title, dcomplex *x, int n);
 
@@ -141,8 +150,8 @@ int make_signal(text * str, const int dimsize, dcompvec * vec, const int flag) {
 			factor = -2*PI*I;
 		}
 		if ( i < len )
-			vec->elem[dst] = cexp( factor * (float)(str->str[i]) /256.0f );  // by rotated unit vector
-			// (*array)[i] = (float)(str[i]) / 128.0f  ;  // by char value
+			vec->elem[dst] = cexp( factor * (float)(str->str[i] ) /128.0f );
+			/* express by rotated unit vector, assuming ascii char (up to 127) */
 		else
 			vec->elem[dst] = 0;
 	}
