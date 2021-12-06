@@ -177,6 +177,7 @@ void print_vector(const char *title, dcomplex *x, int n) {
 	return;
 }
 
+/* function computing the operation *= for two vectors of the same length */
 void dcompvec_mulinto(dcompvec * x, const dcompvec * y) {
 	/* assume x and y are the same length */
 	for(int i = 0; i < x->dimsize; i++) {
