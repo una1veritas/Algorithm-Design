@@ -3,6 +3,7 @@ Created on 2021/12/15
 
 @author: Sin Shimozono
 '''
+import math
 
 class rect:
     def __init__(self,width,height,pos=(0,0) ):
@@ -31,7 +32,20 @@ class polygon:
                 btltindex = len(self.points) - 1
         self.position = pos
         self.points = self.points[btltindex:] + self.points[:btltindex]
+    
+    def __dist(self, pta, ptb):
+        ptd= (pta[0] - ptb[0], pta[1] - ptb[1])
+        if ptd[0] == 0 :
+            return abs(ptd[1])
+        elif ptd[1] == 0 :
+            return abs(ptd[0])
+        else:
+            return math.sqrt(ptd[0]**2+ptd[1]**2)
         
+    def placeholder_width(self):
+        blpt = self.points[-1]
+        brpt = self.points[0]
+        return self.__dist(blpt, brpt)
     
     def origin(self, x, y):
         self.position = [x,y]
@@ -43,11 +57,20 @@ class polygon:
     def placeinside(self,shape):
         if not isinstance(shape,rect):
             return
+        maxwidth = self.placeholder_width()
+        if shape.width() <= maxwidth :
+            blpt = self.points.pop()
+            self.points.append( (blpt[0], blpt[1] + shape.height()) )
+            self.points.append( (self.points[-1][0] + shape.width(), self.points[-1][1]) )
+            self.points.append( (self.points[-1][0], blpt[1]) )
+        else:
+            raise RuntimeError('width overflow')
+        
         
     def draw(self, window, color = (0,0,0), width = 1):
         if len(self.points) == 0 :
             return
-        pointlist = [(pt[0]+self.position[0], pt[1]+self.position[1]) for pt in self.points]
+        pointlist = [(pt[0]+self.position[0], -pt[1]+self.position[1]) for pt in self.points]
         pygame.draw.polygon(window, color, pointlist, width)
         pygame.draw.circle(window,color,pointlist[-1],4)
 
@@ -60,11 +83,13 @@ if __name__ == '__main__':
     pygame.init()
     window = pygame.display.set_mode((512, 512))
     window.fill(COLOR_WHITE)
-    line = polygon([(100,40)])
-    line.origin(200,200)
-    line.append([(100,0), (0,0), (0,40)])
-    r = rect(30,20)
+    line = polygon([(0,0),(160,0),(160,80),(0,80)])
+    line.origin(100,200)
+    r = rect(60,40)
     line.placeinside(r)
+    r = rect(80,60)
+    line.placeinside(r)
+    
     line.draw(window,width=2)
     pygame.display.update()
 
