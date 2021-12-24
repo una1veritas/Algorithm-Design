@@ -135,7 +135,7 @@ int get_args(int argc, const char * argv[], text * text1, text * text2) {
 int make_signal(text * str, const int dimsize, dcompvec * vec, const int flag) {
 	int len;
 	int dst;
-	complex factor;
+	dcomplex factor;
 
 	// the first as normal
 	vec->dimsize = dimsize;
