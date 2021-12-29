@@ -1,16 +1,16 @@
 
 CC	= gcc -std=c99
-CFLAGS = -Wall -g -O2
+CCFLAGS = -Wall -ggdb
 
 CXX = g++ -std=c++11
-CXXFLAGS = -Wall -g -O2
+CXXFLAGS = -Wall -ggdb
 
 INCDIRS = -I./
 
 INCLUDES = 
 OBJS = cfft.o main.o
 LIBS = 
-TARGET = main.exe
+TARGET = fftstrmatch.exe
 
 
 %.o: %.c $(INCLUDES)
@@ -21,7 +21,7 @@ TARGET = main.exe
 
 
 $(TARGET):	$(OBJS) $(INCLUDES)
-	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
+	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
 all: $(TARGET)
 

@@ -84,8 +84,14 @@ int main(int argc, const char * argv[]) {
 	cfft(vec2.elem, vec2.dimsize, scratch);
 //	print_vector("fft2 ", text2.elem, text2.dimsize);
 
+	print_vector("fft text1 ", vec1.elem, vec1.dimsize);
+	print_vector("fft text2 ", vec2.elem, vec2.dimsize);
+
 	dcompvec_mulinto(&vec1, &vec2);
-//	print_vector("prod ", text1.elem, text1.dimsize);
+	print_vector("multiplied ", vec1.elem, vec1.dimsize);
+
+	ifft(vec2.elem, vec2.dimsize, scratch);
+	print_vector("ifft text2 ", vec2.elem, vec2.dimsize);
 
 	ifft(vec1.elem, vec1.dimsize, scratch);
 
@@ -150,7 +156,7 @@ int make_signal(text * str, const int dimsize, dcompvec * vec, const int flag) {
 			factor = -2*PI*I;
 		}
 		if ( i < len )
-			vec->elem[dst] = cexp( factor * (float)(str->str[i] ) /128.0f );
+			vec->elem[dst] = cexp( factor * (float)str->str[i] /128.0f );
 			/* express by rotated unit vector, assuming ascii char (up to 127) */
 		else
 			vec->elem[dst] = 0;
