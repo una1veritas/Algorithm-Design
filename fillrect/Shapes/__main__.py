@@ -5,18 +5,6 @@ Created on 2021/12/15
 '''
 import math
 
-class rect:
-    def __init__(self,width,height,pos=(0,0) ):
-        self._width = width
-        self._height = height
-        self.position = pos
-
-    def width(self):
-        return self._width
-    
-    def height(self):
-        return self._height
-    
 class polygon:
     def __init__(self, points=[(0,0)], pos = (0,0)):
         self.points = list()
@@ -66,13 +54,24 @@ class polygon:
         else:
             raise RuntimeError('width overflow')
         
-        
     def draw(self, window, color = (0,0,0), width = 1):
         if len(self.points) == 0 :
             return
         pointlist = [(pt[0]+self.position[0], -pt[1]+self.position[1]) for pt in self.points]
         pygame.draw.polygon(window, color, pointlist, width)
         pygame.draw.circle(window,color,pointlist[-1],4)
+
+class rect(polygon):
+    def __init__(self,width,height,pos=(0,0) ):
+        self._width = width
+        self._height = height
+        self.position = pos
+
+    def width(self):
+        return self._width
+    
+    def height(self):
+        return self._height
 
 if __name__ == '__main__':
     import pygame
@@ -85,8 +84,14 @@ if __name__ == '__main__':
     window.fill(COLOR_WHITE)
     line = polygon([(0,0),(160,0),(160,80),(0,80)])
     line.origin(100,200)
+    line.draw(window,width=2)
+    pygame.display.update()
+    
     r = rect(60,40)
     line.placeinside(r)
+    line.draw(window,width=2)
+    pygame.display.update()
+    
     r = rect(80,60)
     line.placeinside(r)
     
