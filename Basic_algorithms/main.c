@@ -3,24 +3,46 @@
  *
  *  Created on: 2022/04/15
  *      Author: Sin Shimozono
+67280421310721, 6442450941,
+result = 1.
+counter = 21.
+swatch = 0.000 sec.
+result = 1.
+counter = 6442450940.
+swatch = 33.802 sec.
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
-long gcd_euclidean(long a, long b);
+#include "gcd.h"
 
 int main(const int argc, const char * argv[]) {
-	long int var[3] = { 0, 0, 0, };
-	unsigned int argcount = (argc - 1 > 3) ? 3 : argc -1 ;
-	for (int i = 0; i < argcount; ++i)
-		var[i] = strtol(argv[i+1], NULL, 10);
-	for(int i = 0; i < argcount; ++i) {
-		printf("%ld, ", var[i]);
+	ullong input[2] = { 0, 0, };
+	ullong output;
+	for (int i = 0; i < argc - 1; ++i) {
+		input[i] = strtoull(argv[i+1], NULL, 10);
+		printf("%lld, ", input[i]);
 	}
 	printf("\n");
 
-	long result = gcd_euclidean(var[0], var[1]);
+	clock_t swatch;
 
-	printf("result = %ld.\n", result);
+	swatch = clock();
+	counter = 0;
+	output = gcd_euclidean(input[0], input[1]);
+	swatch = clock() - swatch;
+	printf("result = %lld.\n", output);
+	printf("counter = %lld.\n", counter);
+	printf("swatch = %.3f sec.\n", (float)swatch/CLOCKS_PER_SEC);
+
+	swatch = clock();
+	counter = 0;
+	output = gcd_naive(input[0], input[1]);
+	swatch = clock() - swatch;
+	printf("result = %lld.\n", output);
+	printf("counter = %lld.\n", counter);
+	printf("swatch = %.3f sec.\n", (float)swatch/CLOCKS_PER_SEC);
+
 	return EXIT_SUCCESS;
 }

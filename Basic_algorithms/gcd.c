@@ -7,15 +7,28 @@
 
 #include <stdio.h>
 
-long gcd_euclidean(long a, long b) {
-	long counter = 0;
-	long t;
+#include "gcd.h"
+
+ullong counter;
+
+ullong gcd_euclidean(ullong a, ullong b) {
+	ullong t;
 	do {
 		t = a % b;
 		a = b;
 		b = t;
 		counter += 1;
-		printf("%ld: a = %ld, b = %ld.\n", counter, a, b);
 	} while (b != 0);
 	return a;
+}
+
+ullong gcd_naive(ullong a, ullong b) {
+	ullong c = (a <= b) ? a : b;
+	while ( c > 1 ) {
+		counter += 1;
+		if ( (a % c) == 0 && (b % c) == 0 )
+			break;
+		c -= 1;
+	}
+	return c;
 }
