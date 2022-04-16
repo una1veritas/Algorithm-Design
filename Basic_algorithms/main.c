@@ -13,19 +13,31 @@ swatch = 33.802 sec.
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <time.h>
+#include <math.h>
 
 #include "gcd.h"
 
-int main(const int argc, const char * argv[]) {
+int main(int argc, char * const argv[]) {
 	ullong input[2] = { 0, 0, };
-	ullong output;
-	for (int i = 0; i < argc - 1; ++i) {
-		input[i] = strtoull(argv[i+1], NULL, 10);
-		printf("%lld, ", input[i]);
-	}
-	printf("\n");
 
+	if (argc == 2) {
+		char * ptr = argv[1];
+		input[0] = strtoull(ptr, &ptr, 10);
+		while ( !isdigit(*++ptr) );
+		if ( ! *ptr )
+			exit(1);
+		input[1] = strtoull(ptr, NULL, 10);
+	} else {
+		for (int i = 0; i < argc - 1; ++i) {
+			input[i] = strtoull(argv[i+1], NULL, 10);
+		}
+	}
+	printf("inputs: %lld, %lld\n", input[0], input[1]);
+	printf("length: %lld\n", (ullong)ceil(log10((input[0] < input[1])? input[0] : input[1])));
+
+	ullong output;
 	clock_t swatch;
 
 	swatch = clock();
