@@ -8,10 +8,10 @@
  ============================================================================
  */
 
-#include <datadef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "datadef.h"
 #include "sort_algorithm.h"
 
 void insertion_sort(const data d[], long a[], long n) {
