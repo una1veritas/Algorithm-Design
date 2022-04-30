@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "binsearch.h"
 #include "datadef.h"
 #include "sort_algorithm.h"
 
@@ -40,6 +41,10 @@ int main(int argc, char **argv) {
 	printf("\n");
 
 	//printf("passcount [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
+
+	data key = 11;
+	long index = binsearch(db, idx, key, 0, num);
+	printf("pos = %ld\n", index);
 
 	return EXIT_SUCCESS;
 }
