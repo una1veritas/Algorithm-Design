@@ -10,7 +10,7 @@
 
 #include "datadef.h"
 
-long binsearch(data a[], long idx[], data b, long l, long r);
+long binsearch(data * a[], data b, long l, long r);
 
 
 #endif /* SRC_BINSEARCH_H_ */

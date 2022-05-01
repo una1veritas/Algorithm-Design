@@ -20,30 +20,30 @@ long passcount[] = { 0, 0 };
 int main(int argc, char **argv) {
 	long num = argc - 1;
 	data db[num];
-	long idx[num];
+	data * a[num];
 
 	for(long i = 0; i < num; ++i) {
-		idx[i] = i;
 		db[i] = atol(argv[1+i]);
 		printf("%ld, ", db[i]);
+		a[i] = &db[i];
 	}
 	printf("\n");
 
 	long range = 100;
-	//counting_sort(db, idx, num, range, keyval);
-	//insertion_sort(db, idx, num);
-	//selection_sort(db, idx, num);
-	heap_sort(db, idx, num);
+	//counting_sort(db, num, range, keyval);
+	insertion_sort(a, num);
+	//selection_sort(a, num);
+	//heap_sort(a, num);
 
 	for(long i = 0; i < num; ++i) {
-		printf("%ld, ", db[idx[i]]);
+		printf("%ld, ", *a[i]);
 	}
 	printf("\n");
 
 	//printf("passcount [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
 
 	data key = 11;
-	long index = binsearch(db, idx, key, 0, num);
+	long index = binsearch(a, key, 0, num);
 	printf("pos = %ld\n", index);
 
 	return EXIT_SUCCESS;

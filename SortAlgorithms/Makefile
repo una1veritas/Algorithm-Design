@@ -1,10 +1,10 @@
 CC = gcc
 CXX = g++
 
-HEAPSORT_OBJS =	main.o datadef.o heap_sort.o binsearch.o
+OBJS =	main.o datadef.o selection_sort.o heap_sort.o insertion_sort.o
 #OBJS =	insertion_sort.o heap_sort.o selection_sort.o counting_sort.o main_test.o
-OBJS = heap_sort.o
-OBJS += datadef.o
+#OBJS = heap_sort.o
+OBJS += binsearch.o 
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h 
 INCDIRS = -I./src/ -I../C_LinkedList/
@@ -31,8 +31,8 @@ TARGET =	heapsort.exe
 #$(TARGET):	$(OBJS)
 #	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
-heapsort.exe:$(HEAPSORT_OBJS)
-	$(CC) -o heapsort.exe $(HEAPSORT_OBJS)
+heapsort.exe:$(OBJS)
+	$(CC) -o heapsort.exe $(OBJS)
 
 all:	$(TARGET)
 #all:	selection_asm

@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "sortalgorithms.h.old"
 #include "stopwatch.h"
-#include "sortalgorithms.h"
 
 int unlhd_int(const void * d[], const int a, const int b) {
 	return (const int *) d[a] > (const int *) d[b];
