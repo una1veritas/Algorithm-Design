@@ -5,8 +5,8 @@
  *      Author: sin
  */
 
-#ifndef SRC_SORTALGORITHMS_H_
-#define SRC_SORTALGORITHMS_H_
+#ifndef SRC_SORTALGORITHMS_H_OLD_
+#define SRC_SORTALGORITHMS_H_OLD_
 
 #include "llist.h"
 
@@ -37,4 +37,4 @@ void mergeSort_recursive(const data d[], int a[], int n, int (*compare)(const da
 void mergeSort(const data d[], int a[], int n, int (*compare)(const data *, const int, const int));
 
 
-#endif /* SRC_SORTALGORITHMS_H_ */
+#endif /* SRC_SORTALGORITHMS_H_OLD_ */

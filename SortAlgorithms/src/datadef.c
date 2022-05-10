@@ -19,6 +19,9 @@ long keyval(const data * x) {
 */
 
 #include <string.h>
+int equals(const data * x, const data * y) {
+	return (*x == *y);
+}
 
 int lessthan(const data * x, const data * y) {
 //	return strcmp(*x, *y) < 0;

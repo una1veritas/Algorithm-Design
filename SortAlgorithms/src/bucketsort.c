@@ -1,15 +1,11 @@
 /*
  * bucketsort.c
  */
-#include <datadef_long.h>
+#include <datadef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "llist.h"
-
-long keycode(const data d) {
-	return (long) d;
-}
 
 void bucketSort_list(LList * dlist, long m, long (*key)(const data)) {
 	LList list[m];
