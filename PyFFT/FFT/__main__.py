@@ -2,7 +2,7 @@ import sys
 import math
 import cmath
 
-def fft(varray):
+def dft(varray):
     n = len(varray)
     f = list()
     for t in range(0, n):
@@ -12,7 +12,7 @@ def fft(varray):
         f.append(s)
     return f
 
-def invfft(varray):
+def invdft(varray):
     n = len(varray)
     f = list()
     for t in range(0, n):
@@ -25,9 +25,12 @@ def invfft(varray):
 if len(sys.argv) != 2 :
     exit
 
+print(sys.argv[1])
+
 data = list()
 with open(sys.argv[1]) as f:
     for aline in f:
+        print(aline.strip())
         data.append(float(aline))
 
 n = 2 ** math.ceil(math.log(len(data),2))
@@ -35,8 +38,8 @@ for i in range(len(data), n):
     data.append(0)
 
 print()
-tdata = fft(data)
+tdata = dft(data)
 for val in tdata:
     print(round(abs(val),4))
 
-print(invfft(tdata))
+#print(invfft(tdata))
