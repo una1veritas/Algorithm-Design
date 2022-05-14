@@ -1,10 +1,10 @@
 CC = 	gcc -std=c11
-CXX = 	g++ -std=c1y
+CXX = 	g++ -std=c++2a
 
-OBJS =		knapsack.o main.o
-INCS = 		knapsack.h
+OBJS =		main.o
+INCS = 		
 LIBS =
-SRC  =  ./src
+SRC  =  
 
 TARGET =	knapsack.exe
 
