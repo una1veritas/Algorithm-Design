@@ -64,6 +64,14 @@ int best_dp(int prices[], int n, int budget) {
 	return best[n-1][budget];
 }
 
+int all1(char s[], int n) {
+	for(int i = 0; i < n; ++i) {
+		if (s[i] == 0)
+			return 0;
+	}
+	return 1;
+}
+
 int best_enumerate(int * prices, int n, int budget, char cart[]) {
 	int sum, best;
 	int item;
@@ -74,14 +82,24 @@ int best_enumerate(int * prices, int n, int budget, char cart[]) {
 		subset[item] = 0;
 	// initialize the total price
 	best = 0;
-
-	item = 0;
-	do {
-		if ( item < n ) {
-			subset[item] = 0;
-			item++;
+	printf("enter\n");
+	for(; !all1(subset, n) ;) {
+		sum = 0;
+		for(item = 0; item < n && sum <= budget; ++item) {
+			sum += (subset[item] != 0 ? prices[item] : 0);
 		}
-	} while (1);
+		if (best < sum && sum <= budget ) {
+			best = sum;
+			memcpy(cart, subset, n);
+		}
+		// increment subset
+		for(item = 0; subset[item] == 1 && item < n; ++item) {
+			subset[item] = 0;
+		}
+		if (item == n)
+			break;
+		subset[item] = 1;
+	}
 
 	return best;
 }
@@ -136,7 +154,7 @@ int main (int argc, const char * argv[]) {
 	// Show the result.
 	printf("By recursion: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
 #ifdef USE_COUNTER
-	printf("function calls = %ld\n\n", counter);
+	printf("function calls = %ld\n", counter);
 #endif
 	printf("Total %d yen.\n", totalPrice);
 	printf("Buy item id ");
