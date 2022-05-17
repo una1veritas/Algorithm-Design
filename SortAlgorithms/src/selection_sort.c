@@ -22,3 +22,55 @@ void selection_sort(data * d[], long n) {
 	}
 	return;
 }
+
+void selection_sort_reverse(data * d[], long n) {
+	data * t;
+	printf("1: %ld, %ld\n", 0,0);
+	for (long i = n - 1; i > 0; --i) {
+		printf("2: %ld, %ld\n", i,0);
+		for (long j = 0; j < i; ++j) {
+			printf("3: %ld, %ld\n", i,j);
+			if ( lessthan(d[i], d[j]) ) {
+				printf("4: %ld, %ld\n", i, j);
+				t = d[i];
+				d[i] = d[j];
+				d[j] = t;
+			}
+		}
+	}
+	return;
+}
+
+/*
+ * 34, 67, 8, 44,
+1: 0, 0
+2: 3, 0
+3: 3, 0
+3: 3, 1
+4: 3, 1
+3: 3, 2
+2: 2, 0
+3: 2, 0
+4: 2, 0
+3: 2, 1
+4: 2, 1
+2: 1, 0
+3: 1, 0
+8, 34, 44, 67,
+ *
+ *
+ *
+34, 8, 44, 67,
+1: 0, 0
+2: 3, 0
+3: 3, 0
+3: 3, 1
+3: 3, 2
+2: 2, 0
+3: 2, 0
+3: 2, 1
+2: 1, 0
+3: 1, 0
+4: 1, 0
+8, 34, 44, 67,
+ */

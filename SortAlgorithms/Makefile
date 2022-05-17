@@ -24,12 +24,15 @@ llist.o:../C_LinkedList/llist.c $(INCLUDES)
 	$(CC) -c $<
 
 #TARGET =	countingsort.exe
-TARGET =	heapsort.exe
+TARGET =	sort.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
 
 #$(TARGET):	$(OBJS)
 #	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
+
+sort.exe:$(OBJS)
+	$(CC) -o sort.exe $(OBJS)
 
 heapsort.exe:$(OBJS)
 	$(CC) -o heapsort.exe $(OBJS)
