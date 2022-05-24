@@ -25,16 +25,15 @@ void selection_sort(data * d[], long n) {
 
 void selection_sort_reverse(data * d[], long n) {
 	data * t;
-	printf("1: %ld, %ld\n", 0,0);
 	for (long i = n - 1; i > 0; --i) {
-		printf("2: %ld, %ld\n", i,0);
 		for (long j = 0; j < i; ++j) {
-			printf("3: %ld, %ld\n", i,j);
 			if ( lessthan(d[i], d[j]) ) {
-				printf("4: %ld, %ld\n", i, j);
+				printf("0: %ld, %ld\n", i, j);
 				t = d[i];
 				d[i] = d[j];
 				d[j] = t;
+			} else {
+				printf("1: %ld, %ld\n", i, j);
 			}
 		}
 	}

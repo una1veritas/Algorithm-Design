@@ -5,7 +5,7 @@
 #include "sortalgorithms.h.old"
 #include "stopwatch.h"
 
-int unlhd_int(const void * d[], const int a, const int b) {
+int lhd_int(const void * d[], const int a, const int b) {
 	return (const int *) d[a] > (const int *) d[b];
 }
 
