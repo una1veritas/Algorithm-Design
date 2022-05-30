@@ -14,10 +14,7 @@ int main(int argc, char **argv) {
 	}
 
 	int m = 7;
-	std::list<int> table[m];
-	// 初期化 --- STL の list は宣言時に初期化されるので本来は不要
-	for(int i = 0; i < m; ++i)
-		table[i].clear();
+	std::list<int> table[m];  // 初期化は宣言時に行われるので不要
 
 	// データの追加
 	for(int i = 1; i < argc; ++i) {
