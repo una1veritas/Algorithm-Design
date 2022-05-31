@@ -3,11 +3,11 @@ PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 OBJS =  C++_Hashtable.o
 
 ifeq ($(BUILD_MODE),debug)
-	CFLAGS += -g -std=c++11
+	CFLAGS += -g -std=c++2a
 else ifeq ($(BUILD_MODE),run)
-	CFLAGS += -O2 -std=c++11
+	CFLAGS += -O2 -std=c++2a
 else ifeq ($(BUILD_MODE),linuxtools)
-	CFLAGS += -g -pg -fprofile-arcs -ftest-coverage  -std=c++11
+	CFLAGS += -g -pg -fprofile-arcs -ftest-coverage  -std=c++2a
 	LDFLAGS += -pg -fprofile-arcs -ftest-coverage
 	EXTRA_CLEAN += C++_Hashtable.gcda C++_Hashtable.gcno $(PROJECT_ROOT)gmon.out
 	EXTRA_CMDS = rm -rf C++_Hashtable.gcda
