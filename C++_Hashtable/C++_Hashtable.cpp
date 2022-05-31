@@ -1,5 +1,6 @@
 #include <iostream>
 #include <list>  // 双方向連結リストの C++ 標準ライブラリ
+#include <algorithm>
 #include <string>
 // std:: は, 上記 list のほか C++ 標準ライブラリのものであることを指示します．
 
@@ -12,6 +13,7 @@ int main(int argc, char **argv) {
 		printf("input numbers as arguments.\n");
 		return 1; // エラー終了
 	}
+
 	int m = 11;
 	int argpos = 1;
 	std::string argstr = argv[argpos];
