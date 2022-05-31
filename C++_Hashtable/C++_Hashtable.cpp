@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 		return 1; // エラー終了
 	}
 
-	int m = 7;
+	int m = 11;
 	std::list<int> table[m];  // 初期化は宣言時に行われるので不要
 
 	// データの追加
@@ -28,16 +28,17 @@ int main(int argc, char **argv) {
 		printf("%d : ", i);
 		// リストの要素を一つずつたぐる．
 		// iterator は，リストの要素をたぐるためのポインタのようなもの．
-		for(std::list<int>::iterator p = table[i].begin(); p != table[i].end(); ++p) {
-			printf("%d, ", *p);
+		for(auto & d : table[i]) {
+			printf("%d, ", d);
 		}
 		printf("\n");
 	}
 
 	// 11 を検索, 削除
-	std::list<int>::iterator p;
-	int i = hash(11) % m;
-	for(p = table[i].begin(); p != table[i].end() and *p != 11; ++p) { }
+	int key = 11;
+	int i = hash(key) % m;
+	auto p = table[i].begin();
+	for( ; p != table[i].end() and *p != key ; ++p) ;
 	if ( p == table[i].end() ) {
 		printf("含まない\n");
 	} else {

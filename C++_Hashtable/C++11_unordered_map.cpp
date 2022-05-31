@@ -13,13 +13,6 @@ struct MyDataType {
 	std::string sid;
 	std::string surname, givenname;
 
-	friend bool operator==(const MyDataType & a, const MyDataType & b) {
-		return a.sid == b.sid;
-	}
-};
-
-template<> struct std::hash<MyDataType> {
-public:
 	size_t operator()(const MyDataType & data) const {
 		size_t s = 0;
 		for(int i = 4; i > 0; --i) {
@@ -28,12 +21,29 @@ public:
 		}
 		return s;
 	}
+
+	friend bool operator==(const MyDataType & a, const MyDataType & b) {
+		return a.sid == b.sid;
+	}
 };
 
+//template<> struct std::hash<MyDataType> {
+//public:
+//	size_t operator()(const MyDataType & data) const {
+//		size_t s = 0;
+//		for(int i = 4; i > 0; --i) {
+//			s <<= 7;
+//			s += data.sid[i-1] ^ data.sid[3 + i];
+//		}
+//		return s;
+//	}
+//};
+
 int main(const int argc, const char * argv[]) {
-	std::unordered_map<MyDataType, int> map;
+	std::unordered_map<MyDataType, int, MyDataType> map;
 
 	map[ {"82541854", "simozuma", "sinichi"} ] = 0;
+	map[ {"212C1805", "tomiyama", "kenta"} ] = 2;
 	map[ {"82541854", "simozuma", "sinichi"} ] = 1;
 
 	for (auto & data : map) {

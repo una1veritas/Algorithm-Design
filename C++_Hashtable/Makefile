@@ -1,6 +1,6 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-OBJS =  C++11_unordered_map.o
+OBJS =  C++_Hashtable.o
 
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -g -std=c++11
