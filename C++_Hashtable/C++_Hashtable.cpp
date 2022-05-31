@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <list>  // 双方向連結リストの C++ 標準ライブラリ
+#include <algorithm>
 #include <string>
 // std:: は, 上記 list のほか C++ 標準ライブラリのものであることを指示します．
 
@@ -13,38 +14,33 @@ int main(int argc, char **argv) {
 		return 1; // エラー終了
 	}
 
-	int m = 7;
-	std::list<int> table[m];  // 初期化は宣言時に行われるので不要
+	int m = 11;
+	std::list<int> table[m];  // 初期化はリストの宣言時に行われる
+	int i;
+	std::list<int>::iterator p, end;
+	// iterator は，リストの要素をたぐるためのポインタのようなもの．
 
 	// データの追加
-	for(int i = 1; i < argc; ++i) {
+	for(i = 1; i < argc; ++i) {
 		int d = std::stoi(argv[i]);
-		table[hash(d) % m].push_back(d);  // リストへの追加
-		printf("%d を追加.\n", d);
+		p = table[hash(d) % m].begin();
+		end = table[hash(d) % m].end();
+		if ( std::find(p, end, d) == end ) {  // 要素の探索．== end なら含まない
+			table[hash(d) % m].push_back(d);  // リストへの追加
+			printf("%d を追加.\n", d);
+		} else {
+			printf("%d はすでにある.\n", d);
+		}
 	}
 
 	// table のデータ格納状況の表示
-	for(int i = 0; i < m; ++i) {
+	for(i = 0; i < m; ++i) {
 		printf("%d : ", i);
-		// リストの要素を一つずつたぐる．
-		// iterator は，リストの要素をたぐるためのポインタのようなもの．
-		for(std::list<int>::iterator p = table[i].begin(); p != table[i].end(); ++p) {
+		for(p = table[i].begin(); p != table[i].end(); ++p )
 			printf("%d, ", *p);
-		}
 		printf("\n");
 	}
 
-	// 11 を検索, 削除
-	std::list<int>::iterator p;
-	int i = hash(11) % m;
-	for(p = table[i].begin(); p != table[i].end() and *p != 11; ++p) { }
-	if ( p == table[i].end() ) {
-		printf("含まない\n");
-	} else {
-		printf("含む\n");
-		table[i].erase(p);
-		printf("削除\n");
-	}
 	printf("終了.\n");
 
 	return 0;
