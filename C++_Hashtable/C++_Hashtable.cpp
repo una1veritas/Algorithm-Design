@@ -35,10 +35,11 @@ int main(int argc, char **argv) {
 		std::cout << i << ": ";
 		// リストの要素を一つずつたぐる．
 		// iterator は，リストの要素をたぐるためのポインタのようなもの．
+		std::cout << "(";
 		for(auto & d : table[i]) {
 			std::cout << d << ", ";
 		}
-		std::cout << std::endl;
+		std::cout << ")" << std::endl;
 	}
 
 	// 11 を検索, 削除
