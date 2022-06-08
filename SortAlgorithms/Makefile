@@ -1,10 +1,12 @@
 CC = gcc
 CXX = g++
 
-OBJS =	main.o datadef.o selection_sort.o heap_sort.o insertion_sort.o
+OBJS =  datadef.o selection_sort.o heap_sort.o insertion_sort.o
 #OBJS =	insertion_sort.o heap_sort.o selection_sort.o counting_sort.o main_test.o
 #OBJS = heap_sort.o
-OBJS += binsearch.o 
+#OBJS += binsearch.o 
+MAINOBJ = main.o
+
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h 
 INCDIRS = -I./src/ -I../C_LinkedList/
@@ -24,18 +26,18 @@ llist.o:../C_LinkedList/llist.c $(INCLUDES)
 	$(CC) -c $<
 
 #TARGET =	countingsort.exe
-TARGET =	sort.exe
+TARGET =	sortalgs.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
 
 #$(TARGET):	$(OBJS)
 #	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
 
-sort.exe:$(OBJS)
-	$(CC) -o sort.exe $(OBJS)
+sortalgs.exe: $(OBJS) $(MAINOBJ)
+	$(CC) -o sortalgs.exe $(OBJS) $(MAINOBJ)
 
-heapsort.exe:$(OBJS)
-	$(CC) -o heapsort.exe $(OBJS)
+main.o: ./src/main.c $(OBJS)
+	$(CC) -c -o main.o ./src/main.c
 
 all:	$(TARGET)
 #all:	selection_asm

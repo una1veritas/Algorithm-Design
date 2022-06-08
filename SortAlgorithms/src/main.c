@@ -29,11 +29,11 @@ int main(int argc, char **argv) {
 	}
 	printf("\n");
 
-	long range = 100;
+	//long range = 100;
 	//counting_sort(db, num, range, keyval);
 	//insertion_sort(a, num);
-	selection_sort_reverse(a, num);
-	//heap_sort(a, num);
+	//selection_sort_reverse(a, num);
+	heap_sort(a, num);
 
 	for(long i = 0; i < num; ++i) {
 		printf("%ld, ", *a[i]);
@@ -41,10 +41,6 @@ int main(int argc, char **argv) {
 	printf("\n");
 
 	//printf("passcount [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
-
-	data key = 11;
-	long index = binsearch(a, key, 0, num);
-	printf("pos = %ld\n", index);
 
 	return EXIT_SUCCESS;
 }

@@ -1,6 +1,6 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-OBJS =  C++_Hashtable.o
+OBJS =  C++hashtest.o
 
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -g -std=c++2a
@@ -15,9 +15,13 @@ else
     $(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
 
-all:	C++_Hashtable
+all:	C++hashtest
 
 C++_Hashtable:	$(OBJS)
+	$(CXX) $(LDFLAGS) -o $@ $^
+	$(EXTRA_CMDS)
+
+C++hashtest:	$(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $^
 	$(EXTRA_CMDS)
 
@@ -28,4 +32,4 @@ C++_Hashtable:	$(OBJS)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 clean:
-	rm -fr C++_Hashtable $(OBJS) $(EXTRA_CLEAN)
+	rm -fr C++_Hashtable C++hashtest $(OBJS) $(EXTRA_CLEAN)
