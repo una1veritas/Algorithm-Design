@@ -17,8 +17,10 @@ std::vector<std::string> split(std::string::const_iterator strbegin, std::string
 	std::vector<std::string> result;
 
 	buff.clear();
+	bool separatorexists = false;
 	for(std::string::const_iterator i = strbegin; i != strend; ++i) {
 		if (*i == separator) {
+			separatorexists = true;
 			result.push_back(buff.str());
 			buff.str(std::string(""));
 			buff.clear();
@@ -26,7 +28,7 @@ std::vector<std::string> split(std::string::const_iterator strbegin, std::string
 		}
 		buff << *i;
 	};
-	if (!buff.str().empty())
+	if (separatorexists or !buff.str().empty())
 		result.push_back(buff.str());
 	return result;
 }
