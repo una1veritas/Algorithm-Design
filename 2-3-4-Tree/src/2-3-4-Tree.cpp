@@ -135,10 +135,20 @@ public:
 	}
 
 	friend ostream & operator<<(ostream & out, const Node234 & node) {
-		for(auto & dc : node.data234) {
-			out << dc.data << ", ";
+		out << "(";
+		if ( ! node.is_leaf() ) {
+			for(unsigned int i = 0; i < node.data234.size(); ++i) {
+				out << * node.data234[i].leftchild;
+				out << ", ";
+				out << node.data234[i].data << ",";
+			}
+			out << *node.rightmostchild;
+		} else {
+			for(unsigned int i = 0; i < node.data234.size(); ++i) {
+				out << node.data234[i].data << ",";
+			}
 		}
-		out << endl;
+		out << ")" << endl;
 		return out;
 	}
 };
