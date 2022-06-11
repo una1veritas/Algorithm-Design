@@ -110,9 +110,11 @@ public:
 			return node;
 		} else {
 			// split
+			std::cout << node << std::endl;
 			node = node->split();
-			if ( !node->insert_data234(d) )
-				std::cerr << "full!" << std::endl;
+			auto nextnodeix = node->find_node_and_dataix(d);
+			nextnodeix.first->insert_data234(d);
+			//std::cerr << "full!" << std::endl;
 		}
 		return NULL;
 	}
