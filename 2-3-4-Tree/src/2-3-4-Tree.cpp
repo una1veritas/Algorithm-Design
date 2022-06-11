@@ -21,9 +21,10 @@ private:
 	struct DataChild {
 		Data data;
 		Node234 * leftchild;
-
+		/*
 		DataChild(const Data & d, Node234 * ptr = NULL) : data(d), leftchild(ptr) {}
 		DataChild(const DataChild & dc) : data(dc.data), leftchild(dc.leftchild) {}
+		*/
 	};
 	vector<DataChild> data234;
 
@@ -33,7 +34,7 @@ private:
 public:
 	Node234(const Data & d, Node234 * p, Node234 * l = NULL, Node234 * r = NULL) {
 		parent = p;
-		data234.push_back(DataChild(d,l));
+		data234.push_back(DataChild{d,l});
 		rightmostchild = r;
 	}
 
@@ -52,13 +53,15 @@ public:
 	}
 
 private:
-	vector<DataChild>::const_iterator find_data_or_gap(const Data & d) {
+	const DataChild * find_data_or_gap(const Data & d) {
 		auto i = data234.cbegin();
-		for ( ; i != data234.end() ; ++i) {
+		for ( ; i != data234.cend() ; ++i) {
 			if ( !(i->data < d) )
 				break;
 		}
-		return i;
+		if (i != data234.cend())
+			return NULL;
+		return &(*i);
 	}
 
 	bool insert_data234(const Data & d) {
@@ -67,36 +70,37 @@ private:
 			return false;
 		}
 		auto i = find_data_or_gap(d);
-		if ( i == data234.cend() ) {
-			data234.push_back(DataChild(d));
+		DataChild dc = {d,NULL};
+		if ( i == NULL ) {
+			data234.push_back(dc);
 		} else {
-			data234.insert(i, DataChild(d));
+			data234.insert(i, dc);
 		}
 		return true;
 	}
 
 public:
-	Node234 * find(const Data & d) {
+	std::pair<Node234 *,DataChild *> find_node_and_dc(const Data & d) {
 		Node234 * att = this;
 		for(;;) {
-			auto dc = att->find_data_or_gap(d);
-			if (dc == att->data234.cend()) {
+			auto dcptr = att->find_data_or_gap(d);
+			if (dcptr == NULL) {
 				att = rightmostchild;
 				if (att == NULL)
-					return this;
-			} else if (dc->data == d) {
-				return att;
+					return std::pair<Node234 *,DataChild *>(this,NULL);
+			} else if (dcptr->data == d) {
+				return std::pair<Node234 *,DataChild *>(this, dcptr);
 			} else {
-				att = dc->leftchild;
-				if (dc->leftchild == NULL)
-					return this;
+				att = dcptr->leftchild;
+				if (dcptr->leftchild == NULL)
+					return std::pair<Node234 *,DataChild *>(att,NULL);
 			}
 		}
-		return NULL;
+		return std::pair<Node234 *,DataChild *>(this,NULL);
 	}
 
 	Node234 * insert(const Data & d) {
-		Node234 * current = this->find(d);
+		Node234 * current = this->find_node_and_dc(d);
 		bool stat;
 		auto itr = current->find_data_or_gap(d);
 		if (itr->data == d)
