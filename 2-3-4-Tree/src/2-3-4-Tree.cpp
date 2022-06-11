@@ -39,8 +39,8 @@ public:
 	}
 
 	bool is_leaf() const {
-		for(auto & dc : data234) {
-			if ( dc.leftchild != NULL )
+		for(auto i = data234.cbegin(); i != data234.cend(); ++i) {
+			if ( i->leftchild != NULL )
 				return false;
 		}
 		if ( rightmostchild != NULL )
@@ -109,14 +109,15 @@ public:
 			node->insert_data234(d);
 			return node;
 		} else {
-			std::cerr << "full!" << std::endl;
 			// split
-			node->split();
+			node = node->split();
+			if ( !node->insert_data234(d) )
+				std::cerr << "full!" << std::endl;
 		}
 		return NULL;
 	}
 
-	void split() {
+	Node234 * split() {
 		Node234 * rightsibling = new Node234(data234[2].data,parent,data234[2].leftchild,rightmostchild);
 		data234.pop_back();
 		Data & d = data234[1].data;
@@ -124,31 +125,28 @@ public:
 		data234.pop_back();
 		if ( parent == NULL ) {
 			// make this node as parent
-			Node234 * leftsibling = this;
-			leftsibling->parent = this;
+			Node234 * leftsibling = new Node234(data234[0].data,this,data234[0].leftchild,data234[1].leftchild);
 			rightsibling->parent = this;
 			data234.pop_back();
 			data234.push_back(DataChild{d,leftsibling});
 			rightmostchild = rightsibling;
+			return this;
 		}
-
+		return parent;
 	}
 
 	friend ostream & operator<<(ostream & out, const Node234 & node) {
 		out << "(";
-		if ( ! node.is_leaf() ) {
-			for(unsigned int i = 0; i < node.data234.size(); ++i) {
+		for(unsigned int i = 0; i < node.data234.size(); ++i) {
+			if (node.data234[i].leftchild != NULL) {
 				out << * node.data234[i].leftchild;
 				out << ", ";
-				out << node.data234[i].data << ",";
 			}
-			out << *node.rightmostchild;
-		} else {
-			for(unsigned int i = 0; i < node.data234.size(); ++i) {
-				out << node.data234[i].data << ",";
-			}
+			out << node.data234[i].data << ",";
 		}
-		out << ")" << endl;
+		if (node.rightmostchild != NULL)
+			out << *node.rightmostchild;
+		out << ")";
 		return out;
 	}
 };
