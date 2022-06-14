@@ -32,10 +32,10 @@ private:
 	constexpr static unsigned int children_max_size = 4;
 
 public:
-	Node234(const Data & d, Node234 * par, Node234 * l = NULL, Node234 * r = NULL) {
+	Node234(const Data & d, Node234 * par, Node234 * left = NULL, Node234 * right = NULL) {
 		parent = par;
-		data234.push_back(DataChild{d,l});
-		rightmostchild = r;
+		data234.push_back(DataChild{d,left});
+		rightmostchild = right;
 	}
 
 	bool is_leaf() const {
@@ -53,21 +53,22 @@ public:
 	}
 
 private:
-	unsigned int find_data_or_gap(const Data & d) {
+	unsigned int data_lowerbound(const Data & d) {
+		// assuming one or more data exist(s).
 		unsigned int i;
 		for (i = 0 ; i < data234.size() ; ++i) {
-			if ( !(data234[i].data < d) )
+			if ( d <= data234[i].data )
 				break;
 		}
 		return i;
 	}
 
-	bool insert_data234(const Data & d) {
+	bool insert_in_node(const Data & d) {
 		if ( data234.size() == data_max_size ) {
-			cerr << "error: insert_data failure." << endl;
+			cerr << "error: insert_in_data234 failure." << endl;
 			return false;
 		}
-		unsigned int i = find_data_or_gap(d);
+		unsigned int i = data_lowerbound(d);
 		DataChild dc = {d,NULL};
 		if ( i == data234.size() ) {
 			data234.push_back(dc);
@@ -78,29 +79,38 @@ private:
 	}
 
 public:
-	std::pair<Node234 *,unsigned int> find_node_and_dataix(const Data & d) {
+	std::pair<Node234 *,unsigned int> find_node_index(const Data & d) {
 		Node234 * att = this;
 		for(;;) {
-			unsigned int i = att->find_data_or_gap(d);
+			unsigned int i = att->data_lowerbound(d);
 			if (i == att->data234.size()) {
-				att = rightmostchild;
-				if (att == NULL)
-					return std::pair<Node234 *,unsigned int>(this,i);
+				if (rightmostchild != NULL) {
+					att = rightmostchild;
+					continue;
+				} else {
+					return std::pair<Node234 *,unsigned int>(att,i);
+				}
 			} else if (att->data234[i].data == d) {
-				return std::pair<Node234 *,unsigned int>(this, i);
+				return std::pair<Node234 *,unsigned int>(att, i);
 			} else {
-				att = att->data234[i].leftchild;
-				if (att == NULL)
-					return std::pair<Node234 *,unsigned int>(this,i);
+				if ( att->data234[i].leftchild != NULL ) {
+					att = att->data234[i].leftchild;
+					continue;
+				} else {
+					return std::pair<Node234 *,unsigned int>(att,i);
+				}
 			}
 		}
 		return std::pair<Node234 *,unsigned int>(this,data234.size());
 	}
 
 	Node234 * insert(const Data & d) {
-		auto nodeix = this->find_node_and_dataix(d);
+		auto nodeix = this->find_node_index(d);
 		Node234 * node = nodeix.first;
 		unsigned int ix = nodeix.second;
+		if (node->data234[ix] == d) {
+			return node;   // なにもせず終了
+		}
 		if (ix < node->data234.size())
 			if (node->data234[ix].data == d)
 				return node;
