@@ -94,20 +94,29 @@ private:
 		return i;
 	}
 
-	std::pair<Node234 *,unsigned int> find_node_index(const Data & d) {
+	std::pair<Node234 *,unsigned int> find_node_index(const Data & d, const bool findBottom = true) {
 		Node234 * att = this;
 		unsigned int i;
 		for(;;) {
+			std::cout << "find " << d << " in " << *att << ", ";
 			i = att->data_lowerbound(d);
+			std::cout << " pos= " << i << std::endl;
 			if (i == att->data234.size()) {
-				if (rightmostchild != NULL) {
-					att = rightmostchild;
+				std::cout << "here!" << std::endl;
+				if (att->rightmostchild != NULL) {
+					std::cout << "gogo!" << std::endl;
+					att = att->rightmostchild;
 					continue;
 				} else {
 					break;
 				}
 			} else if (att->data234[i].data == d) {
-				break;
+				if (! findBottom )
+					break;
+				if (att->data234[i].leftchild == NULL)
+					break;
+				att = att->data234[i].leftchild;
+
 			} else {
 				if ( att->data234[i].leftchild != NULL ) {
 					att = att->data234[i].leftchild;
@@ -117,6 +126,7 @@ private:
 				}
 			}
 		}
+		std::cout << std::endl;
 		return std::pair<Node234 *,unsigned int>(att,i);
 	}
 
@@ -125,40 +135,39 @@ public:
 		auto nodeix = this->find_node_index(d);
 		Node234 * node = nodeix.first;
 		unsigned int ix = nodeix.second;
+		/*
 		if (ix < node->data234.size()) {
 			if (node->data234[ix].data == d) {
 				// d already exists in the tree.
 				return node;
 			}
 		}
-		// d must be inserted.
+		*/
 		if ( !node->is_full() ) {
 			node->insert_in_node(d);
 			return node;
 		} else {
 			// split
-			std::cerr << *node << " will be splitted." << std::endl;
-			node->split();
-			std::cerr << *node << std::endl;
-			return NULL;
-
-			auto nextnodeix = node->parent->find_node_index(d);
+			std::cout << *node << " will be splitted." << std::endl;
+			node = node->split();
+			std::cout << "after the split " << *node << std::endl;
+			auto nextnodeix = node->find_node_index(d);
+			std::cout << "adding to " << *(nextnodeix.first) << std::endl;
 			nextnodeix.first->insert_in_node(d);
-			//std::cerr << "full!" << std::endl;
 		}
 		return NULL;
 	}
 
 	Node234 * split() {
 		if (data234.size() != data_max_size) {
-			std::cerr << "error! try to split the not-full node." << std::endl;
+			std::cout << "error! try to split the not-full node." << std::endl;
 			return NULL;
 		}
-		Node234 * right, *left;
+		Node234 * left, *right;
 		if ( is_root() ) {
-			std::cerr << "going to split the root." << std::endl;
-			left = new Node234(data234[2].data,this,data234[2].leftchild,rightmostchild);
-			right = new Node234(data234[0].data,this,data234[0].leftchild,data234[1].leftchild);
+			std::cout << "going to split the root." << std::endl;
+			right = new Node234(data234[2].data,this,data234[2].leftchild,rightmostchild);
+			left= new Node234(data234[0].data,this,data234[0].leftchild,data234[1].leftchild);
 			data234[0] = data234[1];
 			data234.pop_back(); data234.pop_back();
 			data234[0].leftchild = left;
