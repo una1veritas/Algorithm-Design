@@ -32,10 +32,26 @@ private:
 	constexpr static unsigned int children_max_size = 4;
 
 public:
-	Node234(const Data & d, Node234 * par, Node234 * left = NULL, Node234 * right = NULL) {
+	Node234(const Data & d, Node234 * par = NULL, Node234 * left = NULL, Node234 * right = NULL) {
+		// constructor of a 2-node.
+		// NULL, NULL, NULL makes a root-leaf.
 		parent = par;
 		data234.push_back(DataChild{d,left});
 		rightmostchild = right;
+	}
+
+	~Node234() {
+		for(auto i = data234.cbegin(); i != data234.cend(); ++i) {
+			if (i->leftchild != NULL)
+				delete i->leftchild;
+		}
+		data234.clear();
+		if (rightmostchild != NULL)
+			delete rightmostchild;
+	}
+
+	bool is_root() const {
+		return parent == NULL;
 	}
 
 	bool is_leaf() const {
@@ -63,10 +79,10 @@ private:
 		return i;
 	}
 
-	bool insert_in_node(const Data & d) {
+	unsigned int insert_in_node(const Data & d) {
 		if ( data234.size() == data_max_size ) {
 			cerr << "error: insert_in_data234 failure." << endl;
-			return false;
+			return data_max_size;
 		}
 		unsigned int i = data_lowerbound(d);
 		DataChild dc = {d,NULL};
@@ -75,75 +91,91 @@ private:
 		} else {
 			data234.insert(data234.cbegin()+i, dc);
 		}
-		return true;
+		return i;
 	}
 
-public:
 	std::pair<Node234 *,unsigned int> find_node_index(const Data & d) {
 		Node234 * att = this;
+		unsigned int i;
 		for(;;) {
-			unsigned int i = att->data_lowerbound(d);
+			i = att->data_lowerbound(d);
 			if (i == att->data234.size()) {
 				if (rightmostchild != NULL) {
 					att = rightmostchild;
 					continue;
 				} else {
-					return std::pair<Node234 *,unsigned int>(att,i);
+					break;
 				}
 			} else if (att->data234[i].data == d) {
-				return std::pair<Node234 *,unsigned int>(att, i);
+				break;
 			} else {
 				if ( att->data234[i].leftchild != NULL ) {
 					att = att->data234[i].leftchild;
 					continue;
 				} else {
-					return std::pair<Node234 *,unsigned int>(att,i);
+					break;
 				}
 			}
 		}
-		return std::pair<Node234 *,unsigned int>(this,data234.size());
+		return std::pair<Node234 *,unsigned int>(att,i);
 	}
 
+public:
 	Node234 * insert(const Data & d) {
 		auto nodeix = this->find_node_index(d);
 		Node234 * node = nodeix.first;
 		unsigned int ix = nodeix.second;
-		if (node->data234[ix] == d) {
-			return node;   // なにもせず終了
-		}
-		if (ix < node->data234.size())
-			if (node->data234[ix].data == d)
+		if (ix < node->data234.size()) {
+			if (node->data234[ix].data == d) {
+				// d already exists in the tree.
 				return node;
+			}
+		}
 		// d must be inserted.
 		if ( !node->is_full() ) {
-			node->insert_data234(d);
+			node->insert_in_node(d);
 			return node;
 		} else {
 			// split
-			std::cout << node << std::endl;
-			node = node->split();
-			auto nextnodeix = node->find_node_and_dataix(d);
-			nextnodeix.first->insert_data234(d);
+			std::cerr << *node << " will be splitted." << std::endl;
+			node->split();
+			std::cerr << *node << std::endl;
+			return NULL;
+
+			auto nextnodeix = node->parent->find_node_index(d);
+			nextnodeix.first->insert_in_node(d);
 			//std::cerr << "full!" << std::endl;
 		}
 		return NULL;
 	}
 
 	Node234 * split() {
-		Node234 * rightsibling = new Node234(data234[2].data,parent,data234[2].leftchild,rightmostchild);
-		data234.pop_back();
-		Data & d = data234[1].data;
-		rightmostchild = data234[1].leftchild;
-		data234.pop_back();
-		if ( parent == NULL ) {
-			// make this node as parent
-			Node234 * leftsibling = new Node234(data234[0].data,this,data234[0].leftchild,data234[1].leftchild);
-			rightsibling->parent = this;
-			data234.pop_back();
-			data234.push_back(DataChild{d,leftsibling});
-			rightmostchild = rightsibling;
+		if (data234.size() != data_max_size) {
+			std::cerr << "error! try to split the not-full node." << std::endl;
+			return NULL;
+		}
+		Node234 * right, *left;
+		if ( is_root() ) {
+			std::cerr << "going to split the root." << std::endl;
+			left = new Node234(data234[2].data,this,data234[2].leftchild,rightmostchild);
+			right = new Node234(data234[0].data,this,data234[0].leftchild,data234[1].leftchild);
+			data234[0] = data234[1];
+			data234.pop_back(); data234.pop_back();
+			data234[0].leftchild = left;
+			rightmostchild = right;
 			return this;
 		}
+		right = new Node234(data234[2].data,parent,data234[2].leftchild,rightmostchild);
+		data234.pop_back();
+		unsigned int pos = parent->insert_in_node(data234[1].data);
+		parent->data234[pos].leftchild = this;
+		if (pos + 1 < parent->data234.size()) {
+			parent->data234[pos+1].leftchild = right;
+		} else {
+			parent->rightmostchild = right;
+		}
+		rightmostchild = data234[1].leftchild;
+		data234.pop_back();
 		return parent;
 	}
 
@@ -168,15 +200,23 @@ int main(int argc, char * argv[]) {
 		cout << "supply arguments." << endl;
 		return -1;
 	}
-
-	Node234 root(argv[1],NULL);
-	Node234 * tree = &root;
-	tree->insert(argv[2]);
-	tree->insert(argv[3]);
-	tree->insert(argv[4]);
-
 	cout << "Hello!" << endl;
-	cout << *tree << endl;
 
+	Node234 * tree = NULL;
+
+	for(char ** arg = argv+1; arg != NULL; ++arg){
+		std::cout << *arg << std::endl;
+
+		if (tree == NULL) {
+			tree = new Node234(*arg);
+		} else {
+			tree->insert(*arg);
+		}
+		if (tree != NULL)
+			std::cout << *tree << std::endl;
+	}
+
+	std::cout << "done." << std::endl;
+	delete tree;
 	return 0;
 }
