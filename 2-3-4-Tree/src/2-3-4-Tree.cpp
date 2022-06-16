@@ -213,13 +213,13 @@ int main(int argc, char * argv[]) {
 
 	Node234 * tree = NULL;
 
-	for(char ** arg = argv+1; arg != NULL; ++arg){
-		std::cout << *arg << std::endl;
+	for(int i = 1; i < argc; ++i){
+		std::cout << argv[i] << std::endl;
 
 		if (tree == NULL) {
-			tree = new Node234(*arg);
+			tree = new Node234(argv[i]);
 		} else {
-			tree->insert(*arg);
+			tree->insert(argv[i]);
 		}
 		if (tree != NULL)
 			std::cout << *tree << std::endl;
