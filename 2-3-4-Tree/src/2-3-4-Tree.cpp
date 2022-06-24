@@ -98,16 +98,18 @@ private:
 		Node234 * att = this;
 		unsigned int i;
 		for(;;) {
-			std::cout << "find " << d << " in " << *att << std::endl;
+			//std::cout << "find " << d << " in " << *att << std::endl;
 			if (!att->is_leaf() and att->is_full()) {
-				std:cout << "the node must be splitted!" << std::endl;
+				std:cout << "encountered a node must be splitted." << std::endl;
+				att = att->split();
+
 			}
 			i = att->data_lowerbound(d);
-			std::cout << " pos= " << i << std::endl;
+			//std::cout << " pos= " << i << std::endl;
 			if (i == att->data234.size()) {
-				std::cout << "here!" << std::endl;
+				//std::cout << "here!" << std::endl;
 				if (att->rightmostchild != NULL) {
-					std::cout << "gogo!" << std::endl;
+					//std::cout << "gogo!" << std::endl;
 					att = att->rightmostchild;
 					continue;
 				} else {
@@ -135,7 +137,7 @@ private:
 
 public:
 	Node234 * insert(const Data & d) {
-		std::cout << "inserting " << d << std::endl;
+		// std::cout << "inserting " << d << std::endl;
 		auto nodeix = this->find_insert_position(d);
 		Node234 * node = nodeix.first;
 		unsigned int ix = nodeix.second;
@@ -152,11 +154,11 @@ public:
 			return node;
 		} else {
 			// split
-			std::cout << *node << " will be splitted." << std::endl;
+			//std::cout << *node << " will be splitted." << std::endl;
 			node = node->split();
-			std::cout << "after the split " << *node << std::endl;
+			//std::cout << "after the split " << *node << std::endl;
 			auto nextnodeix = node->find_insert_position(d);
-			std::cout << "adding to " << *(nextnodeix.first) << std::endl;
+			//std::cout << "adding to " << *(nextnodeix.first) << std::endl;
 			nextnodeix.first->insert_in_node(d);
 		}
 		return NULL;
@@ -169,7 +171,7 @@ public:
 		}
 		Node234 * left, *right;
 		if ( is_root() ) {
-			std::cout << "going to split the root." << std::endl;
+			//std::cout << "going to split the root." << std::endl;
 			right = new Node234(data234[2].data,this,data234[2].leftchild,rightmostchild);
 			left= new Node234(data234[0].data,this,data234[0].leftchild,data234[1].leftchild);
 			data234[0] = data234[1];
@@ -218,15 +220,16 @@ int main(int argc, char * argv[]) {
 	Node234 * tree = NULL;
 
 	for(int i = 1; i < argc; ++i){
-		std::cout << argv[i] << std::endl;
+		std::cout << "Inserting " << argv[i] << " to the tree." << std::endl;
 
 		if (tree == NULL) {
 			tree = new Node234(argv[i]);
 		} else {
 			tree->insert(argv[i]);
 		}
-		if (tree != NULL)
+		if (tree != NULL) {
 			std::cout << *tree << std::endl;
+		}
 	}
 
 	std::cout << "done." << std::endl;
