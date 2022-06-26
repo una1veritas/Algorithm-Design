@@ -18,17 +18,18 @@ struct RedBlackNode {
 //private:
 	RedBlackNode * parent;
 	RedBlackNode * lchild, *rchild;
-	bool black;
-	const Data & data;
+	bool color;
+	const Data * data;
 
+public:
 	enum NodeColor {
 		BLACK = true,
 		RED = false,
 	};
 
 public:
-	RedBlackNode(const Data & d, RedBlackNode * par = NULL, RedBlackNode * left = NULL, RedBlackNode * right = NULL, const bool color = true)
-	: parent(par), lchild(left), rchild(right), black(color), data(d) {}
+	RedBlackNode(const Data & d, RedBlackNode * par = NULL, RedBlackNode * left = NULL, RedBlackNode * right = NULL, const bool col = true)
+	: parent(par), lchild(left), rchild(right), color(col), data(&d) {}
 
 	~RedBlackNode() {
 		return;
@@ -48,7 +49,7 @@ public:
 	}
 
 	bool is_root() const {
-		return parent->parent == NULL;
+		return parent == NULL;
 	}
 
 	bool is_leaf() const {
@@ -64,19 +65,19 @@ public:
 	}
 
 	bool is_black() const {
-		return black;
+		return color == BLACK;
 	}
 
 	bool is_red() const {
-		return !black;
+		return color == RED;
 	}
 
 	bool set_black() {
-		return black = true;
+		return color = BLACK;
 	}
 
 	bool set_red() {
-		return black = false;
+		return color = RED;
 	}
 
 	RedBlackNode * another_sibling() const {
@@ -112,17 +113,17 @@ private:
 		while ( *pc.second != NULL ) {
 			parent = pc.first;
 			current = *pc.second;
-			if (d < current->data) {
+			if (d < *current->data) {
 				pc.first = current;
 				pc.second = &(current->lchild);
-			} else if ( current->data < d ) {
+			} else if ( *current->data < d ) {
 				pc.first = current;
 				pc.second = &(current->rchild);
 			} else {
-				if ( current->has_left() and d == current->lchild->data ) {
+				if ( current->has_left() and d == *current->lchild->data ) {
 					pc.first = current;
 					pc.second = &(current->lchild);
-				} else if ( current->has_right() and d == current->rchild->data ) {
+				} else if ( current->has_right() and d == *current->rchild->data ) {
 					pc.first = current;
 					pc.second = &(current->rchild);
 				} else if (current->lchild == NULL) {
@@ -139,48 +140,54 @@ private:
 	}
 
 	void rotate_right() {
-		RedBlackNode * g = this;
-		RedBlackNode * l = lchild;
-		RedBlackNode * lr = lchild->rchild;
-		RedBlackNode * gg = g->parent;
-		std::cout << "gg = " << *(gg->parent->parent) << std::endl;
-		if ( g->is_left() ) {
-			gg->lchild = l;
-		} else {
-			gg->rchild = l;
-		}
-		l->rchild = g;
-		l->parent = g->parent;
-		g->lchild = lr;
-		g->parent = l;
-		std::cout << "gg = " << *gg << std::endl;
+		RedBlackNode * left = lchild;
+		RedBlackNode * leftleft  = lchild->lchild;
+		RedBlackNode * leftright = lchild->rchild;
+		RedBlackNode * right = rchild;
+		const Data * d = data;
+		data = lchild->data;
+		lchild->data = d;
+		std::cout << "here 1 " << *this << std::endl;
+		lchild = leftleft;
+		if (lchild != NULL)
+			lchild->parent = this;
+		std::cout << "here 2 " << *this << std::endl;
+		rchild = left;
+		rchild->lchild = leftright;
+		std::cout << "here 2.1 " << *this << std::endl;
+		if (rchild->lchild != NULL)
+			rchild->lchild->parent = rchild;
+		rchild->rchild = right;
+		std::cout << "here 2.3 " << *this << ", " << rchild->rchild << std::endl;
+		if (rchild->rchild != NULL)
+			rchild->rchild->parent = rchild;
+		std::cout << "here 3 " << *this << std::endl; //<< ", " << *(lchild->parent) << ", " << *(rchild->parent) << std::endl;
 	}
 
 	void rotate_left() {
-		RedBlackNode * g = this;
-		RedBlackNode * r = rchild;
-		RedBlackNode * rl = rchild->lchild;
-		RedBlackNode * gg = g->parent;
-		if ( gg->parent == NULL) {
-			std::cout << "NULL ";
-		}
-		std::cout << *g << "original gg = " << *(gg->parent) << std::endl;
-		if ( g->is_left() ) {
-			gg->lchild = r;
-		} else {
-			gg->rchild = r;
-		}
-		r->lchild = g;
-		r->parent = g->parent;
-		g->rchild = rl;
-		g->parent = r;
-		if ( gg->lchild == NULL) {
-			std::cout << "NULL!" << std::endl;
-		}
-		if ( gg->rchild == NULL) {
-			std::cout << "NULL!" << std::endl;
-		}
-		std::cout << "gg2 = " << *gg << ", " << *g << ", " << *r << std::endl;
+		RedBlackNode * left = lchild;
+		RedBlackNode * right = rchild;
+		RedBlackNode * rightleft  = rchild->lchild;
+		RedBlackNode * rightright = rchild->rchild;
+		const Data * d = data;
+		data = rchild->data;
+		rchild->data = d;
+		std::cout << "here 1 " << *this << std::endl;
+		rchild = rightright;
+		if (rchild != NULL)
+			rchild->parent = this;
+		std::cout << "here 2 " << *this << std::endl;
+		lchild = right;
+		lchild->rchild = rightleft;
+		std::cout << "here 2.1 " << *this << std::endl;
+		if (lchild->rchild != NULL)
+			lchild->rchild->parent = lchild;
+		lchild->lchild = left;
+		std::cout << "here 2.3 " << *this << ", " << rchild->rchild << std::endl;
+		if (lchild->lchild != NULL)
+			lchild->lchild->parent = lchild;
+		std::cout << "here 3 " << *this << std::endl; //<< ", " << *(lchild->parent) << ", " << *(rchild->parent) << std::endl;
+
 	}
 
 public:
@@ -194,23 +201,27 @@ public:
 		//}
 		if ( *handler == NULL ) {
 			// insert into left or right
-			std::cout << "insert as a child" << std::endl;
+			std::cout << "insert a node as a child" << std::endl;
 			*handler = new RedBlackNode(d, parent, NULL, NULL, RED);
 		}
-		RedBlackNode * current = *handler, * uncle;
-		for(;current != NULL;) {
+		RedBlackNode * current = *handler;
+		RedBlackNode * uncle;
+		for( ; ; ) {
 			if (current->is_root()) {
 				std::cout << "current is root." << std::endl;
-				current->black = true;
+				current->set_black();
 				break;
 			}
-			if (current->parent->black) {
+			if (current->parent->is_black()) {
 				std::cout << "parent is black." << std::endl;
 				break;
 			}
 			uncle = current->parent->another_sibling();
+			std::cout << *(current->parent->parent->parent) << std::endl;
+			if (uncle != NULL)
+				std::cout << *uncle << " unclde parent " << *(current->parent) << std::endl;
 			if (uncle != NULL and uncle->is_red()) {
-				std::cout << "uncle " << *uncle << " is red." << std::endl;
+				std::cout << "uncle is red." << std::endl;
 				current->parent->set_black();
 				uncle->set_black();
 				current->parent->parent->set_red();
@@ -226,6 +237,7 @@ public:
 						current->parent->parent->rotate_right();
 						current->parent->set_black();
 						current->parent->rchild->set_red();
+						//std::cout << *(current->parent) << std::endl;
 					} else {
 						// left right
 						std::cout << "left right" << std::endl;					}
@@ -235,18 +247,13 @@ public:
 						std::cout << "right right" << std::endl;
 					} else {
 						// right left
-						RedBlackNode * p = current->parent;
-						RedBlackNode * g = p->parent;
-						RedBlackNode * gg = g->parent;
 						std::cout << "right left from " << *current << std::endl;
-						std::cout << "gg = " << gg << ", g = " << g << ", p = " << p << ", c = " << current << std::endl;
 						current->parent->rotate_right();
-						std::cout << "after rotate right = " << *current << std::endl;
-						std::cout << *(current->parent->parent->parent) << std::endl;
-						current->parent->rotate_left();
-						//std::cout << "after rotate left = " << *current << std::endl;
-						current->set_black();
-						current->lchild->set_red();
+						std::cout << "after rotate right = " << *(current->parent->parent) << std::endl;
+						current->parent->parent->rotate_left();
+						std::cout << *current << std::endl;
+						current->parent->set_black();
+						current->parent->lchild->set_red();
 						//std::cout << "after color change = " << *r << std::endl;
 					}
 				}
@@ -265,23 +272,19 @@ public:
 	}
 
 	friend ostream & operator<<(ostream & out, const RedBlackNode & node) {
-		if ( node.parent == NULL ) {
-			out << "@" << *node.lchild;
-		} else {
-			out << "(";
-			if (node.lchild != NULL) {
-				out << *node.lchild;
-				out << ", ";
-			}
-			if (node.is_black())
-				out << "*";
-			out << node.data;
-			if (node.rchild != NULL) {
-				out << ", ";
-				out << *node.rchild;
-			}
-			out << ")";
+		out << "(";
+		if (node.lchild != NULL) {
+			out << *node.lchild;
+			out << ", ";
 		}
+		if (node.is_black())
+			out << "*";
+		out << *(node.data);
+		if (node.rchild != NULL) {
+			out << ", ";
+			out << *node.rchild;
+		}
+		out << ")";
 		return out;
 	}
 };
@@ -294,7 +297,7 @@ int main(int argc, char * argv[]) {
 	}
 	cout << "Hello!" << endl;
 
-	RedBlackNode tree("",NULL,NULL,NULL,false);
+	RedBlackNode * root = NULL;
 	std::vector<std::string> args;
 	for(int i = 1; i < argc; ++i){
 		args.push_back(argv[i]);
@@ -303,16 +306,16 @@ int main(int argc, char * argv[]) {
 	for(auto p = args.begin(); p != args.end(); ++p){
 		std::cout << *p << std::endl;
 
-		if (tree.lchild == NULL) {
-			// make root
-			tree.lchild = new RedBlackNode(*p,&tree,NULL,NULL,true);
+		if (root == NULL) {
+			// make root node
+			root = new RedBlackNode(*p,NULL,NULL,NULL,true);
 		} else {
-			tree.lchild->insert(*p);
+			root->insert(*p);
 		}
-		std::cout << "tree = " << tree << std::endl;
+		std::cout << "tree = " << *root << std::endl;
 	}
 
 	std::cout << "done." << std::endl;
-	tree.clear();
+	root->clear();
 	return 0;
 }
