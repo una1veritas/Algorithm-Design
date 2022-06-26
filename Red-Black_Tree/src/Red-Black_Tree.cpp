@@ -122,37 +122,26 @@ private:
 
 	RedBlackNode * find_parent(const Data & d) {
 		// finds the parent of insertion point (NULL)
-		RedBlackNode * par = this;
-		RedBlackNode * cur = NULL;
-		while ( par != NULL ) {
-			if (par->is_stub() or d < par->data) {
-				cur = par->lchild;
-			} else if ( par->data < d ) {
-				cur = par->rchild;
-			} else {
-				// d == current->data
-				if ( par->has_left() and d == par->lchild->data ) {
-					cur = par->lchild;
-				} else if ( par->has_right() and d == par->rchild->data ) {
-					cur = par->rchild;
-				} else {
-					cur = NULL;
-				}
-			}
-			if (cur == NULL)
-				break;
+		RedBlackNode * par = NULL;
+		RedBlackNode * cur = this;
+		for ( ;cur != NULL; ) {
 			par = cur;
+			if (par->is_stub() or d <= par->data) {
+				cur = par->lchild;
+			} else if ( par->data <= d ) {
+				cur = par->rchild;
+			}
 		}
 		return par;
 	}
 
 	void rotate_right() {
-		std::cout << "rotate right " << *this << " " << this->parent->is_stub() << std::endl;
+		//std::cout << "rotate right " << *this << " -> ";
 		RedBlackNode ** handler;
 		RedBlackNode * left = lchild;
-		RedBlackNode * leftleft  = lchild->lchild;
+		//RedBlackNode * leftleft  = lchild->lchild;
 		RedBlackNode * leftright = lchild->rchild;
-		RedBlackNode * right = rchild;
+		//RedBlackNode * right = rchild;
 		if ( is_left() )
 			handler = &(parent->lchild);
 		else if ( is_right() )
@@ -164,35 +153,26 @@ private:
 		this->lchild = leftright;
 		if ( leftright != NULL)
 			leftright->parent = this;
-		std::cout << **handler << std::endl;
+		//std::cout << **handler << std::endl;
 	}
 
 	void rotate_left() {
-		/*
-		std::cout << "rotate left " << std::endl;
-		RedBlackNode * left = lchild;
+		//std::cout << "rotate left " << *this << " -> ";
+		RedBlackNode ** handler;
 		RedBlackNode * right = rchild;
 		RedBlackNode * rightleft  = rchild->lchild;
-		RedBlackNode * rightright = rchild->rchild;
-		const Data * d = data;
-		data = rchild->data;
-		rchild->data = d;
-		std::cout << "here 1 " << *this << std::endl;
-		rchild = rightright;
-		if (rchild != NULL)
-			rchild->parent = this;
-		std::cout << "here 2 " << *this << std::endl;
-		lchild = right;
-		lchild->rchild = rightleft;
-		std::cout << "here 2.1 " << *this << std::endl;
-		if (lchild->rchild != NULL)
-			lchild->rchild->parent = lchild;
-		lchild->lchild = left;
-		std::cout << "here 2.3 " << *this << ", " << rchild->rchild << std::endl;
-		if (lchild->lchild != NULL)
-			lchild->lchild->parent = lchild;
-		std::cout << "here 3 " << *this << std::endl; //<< ", " << *(lchild->parent) << ", " << *(rchild->parent) << std::endl;
-*/
+		if ( is_left() )
+			handler = &(parent->lchild);
+		else
+			handler = &(parent->rchild);
+		*handler = right;
+		right->parent = parent;
+		right->lchild = this;
+		this->parent = right;
+		this->rchild = rightleft;
+		if (rightleft != NULL)
+			rightleft->parent = this;
+		//std::cout << **handler << std::endl;
 	}
 
 public:
@@ -209,74 +189,60 @@ public:
 		else
 			handler = &(p->rchild);
 		// insert into left or right
-		std::cout << "insert a node as a child " << parent << std::endl;
+		//std::cout << "insert a node as a child " << parent << std::endl;
 		*handler = new RedBlackNode(d, p, NULL, NULL, RED);
 
 		RedBlackNode * current = *handler;
 		RedBlackNode * uncle;
 		for( ; ; ) {
 			if (current->is_root()) {
-				std::cout << "current is root. " << std::endl;
+				//std::cout << "current is root. " << std::endl;
 				current->set_black();
 				break;
 			}
 			if (current->parent->is_black()) {
-				std::cout << "parent is black." << std::endl;
+				//std::cout << "parent is black." << std::endl;
 				break;
 			}
-			//std::cout << *current << ", " << *(current->parent->parent) << std::endl;
 			uncle = current->parent->another_sibling();
-			if (uncle != NULL)
-				std::cout << *uncle << std::endl;
-			else
-				std::cout << "uncle is NULL" << std::endl;
 			if (uncle != NULL and uncle->is_red()) {
-				std::cout << "uncle is red." << std::endl;
+				//std::cout << "uncle is red." << std::endl;
 				current->parent->set_black();
 				uncle->set_black();
 				current->parent->parent->set_red();
 				current = current->parent->parent;
 				// continue with grandfather
-				std::cout << "continue with " << *current << std::endl;
 			} else {
-				std::cout << "unclde is black." << std::endl;
+				//std::cout << "unclde is black." << std::endl;
 				if ( current->parent->is_left() ) {
 					if ( current->is_left() ) {
 						// left left
-						std::cout << "left left" << *current << std::endl;
 						current->parent->parent->rotate_right();
 						current->parent->set_black();
 						current->parent->rchild->set_red();
-						//std::cout << *(current->parent) << std::endl;
 					} else {
 						// left right
-						std::cout << "left right" << std::endl;					}
+						current->parent->rotate_left();
+						current->parent->rotate_right();
+						current->set_black();
+						current->rchild->set_red();
+					}
 				} else if ( current->parent->is_right() ) {
 					if ( current->is_right() ) {
 						// right right
-						std::cout << "right right" << std::endl;
-					} else {
-						// right left
-						std::cout << "right left from " << *current << std::endl;
-						current->parent->rotate_right();
-						std::cout << "after rotate right = " << *(current->parent->parent) << std::endl;
 						current->parent->parent->rotate_left();
-						std::cout << *current << std::endl;
 						current->parent->set_black();
 						current->parent->lchild->set_red();
-						//std::cout << "after color change = " << *r << std::endl;
+					} else {
+						// right left
+						current->parent->rotate_right();
+						current->parent->rotate_left();
+						current->set_black();
+						current->lchild->set_red();
 					}
 				}
-				/*
-				b) If x’s uncle is BLACK, then there can be four configurations for x, x’s parent (p) and x’s grandparent (g) (This is similar to AVL Tree)
-				(i) Left Left Case (p is left child of g and x is left child of p)
-				(ii) Left Right Case (p is left child of g and x is the right child of p)
-				(iii) Right Right Case (Mirror of case i)
-				(iv) Right Left Case (Mirror of case ii)
-				*/
 				break;
 			}
-
 		}
 		return *handler;
 	}
