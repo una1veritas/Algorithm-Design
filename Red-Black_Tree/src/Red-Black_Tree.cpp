@@ -92,8 +92,8 @@ public:
 	}
 
 	bool is_left() const {
-		if ( is_root() )
-			return false;
+		//if ( is_root() )
+		//	return false;
 		if (parent->lchild == this)
 			return true;
 		else
@@ -101,8 +101,8 @@ public:
 	}
 
 	bool is_right() const {
-		if ( is_root() )
-			return false;
+		//if ( is_root() )
+		//	return false;
 		if (parent->rchild == this)
 			return true;
 		else
@@ -147,31 +147,24 @@ private:
 	}
 
 	void rotate_right() {
-		/*
 		std::cout << "rotate right " << *this << " " << this->parent->is_stub() << std::endl;
+		RedBlackNode ** handler;
 		RedBlackNode * left = lchild;
 		RedBlackNode * leftleft  = lchild->lchild;
 		RedBlackNode * leftright = lchild->rchild;
 		RedBlackNode * right = rchild;
-		const Data & d = data;
-		data = lchild->data;
-		lchild->data = d;
-		std::cout << "here 1 " << *this << std::endl;
-		lchild = leftleft;
-		if (lchild != NULL)
-			lchild->parent = this;
-		std::cout << "here 2 " << *this << std::endl;
-		rchild = left;
-		rchild->lchild = leftright;
-		std::cout << "here 2.1 " << *this << std::endl;
-		if (rchild->lchild != NULL)
-			rchild->lchild->parent = rchild;
-		rchild->rchild = right;
-		std::cout << "here 2.3 " << *this << ", " << rchild->rchild << std::endl;
-		if (rchild->rchild != NULL)
-			rchild->rchild->parent = rchild;
-		std::cout << "here 3 " << *this << std::endl; //<< ", " << *(lchild->parent) << ", " << *(rchild->parent) << std::endl;
-		*/
+		if ( is_left() )
+			handler = &(parent->lchild);
+		else if ( is_right() )
+			handler = &(parent->rchild);
+		*handler = left;
+		left->parent = parent;
+		left->rchild = this;
+		this->parent = left;
+		this->lchild = leftright;
+		if ( leftright != NULL)
+			leftright->parent = this;
+		std::cout << **handler << std::endl;
 	}
 
 	void rotate_left() {
