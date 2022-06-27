@@ -144,7 +144,8 @@ private:
 		//RedBlackNode * right = rchild;
 		if ( is_left() )
 			handler = &(parent->lchild);
-		else if ( is_right() )
+		else //
+			if ( is_right() )
 			handler = &(parent->rchild);
 		*handler = left;
 		left->parent = parent;
@@ -294,6 +295,9 @@ public:
 		return out;
 	}
 };
+// (((((A), *A), A, ((C), *E, (E))), *E, ((G), *H)),
+// *I,
+// ((((L), *M), N, (*P)), *R, (*S, (X))))
 
 int main(int argc, char * argv[]) {
 	if ( argc == 1 ) {
