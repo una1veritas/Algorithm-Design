@@ -132,12 +132,12 @@ public:
 		return this;
 	}
 
-	pair<BTreeNode *,unsigned int> find_leaf(Key & k) {
+	pair<BTreeNode *,unsigned int> find_leaf(Key & k, bool split_enabled = false) {
 		unsigned int ix;
 		BTreeNode * cur = this;
 		BTreeNode * par = this->parent;
 		for( ;cur != NULL; ) {
-			if ( cur != NULL and cur->is_full() ) {
+			if ( split_enabled and cur != NULL and cur->is_full() ) {
 				//cout << *cur << " must be splitted." << endl;
 				cur = cur->split();
 			}
@@ -157,6 +157,23 @@ public:
 		}
 		//cout << "There." << endl;
 		return pair<BTreeNode*,unsigned int>(par,ix);
+	}
+
+	BTreeNode * remove_key(Key & k) {
+		unsigned int ix;
+		if ( is_leaf() and keycount > MIN_KEYS ) {
+			ix = find_index(k);
+			if (ix >= keycount) {
+				cout << "Error: no such a key! " << k << endl;
+			}
+			for(unsigned int i = ix; i < keycount - 1; ++i) {
+				keychild[i] = keychild[i+1];
+			}
+			--keycount;
+		} else {
+			cout << "Error: this is not leaf! " << *this << endl;
+		}
+		return NULL;
 	}
 
 	friend std::ostream & operator<<(std::ostream & out, const BTreeNode & node) {
@@ -202,9 +219,15 @@ public:
 		if (root() == NULL) {
 			return root(new BTreeNode(k));
 		}
-		pair<BTreeNode *,unsigned int> p = root()->find_leaf(k);
+		pair<BTreeNode *, unsigned int> p = root()->find_leaf(k, true);
 		BTreeNode * node = p.first;
 		return node->insert_key(p.second, k);
+	}
+
+	BTreeNode * remove(Key & k) {
+		pair<BTreeNode *, unsigned int> p = root()->find_leaf(k);
+		p.first->remove_key(k);
+		return NULL;
 	}
 
 	friend std::ostream & operator<<(std::ostream & out, const BTree & tree) {
@@ -228,5 +251,9 @@ int main(const int argc, const char * argv[]) {
 		tree.insert(str);
 		cout << tree << endl << endl;
 	}
+
+	string k("A");
+	tree.remove(k);
+	cout << tree << endl;
 	return 0;
 }
