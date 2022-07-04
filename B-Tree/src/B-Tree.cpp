@@ -194,7 +194,7 @@ public:
 		return pair<BTreeNode*,unsigned int>(par,ix);
 	}
 
-	pair<BTreeNode *,unsigned int> find_node_key(Key & k) {
+	pair<BTreeNode *,unsigned int> find(Key & k) {
 		BTreeNode * cur = this;
 		unsigned int ix = 0;
 		for (; cur != NULL; ) {
@@ -207,69 +207,86 @@ public:
 			if (ix == cur->keycount) {
 				cur = cur->rightmost;
 			} else {
-				if (cur->keychild[ix].key == k) {
-					break;
-				}
 				cur = cur->keychild[ix].left;
 			}
 		}
 		return pair<BTreeNode*,unsigned int>(cur,ix);
 	}
 
+	BTreeNode * leftchild(unsigned int i) {
+		if (i > keycount - 1)
+			return rightmost;
+		return keychild[i].left;
+	}
+
+	BTreeNode * rightmost_leaf() {
+		BTreeNode * node = this;
+		for(; !node->is_leaf(); ) {
+			node = node->rightmost;
+		}
+		return node;
+	}
+
 	BTreeNode * remove(Key & k, unsigned int ix) {
 		BTreeNode * node = this;
+		if ( !node->is_leaf() ) {
+			BTreeNode * delegate = node->leftchild(ix);
+			delegate = delegate->rightmost_leaf();
+			Key & d = delegate->keychild[delegate->keycount-1].key;
+			delegate->keychild[delegate->keycount-1].key = node->keychild[ix].key;
+			node->keychild[ix].key = d;
+			node = delegate;
+			ix = delegate->keycount-1;
+		}
 		for(; node != NULL; ) {
-			cout << *node << endl;
-			if ( node->is_leaf() ) {
-				if ( ! node->is_minimum() ) {
-					cout << "remove key from a leaf with plenty of keys." << endl;
-					key_remove(ix);
+			cout << "node = " << *node << ", ix = " << ix << endl;
+			if ( ! node->is_minimum() ) {
+				key_remove(ix);
+				break;
+			}
+			if ( node->is_minimum() ) {
+				BTreeNode * par = node->parent;
+				unsigned int pix = par->key_index(k);
+				BTreeNode * sleft = node->left_sibling(pix);
+				BTreeNode * sright = node->right_sibling(pix);
+				// left or right shift
+				if (sleft != NULL and ! sleft->is_minimum() ) {
+					// rotate right
+					cout << "rotate right" << endl;
+					node->key_insert(0, par->keychild[pix-1].key);
+					par->keychild[pix-1].key = sleft->keychild[sleft->keycount - 1].key;
+					sleft->key_remove(sleft->keycount - 1);
+					break;
+				} else if (sright != NULL and ! sright->is_minimum() ) {
+					// rotate left
+					cout << "rotate left" << endl;
+					node->key_insert(node->keycount, par->keychild[pix].key);
+					par->keychild[pix].key = sright->keychild[0].key;
+					sright->key_remove(0);
 					break;
 				}
-				if ( is_minimum() ) {
-					BTreeNode * par = node->parent;
-					unsigned int pix = par->key_index(k);
-					BTreeNode * sleft = node->left_sibling(pix);
-					BTreeNode * sright = node->right_sibling(pix);
-					// left or right shift
-					if (sleft != NULL and ! sleft->is_minimum() ) {
-						// rotate right
-						cout << "rotate right" << endl;
-						node->key_insert(0, par->keychild[pix-1].key);
-						par->keychild[pix-1].key = sleft->keychild[sleft->keycount - 1].key;
-						sleft->key_remove(sleft->keycount - 1);
-						break;
-					} else if (sright != NULL and ! sright->is_minimum() ) {
-						// rotate left
-						cout << "rotate left" << endl;
-						node->key_insert(node->keycount, par->keychild[pix].key);
-						par->keychild[pix].key = sright->keychild[0].key;
-						sright->key_remove(0);
-						break;
+				// merge
+				if (sright == NULL and sleft->is_minimum()) {
+					// merge left sibling and node
+					for(unsigned int i = 0; i < sleft->keycount; ++i) {
+						node->key_insert(sleft->keychild[i].key);
 					}
-					// merge
-					if (sright == NULL and sleft->is_minimum()) {
-						// merge left sibling and node
-						for(unsigned int i = 0; i < sleft->keycount; ++i) {
-							node->key_insert(sleft->keychild[i].key);
-						}
-						delete sleft;
-						key_insert(par->keychild[pix-1].key);
-						par->key_remove(pix-1);
-						par->rightmost = this;
-					} else if (sleft == NULL and sright->is_minimum()) {
-						// merge right sibling
-						cout << "sright = " << *sright << endl;
-						for(unsigned int i = 0; i < sright->keycount; ++i) {
-							key_insert(sright->keychild[i].key);
-						}
-						delete sright;
-						key_insert(par->keychild[0].key);
-						par->key_remove(0);
-						par->keychild[0].left = this;
-					} else {
-						cout << "still not working." << endl;
+					delete sleft;
+					key_insert(par->keychild[pix-1].key);
+					par->key_remove(pix-1);
+					par->rightmost = this;
+				} else if (sleft == NULL and sright->is_minimum()) {
+					// merge right sibling
+					cout << "sright = " << *sright << endl;
+					for(unsigned int i = 0; i < sright->keycount; ++i) {
+						key_insert(sright->keychild[i].key);
 					}
+					delete sright;
+					key_insert(par->keychild[0].key);
+					par->key_remove(0);
+					par->keychild[0].left = this;
+				} else {
+					cout << "still not working." << endl;
 				}
 			}
 		}
@@ -325,7 +342,7 @@ public:
 	}
 
 	BTreeNode * remove(Key & k) {
-		pair<BTreeNode *, unsigned int> p = root()->find_node_key(k);
+		pair<BTreeNode *, unsigned int> p = root()->find(k);
 		if (p.first->keycount == p.second) {
 			cout << k << ": no such key, can't remove." << endl;
 			return NULL;
