@@ -361,9 +361,9 @@ int main(const int argc, const char * argv[]) {
 
 	BTree tree;
 
-	for(auto str : args) {
-		cout << str << endl;
-		tree.insert(str);
+	for(auto & s : args) {
+		cout << s << endl;
+		tree.insert(s);
 		cout << tree << endl << endl;
 	}
 
