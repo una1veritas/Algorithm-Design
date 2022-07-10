@@ -100,27 +100,6 @@ public:
 		return parent->child[ix + 1];
 	}
 
-	pair<BTreeNode *,BTreeNode *> left_right_siblings(unsigned int ix) {
-		pair<BTreeNode *,BTreeNode *> siblings;
-		if ( is_root() ) {
-			siblings.first = NULL;
-			siblings.second = NULL;
-			return siblings;
-		}
-		if ( ix == 0 ) {
-			siblings.first = NULL;
-			siblings.second = parent->child[0];
-		} else if (ix >= parent->keycount) {
-			siblings.first = parent->child[parent->keycount];
-			siblings.second = NULL;
-		} else {
-			siblings.first = parent->child[ix-1];
-			siblings.second = parent->child[ix+1];
-		}
-		return siblings;
-	}
-
-
 	unsigned int key_index(const Key & k) {
 		unsigned int ix;
 		for(ix = 0; ix < keycount; ++ix)
@@ -242,7 +221,7 @@ public:
 			node = subst;
 			ix = subst->keycount - 1;
 		}
-		cout << *node << endl;
+		cout << "node = " << *node << endl;
 		node->key_remove(ix);
 		cout << *this << endl;
 		if ( node->keycount >= node->min_keycount() )
@@ -250,36 +229,29 @@ public:
 		// node is a starred node.
 		pair<BTreeNode*,BTreeNode*> lr;
 		BTreeNode * ls, *rs;
-		unsigned int pix;
+		unsigned int parix;
 		do {
 			cout << *node << endl;
-			pix = node->parent->key_index(k);
-			lr = node->left_right_siblings(pix);
-			ls = lr.first;
-			rs = lr.second;
-			cout << *(node->parent) << endl;
-			if (ls != NULL)
-				cout << "ls = " << *ls;
-			else
-				cout << "ls = NULL";
-			if (rs != NULL)
-				cout << ", rs = " << *rs;
-			cout << endl;
+			ls = node->left_sibling();
+			rs = node->right_sibling();
+			cout << "node->parent = " << *(node->parent) << endl;
 			if (ls != NULL and ls->keycount > ls->min_keycount() ) {
 				// shift from left to right
 				cout << "shift right" << endl;
 				BTreeNode * ls_rightmost = ls->child[ls->keycount];
 				const Key & lskey = ls->key_remove(ls->keycount - 1);
-				node->key_insert(*(node->parent->key[pix]),0,ls_rightmost,node->child[0]);
-				node->parent->key[pix] = &lskey;
+				parix = node->parent->key_index(lskey);
+				node->key_insert(*(node->parent->key[parix]),0,ls_rightmost,node->child[0]);
+				node->parent->key[parix] = &lskey;
 				break;
 			} else if (rs != NULL and rs->keycount > rs->min_keycount() ) {
 				// shift from right to left
 				cout << "shift left" << endl;
 				BTreeNode * rs_leftmost = rs->child[0];
 				const Key & rskey = rs->key_remove(0);
-				node->key_insert(*(node->parent->key[pix]),node->parent->keycount,node->child[node->keycount],rs_leftmost);
-				node->parent->key[pix] = &rskey;
+				parix = node->parent->key_index(rskey);
+				node->key_insert(*(node->parent->key[parix-1]),node->parent->keycount,node->child[node->keycount],rs_leftmost);
+				node->parent->key[parix-1] = &rskey;
 				break;
 			}
 		} while (! (node->keycount >= node->min_keycount()) );
@@ -448,7 +420,7 @@ int main(const int argc, const char * argv[]) {
 
 	string k;
 	cout << "remove" << endl;
-	k = "19";
+	k = "12";
 	tree.remove(k);
 	cout << tree << endl;
 
