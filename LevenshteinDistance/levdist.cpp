@@ -36,12 +36,21 @@ int main(const int argc, char *argv[]) {
 		}
 	}
 
+	cout << std::setw(6) << " ";
+	for (i = 0; i < pattern.size(); i++) {
+		cout << std::setw(3) << pattern[i];
+	}
+	cout << endl;
 	for (i = 0; i <= text.size(); i++) {
-		cout << "& ";
-		for (j = 0; j <= pattern.size(); j++) {
-			cout << edist[i][j] << " & ";
+		if (i == 0) {
+			cout << std::setw(3) << " ";
+		} else {
+			cout << std::setw(3) << text[i-1];
 		}
-		cout << "\\\\" << endl;
+		for (j = 0; j <= pattern.size(); j++) {
+			cout << std::setw(3) << edist[i][j];
+		}
+		cout << endl;
 	}
 
 	cout << endl << std::endl << "Result: "
