@@ -160,7 +160,6 @@ public:
 	const Key & key_insert(const Key & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL) {
 		if (is_full()) {
 			cout << "error: node is full!" << endl;
-			return NULL;
 		}
 		for(unsigned int i = keycount; i > ix; --i) {
 			key[i] = key[i-1];
@@ -176,7 +175,6 @@ public:
 	const Key & key_remove(unsigned int ix) {
 		if (keycount <= ix) {
 			cout << "error: key position out of range " << endl;
-			return NULL;
 		}
 		unsigned int i;
 		const Key & k = *key[ix];
@@ -259,18 +257,29 @@ public:
 			lr = node->left_right_siblings(pix);
 			ls = lr.first;
 			rs = lr.second;
+			cout << *(node->parent) << endl;
+			if (ls != NULL)
+				cout << "ls = " << *ls;
+			else
+				cout << "ls = NULL";
+			if (rs != NULL)
+				cout << ", rs = " << *rs;
+			cout << endl;
 			if (ls != NULL and ls->keycount > ls->min_keycount() ) {
 				// shift from left to right
 				cout << "shift right" << endl;
 				BTreeNode * ls_rightmost = ls->child[ls->keycount];
 				const Key & lskey = ls->key_remove(ls->keycount - 1);
-				const unsigned int pix = node->parent->key_index(lskey);
 				node->key_insert(*(node->parent->key[pix]),0,ls_rightmost,node->child[0]);
 				node->parent->key[pix] = &lskey;
 				break;
 			} else if (rs != NULL and rs->keycount > rs->min_keycount() ) {
 				// shift from right to left
 				cout << "shift left" << endl;
+				BTreeNode * rs_leftmost = rs->child[0];
+				const Key & rskey = rs->key_remove(0);
+				node->key_insert(*(node->parent->key[pix]),node->parent->keycount,node->child[node->keycount],rs_leftmost);
+				node->parent->key[pix] = &rskey;
 				break;
 			}
 		} while (! (node->keycount >= node->min_keycount()) );
@@ -401,9 +410,9 @@ public:
 		return node;
 	}
 
-	BTreeNode * remove(Key & k) {
+	BTreeNode * remove(const Key & k) {
 		pair<BTreeNode *, unsigned int> p = root()->find(k);
-		if (p.first->keycount == p.second) {
+		if (p.first != NULL and *(p.first->key[p.second]) != k) {
 			cout << k << ": no such key, can't remove." << endl;
 			return NULL;
 		}
@@ -439,12 +448,12 @@ int main(const int argc, const char * argv[]) {
 
 	string k;
 	cout << "remove" << endl;
-	k = "29";
+	k = "19";
 	tree.remove(k);
 	cout << tree << endl;
 
 	cout << "remove" << endl;
-	k = "53";
+	k = "20";
 	tree.remove(k);
 	cout << tree << endl;
 
