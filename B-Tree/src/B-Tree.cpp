@@ -191,14 +191,21 @@ public:
 		BTreeNode * cur = this;
 		unsigned int ix = 0;
 		for (; cur != NULL; ) {
+			cout << "cur = " << *cur << endl;
 			ix = cur->key_index(k);
-			if ( *(cur->key[ix]) == k) {
-				break;
-			}
+			cout << "index " << ix << endl;
 			if ( cur->is_leaf() )
 				break;
+			if ( *(cur->key[ix]) == k)
+				break;
+			cout << *(cur->child[ix]) << endl;
+
 			cur = cur->child[ix];
+			if (cur != NULL) {
+				cout << "next cur = " << *(cur->child[ix]) << endl;
+			}
 		}
+		cout << "exit find: cur = " << *cur << endl;
 		return pair<BTreeNode*,unsigned int>(cur,ix);
 	}
 
@@ -221,13 +228,12 @@ public:
 			node = subst;
 			ix = subst->keycount - 1;
 		}
-		cout << "node = " << *node << endl;
+		cout << "remove from node = " << *node << endl;
 		node->key_remove(ix);
 		cout << *this << endl;
 		if ( node->keycount >= node->min_keycount() )
 			return node;
 		// node is a starred node.
-		pair<BTreeNode*,BTreeNode*> lr;
 		BTreeNode * ls, *rs;
 		unsigned int parix;
 		do {
@@ -428,15 +434,20 @@ int main(const int argc, const char * argv[]) {
 	}
 
 	string k;
-	cout << "remove" << endl;
-	k = "29";
+	k = "11";
+	cout << "remove " << k << endl;
 	tree.remove(k);
-	cout << tree << endl;
+	cout << tree << endl << endl;
 
-	cout << "remove" << endl;
 	k = "33";
+	cout << "remove " << k << endl;
 	tree.remove(k);
-	cout << tree << endl;
+	cout << tree << endl << endl;
+
+	k = "25";
+	cout << "remove " << k << endl;
+	tree.remove(k);
+	cout << tree << endl << endl;
 
 	return 0;
 }
