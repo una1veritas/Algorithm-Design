@@ -235,7 +235,7 @@ public:
 			ls = node->left_sibling();
 			rs = node->right_sibling();
 			cout << "node->parent = " << *(node->parent) << endl;
-			if (ls != NULL and ls->keycount > ls->min_keycount() ) {
+			if (ls != NULL and ls->keycount > MIN_KEYS ) {
 				// shift from left to right
 				cout << "shift right" << endl;
 				BTreeNode * ls_rightmost = ls->child[ls->keycount];
@@ -244,7 +244,7 @@ public:
 				node->key_insert(*(node->parent->key[parix]),0,ls_rightmost,node->child[0]);
 				node->parent->key[parix] = &lskey;
 				break;
-			} else if (rs != NULL and rs->keycount > rs->min_keycount() ) {
+			} else if (rs != NULL and rs->keycount > MIN_KEYS ) {
 				// shift from right to left
 				cout << "shift left" << endl;
 				BTreeNode * rs_leftmost = rs->child[0];
@@ -252,6 +252,15 @@ public:
 				parix = node->parent->key_index(rskey);
 				node->key_insert(*(node->parent->key[parix-1]),node->parent->keycount,node->child[node->keycount],rs_leftmost);
 				node->parent->key[parix-1] = &rskey;
+				break;
+			} else if (ls != NULL and ls->keycount == MIN_KEYS ) {
+				cout << "merge with left" << endl;
+				break;
+			} else if (rs != NULL and rs->keycount == MIN_KEYS) {
+				cout << "merge with right" << endl;
+				break;
+			} else {
+				// reached to the root
 				break;
 			}
 		} while (! (node->keycount >= node->min_keycount()) );
@@ -420,12 +429,12 @@ int main(const int argc, const char * argv[]) {
 
 	string k;
 	cout << "remove" << endl;
-	k = "12";
+	k = "29";
 	tree.remove(k);
 	cout << tree << endl;
 
 	cout << "remove" << endl;
-	k = "20";
+	k = "33";
 	tree.remove(k);
 	cout << tree << endl;
 
