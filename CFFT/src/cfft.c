@@ -49,32 +49,26 @@ void cfft(dcomplex *vec, int n, dcomplex *scratch) {
 	dst = scratch;
 	// n > 1
 	// do butterfly swap
-	//fprintf(stdout, "swap: ");
 	for(int m = (n>>1); m > 0; m >>= 1) {
 		for(int head = 0; head < n; head += (m<<1) ) {
 			for(int i = 0; i < m; i++) {
-				//fprintf(stdout, "(%d : %d, %d) ", head, head+m, i);
 				dst[head+i] = src[head+2*i];
 				dst[head+m+i] = src[head+2*i+1];
 			}
 		}
-		//fprintf(stdout, "\n");
 		tmp = src; src = dst; dst = tmp;
 	}
 
-	//fprintf(stdout, "merge: ");
 	// divide-and-conqure, only by merging
 	for(int m = 1; m < n; m = (m<<1) ) {
 		for (int h = 0; h < n; h += (m<<1) ) {
 			for(int i = 0; i < m; i++) {
-				//fprintf(stdout, "(%d : %d, %d) ", h, h+m, i);
 				dcomplex w = cexp(- I * /* 2 * */ PI * i / ((double) m) /* n */);
 				dcomplex z = w * src[h + m + i];
 				dst[h + i] = src[h + i] + z;
 				dst[h + m + i] = src[h + i] - z;
 			}
 		}
-		//fprintf(stdout, "\n");
 		tmp = src;
 		src = dst;
 		dst = tmp;
