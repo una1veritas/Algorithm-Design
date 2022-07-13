@@ -30,6 +30,11 @@ private:
 	unsigned int keycount;
 
 public:
+	BTreeNode(void) : parent(NULL), keycount(0) {
+		key[0] = NULL;
+		child[0] = NULL;
+	}
+
 	BTreeNode(const Key & k, BTreeNode * p = NULL, BTreeNode * l = NULL, BTreeNode * r = NULL)
 	: parent(p), keycount(1) {
 		key[0] = &k;
@@ -63,7 +68,7 @@ public:
 	}
 
 	bool is_root() const {
-		return parent == NULL;
+		return parent->parent == NULL;
 	}
 
 	bool is_leaf() const {
@@ -285,9 +290,21 @@ public:
 				break;
 			} else if (rs != NULL and rs->keycount == MIN_KEYS) {
 				cout << "merge with right" << endl;
+				node->key_insert(*(node->parent->key[myix]),node->keycount,node->child[node->keycount],NULL);
+				for(unsigned int i = 0; i < rs->keycount; ++i) {
+					node->key_insert(*(rs->key[i]),node->keycount,rs->child[i],NULL);
+				}
+				node->child[node->keycount] = rs->child[rs->keycount];
+				node->parent->key_remove(myix);
+				node->parent->child[myix] = node;
+				delete rs;
+				node = node->parent;
 				break;
-			} else {
+			} else if ( node->is_root() ){
 				// reached to the root
+				node = node->parent;
+				delete node->child[0];
+				node->child[0] = NULL;
 				break;
 			}
 		} while (! (node->keycount >= node->min_keycount()) );
@@ -317,26 +334,23 @@ public:
 
 struct BTree {
 private:
-	BTreeNode * stub;
+	BTreeNode stub;
 
 public:
-	BTree(void) : stub(NULL) { }
+	BTree(void) : stub() { }
 
 	BTreeNode * root() {
-		return stub;
+		return stub.child[0];
 	}
 
 	const BTreeNode * root() const {
-		return stub;
-	}
-
-	BTreeNode * root(BTreeNode * nodeptr) {
-		return stub = nodeptr;
+		return stub.child[0];
 	}
 
 	BTreeNode * insert(const Key & k) {
 		if (root() == NULL) {
-			return root(new BTreeNode(k));
+			stub.child[0] = new BTreeNode(k, &stub);
+			return stub.child[0];
 		}
 		pair<BTreeNode *, unsigned int> p = root()->find_and_split(k);
 		BTreeNode * node = p.first;
@@ -393,6 +407,11 @@ int main(const int argc, const char * argv[]) {
 	cout << tree << endl << endl;
 
 	k = "33";
+	cout << "remove " << k << endl;
+	tree.remove(k);
+	cout << tree << endl << endl;
+
+	k = "76";
 	cout << "remove " << k << endl;
 	tree.remove(k);
 	cout << tree << endl << endl;
