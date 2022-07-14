@@ -3,9 +3,10 @@ import math
 pf = 'data.txt'
 data = list()
 window = 64
-period = window / 4
+period = window / 2
+period2 = window / 6
 for i in range(window):
-    val = math.sin((2*math.pi*i+10)/period) 
+    val = math.sin((2*math.pi*i+10)/period) + 1/3*math.sin((2*math.pi*i)/period2) 
     #val = ((i % period) - period/2)/period
     data.append(val)
 

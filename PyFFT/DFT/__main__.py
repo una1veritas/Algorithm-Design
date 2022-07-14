@@ -18,7 +18,7 @@ def invdft(varray):
     for t in range(0, n):
         s = 0
         for x in range(0, n):
-            s += varray[x] * cmath.exp(-1j * 2*math.pi/n * t * x)
+            s += varray[x] * cmath.exp(1j * 2*math.pi/n * t * x)
         f.append(s/n)
     return f
 

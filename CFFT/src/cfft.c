@@ -88,7 +88,7 @@ void ifft(dcomplex *v, int n, dcomplex *tmp) {
 	cfft(v, n, tmp);
 
 	for (int i = 0; i < n; i++) {
-		dcomplex t = conj(v[i]) / ((double) n);
+		dcomplex t = v[i] / ((double) n);
 		v[i] = t;
 	}
 	return;

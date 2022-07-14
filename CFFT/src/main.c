@@ -71,16 +71,16 @@ void print_vector(const char *title, dcomplex *x, int n) {
 	int i;
 	printf("%s (dim=%d):\n", title, n);
 	for (i = 0; i < n; i++)
-		printf(" %6d ", i );
+		printf(" %6d\t", i );
 	putchar('\n');
 	for (i = 0; i < n; i++)
-		printf(" %6.3f,", creal(x[i]) );
+		printf(" %6.3f\t", creal(x[i]) );
 	putchar('\n');
 	for (i = 0; i < n; i++)
-		printf(" %6.3f,", cimag(x[i]) );
+		printf(" %6.3f\t", cimag(x[i]) );
 	putchar('\n');
 	for (i = 0; i < n; i++)
-		printf(" %6.3f,", cabs(x[i]) );
+		printf(" %6.3f\t", cabs(x[i]) );
 	printf("\n\n");
 	return;
 }
