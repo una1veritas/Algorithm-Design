@@ -68,7 +68,7 @@ public:
 	}
 
 	bool is_root() const {
-		return parent->parent == NULL;
+		return parent == NULL;
 	}
 
 	bool is_leaf() const {
@@ -248,6 +248,10 @@ public:
 		do {
 			cout << *node << endl;
 			// get the siblings.
+			if ( node->is_root() ){
+				// reached to the root
+				return NULL;
+			}
 			myix = node->parent->child_index(this);
 			if (myix == 0) {
 				ls = NULL;
@@ -287,7 +291,6 @@ public:
 				node->parent->child[myix-1] = ls;
 				delete node;
 				node = node->parent;
-				break;
 			} else if (rs != NULL and rs->keycount == MIN_KEYS) {
 				cout << "merge with right" << endl;
 				node->key_insert(*(node->parent->key[myix]),node->keycount,node->child[node->keycount],NULL);
@@ -299,13 +302,6 @@ public:
 				node->parent->child[myix] = node;
 				delete rs;
 				node = node->parent;
-				break;
-			} else if ( node->is_root() ){
-				// reached to the root
-				node = node->parent;
-				delete node->child[0];
-				node->child[0] = NULL;
-				break;
 			}
 		} while (! (node->keycount >= node->min_keycount()) );
 
@@ -334,23 +330,23 @@ public:
 
 struct BTree {
 private:
-	BTreeNode stub;
+	BTreeNode * stub;
 
 public:
 	BTree(void) : stub() { }
 
 	BTreeNode * root() {
-		return stub.child[0];
+		return stub;
 	}
 
 	const BTreeNode * root() const {
-		return stub.child[0];
+		return stub;
 	}
 
 	BTreeNode * insert(const Key & k) {
 		if (root() == NULL) {
-			stub.child[0] = new BTreeNode(k, &stub);
-			return stub.child[0];
+			stub = new BTreeNode(k, NULL);
+			return stub;
 		}
 		pair<BTreeNode *, unsigned int> p = root()->find_and_split(k);
 		BTreeNode * node = p.first;
@@ -369,7 +365,10 @@ public:
 		if (p.first != NULL)
 			cout << " at " << *p.first;
 		cout << endl;
-		p.first->remove(k, p.second);
+		if ( p.first->remove(k, p.second) == NULL ) {
+			delete stub;
+			stub = NULL;
+		}
 		return NULL;
 	}
 
