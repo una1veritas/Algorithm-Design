@@ -289,8 +289,10 @@ public:
 				ls->child[ls->keycount] = node->child[node->keycount];
 				node->parent->key_remove(myix-1);
 				node->parent->child[myix-1] = ls;
-				delete node;
+				// ls is finished.
+				ls = node;
 				node = node->parent;
+				delete ls;
 			} else if (rs != NULL and rs->keycount == MIN_KEYS) {
 				cout << "merge with right" << endl;
 				node->key_insert(*(node->parent->key[myix]),node->keycount,node->child[node->keycount],NULL);
@@ -315,11 +317,13 @@ public:
 				out << *node.key[i] << " ";
 			}
 		} else {
-			for(unsigned int i = 0; i < node.keycount; ++i) {
-				out << *(node.child[i]) << " ";
-				out << *(node.key[i]) << " ";
+			if (node.keycount > 0) {
+				for(unsigned int i = 0; i < node.keycount; ++i) {
+					out << *(node.child[i]) << " ";
+					out << *(node.key[i]) << " ";
+				}
+				out << *(node.child[node.keycount]);
 			}
-			out << *(node.child[node.keycount]);
 		}
 		out << ") ";
 		return out;
@@ -368,13 +372,18 @@ public:
 		if ( p.first->remove(k, p.second) == NULL ) {
 			delete stub;
 			stub = NULL;
+			cout << "root has been removed." << endl;
 		}
 		return NULL;
 	}
 
 	friend std::ostream & operator<<(std::ostream & out, const BTree & tree) {
 		out << "BTree";
-		out << *(tree.root());
+		if (tree.root() != NULL) {
+			out << *(tree.root());
+		} else {
+			out << "( )";
+		}
 		return out;
 	}
 };
@@ -411,6 +420,11 @@ int main(const int argc, const char * argv[]) {
 	cout << tree << endl << endl;
 
 	k = "76";
+	cout << "remove " << k << endl;
+	tree.remove(k);
+	cout << tree << endl << endl;
+
+	k = "63";
 	cout << "remove " << k << endl;
 	tree.remove(k);
 	cout << tree << endl << endl;
