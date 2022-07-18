@@ -68,7 +68,7 @@ public:
 	}
 
 	bool is_root() const {
-		return parent->parent == NULL;
+		return parent == NULL;
 	}
 
 	bool is_leaf() const {
@@ -248,6 +248,10 @@ public:
 		do {
 			cout << *node << endl;
 			// get the siblings.
+			if ( node->is_root() ){
+				// reached to the root
+				return NULL;
+			}
 			myix = node->parent->child_index(this);
 			if (myix == 0) {
 				ls = NULL;
@@ -285,9 +289,10 @@ public:
 				ls->child[ls->keycount] = node->child[node->keycount];
 				node->parent->key_remove(myix-1);
 				node->parent->child[myix-1] = ls;
-				delete node;
+				// ls is finished.
+				ls = node;
 				node = node->parent;
-				break;
+				delete ls;
 			} else if (rs != NULL and rs->keycount == MIN_KEYS) {
 				cout << "merge with right" << endl;
 				node->key_insert(*(node->parent->key[myix]),node->keycount,node->child[node->keycount],NULL);
@@ -299,13 +304,6 @@ public:
 				node->parent->child[myix] = node;
 				delete rs;
 				node = node->parent;
-				break;
-			} else if ( node->is_root() ){
-				// reached to the root
-				node = node->parent;
-				delete node->child[0];
-				node->child[0] = NULL;
-				break;
 			}
 		} while (! (node->keycount >= node->min_keycount()) );
 
@@ -319,11 +317,13 @@ public:
 				out << *node.key[i] << " ";
 			}
 		} else {
-			for(unsigned int i = 0; i < node.keycount; ++i) {
-				out << *(node.child[i]) << " ";
-				out << *(node.key[i]) << " ";
+			if (node.keycount > 0) {
+				for(unsigned int i = 0; i < node.keycount; ++i) {
+					out << *(node.child[i]) << " ";
+					out << *(node.key[i]) << " ";
+				}
+				out << *(node.child[node.keycount]);
 			}
-			out << *(node.child[node.keycount]);
 		}
 		out << ") ";
 		return out;
@@ -334,23 +334,23 @@ public:
 
 struct BTree {
 private:
-	BTreeNode stub;
+	BTreeNode * stub;
 
 public:
 	BTree(void) : stub() { }
 
 	BTreeNode * root() {
-		return stub.child[0];
+		return stub;
 	}
 
 	const BTreeNode * root() const {
-		return stub.child[0];
+		return stub;
 	}
 
 	BTreeNode * insert(const Key & k) {
 		if (root() == NULL) {
-			stub.child[0] = new BTreeNode(k, &stub);
-			return stub.child[0];
+			stub = new BTreeNode(k, NULL);
+			return stub;
 		}
 		pair<BTreeNode *, unsigned int> p = root()->find_and_split(k);
 		BTreeNode * node = p.first;
@@ -369,13 +369,21 @@ public:
 		if (p.first != NULL)
 			cout << " at " << *p.first;
 		cout << endl;
-		p.first->remove(k, p.second);
+		if ( p.first->remove(k, p.second) == NULL ) {
+			delete stub;
+			stub = NULL;
+			cout << "root has been removed." << endl;
+		}
 		return NULL;
 	}
 
 	friend std::ostream & operator<<(std::ostream & out, const BTree & tree) {
 		out << "BTree";
-		out << *(tree.root());
+		if (tree.root() != NULL) {
+			out << *(tree.root());
+		} else {
+			out << "( )";
+		}
 		return out;
 	}
 };
@@ -412,6 +420,11 @@ int main(const int argc, const char * argv[]) {
 	cout << tree << endl << endl;
 
 	k = "76";
+	cout << "remove " << k << endl;
+	tree.remove(k);
+	cout << tree << endl << endl;
+
+	k = "63";
 	cout << "remove " << k << endl;
 	tree.remove(k);
 	cout << tree << endl << endl;
