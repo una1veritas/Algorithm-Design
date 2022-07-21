@@ -10,41 +10,37 @@
 using std::cout;
 using std::endl;
 
-class UnionFindSet {
-	unsigned int * repr;
-	unsigned int * rank;
+struct UnionFindSet0 {
+private:
+	unsigned int * parent;
 	unsigned int number;
 
 public:
-	UnionFindSet(const unsigned int & n) : number(n) {
-		repr = new unsigned int [number];
-		rank = new unsigned int [number];
+	UnionFindSet0(const unsigned int & n) : number(n) {
+		parent = new unsigned int [number];
 		for(unsigned int i = 0; i < number; ++i) {
-			repr[i] = i; // follow itself.
-			rank[i] = 0;
+			parent[i] = i; // follow itself.
 		}
 	}
 
-	~UnionFindSet() {
-		delete [] repr;
-		delete [] rank;
+	~UnionFindSet0() {
+		delete [] parent;
 	}
 
 	unsigned int find_set(unsigned int x) {
-		unsigned int path[number];
-		unsigned int length = 0;
-		while (x != repr[x]) {
-			path[length++] = x;
-			x = repr[x];
+		unsigned int p, gc = x;
+		while (x != parent[x]) {
+			p = parent[x];
+			parent[gc] = p;
+			gc = x;
+			x = p;
 		}
-		for(unsigned int i = 0; i < length; ++i)
-			repr[path[i]] = x;
 		return x;
 	}
 
 	unsigned int find_set(unsigned int x) const {
-		while ( repr[x] != x) {
-			x = repr[x];
+		while ( parent[x] != x) {
+			x = parent[x];
 		}
 		return x;
 	}
@@ -52,14 +48,109 @@ public:
 	unsigned int merge(unsigned int x, unsigned int y) {
 		x = find_set(x);
 		y = find_set(y);
-		if ( rank[x] > rank[y] ) {
-			repr[y] = x;
+		if ( x == y ) {
+			return x;
+		} else if (x < y) {
+			parent[y] = x;
+			return x;
 		} else {
-			repr[x] = y;
-			if (rank[x] == rank[y])
-				rank[y] = rank[y] + 1;
+			parent[x] = y;
+			return y;
 		}
-		return repr[x];
+	}
+
+	bool in_the_same(const unsigned int & x, const unsigned int & y) {
+		return find_set(x) == find_set(y);
+	}
+
+	bool in_the_same(const unsigned int & x, const unsigned int & y) const {
+		return find_set(x) == find_set(y);
+	}
+
+	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet0 & ufs) {
+		bool printed[ufs.number];
+		out << "UnionFindSet0(";
+		for(unsigned int i = 0; i < ufs.number; ++i) {
+			printed[i] = false;
+		}
+		bool comma = false;
+		for(unsigned int x = 0; x < ufs.number; ++x) {
+			if ( printed[x] )
+				continue;
+			if ( comma )
+				cout << ", ";
+			else
+				comma = true;
+			cout << "{";
+			for(unsigned int i = 0; i < ufs.number; ++i) {
+				if ( ufs.in_the_same(x,i) ) {
+					if ( x != i )
+					cout << ", ";
+					cout << i << " [" << ufs.parent[i] << "] ";
+					printed[i] = true;
+				}
+			}
+			cout << "}";
+		}
+		out << ") ";
+		return out;
+	}
+};
+
+struct UnionFindSet {
+private:
+	unsigned int * parent;
+	unsigned int * rank;
+	unsigned int number;
+
+public:
+	UnionFindSet(const unsigned int & n) : number(n) {
+		parent = new unsigned int [number];
+		rank = new unsigned int [number];
+		for(unsigned int i = 0; i < number; ++i) {
+			parent[i] = i; // follow itself.
+			rank[i] = 0;
+		}
+	}
+
+	~UnionFindSet() {
+		delete [] parent;
+		delete [] rank;
+	}
+
+	unsigned int find_set(const unsigned int & x) {
+		unsigned int t = x, root;
+		while (t != parent[t]) {
+			t = parent[t];
+		}
+		root = t;
+		t = x;
+		while (t != parent[t]) {
+			t = parent[t];
+			parent[t] = root;
+		}
+		return root;
+	}
+
+	unsigned int find_set(unsigned int x) const {
+		while ( parent[x] != x) {
+			x = parent[x];
+		}
+		return x;
+	}
+
+	unsigned int merge(unsigned int x, unsigned int y) {
+		x = find_set(x);
+		y = find_set(y);
+		if (rank[x] == rank[y]) {
+			parent[x] = y; // tie break
+			rank[y] = rank[y] + 1;
+		} else if ( rank[x] > rank[y] ) {
+			parent[y] = x;
+		} else /* if (rank[x] <= rank[y]) */ {
+			parent[x] = y;
+		}
+		return parent[x];
 	}
 
 	bool in_group(const unsigned int & x, const unsigned int & y) const {
@@ -85,7 +176,7 @@ public:
 				if ( ufs.in_group(x,i) ) {
 					if ( x != i )
 					cout << ", ";
-					cout << i << " [" << ufs.repr[i] << ":" << ufs.rank[i]<< "] ";
+					cout << i << " [" << ufs.parent[i] << ":" << ufs.rank[i]<< "] ";
 					printed[i] = true;
 				}
 			}
@@ -95,6 +186,7 @@ public:
 		return out;
 	}
 };
+
 
 int main() {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
@@ -108,11 +200,15 @@ int main() {
 	std::cout << ufs << endl;
 	ufs.merge(5,4);
 	std::cout << ufs << endl;
-	ufs.merge(5,3);
+	ufs.merge(5,6);
 	std::cout << ufs << endl;
-	ufs.merge(3,6);
+	ufs.merge(3,4);
 	std::cout << ufs << endl;
-	ufs.merge(1,7);
+	ufs.merge(1,2);
+	std::cout << ufs << endl;
+	std::cout << endl;
+	unsigned int res = ufs.find_set(7);
+	std::cout << res << endl;
 	std::cout << ufs << endl;
 	return 0;
 }
