@@ -10,20 +10,21 @@
 using std::cout;
 using std::endl;
 
-struct UnionFindSet0 {
-private:
+struct UnionFindSet {
+protected:
 	unsigned int * parent;
 	unsigned int number;
 
 public:
-	UnionFindSet0(const unsigned int & n) : number(n) {
+	UnionFindSet(const unsigned int & n) : number(n) {
 		parent = new unsigned int [number];
 		for(unsigned int i = 0; i < number; ++i) {
 			parent[i] = i; // follow itself.
 		}
 	}
 
-	~UnionFindSet0() {
+	virtual ~UnionFindSet() {
+		cout << "~UnionFindSet " << endl;
 		delete [] parent;
 	}
 
@@ -45,7 +46,7 @@ public:
 		return x;
 	}
 
-	unsigned int merge(unsigned int x, unsigned int y) {
+	virtual unsigned int merge(unsigned int x, unsigned int y) {
 		x = find_set(x);
 		y = find_set(y);
 		if ( x == y ) {
@@ -59,15 +60,20 @@ public:
 		}
 	}
 
-	bool in_the_same(const unsigned int & x, const unsigned int & y) {
+	bool in_the_same_group(const unsigned int & x, const unsigned int & y) {
 		return find_set(x) == find_set(y);
 	}
 
-	bool in_the_same(const unsigned int & x, const unsigned int & y) const {
+	bool in_the_same_group(const unsigned int & x, const unsigned int & y) const {
 		return find_set(x) == find_set(y);
 	}
 
-	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet0 & ufs) {
+	virtual std::ostream & node_str(std::ostream & out, const unsigned int & x) const {
+		out << x << "[" << parent[x] << "] ";
+		return out;
+	}
+
+	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs) {
 		bool printed[ufs.number];
 		out << "UnionFindSet0(";
 		for(unsigned int i = 0; i < ufs.number; ++i) {
@@ -83,10 +89,10 @@ public:
 				comma = true;
 			cout << "{";
 			for(unsigned int i = 0; i < ufs.number; ++i) {
-				if ( ufs.in_the_same(x,i) ) {
+				if ( ufs.in_the_same_group(x,i) ) {
 					if ( x != i )
 					cout << ", ";
-					cout << i << " [" << ufs.parent[i] << "] ";
+					ufs.node_str(cout, i);
 					printed[i] = true;
 				}
 			}
@@ -97,46 +103,22 @@ public:
 	}
 };
 
-struct UnionFindSet {
-private:
-	unsigned int * parent;
+struct RankedUnionFindSet : public UnionFindSet {
+protected:
 	unsigned int * rank;
-	unsigned int number;
 
 public:
-	UnionFindSet(const unsigned int & n) : number(n) {
-		parent = new unsigned int [number];
+	RankedUnionFindSet(const unsigned int & n) :
+		UnionFindSet(n) {
 		rank = new unsigned int [number];
 		for(unsigned int i = 0; i < number; ++i) {
-			parent[i] = i; // follow itself.
 			rank[i] = 0;
 		}
 	}
 
-	~UnionFindSet() {
-		delete [] parent;
+	~RankedUnionFindSet() {
+		cout << "~RankedUnionFindSet " << endl;
 		delete [] rank;
-	}
-
-	unsigned int find_set(const unsigned int & x) {
-		unsigned int t = x, root;
-		while (t != parent[t]) {
-			t = parent[t];
-		}
-		root = t;
-		t = x;
-		while (t != parent[t]) {
-			t = parent[t];
-			parent[t] = root;
-		}
-		return root;
-	}
-
-	unsigned int find_set(unsigned int x) const {
-		while ( parent[x] != x) {
-			x = parent[x];
-		}
-		return x;
 	}
 
 	unsigned int merge(unsigned int x, unsigned int y) {
@@ -144,7 +126,7 @@ public:
 		y = find_set(y);
 		if (rank[x] == rank[y]) {
 			parent[x] = y; // tie break
-			rank[y] = rank[y] + 1;
+			rank[y] += 1;
 		} else if ( rank[x] > rank[y] ) {
 			parent[y] = x;
 		} else /* if (rank[x] <= rank[y]) */ {
@@ -153,36 +135,8 @@ public:
 		return parent[x];
 	}
 
-	bool in_group(const unsigned int & x, const unsigned int & y) const {
-		return find_set(x) == find_set(y);
-	}
-
-	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs) {
-		bool printed[ufs.number];
-		out << "UnionFindSet(";
-		for(unsigned int i = 0; i < ufs.number; ++i) {
-			printed[i] = false;
-		}
-		bool comma = false;
-		for(unsigned int x = 0; x < ufs.number; ++x) {
-			if ( printed[x] )
-				continue;
-			if ( comma )
-				cout << ", ";
-			else
-				comma = true;
-			cout << "{";
-			for(unsigned int i = 0; i < ufs.number; ++i) {
-				if ( ufs.in_group(x,i) ) {
-					if ( x != i )
-					cout << ", ";
-					cout << i << " [" << ufs.parent[i] << ":" << ufs.rank[i]<< "] ";
-					printed[i] = true;
-				}
-			}
-			cout << "}";
-		}
-		out << ") ";
+	std::ostream & node_str(std::ostream & out, const unsigned int & x) const {
+		out << x << "[" << parent[x] << ":" << rank[x] << "] ";
 		return out;
 	}
 };
@@ -190,7 +144,7 @@ public:
 
 int main() {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	UnionFindSet ufs(8);
+	RankedUnionFindSet ufs(8);
 	std::cout << ufs << endl;
 	ufs.merge(0,1);
 	std::cout << ufs << endl;
@@ -210,5 +164,7 @@ int main() {
 	unsigned int res = ufs.find_set(7);
 	std::cout << res << endl;
 	std::cout << ufs << endl;
+
+	UnionFindSet s(4);
 	return 0;
 }
