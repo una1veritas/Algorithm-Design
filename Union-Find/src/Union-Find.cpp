@@ -16,31 +16,29 @@ struct UnionFindSet {
 
 	UnionFindSet(const unsigned int & n) : number(n) {
 		parent = new unsigned int [number];
-		for(unsigned int i = 0; i < number; ++i) {
+		for(unsigned int i = 0; i < number; ++i)
 			parent[i] = i; // follow itself.
-		}
 	}
 
 	virtual ~UnionFindSet() {
-		cout << "~UnionFindSet " << endl;
+		//cout << "~UnionFindSet " << endl;
 		delete [] parent;
 	}
 
-	unsigned int find_set(unsigned int x) {
-		unsigned int p, gc = x;
+	virtual unsigned int find_set(unsigned int x) {
+		unsigned int p, child = x;
 		while (x != parent[x]) {
 			p = parent[x];
-			parent[gc] = p;
-			gc = x;
+			parent[child] = p;
+			child = x;
 			x = p;
 		}
 		return x;
 	}
 
 	unsigned int find_set(unsigned int x) const {
-		while ( parent[x] != x) {
+		while ( parent[x] != x)
 			x = parent[x];
-		}
 		return x;
 	}
 
@@ -107,16 +105,27 @@ struct RankedUnionFindSet : public UnionFindSet {
 	RankedUnionFindSet(const unsigned int & n) :
 		UnionFindSet(n) {
 		rank = new unsigned int [number];
-		for(unsigned int i = 0; i < number; ++i) {
+		for(unsigned int i = 0; i < number; ++i)
 			rank[i] = 0;
-		}
 	}
 
 	~RankedUnionFindSet() {
-		cout << "~RankedUnionFindSet " << endl;
+		//cout << "~RankedUnionFindSet " << endl;
 		delete [] rank;
 	}
 
+	unsigned int find_set(unsigned int x) {
+		unsigned int root = x;
+		while (root != parent[root])
+			root = parent[root];
+		unsigned int t;
+		while (x != parent[x]) {
+			t = x;
+			x = parent[x];
+			parent[t] = root;
+		}
+		return x;
+	}
 	unsigned int merge(unsigned int x, unsigned int y) {
 		x = find_set(x);
 		y = find_set(y);
@@ -156,11 +165,11 @@ int main() {
 	std::cout << ufs << endl;
 	ufs.merge(1,2);
 	std::cout << ufs << endl;
-	std::cout << endl;
-	unsigned int res = ufs.find_set(7);
-	std::cout << res << endl;
-	std::cout << ufs << endl;
+	std::cout << "find_set " <<  ufs.find_set(5) << endl;
+	std::cout << ufs << endl << endl;
+
 
 	UnionFindSet s(4);
+	std::cout << s << endl;
 	return 0;
 }
