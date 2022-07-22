@@ -12,42 +12,34 @@
 
 using namespace std;
 
-typedef std::string Data;
+typedef std::string Key;
 
 struct Node234 {
 private:
 	Node234 * parent;
-	Node234 * rightmostchild;
-	struct DataChild {
-		Data data;
-		Node234 * leftchild;
-		/*
-		DataChild(const Data & d, Node234 * ptr = NULL) : data(d), leftchild(ptr) {}
-		DataChild(const DataChild & dc) : data(dc.data), leftchild(dc.leftchild) {}
-		*/
-	};
-	vector<DataChild> data234;
+	const Key * keyptr[3];
+	unsigned int keycount;
+	Node234 * childptr[4];
 
-	constexpr static unsigned int data_max_size = 3;
+	constexpr static unsigned int key_max_size = 3;
 	constexpr static unsigned int children_max_size = 4;
 
 public:
-	Node234(const Data & d, Node234 * par = NULL, Node234 * left = NULL, Node234 * right = NULL) {
-		// constructor of a 2-node.
+	Node234(const Key & k, Node234 * par = NULL, Node234 * left = NULL, Node234 * right = NULL)
+	: parent(par), keycount(0) {
+		// construct a 2-node.
 		// NULL, NULL, NULL makes a root-leaf.
-		parent = par;
-		data234.push_back(DataChild{d,left});
-		rightmostchild = right;
+		keyptr[keycount++] = &k;
+		childptr[0] = left;
+		childptr[1] = right;
 	}
 
 	~Node234() {
-		for(auto i = data234.cbegin(); i != data234.cend(); ++i) {
-			if (i->leftchild != NULL)
-				delete i->leftchild;
+		for(unsigned int i = 0; i < keycount; ++i) {
+			delete childptr[i];
 		}
-		data234.clear();
-		if (rightmostchild != NULL)
-			delete rightmostchild;
+		delete childptr[keycount];
+		keycount = 0;
 	}
 
 	bool is_root() const {
@@ -55,31 +47,27 @@ public:
 	}
 
 	bool is_leaf() const {
-		for(auto i = data234.cbegin(); i != data234.cend(); ++i) {
-			if ( i->leftchild != NULL )
-				return false;
-		}
-		if ( rightmostchild != NULL )
-			return false;
-		return true;
+		if (keycount != 0 and childptr[0] == NULL)
+			return true;
+		return false;
 	}
 
 	bool is_full() const {
-		return data234.size() == data_max_size;
+		return keycount == key_max_size;
 	}
 
 private:
-	unsigned int data_lowerbound(const Data & d) {
-		// assuming one or more data exist(s).
+	unsigned int key_lowerbound(const Key & k) {
+		// assuming one or more key(s) exist(s).
 		unsigned int i;
-		for (i = 0 ; i < data234.size() ; ++i) {
-			if ( d <= data234[i].data )
+		for (i = 0 ; i < keycount ; ++i) {
+			if ( k <= *keyptr[i] )
 				break;
 		}
 		return i;
 	}
 
-	unsigned int insert_in_node(const Data & d) {
+	unsigned int insert_key_to_node(const Key & k) {
 		if ( data234.size() == data_max_size ) {
 			cerr << "error: insert_in_data234 failure." << endl;
 			return data_max_size;
