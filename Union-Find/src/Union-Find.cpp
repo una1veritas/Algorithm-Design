@@ -25,13 +25,13 @@ struct UnionFindSet {
 		delete [] parent;
 	}
 
+	// path halving
 	virtual unsigned int find_set(unsigned int x) {
-		unsigned int p, child = x;
+		unsigned int child;
 		while (x != parent[x]) {
-			p = parent[x];
-			parent[child] = p;
 			child = x;
-			x = p;
+			x = parent[x];
+			parent[child] = parent[x];
 		}
 		return x;
 	}
@@ -149,22 +149,22 @@ struct RankedUnionFindSet : public UnionFindSet {
 
 int main() {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	RankedUnionFindSet ufs(8);
-	std::cout << ufs << endl;
-	ufs.merge(0,1);
+	UnionFindSet ufs(8);
 	std::cout << ufs << endl;
 	ufs.merge(6,7);
 	std::cout << ufs << endl;
-	ufs.merge(2,3);
-	std::cout << ufs << endl;
-	ufs.merge(5,4);
-	std::cout << ufs << endl;
-	ufs.merge(5,6);
+	ufs.merge(4,5);
 	std::cout << ufs << endl;
 	ufs.merge(3,4);
 	std::cout << ufs << endl;
+	ufs.merge(2,3);
+	std::cout << ufs << endl;
+	ufs.merge(2,6);
+	std::cout << ufs << endl;
 	ufs.merge(1,2);
 	std::cout << ufs << endl;
+	ufs.merge(1,0);
+	std::cout << ufs << endl << endl;
 	std::cout << "find_set " <<  ufs.find_set(5) << endl;
 	std::cout << ufs << endl << endl;
 
