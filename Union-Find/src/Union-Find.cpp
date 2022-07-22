@@ -10,10 +10,12 @@
 using std::cout;
 using std::endl;
 
-struct UnionFindSet {
+class UnionFindSet {
+protected:
 	unsigned int * parent;
 	unsigned int number;
 
+public:
 	UnionFindSet(const unsigned int & n) : number(n) {
 		parent = new unsigned int [number];
 		for(unsigned int i = 0; i < number; ++i)
@@ -99,9 +101,10 @@ struct UnionFindSet {
 	}
 };
 
-struct RankedUnionFindSet : public UnionFindSet {
+class RankedUnionFindSet : public UnionFindSet {
 	unsigned int * rank;
 
+public:
 	RankedUnionFindSet(const unsigned int & n) :
 		UnionFindSet(n) {
 		rank = new unsigned int [number];
@@ -169,7 +172,7 @@ int main() {
 	std::cout << ufs << endl << endl;
 
 
-	UnionFindSet s(4);
+	RankedUnionFindSet s(4);
 	std::cout << s << endl;
 	return 0;
 }
