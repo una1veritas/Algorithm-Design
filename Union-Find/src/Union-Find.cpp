@@ -130,8 +130,13 @@ struct RankedUnionFindSet : public UnionFindSet {
 		x = find_set(x);
 		y = find_set(y);
 		if (rank[x] == rank[y]) {
-			parent[x] = y; // tie break
-			rank[y] += 1;
+			if (x < y) {
+				parent[y] = x;
+				rank[x] += 1;
+			} else {
+				parent[x] = y;
+				rank[y] += 1;
+			}
 		} else if ( rank[x] > rank[y] ) {
 			parent[y] = x;
 		} else /* if (rank[x] <= rank[y]) */ {
@@ -149,7 +154,7 @@ struct RankedUnionFindSet : public UnionFindSet {
 
 int main() {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	UnionFindSet ufs(8);
+	RankedUnionFindSet ufs(8);
 	std::cout << ufs << endl;
 	ufs.merge(6,7);
 	std::cout << ufs << endl;
@@ -165,8 +170,8 @@ int main() {
 	std::cout << ufs << endl;
 	ufs.merge(1,0);
 	std::cout << ufs << endl << endl;
-	std::cout << "find_set " <<  ufs.find_set(5) << endl;
-	std::cout << ufs << endl << endl;
+	//std::cout << "find_set " <<  ufs.find_set(5) << endl;
+	//std::cout << ufs << endl << endl;
 
 
 	UnionFindSet s(4);
