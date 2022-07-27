@@ -54,7 +54,7 @@ public:
 	}
 
 	bool is_root() const {
-		return parent == NULL or parent->is_stub();
+		return parent == NULL;
 	}
 
 	bool is_leaf() const {
@@ -160,6 +160,18 @@ public:
 		parent->childptr[pos+1] = this;
 		keycount = 1;
 		return;
+	}
+
+	void delete_key_from_node(const Key & k) {
+		unsigned int ix = key_upperbound_index(k);
+		if ( * keyptr[ix] == k and is_root() ) {
+			for(unsigned int i = ix; i < keycount; ++i) {
+				keyptr[i] = keyptr[i+1];
+				childptr[i+1] = childptr[i+2];
+			}
+			keycount = 0;
+			return;
+		}
 	}
 
 	friend ostream & operator<<(ostream & out, const Node234 & node) {
