@@ -25,11 +25,9 @@ private:
 	constexpr static unsigned int children_max_size = 4;
 
 public:
-	// construct a stab node.
-	Node234(void) {
-		parent = NULL;
+	Node234() : parent(NULL), keycount(0) {
+		keyptr[0] = NULL;
 		childptr[0] = NULL;
-		keycount = 0;
 	}
 
 	Node234(const Key & k, Node234 * par = NULL, Node234 * left = NULL, Node234 * right = NULL)
@@ -58,7 +56,7 @@ public:
 	}
 
 	bool is_leaf() const {
-		if (keycount != 0 and childptr[0] == NULL)
+		if (childptr[0] == NULL)
 			return true;
 		return false;
 	}
@@ -83,7 +81,7 @@ private:
 			cerr << "error: insert_in_data234 failure." << endl;
 			return key_max_size;
 		}
-		if (keycount == 0) {
+		if (keycount == 0) { // empty root
 			keyptr[0] = &k;
 			childptr[0] = NULL;
 			childptr[1] = NULL;
@@ -104,21 +102,24 @@ private:
 	Node234 * find_insert_node(const Key & k, const bool findBottom = true) {
 		Node234 * att = this;
 		for(;;) {
-			//std::cout << "find " << d << " in " << *att << std::endl;
-			if (!att->is_leaf() and att->is_full()) {
+			//cout << "find " << k << " in " << *att << std::endl;
+			if (att->is_full()) {
 				std::cout << "encountered a node must be splitted." << std::endl;
-				att->split();
-				att = att->parent;
+				cout << *att << endl;
+				att = att->split();
+				cout << *att << endl;
 			}
 			if ( att->is_leaf() )
 				break;
 			unsigned int i = att->key_upperbound_index(k);
 			//std::cout << " pos= " << i << std::endl;
-			att = childptr[i];
-			if ( i < keycount and *keyptr[i] == k) {
+			if ( i < att->keycount and *(att->keyptr[i]) == k) {
+				att = att->childptr[i];
 				if ( findBottom )
 					continue;
 				break;
+			} else {
+				att = att->childptr[i];
 			}
 		}
 		return att;
@@ -139,27 +140,28 @@ public:
 		return NULL;
 	}
 
-	void split() {
+	Node234 * split() {
 		if ( !is_full() ) {
 			std::cout << "error! tried to split a not-full node." << std::endl;
-			return;
+			return this;
 		}
 		Node234 * left, *right;
 		if ( is_root() ) {
 			std::cout << "going to split the root." << std::endl;
-			right = new Node234(*keyptr[2], this, childptr[2],childptr[3]);
+			right = new Node234(*keyptr[2], this, childptr[2], childptr[3]);
 			left= new Node234(*keyptr[0], this, childptr[0], childptr[1]);
 			keyptr[0] = keyptr[1];
-			childptr[0] = childptr[1];
-			childptr[1] = childptr[2];
+			childptr[0] = left;
+			childptr[1] = right;
 			keycount = 1;
-			return;
+			return this;
+		} else {
+			right = new Node234(*keyptr[2], parent, childptr[2], childptr[3]);
+			unsigned int pos = parent->insert_key_to_node(*keyptr[1]);
+			parent->childptr[pos+1] = right;
+			keycount = 1;
+			return parent;
 		}
-		right = new Node234(*keyptr[2], parent, childptr[2], childptr[3]);
-		unsigned int pos = parent->insert_key_to_node(*keyptr[1]);
-		parent->childptr[pos+1] = this;
-		keycount = 1;
-		return;
 	}
 
 	void delete_key_from_node(const Key & k) {
@@ -189,43 +191,49 @@ public:
 		return out;
 	}
 
-	friend Node234;
+	friend struct Tree234;
 };
 
 struct Tree234 {
 	Node234 root;
 public:
 
-	Tree234() : root() {	}
+	Tree234() : root() {}
 
 	void insert(const Key & k) {
 		root.insert(k);
 	}
+
+	friend ostream & operator<<(ostream & out, const Tree234 & tree) {
+		out << tree.root;
+		return out;
+	}
 };
 
 int main(int argc, char * argv[]) {
+	std::string * args;
+	unsigned int i, count;
+	cout << "Hello!" << endl;
 	if ( argc == 1 ) {
 		cout << "supply arguments." << endl;
 		return -1;
+	} else {
+		args = new std::string [argc-1];
+		for(i = 1, count = 0; i < (unsigned int) argc; ++i, ++count){
+			args[count] = argv[i];
+		}
 	}
-	cout << "Hello!" << endl;
 
-	Node234 * tree = NULL;
+	Tree234 tree234;
 
-	for(int i = 1; i < argc; ++i){
-		std::cout << "Inserting " << argv[i] << " to the tree." << std::endl;
-
-		if (tree == NULL) {
-			tree = new Node234(argv[i]);
-		} else {
-			tree->insert(argv[i]);
-		}
-		if (tree != NULL) {
-			std::cout << *tree << std::endl;
-		}
+	for(int i = 0; i < count; ++i){
+		std::cout << "Inserting " << args[i] << " to the tree." << std::endl;
+		tree234.insert(args[i]);
+		std::cout << tree234 << std::endl;
 	}
 
 	std::cout << "done." << std::endl;
-	delete tree;
+
+	delete [] args;
 	return 0;
 }
