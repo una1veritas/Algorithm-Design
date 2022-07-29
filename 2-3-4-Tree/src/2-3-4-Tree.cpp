@@ -65,6 +65,10 @@ public:
 		return keycount == key_max_size;
 	}
 
+	bool is_2node() const {
+		return keycount == 1;
+	}
+
 private:
 	unsigned int key_upperbound_index(const Key & k) {
 		// assuming one or more key(s) exist(s).
@@ -164,7 +168,18 @@ public:
 		}
 	}
 
-	void delete_key_from_node(const Key & k) {
+	Node234 * remove(const Key & k) {
+		Node234 * node = this->find_insert_node(k,false);
+		if ( node->is_2node() ) {
+			cout << "hanged at 2-node." << endl;
+			return node;
+		} else {
+
+			return node;
+		}
+	}
+
+	void remove_key_from_node(const Key & k) {
 		unsigned int ix = key_upperbound_index(k);
 		if ( * keyptr[ix] == k and is_root() ) {
 			for(unsigned int i = ix; i < keycount; ++i) {
@@ -202,6 +217,10 @@ public:
 
 	void insert(const Key & k) {
 		root.insert(k);
+	}
+
+	void remove(const Key & k) {
+		root.remove(k);
 	}
 
 	friend ostream & operator<<(ostream & out, const Tree234 & tree) {
