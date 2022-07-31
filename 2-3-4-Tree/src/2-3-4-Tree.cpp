@@ -87,11 +87,14 @@ private:
 		return i;
 	}
 
-	unsigned int insert_key_to_node(const Key & k, Node234 * key_rightchild = NULL) {
+	// insert the pointer of given key at an apropriate position
+	// to keyptr[i] and copy the childptr[i] as its left and right
+	unsigned int insert_key_to_node(const Key & k) {
 		if ( is_full() ) {
 			cerr << "error: insert_in_data234 failure." << endl;
 			return key_max_size;
 		}
+		//cout << *this << ", " << k << endl;
 		if (keycount == 0) { // empty root
 			keyptr[0] = &k;
 			childptr[0] = NULL;
@@ -100,20 +103,21 @@ private:
 			return 0;
 		}
 		unsigned int i = key_ub_index(k);
+		childptr[keycount+1] = childptr[keycount];
 		for(unsigned int j = keycount; j > i; --j) {
 			keyptr[j] = keyptr[j-1];
-			childptr[j+1] = childptr[j];
+			childptr[j] = childptr[j-1];
 		}
 		keyptr[i] = &k;
-		childptr[i+1] = key_rightchild;
-		keycount += 1;
+		++keycount;
+		//cout << *this << endl;
 		return i;
 	}
 
 	Node234 * find_leaf_or_node(const Key & k, const bool leaf = true, const bool split = true) {
 		Node234 * att = this;
 		for(;;) {
-			cout << "find " << k << " in " << *att << std::endl;
+			//cout << "going to find " << k << " in " << *att << std::endl;
 			if (att->is_full() and split) {
 				//std::cout << "encountered a node must be splitted." << std::endl;
 				//cout << *att << endl;
@@ -123,7 +127,7 @@ private:
 			if ( att->is_leaf() )
 				break;
 			unsigned int i = att->key_ub_index(k);
-			std::cout << "att = " << *att << " pos = " << i << std::endl;
+			//std::cout << "att = " << *att << " pos = " << i << std::endl;
 			if ( i < att->keycount and *(att->keyptr[i]) == k) {
 				if (! leaf) break;
 			}
@@ -138,6 +142,7 @@ private:
 		unsigned int keypos, i;
 		for(;;) {
 			att = att->find_leaf_or_node(k, false, false);
+			cout << *att << endl;
 			i = att->key_ub_index(k);
 			std::cout << *att << " pos = " << i << std::endl;
 			if ( i < att->keycount and *(att->keyptr[i]) == k) {
@@ -148,7 +153,7 @@ private:
 				break;
 			att = att->childptr[i];
 		}
-		if (!keynode->is_leaf() and keynode != NULL) {
+		if (keynode != NULL and !keynode->is_leaf()) {
 			const Key * tptr = keynode->keyptr[keypos];
 			keynode->keyptr[keypos] = att->keyptr[att->keycount - 1];
 			att->keyptr[att->keycount - 1] = tptr;
@@ -186,6 +191,39 @@ private:
 		}
 	}
 
+	const Key * rotate_into() {
+		unsigned int ix;
+		Node234 * sibling;
+		for(ix = 0; parent->childptr[ix] != this and ix < parent->keycount; ++ix);
+		cout << *parent << endl;
+		if (ix > 0 and ! parent->childptr[ix-1]->is_2node()) {
+			sibling = parent->childptr[ix-1];  // use left sibgling
+			const Key & parentkey = * parent->keyptr[ix-1];
+			cout << *sibling << ", " << *this << endl;
+			const Key & slastkey = * sibling->keyptr[sibling->keycount - 1];
+			Node234 * slastchild = sibling->childptr[sibling->keycount];
+			sibling->remove_key_from_node(slastkey);
+			parent->keyptr[ix-1] = &slastkey;
+			insert_key_to_node(parentkey);
+			childptr[0] = slastchild;
+			cout << *parent << endl;
+			return &parentkey;
+		} else if (ix < parent->keycount and ! parent->childptr[ix+1]->is_2node()) {
+			sibling = parent->childptr[ix+1];  // use right sibgling
+			const Key & parentkey = * parent->keyptr[ix];
+			cout << *sibling << endl;
+			const Key & sfirstkey = * sibling->keyptr[0];
+			Node234 * sfirstchild = sibling->childptr[0];
+			sibling->remove_key_from_node(sfirstkey);
+			parent->keyptr[ix] = &sfirstkey;
+			insert_key_to_node(parentkey);
+			childptr[keycount] = sfirstchild;
+			cout << *parent << endl;
+			return &parentkey;
+		}
+		return NULL;
+	}
+
 public:
 	Node234 * insert(const Key & k) {
 		// std::cout << "inserting " << d << std::endl;
@@ -199,31 +237,6 @@ public:
 			std::cout << "encountered full-node to insert " << *node << std::endl;
 		}
 		return NULL;
-	}
-
-	Node234 * sibling34() {
-		Node234 * p = parent;
-		unsigned int pos;
-		for(pos = 0; this != p->childptr[pos] and pos < p->keycount; ++pos);
-		if (pos > 0 and !p->childptr[pos-1]->is_2node()) {
-			return p->childptr[pos-1];
-		} else if (pos < p->keycount-1 and !p->childptr[pos+1]->is_2node()) {
-			return p->childptr[pos+1];
-		}
-		return NULL;
-	}
-
-	const Key * extract_key(unsigned int ix) {
-		const Key * ptr = NULL;
-		if (ix < keycount) {
-			ptr = keyptr[ix];
-		}
-		for(unsigned int i = ix; i < keycount; ++i) {
-			keyptr[i] = keyptr[i+1];
-			childptr[i+1] = childptr[i+2];
-		}
-		--keycount;
-		return ptr;
 	}
 
 	const Key * remove_key_from_node(const Key & k) {
@@ -249,22 +262,18 @@ public:
 		if (ix > node->keycount)
 			return this;  // no need to remove
 		if ( ! node->is_2node() ) {
-			node->extract_key(ix);
+			node->remove_key_from_node(k);
 			return node;
 		} else {
-			cout << "hanged at 2-leaf." << endl;
-			Node234 * s34 = node->sibling34();
-			cout << *s34 << endl;
-			if (s34 != NULL) {
-				if (*s34->keyptr[0] < k) {
-					// s34 is left sibling
-					node->insert_key_to_node(*s34->extract_key(s34->keycount-1));
-				} else {
-					node->insert_key_to_node(*s34->extract_key(0));
-				}
+			cout << "encountered a 2-leaf." << endl;
+			if ( node->rotate_into() != NULL ) {
+				// use a rotation.
 				cout << * node << ", " << ix << endl;
 				node->remove_key_from_node(k);
 				cout << * node << endl;
+			} else if ( true ) {
+				// use a merge.
+				cout << "use merge " << endl;
 			}
 			return node;
 		}
@@ -304,7 +313,7 @@ public:
 	}
 
 	friend ostream & operator<<(ostream & out, const Tree234 & tree) {
-		out << tree.root;
+		out << "234Tree" << tree.root ;
 		return out;
 	}
 };
@@ -326,15 +335,20 @@ int main(int argc, char * argv[]) {
 	Tree234 tree234;
 
 	for(unsigned int i = 0; i < count; ++i){
-		std::cout << "Inserting " << args[i] << " to the tree." << std::endl;
+		cout << "Inserting " << args[i] << " to the tree." << endl;
 		tree234.insert(args[i]);
-		std::cout << tree234 << std::endl;
+		cout << tree234 << endl << endl;
 	}
 
 	cout << "done." << std::endl;
 
 	tree234.remove(string("P"));
  	cout << tree234 << endl;
+	tree234.remove(string("N"));
+ 	cout << tree234 << endl;
+	tree234.remove(string("M"));
+ 	cout << tree234 << endl;
+
 
 	delete [] args;
 	return 0;
