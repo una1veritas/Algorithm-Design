@@ -7,11 +7,13 @@
 //============================================================================
 
 #include <iostream>
+#include <random>
+#include <chrono>
+
 using std::cout;
 using std::endl;
 
 class UnionFindSet {
-protected:
 	unsigned int * parent;
 	unsigned char * rank;
 	unsigned int number;
@@ -93,34 +95,23 @@ public:
 	}
 
 	std::ostream & node_str(std::ostream & out, const unsigned int & x) const {
-		out << x << "[" << parent[x] << ":" << int(rank[x]) << "] ";
+		out << x; // << "[" << parent[x] << ":" << int(rank[x]) << "] ";
 		return out;
 	}
 
 	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs) {
-		bool printed[ufs.number];
 		out << "UnionFindSet0(";
-		for(unsigned int i = 0; i < ufs.number; ++i) {
-			printed[i] = false;
-		}
-		bool comma = false;
 		for(unsigned int x = 0; x < ufs.number; ++x) {
-			if ( printed[x] )
-				continue;
-			if ( comma )
-				cout << ", ";
-			else
-				comma = true;
-			cout << "{";
-			for(unsigned int i = 0; i < ufs.number; ++i) {
-				if ( ufs.in_the_same(x,i) ) {
-					if ( x != i )
-					cout << ", ";
-					ufs.node_str(cout, i);
-					printed[i] = true;
+			if ( ufs.parent[x] == x ) {
+				// root
+				cout << "{" << x ;
+				for(unsigned int y = 0; y < ufs.number; ++y) {
+					if (x != y and ufs.in_the_same(x, y) ) {
+						cout << ", " << y ;
+					}
 				}
+				cout << "}, ";
 			}
-			cout << "}";
 		}
 		out << ") ";
 		return out;
@@ -128,26 +119,62 @@ public:
 };
 
 
-int main() {
+int main(const int argc, const char * argv[]) {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	UnionFindSet ufs(8);
-	std::cout << ufs << endl;
-	ufs.union_set(6,7);
-	std::cout << ufs << endl;
-	ufs.union_set(4,5);
-	std::cout << ufs << endl;
-	ufs.union_set(3,4);
-	std::cout << ufs << endl;
-	ufs.union_set(2,3);
-	std::cout << ufs << endl;
-	ufs.union_set(2,6);
-	std::cout << ufs << endl;
-	ufs.union_set(1,2);
-	std::cout << ufs << endl;
-	ufs.union_set(1,0);
-	std::cout << ufs << endl << endl;
-	//std::cout << "find_set " <<  ufs.find_set(5) << endl;
-	//std::cout << ufs << endl << endl;
+	if (argc == 1) {
+		cout << "no arguments. exit." << endl;
+		return EXIT_SUCCESS;
+	}
+	unsigned int number = std::strtol(argv[1], NULL, 10);
+	int seed;
+	if (argc <= 2) {
+		std::random_device rnd;
+		seed = rnd();
+	} else {
+		seed = std::strtol(argv[2],NULL,10);
+	}
+	long repeats;
+	if ( argc <= 3 ) {
+		repeats = 1000;
+	} else {
+		repeats = std::strtol(argv[3],NULL, 10);
+	}
 
-	return 0;
+	std::mt19937 mt(seed);
+	long count_union = 0;
+	long count_find = 0;
+	cout << "union-find set size = " << number << endl;
+
+	std::chrono::system_clock::time_point start, stop;
+	start = std::chrono::system_clock::now();
+
+	UnionFindSet ufs(number);
+
+	for(long i = 0; i < repeats; ++i) {
+		unsigned int x = mt() % number;
+		unsigned int y = mt() % number;
+		switch( mt() % 2 ) {
+		case 0:
+			//cout << x << ", " << y << endl;
+			ufs.union_set(x, y);
+			++count_union;
+			break;
+		case 1:
+			//cout << x << endl;
+			ufs.find_set(x);
+			++count_find;
+			break;
+		}
+	}
+
+	stop = std::chrono::system_clock::now();
+	//std::time_t tstamp = std::chrono::system_clock::to_time_t(start);
+	//std::cout << std::ctime(&tstamp);
+	auto diff = stop - start;
+	auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
+	std::cout << msec << " msec." << endl;
+	std::cout << "union " << count_union << ", find " << count_find << endl;
+
+	//cout << ufs << endl;
+	return EXIT_SUCCESS;
 }

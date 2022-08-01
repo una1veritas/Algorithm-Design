@@ -12,14 +12,14 @@
 
 using namespace std;
 
-typedef std::string Data;
+typedef std::string Key;
 
 struct RedBlackNode {
 //private:
 	RedBlackNode * parent;
 	RedBlackNode * lchild, *rchild;
 	bool color;
-	const Data & data;
+	const Key & data;
 
 public:
 	enum NodeColor {
@@ -28,7 +28,7 @@ public:
 	};
 
 public:
-	RedBlackNode(const Data & d, RedBlackNode * par = NULL, RedBlackNode * left = NULL, RedBlackNode * right = NULL, const bool col = true)
+	RedBlackNode(const Key & d, RedBlackNode * par = NULL, RedBlackNode * left = NULL, RedBlackNode * right = NULL, const bool col = true)
 	: parent(par), lchild(left), rchild(right), color(col), data(d) {}
 
 	~RedBlackNode() {
@@ -110,17 +110,8 @@ public:
 	}
 
 private:
-	/*
-	RedBlackNode * find_root() {
-		for (RedBlackNode * curr = this; curr != NULL; curr = curr->parent) {
-			if (curr->is_root())
-				return curr;
-		}
-		return NULL;
-	}
-	*/
 
-	RedBlackNode * find_parent(const Data & d) {
+	RedBlackNode * find_parent(const Key & d) {
 		// finds the parent of insertion point (NULL)
 		RedBlackNode * par = NULL;
 		RedBlackNode * cur = this;
@@ -139,13 +130,10 @@ private:
 		//std::cout << "rotate right " << *this << " -> ";
 		RedBlackNode ** handler;
 		RedBlackNode * left = lchild;
-		//RedBlackNode * leftleft  = lchild->lchild;
 		RedBlackNode * leftright = lchild->rchild;
-		//RedBlackNode * right = rchild;
 		if ( is_left() )
 			handler = &(parent->lchild);
-		else //
-			if ( is_right() )
+		else
 			handler = &(parent->rchild);
 		*handler = left;
 		left->parent = parent;
@@ -177,7 +165,7 @@ private:
 	}
 
 public:
-	RedBlackNode * insert(const Data & d) {
+	RedBlackNode * insert(const Key & d) {
 		RedBlackNode * p = this->find_parent(d);
 		RedBlackNode ** handler;
 		// re-determine the insertion point
@@ -281,7 +269,7 @@ public:
 		return stub.lchild->clear();
 	}
 
-	RedBlackNode * insert(const Data & d) {
+	RedBlackNode * insert(const Key & d) {
 		return (&stub)->insert(d);
 	}
 
