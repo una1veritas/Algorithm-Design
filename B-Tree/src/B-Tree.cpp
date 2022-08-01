@@ -403,6 +403,7 @@ int main(const int argc, const char * argv[]) {
 		cout << tree << endl << endl;
 	}
 
+	/*
 	string k;
 	k = "29";
 	cout << "remove " << k << endl;
@@ -428,6 +429,6 @@ int main(const int argc, const char * argv[]) {
 	cout << "remove " << k << endl;
 	tree.remove(k);
 	cout << tree << endl << endl;
-
+	*/
 	return 0;
 }
