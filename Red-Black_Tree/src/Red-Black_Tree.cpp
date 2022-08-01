@@ -19,7 +19,7 @@ struct RedBlackNode {
 	RedBlackNode * parent;
 	RedBlackNode * lchild, *rchild;
 	bool color;
-	const Key & data;
+	const Key & keyref;
 
 public:
 	enum NodeColor {
@@ -28,8 +28,8 @@ public:
 	};
 
 public:
-	RedBlackNode(const Key & d, RedBlackNode * par = NULL, RedBlackNode * left = NULL, RedBlackNode * right = NULL, const bool col = true)
-	: parent(par), lchild(left), rchild(right), color(col), data(d) {}
+	RedBlackNode(const Key & k, RedBlackNode * par = NULL, RedBlackNode * left = NULL, RedBlackNode * right = NULL, const bool col = true)
+	: parent(par), lchild(left), rchild(right), color(col), keyref(k) {}
 
 	~RedBlackNode() {
 		return;
@@ -111,15 +111,19 @@ public:
 
 private:
 
-	RedBlackNode * find_parent(const Key & d) {
+	RedBlackNode * find_parent(const Key & k) {
 		// finds the parent of insertion point (NULL)
 		RedBlackNode * par = NULL;
 		RedBlackNode * cur = this;
+		if ( cur->is_stub() ) {
+			par = cur;
+			cur = par->lchild;
+		}
 		for ( ;cur != NULL; ) {
 			par = cur;
-			if (par->is_stub() or d <= par->data) {
+			if (k <= par->keyref) {
 				cur = par->lchild;
-			} else if ( par->data <= d ) {
+			} else if ( par->keyref <= k ) {
 				cur = par->rchild;
 			}
 		}
@@ -165,21 +169,25 @@ private:
 	}
 
 public:
-	RedBlackNode * insert(const Key & d) {
-		RedBlackNode * p = this->find_parent(d);
+	RedBlackNode * insert(const Key & k) {
+		RedBlackNode * p = this->find_parent(k);
 		RedBlackNode ** handler;
 		// re-determine the insertion point
-		if ( p->is_stub() or d < p->data )
+		if ( p->is_stub() or k <= p->keyref )
 			handler = &(p->lchild);
-		else if ( p->data < d )
+		else if ( p->keyref < k )
 			handler = &(p->rchild);
-		else if ( p->lchild == NULL )
-			handler = &(p->lchild);
-		else
-			handler = &(p->rchild);
+		/*
+		else {
+			if ( p->lchild == NULL )
+				handler = &(p->lchild);
+			else
+				handler = &(p->rchild);
+		}
+		*/
 		// insert into left or right
 		//std::cout << "insert a node as a child " << parent << std::endl;
-		*handler = new RedBlackNode(d, p, NULL, NULL, RED);
+		*handler = new RedBlackNode(k, p, NULL, NULL, RED);
 
 		RedBlackNode * current = *handler;
 		RedBlackNode * uncle;
@@ -244,7 +252,7 @@ public:
 		}
 		if (node.is_black())
 			out << "*";
-		out << node.data;
+		out << node.keyref;
 		if (node.rchild != NULL) {
 			out << ", ";
 			out << *(node.rchild);
