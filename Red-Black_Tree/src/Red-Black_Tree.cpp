@@ -19,7 +19,7 @@ struct RedBlackNode {
 	RedBlackNode * parent;
 	RedBlackNode * lchild, *rchild;
 	bool color;
-	const Key & keyref;
+	const Key * keyptr;
 
 public:
 	enum NodeColor {
@@ -28,8 +28,10 @@ public:
 	};
 
 public:
+	RedBlackNode() : parent(NULL), lchild(NULL), rchild(NULL), color(BLACK), keyptr(NULL) {}
+
 	RedBlackNode(const Key & k, RedBlackNode * par = NULL, RedBlackNode * left = NULL, RedBlackNode * right = NULL, const bool col = true)
-	: parent(par), lchild(left), rchild(right), color(col), keyref(k) {}
+	: parent(par), lchild(left), rchild(right), color(col), keyptr(&k) {}
 
 	~RedBlackNode() {
 		return;
@@ -111,7 +113,7 @@ public:
 
 private:
 
-	RedBlackNode * find_parent(const Key & k) {
+	RedBlackNode * find_parent(const Key & k, const bool stop = false) {
 		// finds the parent of insertion point (NULL)
 		RedBlackNode * par = NULL;
 		RedBlackNode * cur = this;
@@ -121,9 +123,11 @@ private:
 		}
 		for ( ;cur != NULL; ) {
 			par = cur;
-			if (k <= par->keyref) {
+			if (k == *par->keyptr and stop)
+				return par;
+			if (k <= *par->keyptr) {
 				cur = par->lchild;
-			} else if ( par->keyref <= k ) {
+			} else if ( *par->keyptr <= k ) {
 				cur = par->rchild;
 			}
 		}
@@ -173,9 +177,9 @@ public:
 		RedBlackNode * p = this->find_parent(k);
 		RedBlackNode ** handler;
 		// re-determine the insertion point
-		if ( p->is_stub() or k <= p->keyref )
+		if ( p->is_stub() or k <= *p->keyptr )
 			handler = &(p->lchild);
-		else if ( p->keyref < k )
+		else if ( *p->keyptr < k )
 			handler = &(p->rchild);
 		/*
 		else {
@@ -244,6 +248,40 @@ public:
 		return *handler;
 	}
 
+	RedBlackNode * remove(const Key & k) {
+		RedBlackNode * curr = this->find_parent(k, true);
+		RedBlackNode * node;
+		// re-determine the insertion point
+		if ( ! curr->is_leaf() ) {
+			node = curr->lchild;
+			while ( node->rchild != NULL ) {
+				node = node->rchild;
+			}
+			const Key * t = node->keyptr;
+			node->keyptr = curr->keyptr;
+			curr->keyptr = t;
+			curr = node;
+		}
+		// curr is v
+		node = curr->parent;
+		RedBlackNode * gc = curr->lchild; // u
+		if (curr->is_left()) {
+			node->lchild = gc;
+		} else {
+			node->rchild = gc;
+		}
+		if (curr->is_red() or (gc != NULL and gc->is_red())) {
+			if (gc != NULL)
+				gc->set_red();
+			delete curr;
+			return node;
+		} else {
+			// both curr and gc are black
+			cout << "still not implemented." << endl;
+		}
+		return node;
+	}
+
 	friend ostream & operator<<(ostream & out, const RedBlackNode & node) {
 		out << "(";
 		if (node.lchild != NULL) {
@@ -252,7 +290,7 @@ public:
 		}
 		if (node.is_black())
 			out << "*";
-		out << node.keyref;
+		out << *node.keyptr;
 		if (node.rchild != NULL) {
 			out << ", ";
 			out << *(node.rchild);
@@ -267,7 +305,7 @@ private:
 	RedBlackNode stub;
 
 public:
-	RedBlackTree(void) : stub("", NULL, NULL, NULL, false) { }
+	RedBlackTree(void) : stub() { }
 
 	RedBlackNode * root() const {
 		return stub.lchild;
@@ -277,17 +315,21 @@ public:
 		return stub.lchild->clear();
 	}
 
-	RedBlackNode * insert(const Key & d) {
-		return (&stub)->insert(d);
+	RedBlackNode * insert(const Key & k) {
+		return stub.insert(k);
+	}
+
+	RedBlackNode * remove(const Key & k) {
+		return stub.remove(k);
 	}
 
 	friend ostream & operator<<(ostream & out, const RedBlackTree & tree) {
 		out << "RedBlackTree";
-		if (tree.stub.lchild == NULL) {
+		if (tree.root() == NULL) {
 			out << "() ";
 			return out;
 		}
-		out << *(tree.stub.lchild);
+		out << *(tree.root());
 		return out;
 	}
 };
@@ -316,6 +358,11 @@ int main(int argc, char * argv[]) {
 	}
 
 	std::cout << "done." << std::endl;
+
+	std::string s("Kilo");
+	tree.remove(s);
+	std::cout << "remove " <<  s << endl << "tree = " << tree << std::endl;
+
 	tree.clear();
 	return 0;
 }
