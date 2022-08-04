@@ -24,51 +24,46 @@ private:
 	static constexpr unsigned int MIN_KEYS = MINIMUM_DEGREE - 1;
 	static constexpr unsigned int MAX_KEYS = 2*MINIMUM_DEGREE - 1;
 
-private:
 	BTreeNode * parent;
-	const Key * keyptr[MAX_KEYS];
-	BTreeNode * childptr[MAX_KEYS+1];
+	const Key * key[MAX_KEYS];
+	BTreeNode * child[MAX_KEYS+1];
 	unsigned int keycount;
 
 public:
 	BTreeNode(void) : parent(NULL), keycount(0) {
-		keyptr[0] = NULL;
-		childptr[0] = NULL;
-	}
-
-	BTreeNode(const BTreeNode & node) : parent(node.parent), keycount(node.keycount) {
-		for(unsigned int i = 0; i < keycount; ++i) {
-			keyptr[i] = node.keyptr[i];
-			childptr[i] = node.childptr[i];
-		}
-		childptr[keycount] = node.childptr[keycount];
+		key[0] = NULL;
+		child[0] = NULL;
 	}
 
 	BTreeNode(const Key & k, BTreeNode * p = NULL, BTreeNode * l = NULL, BTreeNode * r = NULL)
 	: parent(p), keycount(1) {
-		keyptr[0] = &k;
-		childptr[0] = l;
-		childptr[1] = r;
+		key[0] = &k;
+		child[0] = l;
+		child[1] = r;
 	}
 
-	BTreeNode(const BTreeNode * node, const unsigned int & from, const unsigned int & to)
-	: parent(node->parent), keycount(0) {
-		unsigned int src, dst;
-		for(src = from, dst = 0; src < to and src < keycount; ++src, ++dst) {
-			keyptr[dst] = node->keyptr[src];
-			childptr[dst] = node->childptr[src];
-			childptr[dst]->parent = this;
+	// constructor for a sibling
+	BTreeNode(BTreeNode * node, unsigned int bix, unsigned int eix, BTreeNode * par = NULL)
+	: parent(par) {
+		unsigned int srcix, dstix;
+		keycount = 0;
+		for(srcix = bix, dstix = 0; srcix < eix; ++srcix, ++dstix) {
+			key[dstix] = node->key[srcix];
+			child[dstix] = node->child[srcix];
+			if (child[dstix] != NULL)
+				child[dstix]->parent = this;
+			++keycount;
 		}
-		childptr[dst] = node->childptr[src];
-		childptr[dst]->parent = this;
-		keycount = dst;
+		child[dstix] = node->child[srcix];
+		if (child[dstix] != NULL)
+			child[dstix]->parent = this;
 	}
 
 	~BTreeNode() {
 		if (is_leaf())
 			return;
 		for(unsigned int i = 0; i < keycount + 1; ++i) {
-			delete childptr[i];
+			delete child[i];
 		}
 	}
 
@@ -78,33 +73,34 @@ public:
 
 	bool is_minimum() const {
 		if (is_root())
-			return keycount <= 1;
-		return keycount <= MIN_KEYS;
-	}
-
-	bool is_stub() const {
-		return parent == NULL;
+			return keycount == 1;
+		return keycount == MIN_KEYS;
 	}
 
 	bool is_root() const {
-		return parent->is_stub();
+		return parent == NULL;
 	}
 
 	bool is_leaf() const {
-		return keycount > 0 and childptr[0] == NULL;
+		return keycount > 0 and child[0] == NULL;
 	}
 
-private:
+	unsigned int min_keycount() const {
+		if (is_root())
+			return 1;
+		return MIN_KEYS;
+	}
+
 	BTreeNode * left_sibling() {
 		if ( is_root() )
 			return NULL;
 		unsigned int ix;
 		for(ix = 0; ix < parent->keycount + 1; ++ix)
-			if (this == parent->childptr[ix])
+			if (this == parent->child[ix])
 				break;
 		if ( ix == 0 or ix == parent->keycount + 2)
 			return NULL;
-		return parent->childptr[ix - 1];
+		return parent->child[ix - 1];
 	}
 
 	BTreeNode * right_sibling() {
@@ -112,17 +108,17 @@ private:
 			return NULL;
 		unsigned int ix;
 		for(ix = 0; ix < parent->keycount + 1; ++ix)
-			if (this == parent->childptr[ix])
+			if (this == parent->child[ix])
 				break;
 		if ( ix > parent->keycount )
 			return NULL;
-		return parent->childptr[ix + 1];
+		return parent->child[ix + 1];
 	}
 
 	unsigned int key_index(const Key & k) {
 		unsigned int ix;
 		for(ix = 0; ix < keycount; ++ix)
-			if ( k <= *keyptr[ix] )
+			if ( *key[ix] >= k)
 				break;
 		return ix;
 	}
@@ -130,21 +126,34 @@ private:
 	BTreeNode * split() {
 		//cout << *this << endl;
 		unsigned int midix = this->keycount/2;
-		BTreeNode * rsib = new BTreeNode(this, midix+1, keycount);
-		parent->key_insert(*keyptr[midix], this, rsib);
+		if (is_root()) {
+			//cout << "splitting root " << endl;
+			BTreeNode * lc = new BTreeNode(this, 0, midix, this);
+			BTreeNode * rc = new BTreeNode(this,midix+1, keycount, this);
+			//cout << *lc << " : " << *rc << endl;
+			key[0] = key[midix];
+			child[0] = lc;
+			keycount = 1;
+			child[keycount] = rc;
+			//cout << *this << endl;
+			return this;
+		}
+		//cout << "splitting non-root " << endl;
+		BTreeNode * rs = new BTreeNode(this, midix+1, keycount, parent);
+		parent->key_insert(*key[midix], this, rs);
 		keycount = midix;
 		//cout << "after split parent = " << *parent << endl;
 		return parent;
 	}
-/*
+
 	unsigned int node_index() const {
 		unsigned int ix;
 		for(ix = 0; ix < parent->keycount; ++ix)
-			if (this == parent->childptr[ix])
+			if (this == parent->child[ix])
 				break;
 		return ix;
 	}
-*/
+
 	const Key & key_insert(const Key & k, BTreeNode * left = NULL, BTreeNode * right = NULL) {
 		return key_insert(k, key_index(k), left, right);
 	}
@@ -155,15 +164,15 @@ private:
 		}
 		//cout << *this << endl;
 		for(unsigned int i = keycount; i > ix; --i) {
-			keyptr[i] = keyptr[i-1];
-			childptr[i+1] = childptr[i];
+			key[i] = key[i-1];
+			child[i+1] = child[i];
 		}
-		keyptr[ix] = &k;
-		childptr[ix] = left;
-		childptr[ix+1] = right;
+		key[ix] = &k;
+		child[ix] = left;
+		child[ix+1] = right;
 		++keycount;
 		//cout << *this << endl;
-		return *keyptr[ix];
+		return *key[ix];
 	}
 
 	const Key & key_remove(unsigned int ix) {
@@ -171,12 +180,12 @@ private:
 			cout << "error: key position out of range " << endl;
 		}
 		unsigned int i;
-		const Key & k = *keyptr[ix];
+		const Key & k = *key[ix];
 		for(i = ix; i < keycount; ++i) {
-			keyptr[i] = keyptr[i+1];
-			childptr[i] = childptr[i+1];
+			key[i] = key[i+1];
+			child[i] = child[i+1];
 		}
-		childptr[i] = childptr[i+1];
+		child[i] = child[i+1];
 		--keycount;
 		return k;
 	}
@@ -184,15 +193,15 @@ private:
 	const Key & key_remove(const Key & k) {
 		unsigned int ix;
 		for(ix = 0; ix < keycount; ++ix) {
-			if (*keyptr[ix] == k)
+			if (*key[ix] == k)
 				break;
 		}
 		if (ix < keycount) {
 			for(unsigned int i = ix; i < keycount; ++i) {
-				keyptr[i] = keyptr[i+1];
-				childptr[i] = childptr[i+1];
+				key[i] = key[i+1];
+				child[i] = child[i+1];
 			}
-			childptr[keycount] = childptr[keycount+1];
+			child[keycount] = child[keycount+1];
 			--keycount;
 		}
 		return k;
@@ -200,45 +209,27 @@ private:
 
 	pair<BTreeNode *,unsigned int> find_and_split(const Key & k) {
 		unsigned int ix;
-		BTreeNode * node = this;
+		BTreeNode * cur = this;
 		BTreeNode * par = this->parent;
-		for( ;node != NULL; ) {
-			cout << *node << endl;
-			if ( node->is_full() ) {
-				if (node->is_root()) {
-					BTreeNode * newroot = new BTreeNode();
-					newroot->parent = node->parent;
-					node->parent->childptr[0] = newroot;
-					newroot->childptr[0] = node;
-				}
-				node = node->split();
-				cout << *node << endl;
-			}
-			par = node;
-			ix = node->key_index(k);
-			if (ix < node->keycount and node->is_leaf()) {
+		for( ;cur != NULL; ) {
+			//cout << *cur << endl;
+			if ( cur->is_full() ) {
+				cur = cur->split();
 				//cout << *cur << endl;
-				return pair<BTreeNode*,unsigned int>(node,ix);
+			}
+			par = cur;
+			ix = cur->key_index(k);
+			if (ix < cur->keycount and cur->is_leaf()) {
+				//cout << *cur << endl;
+				return pair<BTreeNode*,unsigned int>(cur,ix);
 			} else {
-				node = node->childptr[ix];
+				cur = cur->child[ix];
 			}
 		}
 		//cout << *par << endl;
 		return pair<BTreeNode*,unsigned int>(par,ix);
 	}
 
-	BTreeNode * insert(const Key & k) {
-		if ( is_stub() and childptr[0] == NULL ) {
-			childptr[0] = new BTreeNode(k);
-			return childptr[0];
-		}
-		pair<BTreeNode *, unsigned int> p = root()->find_and_split(k);
-		BTreeNode * node = p.first;
-		const unsigned int ix = p.second;
-		node->key_insert(k, ix);
-		return node;
-	}
-/*
 	BTreeNode * merge_into_root() {
 		BTreeNode * left = child[0];
 		BTreeNode * right = child[1];
@@ -450,7 +441,7 @@ private:
 		left->key[left->keycount] = tmpkey;
 		left->keycount += 1;
 	}
-*/
+
 	/*
 		cout << *node << endl;
 		if ( node->keycount >= node->min_keycount() )
@@ -553,26 +544,42 @@ private:
 
 struct BTree {
 private:
-	BTreeNode stub;
+	BTreeNode * stub;
 
 public:
 	BTree(void) : stub() { }
 
 	BTreeNode * root() {
-		return stub.childptr[0];
+		return stub;
 	}
 
 	const BTreeNode * root() const {
-		return stub.childptr[0];
+		return stub;
 	}
 
 	BTreeNode * insert(const Key & k) {
-		(&stub)->insert(k);
+		if (root() == NULL) {
+			stub = new BTreeNode(k, NULL);
+			return stub;
+		}
+		pair<BTreeNode *, unsigned int> p = root()->find_and_split(k);
+		BTreeNode * node = p.first;
+		const unsigned int ix = p.second;
+		node->key_insert(k, ix);
 		return node;
 	}
 
 	BTreeNode * remove(const Key & k) {
-		(&stub)->remove(k);
+		pair<BTreeNode *, unsigned int> p = root()->find(k);
+		if (p.first != NULL and *(p.first->key[p.second]) != k) {
+			cout << k << ": no such key, can't remove." << endl;
+			return NULL;
+		}
+		if ( p.first->remove(k, p.second) == NULL ) {
+			delete stub;
+			stub = NULL;
+			//cout << "root has been removed." << endl;
+		}
 		return NULL;
 	}
 

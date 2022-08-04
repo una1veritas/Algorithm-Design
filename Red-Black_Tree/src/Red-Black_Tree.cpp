@@ -37,6 +37,18 @@ public:
 		return;
 	}
 
+	static bool node_is_black(const RedBlackNode * ptr) {
+		if (ptr == NULL)
+			return true;
+		return ptr->color;
+	}
+
+	static bool node_is_red(const RedBlackNode * ptr) {
+		if (ptr != NULL and ptr->color == RED)
+			return true;
+		return false;
+	}
+
 	void clear() {
 		if ( lchild != NULL) {
 			lchild->clear();
@@ -181,14 +193,6 @@ public:
 			handler = &(p->lchild);
 		else if ( *p->keyptr < k )
 			handler = &(p->rchild);
-		/*
-		else {
-			if ( p->lchild == NULL )
-				handler = &(p->lchild);
-			else
-				handler = &(p->rchild);
-		}
-		*/
 		// insert into left or right
 		//std::cout << "insert a node as a child " << parent << std::endl;
 		*handler = new RedBlackNode(k, p, NULL, NULL, RED);
@@ -248,36 +252,78 @@ public:
 		return *handler;
 	}
 
+	RedBlackNode * rightmost_descendant() {
+		RedBlackNode * node = this;
+		while ( node->rchild != NULL )
+			node = node->rchild;
+		return node;
+	}
+
 	RedBlackNode * remove(const Key & k) {
-		RedBlackNode * curr = this->find_parent(k, true);
-		RedBlackNode * node;
+		RedBlackNode * node = this->find_parent(k, true);
 		// re-determine the insertion point
-		if ( ! curr->is_leaf() ) {
-			node = curr->lchild;
-			while ( node->rchild != NULL ) {
-				node = node->rchild;
-			}
+		if ( ! node->is_leaf() ) {
+			RedBlackNode * rd = node->rightmost_descendant();
 			const Key * t = node->keyptr;
-			node->keyptr = curr->keyptr;
-			curr->keyptr = t;
-			curr = node;
+			node->keyptr = rd->keyptr;
+			rd->keyptr = t;
+			node = rd;
 		}
-		// curr is v
-		node = curr->parent;
-		RedBlackNode * gc = curr->lchild; // u
-		if (curr->is_left()) {
-			node->lchild = gc;
+		// node is v
+		RedBlackNode * par = node->parent;
+		RedBlackNode * u;
+		if (node->is_left()) {
+			par->lchild = node->lchild;
+			u = par->lchild;
 		} else {
-			node->rchild = gc;
+			par->rchild = node->lchild;
+			u = par->rchild;
 		}
-		if (curr->is_red() or (gc != NULL and gc->is_red())) {
-			if (gc != NULL)
-				gc->set_red();
-			delete curr;
-			return node;
-		} else {
-			// both curr and gc are black
-			cout << "still not implemented." << endl;
+		bool ex_node_color = node->color;
+		delete node;
+		if ( ex_node_color == RED or node_is_red(u) ) {
+			if (u != NULL) {
+				u->set_black();
+				return u;
+			}
+			return par;
+		}
+		cout << "double black process" << endl;
+		// *chandler is double black node.
+		RedBlackNode * sibling;
+		bool u_is_left;
+		for (;;) {
+			if ( u != NULL and u->is_root() ) {
+				break;
+				// exit
+			}
+			if (u == par->lchild) {
+				// including both children of par are NULL
+				sibling = par->rchild;
+				u_is_left = true;
+			} else {
+				sibling = par->lchild;
+				u_is_left = false;
+			}
+			if (node_is_black(sibling) and (sibling != NULL and
+					(node_is_red(sibling->lchild) or node_is_red(sibling->rchild) ) )) {
+				if ( u_is_left ) {
+					if ( node_is_red(sibling->lchild) ) {
+					// left-left case
+					} else if ( node_is_red(sibling->rchild) ) {
+					// left-right
+					}
+				} else { // u is right
+					if ( node_is_red(sibling->rchild) ) {
+						// right-right
+					} else if (node_is_red(sibling->lchild) ) {
+						// right-left
+					}
+				}
+			} else if (node_is_black(sibling) and (sibling != NULL) and
+					node_is_black(sibling->lchild) and node_is_black(sibling->rchild)) {
+				// sibling and its children are black
+			}
 		}
 		return node;
 	}
@@ -359,10 +405,11 @@ int main(int argc, char * argv[]) {
 
 	std::cout << "done." << std::endl;
 
+	/*
 	std::string s("Kilo");
 	tree.remove(s);
 	std::cout << "remove " <<  s << endl << "tree = " << tree << std::endl;
-
+*/
 	tree.clear();
 	return 0;
 }
