@@ -25,18 +25,18 @@ private:
 	static constexpr unsigned int MAX_KEYS = 2*MINIMUM_DEGREE - 1;
 
 private:
-	BTreeNode * parent;
 	const Key * keyptr[MAX_KEYS];
 	BTreeNode * childptr[MAX_KEYS+1];
 	unsigned int keycount;
 
 public:
-	BTreeNode(void) : parent(NULL), keycount(0) {
+	BTreeNode(void) : keycount(0) {
 		keyptr[0] = NULL;
 		childptr[0] = NULL;
 	}
 
-	BTreeNode(const BTreeNode & node) : parent(node.parent), keycount(node.keycount) {
+	// copy constructor
+	BTreeNode(const BTreeNode & node) : keycount(node.keycount) {
 		for(unsigned int i = 0; i < keycount; ++i) {
 			keyptr[i] = node.keyptr[i];
 			childptr[i] = node.childptr[i];
@@ -44,23 +44,19 @@ public:
 		childptr[keycount] = node.childptr[keycount];
 	}
 
-	BTreeNode(const Key & k, BTreeNode * p = NULL, BTreeNode * l = NULL, BTreeNode * r = NULL)
-	: parent(p), keycount(1) {
+	BTreeNode(const Key & k, BTreeNode * p = NULL, BTreeNode * l = NULL, BTreeNode * r = NULL) : keycount(1) {
 		keyptr[0] = &k;
 		childptr[0] = l;
 		childptr[1] = r;
 	}
 
-	BTreeNode(const BTreeNode * node, const unsigned int & from, const unsigned int & to)
-	: parent(node->parent), keycount(0) {
+	BTreeNode(const BTreeNode * node, const unsigned int & from, const unsigned int & to) : keycount(0) {
 		unsigned int src, dst;
 		for(src = from, dst = 0; src < to and src < keycount; ++src, ++dst) {
 			keyptr[dst] = node->keyptr[src];
 			childptr[dst] = node->childptr[src];
-			childptr[dst]->parent = this;
 		}
 		childptr[dst] = node->childptr[src];
-		childptr[dst]->parent = this;
 		keycount = dst;
 	}
 
@@ -76,50 +72,34 @@ public:
 		return keycount >= MAX_KEYS;
 	}
 
-	bool is_minimum() const {
-		if (is_root())
-			return keycount <= 1;
-		return keycount <= MIN_KEYS;
-	}
-
-	bool is_stub() const {
-		return parent == NULL;
-	}
-
-	bool is_root() const {
-		return parent->is_stub();
-	}
-
 	bool is_leaf() const {
 		return keycount > 0 and childptr[0] == NULL;
 	}
 
 private:
-	BTreeNode * left_sibling() {
-		if ( is_root() )
-			return NULL;
+	unsigned int index_of_child(const BTreeNode * node) {
 		unsigned int ix;
-		for(ix = 0; ix < parent->keycount + 1; ++ix)
-			if (this == parent->childptr[ix])
+		for(ix = 0; ix < keycount + 1; ++ix)
+			if (node == childptr[ix])
 				break;
-		if ( ix == 0 or ix == parent->keycount + 2)
-			return NULL;
-		return parent->childptr[ix - 1];
+		return ix;
 	}
 
-	BTreeNode * right_sibling() {
-		if ( is_root() )
+	BTreeNode * left_sibling_of(const BTreeNode * node) {
+		unsigned int ix = index_of_child(node);
+		if ( ix == 0 or ix > keycount)
 			return NULL;
-		unsigned int ix;
-		for(ix = 0; ix < parent->keycount + 1; ++ix)
-			if (this == parent->childptr[ix])
-				break;
-		if ( ix > parent->keycount )
-			return NULL;
-		return parent->childptr[ix + 1];
+		return childptr[ix - 1];
 	}
 
-	unsigned int key_index(const Key & k) {
+	BTreeNode * right_sibling_of(const BTreeNode * node) {
+		unsigned int ix = index_of_child(node);
+		if ( ix > keycount )
+			return NULL;
+		return childptr[ix + 1];
+	}
+
+	unsigned int index_of_key(const Key & k) {
 		unsigned int ix;
 		for(ix = 0; ix < keycount; ++ix)
 			if ( k <= *keyptr[ix] )
@@ -127,14 +107,16 @@ private:
 		return ix;
 	}
 
-	BTreeNode * split() {
-		//cout << *this << endl;
-		unsigned int midix = this->keycount/2;
-		BTreeNode * rsib = new BTreeNode(this, midix+1, keycount);
-		parent->key_insert(*keyptr[midix], this, rsib);
-		keycount = midix;
-		//cout << "after split parent = " << *parent << endl;
-		return parent;
+	BTreeNode * split(unsigned int ix) {
+		cout << *this << endl;
+		BTreeNode * node = childptr[ix];
+		cout << *node << endl;
+		unsigned int midix = node->keycount/2;
+		BTreeNode * rsibling = new BTreeNode(node, midix+1, keycount);
+		insert_key(*keyptr[midix], ix, node, rsibling);
+		node->keycount = midix;
+		cout << "after split " << *this << endl;
+		return this;
 	}
 /*
 	unsigned int node_index() const {
@@ -145,11 +127,11 @@ private:
 		return ix;
 	}
 */
-	const Key & key_insert(const Key & k, BTreeNode * left = NULL, BTreeNode * right = NULL) {
-		return key_insert(k, key_index(k), left, right);
+	const Key & insert_key(const Key & k, BTreeNode * left = NULL, BTreeNode * right = NULL) {
+		return insert_key(k, index_of_key(k), left, right);
 	}
 
-	const Key & key_insert(const Key & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL) {
+	const Key & insert_key(const Key & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL) {
 		if (is_full()) {
 			cout << "error: node is full!" << endl;
 		}
@@ -165,7 +147,7 @@ private:
 		//cout << *this << endl;
 		return *keyptr[ix];
 	}
-
+/*
 	const Key & key_remove(unsigned int ix) {
 		if (keycount <= ix) {
 			cout << "error: key position out of range " << endl;
@@ -197,6 +179,7 @@ private:
 		}
 		return k;
 	}
+	*/
 
 	pair<BTreeNode *,unsigned int> find_and_split(const Key & k) {
 		unsigned int ix;
