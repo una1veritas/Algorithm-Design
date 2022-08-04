@@ -77,7 +77,7 @@ public:
 	}
 
 private:
-	unsigned int index_of_child(const BTreeNode * node) {
+	unsigned int child_index(const BTreeNode * node) {
 		unsigned int ix;
 		for(ix = 0; ix < keycount + 1; ++ix)
 			if (node == childptr[ix])
@@ -86,20 +86,20 @@ private:
 	}
 
 	BTreeNode * left_sibling_of(const BTreeNode * node) {
-		unsigned int ix = index_of_child(node);
+		unsigned int ix = child_index(node);
 		if ( ix == 0 or ix > keycount)
 			return NULL;
 		return childptr[ix - 1];
 	}
 
 	BTreeNode * right_sibling_of(const BTreeNode * node) {
-		unsigned int ix = index_of_child(node);
+		unsigned int ix = child_index(node);
 		if ( ix > keycount )
 			return NULL;
 		return childptr[ix + 1];
 	}
 
-	unsigned int index_of_key(const Key & k) {
+	unsigned int key_index(const Key & k) {
 		unsigned int ix;
 		for(ix = 0; ix < keycount; ++ix)
 			if ( k <= *keyptr[ix] )
@@ -107,13 +107,14 @@ private:
 		return ix;
 	}
 
+	// split the ix-th child
 	BTreeNode * split(unsigned int ix) {
 		cout << *this << endl;
 		BTreeNode * node = childptr[ix];
 		cout << *node << endl;
 		unsigned int midix = node->keycount/2;
 		BTreeNode * rsibling = new BTreeNode(node, midix+1, keycount);
-		insert_key(*keyptr[midix], ix, node, rsibling);
+		key_insert(*keyptr[midix], ix, node, rsibling);
 		node->keycount = midix;
 		cout << "after split " << *this << endl;
 		return this;
@@ -127,11 +128,11 @@ private:
 		return ix;
 	}
 */
-	const Key & insert_key(const Key & k, BTreeNode * left = NULL, BTreeNode * right = NULL) {
-		return insert_key(k, index_of_key(k), left, right);
+	const Key & key_insert(const Key & k, BTreeNode * left = NULL, BTreeNode * right = NULL) {
+		return key_insert(k, key_index(k), left, right);
 	}
 
-	const Key & insert_key(const Key & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL) {
+	const Key & key_insert(const Key & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL) {
 		if (is_full()) {
 			cout << "error: node is full!" << endl;
 		}
@@ -181,30 +182,26 @@ private:
 	}
 	*/
 
-	pair<BTreeNode *,unsigned int> find_and_split(const Key & k) {
+	pair<BTreeNode *,unsigned int> find_to_insert(const Key & k) {
 		unsigned int ix;
-		BTreeNode * node = this;
-		BTreeNode * par = this->parent;
-		for( ;node != NULL; ) {
+		BTreeNode * par = this;
+		BTreeNode * node = NULL;
+		for( ; ; ) {
 			cout << *node << endl;
+			ix = par->key_index(k);
+			node = par->childptr[ix];
 			if ( node->is_full() ) {
-				if (node->is_root()) {
+				if (par->keycount == 0) { // node is the root
 					BTreeNode * newroot = new BTreeNode();
-					newroot->parent = node->parent;
-					node->parent->childptr[0] = newroot;
 					newroot->childptr[0] = node;
+					par->childptr[0] = newroot;
 				}
-				node = node->split();
-				cout << *node << endl;
+				par->split(ix);
+				cout << *par << endl;
+				continue;
 			}
-			par = node;
-			ix = node->key_index(k);
-			if (ix < node->keycount and node->is_leaf()) {
-				//cout << *cur << endl;
-				return pair<BTreeNode*,unsigned int>(node,ix);
-			} else {
-				node = node->childptr[ix];
-			}
+
+
 		}
 		//cout << *par << endl;
 		return pair<BTreeNode*,unsigned int>(par,ix);
@@ -549,15 +546,17 @@ public:
 		return stub.childptr[0];
 	}
 
-	BTreeNode * insert(const Key & k) {
-		(&stub)->insert(k);
-		return node;
+	bool insert(const Key & k) {
+		stub.insert(k);
+		return true;
 	}
 
-	BTreeNode * remove(const Key & k) {
-		(&stub)->remove(k);
-		return NULL;
+    /*
+	bool remove(const Key & k) {
+		stub.remove(k);
+		return true;
 	}
+	*/
 
 	friend std::ostream & operator<<(std::ostream & out, const BTree & tree) {
 		out << "BTree";
