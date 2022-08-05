@@ -52,7 +52,7 @@ public:
 
 	BTreeNode(const BTreeNode * node, const unsigned int & from, const unsigned int & to) : keycount(0) {
 		unsigned int src, dst;
-		for(src = from, dst = 0; src < to and src < keycount; ++src, ++dst) {
+		for(src = from, dst = 0; from < to and src < node->keycount; ++src, ++dst) {
 			key[dst] = node->key[src];
 			child[dst] = node->child[src];
 		}
@@ -78,7 +78,7 @@ public:
 	}
 
 	bool is_leaf() const {
-		return keycount > 0 and child[0] == NULL;
+		return child[0] == NULL;
 	}
 
 private:
@@ -113,15 +113,14 @@ private:
 	}
 
 	// split at the middle
-	BTreeNode * split(unsigned int ix) {
-		cout << *this << endl;
-		BTreeNode * node = child[ix];
-		cout << *node << endl;
+	BTreeNode * split_child(BTreeNode * node) {
+		//cout << *this << ", " << *node << endl;
 		unsigned int midix = node->keycount/2;
-		BTreeNode * rsibling = new BTreeNode(node, midix+1, keycount);
-		key_insert(*key[midix], ix, node, rsibling);
+		BTreeNode * rchild = new BTreeNode(node, midix+1, node->keycount);
+		unsigned int cix = child_index(node);
+		key_insert(*node->key[midix], cix, node, rchild);
 		node->keycount = midix;
-		cout << "after split " << *this << endl;
+		//cout << "after split " << *this << endl;
 		return this;
 	}
 /*
@@ -133,14 +132,7 @@ private:
 		return ix;
 	}
 */
-	const Key & key_insert(const Key & k, BTreeNode * left = NULL, BTreeNode * right = NULL) {
-		return key_insert(k, key_index(k), left, right);
-	}
-
 	const Key & key_insert(const Key & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL) {
-		if (is_full()) {
-			cout << "error: node is full!" << endl;
-		}
 		//cout << *this << endl;
 		for(unsigned int i = keycount; i > ix; --i) {
 			key[i] = key[i-1];
@@ -168,25 +160,26 @@ private:
 		--keycount;
 		return k;
 	}
+ */
 
 	const Key & key_remove(const Key & k) {
 		unsigned int ix;
 		for(ix = 0; ix < keycount; ++ix) {
-			if (*keyptr[ix] == k)
+			if (*key[ix] == k)
 				break;
 		}
 		if (ix < keycount) {
 			for(unsigned int i = ix; i < keycount; ++i) {
-				keyptr[i] = keyptr[i+1];
-				childptr[i] = childptr[i+1];
+				key[i] = key[i+1];
+				child[i] = child[i+1];
 			}
-			childptr[keycount] = childptr[keycount+1];
+			child[keycount] = child[keycount+1];
 			--keycount;
 		}
 		return k;
 	}
-	*/
 
+	/*
 	pair<BTreeNode *,unsigned int> find_to_insert(const Key & k) {
 		unsigned int ix;
 		BTreeNode * par = this;
@@ -201,7 +194,7 @@ private:
 					newroot->child[0] = node;
 					par->child[0] = newroot;
 				}
-				par->split(ix);
+				par->split_child(node);
 				cout << *par << endl;
 				continue;
 			}
@@ -211,7 +204,7 @@ private:
 		//cout << *par << endl;
 		return pair<BTreeNode*,unsigned int>(par,ix);
 	}
-
+	*/
 	/*
 	BTreeNode * insert(const Key & k) {
 		if ( is_stub() and child[0] == NULL ) {
@@ -540,21 +533,33 @@ private:
 
 struct BTree {
 private:
-	BTreeNode root;
+	BTreeNode * root;
 
 public:
-	BTree(void) : root() { }
+	BTree(void) : root(new BTreeNode()) { }
+
+	~BTree() {
+		delete root;
+	}
 
 	bool insert(const Key & k) {
 		BTreeNode * parent = NULL;
-		BTreeNode * node = &root;
+		BTreeNode * node = root;
 		unsigned int ix;
 		for(;;) {
 			if ( node->is_full()) {
-				cout << "node is full." << endl;
-				break;
+				if (node == root) {
+					root = new BTreeNode();
+					parent = root;
+					parent->child[0] = node;
+				}
+				parent->split_child(node);
+				//cout << *parent << endl;
+				node = parent;
+				continue;
 			}
 			ix = node->key_index(k);
+			//cout << *node << ", " << ix << endl;
 			if (node->is_leaf()) {
 				node->key_insert(k, ix);
 				break;
@@ -562,20 +567,45 @@ public:
 			parent = node;
 			node = node->child[ix];
 		}
-		return node;
-	}
-
-    /*
-	bool remove(const Key & k) {
-		stub.remove(k);
 		return true;
 	}
-	*/
+
+
+	bool remove(const Key & k) {
+		//BTreeNode * parent = NULL;
+		BTreeNode * node = root;
+		BTreeNode * lowest = NULL;
+		unsigned int ix;
+		for(;;) {
+			//cout << *node << ", " << ix << endl;
+			ix = node->key_index(k);
+			if (ix < node->keycount and *node->key[ix] == k) {
+				lowest = node;
+			}
+			if (node->is_leaf())
+				break;
+			//parent = node;
+			node = node->child[ix];
+		}
+		if ( ! lowest->is_leaf() ) {
+			unsigned int orgix = lowest->key_index(k);
+			const Key *keyptr = node->key[node->keycount-1];
+			node->key[node->keycount-1] = lowest->key[orgix];
+			lowest->key[orgix] = keyptr;
+		}
+		if (node->keycount > node->MIN_KEYS) {
+			node->key_remove(k);
+		} else {
+			cout << "error! key shortage! " << endl;
+		}
+		return true;
+	}
+
 
 	friend std::ostream & operator<<(std::ostream & out, const BTree & tree) {
 		out << "BTree";
-		if ( ! tree.root.is_empty() ) {
-			out << tree.root;
+		if ( ! tree.root->is_empty() ) {
+			out << *tree.root;
 		} else {
 			out << "( )";
 		}
@@ -607,8 +637,8 @@ int main(const int argc, const char * argv[]) {
 				cout << "insert " << s << endl;
 				tree.insert(s);
 			} else if (mode == REMOVE) {
-				cout << "remove is not implemented." << s << endl;
-				//tree.remove(s);
+				cout << "remove " << s << endl;
+				tree.remove(s);
 			}
 			cout << tree << endl << endl;
 		}
