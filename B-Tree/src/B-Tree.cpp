@@ -61,7 +61,7 @@ public:
 	}
 
 	~BTreeNode() {
-		cout << "delete me!" << endl;
+		//cout << "going to be deleted!" << endl;
 		if (is_leaf())
 			return;
 		for(unsigned int i = 0; i < keycount + 1; ++i) {
@@ -145,22 +145,22 @@ private:
 		//cout << *this << endl;
 		return *key[ix];
 	}
-/*
+
 	const Key & key_remove(unsigned int ix) {
 		if (keycount <= ix) {
 			cout << "error: key position out of range " << endl;
 		}
 		unsigned int i;
-		const Key & k = *keyptr[ix];
-		for(i = ix; i < keycount; ++i) {
-			keyptr[i] = keyptr[i+1];
-			childptr[i] = childptr[i+1];
+		const Key & k = *key[ix];
+		for(i = ix; i < keycount - 1; ++i) {
+			key[i] = key[i+1];
+			child[i] = child[i+1];
 		}
-		childptr[i] = childptr[i+1];
+		child[i] = child[i+1];
 		--keycount;
 		return k;
 	}
- */
+
 
 	const Key & key_remove(const Key & k) {
 		unsigned int ix;
@@ -380,57 +380,36 @@ private:
 		}
 		return node;
 	}
+*/
+	void right_shift(BTreeNode * left, BTreeNode * right) {
+		unsigned int ix = child_index(left);
+		const Key * mykey = key[ix];
+		right->key_insert(*mykey, 0, left->child[left->keycount], right->child[0]);
+		key[ix] = &left->key_remove(left->keycount-1);
+	}
 
-	BTreeNode * merge(unsigned int cix) {
-		BTreeNode * left = parent->child[cix];
-		BTreeNode * right = parent->child[cix+1];
-		cout << *left << *this << *right << *parent << endl;
-		const Key * tmpkey = parent->key[cix];
-		left->key[left->keycount] = tmpkey;
-		left->keycount += 1;
-		left->child[left->keycount] = right->child[0];
+	void left_shift(BTreeNode * left, BTreeNode * right) {
+		unsigned int ix = child_index(left);
+		const Key * mykey = key[ix];
+		left->key_insert(*mykey, left->keycount, left->child[left->keycount], right->child[0]);
+		key[ix] = &right->key_remove(0);
+	}
+
+	BTreeNode * merge(BTreeNode * left, BTreeNode * right) {
+		unsigned int ix = child_index(left);
+		const Key * mykey = key[ix];
+		left->key_insert(*mykey,left->keycount,left->child[left->keycount],right->child[0]);
 		for(unsigned int i = 0; i < right->keycount; ++i) {
 			left->key[left->keycount] = right->key[i];
 			left->child[left->keycount+1] = right->child[i+1];
 			left->keycount += 1;
 		}
-		parent->key_remove(cix);
-		parent->child[cix] = left;
-		cout << *this << endl;
+		key_remove(ix);
+		child[ix] = left;
+		delete right;
 		return this;
 	}
 
-	void shift_right(unsigned int cix) {
-		BTreeNode * left = parent->child[cix];
-		BTreeNode * right = parent->child[cix+1];
-		const Key * tmpkey = parent->key[cix];
-		for(unsigned int i = right->keycount; i >= 0; --i) {
-			right->key[i] = right->key[i-1];
-			right->child[i+1] = right->child[i];
-		}
-		right->child[1] = right->child[0];
-		right->key[0] = tmpkey;
-		right->keycount += 1;
-		right->child[0] = left->child[left->keycount];
-		parent->key[cix] = left->key[left->keycount-1];
-		left->keycount -= 1;
-	}
-
-	void shift_left(unsigned int cix) {
-		BTreeNode * left = parent->child[cix];
-		BTreeNode * right = parent->child[cix+1];
-		const Key * tmpkey = parent->key[cix];
-		left->child[left->keycount+1] = right->child[0];
-		parent->key[cix] = right->key[0];
-		for(unsigned int i = 0; i < right->keycount; ++i) {
-			right->key[i] = right->key[i+1];
-			right->child[i] = right->child[i+1];
-		}
-		right->keycount -= 1;
-		left->key[left->keycount] = tmpkey;
-		left->keycount += 1;
-	}
-*/
 	/*
 		cout << *node << endl;
 		if ( node->keycount >= node->min_keycount() )
@@ -572,7 +551,7 @@ public:
 
 
 	bool remove(const Key & k) {
-		//BTreeNode * parent = NULL;
+		BTreeNode * parent = NULL;
 		BTreeNode * node = root;
 		BTreeNode * lowest = NULL;
 		unsigned int ix;
@@ -584,7 +563,7 @@ public:
 			}
 			if (node->is_leaf())
 				break;
-			//parent = node;
+			parent = node;
 			node = node->child[ix];
 		}
 		if ( ! lowest->is_leaf() ) {
@@ -593,10 +572,41 @@ public:
 			node->key[node->keycount-1] = lowest->key[orgix];
 			lowest->key[orgix] = keyptr;
 		}
-		if (node->keycount > node->MIN_KEYS) {
+		if (node == root or node->keycount > node->MIN_KEYS) {
 			node->key_remove(k);
 		} else {
-			cout << "error! key shortage! " << endl;
+			//cout << "error! key shortage! " << endl;
+			BTreeNode * leftsib = parent->left_sibling_of(node);
+			BTreeNode * rightsib = parent->right_sibling_of(node);
+			if (leftsib != NULL and leftsib->keycount > node->MIN_KEYS) {
+				//cout << *parent << endl;
+				parent->right_shift(leftsib, node);
+				//cout << *parent << endl;
+				node->key_remove(k);
+			} else if (rightsib != NULL and rightsib->keycount > node->MIN_KEYS) {
+				//cout << *parent << endl;
+				parent->left_shift(node, rightsib);
+				//cout << *parent << endl;
+				node->key_remove(k);
+			} else if (parent->keycount > node->MIN_KEYS or parent == root) {
+				cout << *parent << endl;
+				if (leftsib != NULL) {
+					node->key_remove(k);
+					cout << *parent << endl;
+					parent->merge(leftsib, node);
+					cout << *parent << endl;
+				} else if (rightsib != NULL) {
+					node->key_remove(k);
+					cout << *parent << endl;
+					parent->merge(node, rightsib);
+					cout << *parent << endl;
+				}
+				cout << *parent << endl;
+				node->key_remove(k);
+			} else {
+				cout << "only 2 nodes!" << endl;
+				return false;
+			}
 		}
 		return true;
 	}
@@ -638,7 +648,9 @@ int main(const int argc, const char * argv[]) {
 				tree.insert(s);
 			} else if (mode == REMOVE) {
 				cout << "remove " << s << endl;
-				tree.remove(s);
+				if (!tree.remove(s)) {
+					cout << "failed!" << endl;
+				}
 			}
 			cout << tree << endl << endl;
 		}
