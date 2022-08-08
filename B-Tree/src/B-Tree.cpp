@@ -20,7 +20,7 @@ typedef string Key;
 
 struct BTreeNode {
 private:
-	static constexpr unsigned int MINIMUM_DEGREE = 2;
+	static constexpr unsigned int MINIMUM_DEGREE = 3;
 	static constexpr unsigned int MIN_KEYS = MINIMUM_DEGREE - 1;
 	static constexpr unsigned int MAX_KEYS = 2*MINIMUM_DEGREE - 1;
 
@@ -117,13 +117,13 @@ private:
 
 	// split at the middle
 	BTreeNode * split_child(BTreeNode * node) {
-		cout << *this << ", " << *node << endl;
+		//cout << *this << ", " << *node << endl;
 		unsigned int midix = node->keycount/2;
 		BTreeNode * rchild = new BTreeNode(node, midix+1, node->keycount);
 		unsigned int cix = child_index(node);
 		key_insert(*node->key[midix], cix, node, rchild);
 		node->keycount = midix;
-		cout << "after split " << *this << endl;
+		//cout << "after split " << *this << endl;
 		return this;
 	}
 
@@ -179,18 +179,22 @@ private:
 		return k;
 	}
 
-	void right_shift(BTreeNode * left, BTreeNode * right) {
+	void shift_right(BTreeNode * left, BTreeNode * right) {
+		cout << "right shift " << *left << " -> " << *right << " @ " << *this << endl;
 		unsigned int ix = child_index(left);
 		const Key * mykey = key[ix];
 		right->key_insert(*mykey, 0, left->child[left->keycount], right->child[0]);
 		key[ix] = &left->key_remove(left->keycount-1);
+		cout << "right shitt finished " << *this << endl;
 	}
 
-	void left_shift(BTreeNode * left, BTreeNode * right) {
+	void shift_left(BTreeNode * left, BTreeNode * right) {
+		cout << "left shift " << *left << " <- " << *right << " @ " << *this << endl;
 		unsigned int ix = child_index(left);
 		const Key * mykey = key[ix];
 		left->key_insert(*mykey, left->keycount, left->child[left->keycount], right->child[0]);
 		key[ix] = &right->key_remove(0);
+		cout << "left shitt finished " << *this << endl;
 	}
 
 	BTreeNode * merge_into_left(BTreeNode * left, BTreeNode * right) {
@@ -270,13 +274,14 @@ public:
 		BTreeNode * parent = NULL;
 		BTreeNode * node = root;
 		unsigned int ix;
-		if (root->is_full()) {
-			root = new BTreeNode();
-			root->child[0] = node;
-			node = root;
-		}
+
 		for(;;) {
 			if ( node->is_full()) {
+				if (node == root /* root->is_full() */) {
+					root = new BTreeNode();
+					root->child[0] = node;
+					parent = root;
+				}
 				parent->split_child(node);
 				node = parent;
 			}
@@ -334,11 +339,9 @@ public:
 			leftsib = parent->left_sibling_of(node);
 			rightsib = parent->right_sibling_of(node);
 			if (leftsib != NULL and leftsib->keycount > BTreeNode::MIN_KEYS) {
-				parent->right_shift(leftsib, node);
-				cout << *parent << endl;
+				parent->shift_right(leftsib, node);
 			} else if (rightsib != NULL and rightsib->keycount > BTreeNode::MIN_KEYS) {
-				parent->left_shift(node, rightsib);
-				cout << *parent << endl;
+				parent->shift_left(node, rightsib);
 			} else { //if (parent->keycount > parent->MIN_KEYS or (parent == root and parent->keycount > 1) ) {
 				if (leftsib != NULL) {
 					parent->merge_into_left(leftsib, node);
@@ -346,12 +349,11 @@ public:
 				} else if (rightsib != NULL) {
 					parent->merge_into_left(node, rightsib);
 				}
-				cout << *node << endl;
 			}
 			if ( has_min_keys(parent) )
 				break;
 			if (parent == root) {
-				cout << "emptied the root." << endl;
+				cout << "skip root." << endl;
 				root = node;
 				delete parent;
 				break;
