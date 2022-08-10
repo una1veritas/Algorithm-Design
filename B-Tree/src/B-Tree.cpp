@@ -243,35 +243,43 @@ bool BTree::insert(const Key & k) {
 	return true;
 }
 
-
-bool BTree::remove(const Key & k) {
-	BTreeNode * parent = NULL;
+vector<std::pair<BTreeNode *,unsigned int>> BTree::find_leaf(const Key & k) {
 	BTreeNode * node = root;
-	BTreeNode * lowest = NULL;
-	std::vector<std::pair<BTreeNode *,unsigned int>> stack;
-	unsigned int ix, lowest_ix;
+	std::pair<BTreeNode *,unsigned int> lowestpt = {NULL,0}; // lowest node having k
+	std::vector<std::pair<BTreeNode *,unsigned int>> path;
+	unsigned int ix;
 	for(;;) {
-		//cout << *node << ", " << ix << endl;
 		ix = node->key_index(k);
-		stack.push_back(std::pair<BTreeNode *,unsigned int>(node, ix));
+		path.push_back(std::pair<BTreeNode *,unsigned int>(node, ix));
 		if (ix < node->keycount and *node->key[ix] == k) {
-			lowest = node;
-			lowest_ix = ix;
+			lowestpt = {node, ix};
 		}
 		if (node->is_leaf())
 			break;
-		parent = node;
 		node = node->child[ix];
 	}
-	stack.pop_back(); // parent and leaf node are already set
-	if ( lowest == NULL ) { // the key not found.
-		return false;
-	} else if ( ! lowest->is_leaf() ) {
-		const Key *keyptr = node->key[node->keycount-1]; // the predecessor
-		node->key[node->keycount-1] = lowest->key[lowest_ix];
-		lowest->key[lowest_ix] = keyptr;
-		ix = node->keycount-1;
+	if ( lowestpt.first == NULL ) {
+		// the key not found.
+		path.clear();
+		return path;
+	} else if ( ! lowestpt.first->is_leaf() ) {
+		BTreeNode * subst = path.back().first;
+		const Key *substkey = subst->key[subst->keycount-1]; // the predecessor
+		subst->key[subst->keycount-1] = lowestpt.first->key[lowestpt.second];
+		lowestpt.first->key[lowestpt.second] = substkey;
 	}
+	return path;
+}
+
+bool BTree::remove(const Key & k) {
+	BTreeNode * parent;
+	BTreeNode * node;
+	std::vector<std::pair<BTreeNode *,unsigned int>> path = find_leaf(k);
+	node = path.back().first;
+	unsigned int ix = path.back().second;
+	path.pop_back();
+	if (ix >= node->keycount)
+		ix = node->keycount - 1;
 	node->key_remove(ix);
 	if ( has_min_keys(node) ) {
 		--count;
@@ -317,9 +325,9 @@ bool BTree::remove(const Key & k) {
 			break;
 		}
 		node = parent;
-		stack.pop_back();
-		parent = stack.back().first;
-		ix = stack.back().second;
+		path.pop_back();
+		parent = path.back().first;
+		ix = path.back().second;
 	}
 	--count;
 	return true;
