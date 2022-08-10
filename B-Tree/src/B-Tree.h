@@ -91,6 +91,8 @@ public:
 		return count;
 	}
 
+	vector<std::pair<BTreeNode *,unsigned int>> find_leaf(const Key & k);
+
 	void delete_node(BTreeNode * node);
 	bool has_min_keys(BTreeNode * node) const;
 	bool insert(const Key & k);
