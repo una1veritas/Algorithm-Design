@@ -274,10 +274,14 @@ vector<std::pair<BTreeNode *,unsigned int>> BTree::find_leaf(const Key & k) {
 bool BTree::remove(const Key & k) {
 	BTreeNode * parent;
 	BTreeNode * node;
+	unsigned int ix;
 	std::vector<std::pair<BTreeNode *,unsigned int>> path = find_leaf(k);
+	if (path.empty())
+		return false;
 	node = path.back().first;
-	unsigned int ix = path.back().second;
+	ix = path.back().second;
 	path.pop_back();
+	parent = path.empty() ? NULL : path.back().first;
 	if (ix >= node->keycount)
 		ix = node->keycount - 1;
 	node->key_remove(ix);

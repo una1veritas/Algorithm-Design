@@ -9,7 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <vector>
+#include <set>
 #include <sstream>
 #include <random>
 #include "B-Tree.h"
@@ -40,7 +40,7 @@ int main(const int argc, const char * argv[]) {
 	std::ostringstream osstream;
 
 	for(unsigned int i = 1; i < (unsigned int)argc; ++i) {
-		string arg = argv[i];
+		string arg(argv[i]);
 		if ( string("-i") == arg ) {
 			mode = INSERT_FOLLOWING;
 		} else if (string("-r") == arg) {
