@@ -80,8 +80,8 @@ int main(const int argc, const char * argv[]) {
 					} else if (mode == RANDOM_REMOVE) {
 						if (! keys.empty()) {
 							unsigned int x = mt() % keys.size();
+							cout << "remove " << *keys[x] << endl;
 							if ( tree.remove(*keys[x]) ) {
-								cout << "remove " << *keys[x] << endl;
 								cout << tree << endl << endl;
 							}
 						}

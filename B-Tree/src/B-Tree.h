@@ -21,7 +21,7 @@ typedef string Key;
 
 struct BTreeNode {
 private:
-	static constexpr unsigned int MINIMUM_DEGREE = 2;
+	static constexpr unsigned int MINIMUM_DEGREE = 4;
 	static constexpr unsigned int MIN_KEYS = MINIMUM_DEGREE - 1;
 	static constexpr unsigned int MAX_KEYS = 2*MINIMUM_DEGREE - 1;
 
@@ -52,23 +52,22 @@ public:
 private:
 	unsigned int child_index(const BTreeNode * node);
 
-	BTreeNode * left_sibling_of(const BTreeNode * node);
+	BTreeNode * left_sibling_of(const unsigned int &);
 
-	BTreeNode * right_sibling_of(const BTreeNode * node);
+	BTreeNode * right_sibling_of(const unsigned int &);
 
 	unsigned int key_index(const Key & k);
 
 	// split at the middle
-	BTreeNode * split_child(BTreeNode * node);
+	BTreeNode * split_child(const unsigned int &);
 
 	const Key & key_insert(const Key & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL);
-	const Key & key_remove(unsigned int ix);
+	const Key & key_remove(const unsigned int & ix);
 	const Key & key_remove(const Key & k);
 
-	void shift_right(BTreeNode * left, BTreeNode * right);
-	void shift_left(BTreeNode * left, BTreeNode * right);
-
-	BTreeNode * merge_into_left(BTreeNode * left, BTreeNode * right);
+	void shift_to_right(const unsigned int & cix);
+	void shift_to_left(const unsigned int & ix);
+	BTreeNode * merge_into_left(const unsigned int & ix);
 
 	friend std::ostream & operator<<(std::ostream & out, const BTreeNode & node);
 
@@ -87,14 +86,17 @@ public:
 		delete_node(root);
 	}
 
+private:
+	bool has_min_keys(BTreeNode * node) const;
+	vector<BTreeNode *> remove_in_leaf(const Key & k);
+
+	void delete_node(BTreeNode * node);
+
+public:
 	unsigned int size(void) const {
 		return count;
 	}
-
-	vector<std::pair<BTreeNode *,unsigned int>> find_leaf(const Key & k);
-
-	void delete_node(BTreeNode * node);
-	bool has_min_keys(BTreeNode * node) const;
+	const Key * find(const Key & k) const;
 	bool insert(const Key & k);
 	bool remove(const Key & k);
 
