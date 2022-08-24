@@ -6,90 +6,59 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-#include "Union-Find.h"
+#include <iostream>
 
-UnionFindSet::UnionFindSet(const unsigned int & n) : number(n) {
-	parent = new unsigned int [number];
-	rank = new unsigned char [number];
-	for(unsigned int i = 0; i < number; ++i) {
-		parent[i] = i;
-		rank[i] = 0;
-	}
-}
+class UnionFindSet {
+	unsigned int * parent;
+	unsigned char * rank;
+	unsigned int number;
 
-UnionFindSet::~UnionFindSet() {
-	//cout << "~UnionFindSet " << endl;
-	delete [] parent;
-	delete [] rank;
-}
+public:
+	UnionFindSet(const unsigned int & n);
 
-// path halving
-/*
-virtual unsigned int find_set(unsigned int x) {
-	unsigned int child;
-	while (x != parent[x]) {
-		child = x;
-		x = parent[x];
-		parent[child] = parent[x];
-	}
-	return x;
-}
-*/
+	virtual ~UnionFindSet();
 
-// path compression
-unsigned int UnionFindSet::find_set(unsigned int x) {
-	unsigned int root = x;
-	while (root != parent[root])
-		root = parent[root];
-	unsigned int t;
-	while (x != parent[x]) {
-		t = x;
-		x = parent[x];
-		parent[t] = root;
-	}
-	return x;
-}
-
-unsigned int UnionFindSet::find_set(unsigned int x) const {
-	while ( parent[x] != x)
-		x = parent[x];
-	return x;
-}
-
-unsigned int UnionFindSet::union_set(unsigned int x, unsigned int y) {
-	x = find_set(x);
-	y = find_set(y);
-	if (x == y)
-		return parent[x];
-	if (rank[x] == rank[y]) {
-		if (x < y) {
-			parent[y] = x;
-			rank[x] += 1;
-		} else {
-			parent[x] = y;
-			rank[y] += 1;
+	// path halving
+	/*
+	virtual unsigned int find_set(unsigned int x) {
+		unsigned int child;
+		while (x != parent[x]) {
+			child = x;
+			x = parent[x];
+			parent[child] = parent[x];
 		}
-	} else if ( rank[x] > rank[y] ) {
-		parent[y] = x;
-	} else /* if (rank[x] <= rank[y]) */ {
-		parent[x] = y;
+		return x;
 	}
-	return parent[x];
-}
+	*/
 
-bool UnionFindSet::in_the_same(const unsigned int & x, const unsigned int & y) {
-	return find_set(x) == find_set(y);
-}
+	// path compression
+	unsigned int find_set(unsigned int x);
+	unsigned int find_set(unsigned int x) const;
 
-bool UnionFindSet::in_the_same(const unsigned int & x, const unsigned int & y) const {
-	return find_set(x) == find_set(y);
-}
+	unsigned int union_set(unsigned int x, unsigned int y);
+	bool in_the_same(const unsigned int & x, const unsigned int & y);
+	bool in_the_same(const unsigned int & x, const unsigned int & y) const;
 
-std::ostream & UnionFindSet::node_str(std::ostream & out, const unsigned int & x) const {
-	out << x; // << "[" << parent[x] << ":" << int(rank[x]) << "] ";
-	return out;
-}
+	std::ostream & node_str(std::ostream & out, const unsigned int & x) const;
 
+	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs) {
+		out << "UnionFindSet(";
+		for(unsigned int x = 0; x < ufs.number; ++x) {
+			if ( ufs.parent[x] == x ) {
+				// root
+				out << "{" << x << ":" << int(ufs.rank[x]);
+				for(unsigned int y = 0; y < ufs.number; ++y) {
+					if (x != y and ufs.in_the_same(x, y) ) {
+						out << ", " << y  << ":" << int(ufs.rank[y]);
+					}
+				}
+				out << "}, ";
+			}
+		}
+		out << ") ";
+		return out;
+	}
+};
 
 /*
 int main(const int argc, const char * argv[]) {
