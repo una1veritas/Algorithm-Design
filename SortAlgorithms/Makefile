@@ -3,9 +3,9 @@ CXX = g++
 
 OBJS =  datadef.o selection_sort.o heap_sort.o insertion_sort.o
 #OBJS =	insertion_sort.o heap_sort.o selection_sort.o counting_sort.o main_test.o
-#OBJS = heap_sort.o
 #OBJS += binsearch.o 
 MAINOBJ = main.o
+#MAINOBJ = test.o
 
 LIBS = 
 INCLUDES = ../C_LinkedList/llist.h 
@@ -27,6 +27,7 @@ llist.o:../C_LinkedList/llist.c $(INCLUDES)
 
 #TARGET =	countingsort.exe
 TARGET =	sortalgs.exe
+#TARGET =	test.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
 
@@ -35,6 +36,9 @@ TARGET =	sortalgs.exe
 
 sortalgs.exe: $(OBJS) $(MAINOBJ)
 	$(CC) -o sortalgs.exe $(OBJS) $(MAINOBJ)
+
+test.exe: $(MAINOBJ)
+	$(CC) -o test.exe $(MAINOBJ)
 
 main.o: ./src/main.c $(OBJS)
 	$(CC) -c -o main.o ./src/main.c

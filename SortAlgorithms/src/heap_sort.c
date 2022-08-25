@@ -20,6 +20,7 @@ int down_to_leaf(data * a[], long i, long n) {
 		}
 		if ( lessthan(a[j], a[i]) )
 			break;
+		printf("a[%d] %d <--> a[%d] = %d\n", (int) i, (int) *a[i], (int) j, (int) *a[j]);
 		t = a[i], a[i] = a[j], a[j] = t;
 	}
 	return 1;

@@ -18,7 +18,8 @@ long keyval(const data * x) {
 }
 */
 
-#include <string.h>
+//#include <string.h>
+
 int equals(const data * x, const data * y) {
 	return (*x == *y);
 }
@@ -26,6 +27,10 @@ int equals(const data * x, const data * y) {
 int lessthan(const data * x, const data * y) {
 //	return strcmp(*x, *y) < 0;
 	return (*x < *y);
+}
+
+long cast_to_long(const data x) {
+	return x;
 }
 
 long keyval(const data * x) {

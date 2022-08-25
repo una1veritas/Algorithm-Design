@@ -26,6 +26,7 @@ int down_to_leaf(const data data[], int a[], int i, int n) {
 		}
 		if ( lessthaneq(data+a[j], data+a[i]) )
 			break;
+		printf("down_to_leaf swap: a[%d] = %d <-> a[%d] = %d\n ", i, a[i], j, a[j]);
 		t = a[i], a[i] = a[j], a[j] = t;
 	}
 #ifdef DEBUG
