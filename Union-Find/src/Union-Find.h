@@ -18,6 +18,13 @@ public:
 
 	virtual ~UnionFindSet();
 
+	unsigned int size() const {
+		return number;
+	}
+
+	unsigned int element_rank(unsigned int & x) const {
+		return rank[x];
+	}
 	// path halving
 	/*
 	virtual unsigned int find_set(unsigned int x) {

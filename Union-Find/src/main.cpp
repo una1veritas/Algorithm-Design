@@ -11,6 +11,8 @@
 #include <iostream>
 #include <random>
 #include <chrono>
+#include <algorithm>
+#include <iomanip>
 
 #include "Union-Find.h"
 
@@ -62,6 +64,19 @@ int main(const int argc, const char * const argv[]) {
 		}
 		cout << ufs << endl << endl;
 	}
+
+	unsigned int hirank = 0;
+	for(unsigned int i = 0; i < ufs.size(); ++i) {
+		cout << std::setw(3) << i << " |";
+	}
+	cout << endl;
+	for(unsigned int i = 0; i < ufs.size(); ++i) {
+		cout << std::setw(3) << ufs.element_rank(i) << " |";
+		hirank = std::max(ufs.element_rank(i),hirank);
+	}
+	cout << endl;
+	cout << "maximum = " << hirank << endl;
+
 	return EXIT_SUCCESS;
 }
 

@@ -59,7 +59,7 @@ unsigned int UnionFindSet::find_set(unsigned int x) const {
 unsigned int UnionFindSet::union_set(unsigned int x, unsigned int y) {
 	x = find_set(x);
 	y = find_set(y);
-	if (x == y)
+	if (x == y) // no need to merge;
 		return parent[x];
 	if (rank[x] == rank[y]) {
 		if (x < y) {
