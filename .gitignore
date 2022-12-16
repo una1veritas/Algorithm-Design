@@ -11,7 +11,7 @@ a.out
 *.dll
 .cproject
 .project
-.settings
+/.settings/
 .metadata
 language.settings.xml
 build

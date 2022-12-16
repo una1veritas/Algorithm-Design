@@ -1,15 +1,30 @@
 #include <stdio.h>
 
-#define MAX_VERTICES 10
+#define MAX_VERTICES 16
 
-typedef int edge[2];
+typedef int Vertex;
+typedef struct Edge {
+	int u, v;
+} Edge;
 
-typedef struct {
+typedef struct Graph {
 	int vertices[MAX_VERTICES];
 	int vsize;
-	edge edges[MAX_VERTICES*(MAX_VERTICES-1)];
+	Edge edges[MAX_VERTICES*(MAX_VERTICES-1)];
 	int esize;
-} graph;
+} Graph;
+
+void Graph_int(Grapg * gp, Vertex v[], int n, Edge e[], int m) {
+	gp->vsize = 0;
+	gp->esize = 0;
+	for(int i = 0; i < n; ++i) {
+		Graph_add_vertex(gp, v[i]);
+	}
+	for(int i = 0; i < m; i += 1) {
+		Graph_add_edge(gp, e[i]);
+	}
+	return;
+}
 
 void graph_add_vertex(graph * g, int v) {
 	int i;
@@ -46,18 +61,7 @@ void graph_add_edge(graph * g, edge e) {
 	g->edges[i][1] = e[1];
 }
 
-graph graph_init(int v[], int n, edge e[], int m) {
-	graph g;
-	g.vsize = 0;
-	for(int i = 0; i < n; i += 1) {
-		graph_add_vertex(&g, v[i]);
-	}
-	g.esize = 0;
-	for(int i = 0; i < m; i += 1) {
-		graph_add_edge(&g, e[i]);
-	}
-	return g;
-}
+
 
 void graph_print(graph * g) {
 	printf("({");
