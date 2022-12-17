@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 #define MAX_VERTICES 16
 
@@ -84,7 +87,36 @@ void Graph_print(Graph * gp) {
 	printf(")\n");
 }
 
+int isoneof(const char c, const char * charlist) {
+	for(int i = 0; charlist[i] != 0; ++i) {
+		if ( c == charlist[i] )
+			return 1;
+	}
+	return 0;
+}
+
 int main(int argc, char **argv) {
+	char buf[512];
+	if ( !sscanf(argv[1], "%511[0-9]", buf) ) {
+		printf("No number of the vertices.\n");
+		return EXIT_FAILURE;
+	}
+	unsigned long n = strtol(buf, NULL, 10);
+	printf("n = %ld\n", n);
+	char * ptr = argv[2];
+	unsigned long u, v;
+	while (sscanf(ptr,"%511[^,\n]", buf)) {
+		u = strtol(ptr, &ptr, 10);
+		for( ; *ptr == '-' || *ptr == ' '; ++ptr );
+		v = strtol(ptr, &ptr, 10);
+		printf("%lu, %lu\n", u, v);
+		for(;*ptr != 0; ++ptr) {
+			if ( isalnum(*ptr) )
+				break;
+		}
+		if ( *ptr == 0 )
+			break;
+	}
 	int vertices[] = {1, 6, 2, 3, 4, 5, };
 	Edge edges[] ={{1, 2}, {2, 3}, {3, 4}, {5, 6}, {6, 1}};
 	Graph g;
