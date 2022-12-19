@@ -1,8 +1,8 @@
 CC = gcc -std=c11
 CXX = g++ -std=c++17
 
-CFLAGS = -O0 -g -Wall -fmessage-length=0
-CPPFLAGS = -O0 -g -Wall
+CFLAGS = -O2 -g -Wall -fmessage-length=0
+CPPFLAGS = -O2 -g -Wall
 
 INCLUDES =
 

@@ -1,80 +1,126 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
-#define MAX_VERTICES 10
+#define MAX_VERTICES 16
 
-typedef int edge[2];
+typedef int Vertex;
+typedef struct Edge {
+	int u, v;
+} Edge;
 
-typedef struct {
+
+typedef struct Graph {
 	int vertices[MAX_VERTICES];
 	int vsize;
-	edge edges[MAX_VERTICES*(MAX_VERTICES-1)];
+	Edge edges[MAX_VERTICES*(MAX_VERTICES-1)];
 	int esize;
-} graph;
+} Graph;
 
-void graph_add_vertex(graph * g, int v) {
-	int i;
-	for(i = 0; i < g->vsize; i += 1) {
-		if (g->vertices[i] == v)
-			return;
-		if (g->vertices[i] > v)
-			break;
-	}
-	g->vsize += 1;
-	for(int j = g->vsize - 1; j >= i; j -= 1) {
-		g->vertices[j] = g->vertices[j-1];
-	}
-	g->vertices[i] = v;
-}
+void Graph_add_vertex(Graph * gp, int v);
+void Graph_add_edge(Graph * gp, Edge e);
 
-void graph_add_edge(graph * g, edge e) {
-	int i;
-	if ( e[0] > e[1] ) {
-		i = e[1]; e[1] = e[0]; e[0] = i;
+void Graph_init(Graph * gp, Vertex v[], int n, Edge e[], int m) {
+	gp->vsize = 0;
+	gp->esize = 0;
+	for(int i = 0; i < n; ++i) {
+		Graph_add_vertex(gp, v[i]);
 	}
-	for(i = 0; i < g->esize; i += 1) {
-		if ( g->edges[i][0] == e[0] && g->edges[i][1] == e[1] )
-			return;
-		if ( g->edges[i][0] > e[0] || (g->edges[i][0] == e[0] && g->edges[i][1] > e[1]) )
-			break;
-	}
-	g->esize += 1;
-	for(int j = g->esize - 1; j >= i; j -= 1) {
-		g->edges[j][0] = g->edges[j-1][0];
-		g->edges[j][1] = g->edges[j-1][1];
-	}
-	g->edges[i][0] = e[0];
-	g->edges[i][1] = e[1];
-}
-
-graph graph_init(int v[], int n, edge e[], int m) {
-	graph g;
-	g.vsize = 0;
-	for(int i = 0; i < n; i += 1) {
-		graph_add_vertex(&g, v[i]);
-	}
-	g.esize = 0;
 	for(int i = 0; i < m; i += 1) {
-		graph_add_edge(&g, e[i]);
+		Graph_add_edge(gp, e[i]);
 	}
-	return g;
+	return;
 }
 
-void graph_print(graph * g) {
-	printf("({");
-	for(int i = 0; i < g->vsize; ++i) {
-		printf("%d, ", g->vertices[i]);
+void Graph_add_vertex(Graph * gp, int v) {
+	int i;
+	// インサーションソート（昇順）で追加
+	for(i = 0; i < gp->vsize; i += 1) {
+		if (gp->vertices[i] == v)
+			return;
+		if (gp->vertices[i] > v)
+			break;
+	}
+	gp->vsize += 1;
+	for(int j = gp->vsize - 1; j >= i; j -= 1) {
+		gp->vertices[j] = gp->vertices[j-1];
+	}
+	gp->vertices[i] = v;
+}
+
+void Graph_add_edge(Graph * gp, Edge e) {
+	int t;
+	if ( e.u > e.v ) {
+		t = e.u; e.u = e.v; e.v = t;
+	}
+	// インサーションソート（辞書式昇順）で追加
+	int i;
+	for(i = 0; i < gp->esize; ++i) {
+		if ( gp->edges[i].u == e.u && gp->edges[i].v == e.v ) {
+			// すでにある
+			return;
+		}
+		if ( gp->edges[i].u > e.u || (gp->edges[i].v > e.v) ) {
+			// 追加する辺よりも後になる辺が見つかった
+			break;
+		}
+	}
+	gp->esize += 1;
+	for(int j = gp->esize - 1; j >= i; j -= 1) {
+		gp->edges[j] = gp->edges[j-1];
+	}
+	gp->edges[i] = e;
+}
+
+
+
+void Graph_print(Graph * gp) {
+	printf("G=({");
+	for(int i = 0; i < gp->vsize; ++i) {
+		printf("%d, ", gp->vertices[i]);
 	}
 	printf("}, {");
-	for(int i = 0; i < g->esize; ++i) {
-		printf("(%d, %d), ", g->edges[i][0], g->edges[i][1]);
+	for(int i = 0; i < gp->esize; ++i) {
+		printf("(%d, %d), ", gp->edges[i].u, gp->edges[i].v);
 	}
 	printf(")\n");
 }
 
+int isoneof(const char c, const char * charlist) {
+	for(int i = 0; charlist[i] != 0; ++i) {
+		if ( c == charlist[i] )
+			return 1;
+	}
+	return 0;
+}
+
 int main(int argc, char **argv) {
-	int v[] = {1, 6, 2, 3, 4, 5, };
-	edge e[] ={{1, 2}, {2, 3}, {3, 4}, {5, 6}, {6, 1}};
-	graph g = graph_init(v, 6, e, 5);
-	graph_print(&g);
+	char buf[512];
+	if ( !sscanf(argv[1], "%511[0-9]", buf) ) {
+		printf("No number of the vertices.\n");
+		return EXIT_FAILURE;
+	}
+	unsigned long n = strtol(buf, NULL, 10);
+	printf("n = %ld\n", n);
+	char * ptr = argv[2];
+	unsigned long u, v;
+	while (sscanf(ptr,"%511[^,\n]", buf)) {
+		u = strtol(ptr, &ptr, 10);
+		for( ; *ptr == '-' || *ptr == ' '; ++ptr );
+		v = strtol(ptr, &ptr, 10);
+		printf("%lu, %lu\n", u, v);
+		for(;*ptr != 0; ++ptr) {
+			if ( isalnum(*ptr) )
+				break;
+		}
+		if ( *ptr == 0 )
+			break;
+	}
+	int vertices[] = {1, 6, 2, 3, 4, 5, };
+	Edge edges[] ={{1, 2}, {2, 3}, {3, 4}, {5, 6}, {6, 1}};
+	Graph g;
+	Graph_init(&g, vertices, 6, edges, 5);
+	Graph_print(&g);
 	return 0;
 }
