@@ -105,18 +105,14 @@ int main(int argc, char **argv) {
 	printf("n = %ld\n", n);
 	char * ptr = argv[2];
 	unsigned long u, v;
-	while (sscanf(ptr,"%511[^,\n]", buf)) {
+	do {
+		for( ; isoneof(*ptr," ,\t\n"); ++ptr);
 		u = strtol(ptr, &ptr, 10);
-		for( ; *ptr == '-' || *ptr == ' '; ++ptr );
+		for( ; isoneof(*ptr, "- "); ++ptr );
 		v = strtol(ptr, &ptr, 10);
 		printf("%lu, %lu\n", u, v);
-		for(;*ptr != 0; ++ptr) {
-			if ( isalnum(*ptr) )
-				break;
-		}
-		if ( *ptr == 0 )
-			break;
-	}
+		for( ; isoneof(*ptr, " ,\t\n"); ++ptr);
+	} while ( *ptr );
 	int vertices[] = {1, 6, 2, 3, 4, 5, };
 	Edge edges[] ={{1, 2}, {2, 3}, {3, 4}, {5, 6}, {6, 1}};
 	Graph g;
