@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "simplegraph.h"
+#include "UnionFind.h"
 
 // Compare two edges according to their weights.
 // Used in qsort() for sorting an array of edges
@@ -36,22 +37,22 @@ void KruskalMST(struct Graph* graph)
 	qsort(graph->edges, graph->esize, sizeof(graph->edges[0]), weight_descending);
 
 	// Allocate memory for creating V ssubsets
-	struct subset* subsets = (struct subset*)malloc(V * sizeof(struct subset));
+	Subset* subsets = (Subset*)malloc(vsize * sizeof(Subset));
 
 	// Create V subsets with single elements
-	for (int v = 0; v < V; ++v) {
+	for (int v = 0; v < vsize; ++v) {
 		subsets[v].parent = v;
 		subsets[v].rank = 0;
 	}
 
 	// Number of edges to be taken is equal to V-1
-	while (e < V - 1 && i < graph->E) {
+	while (e < vsize - 1 && i < graph->esize) {
 		// Step 2: Pick the smallest edge. And increment
 		// the index for next iteration
-		struct Edge next_edge = graph->edge[i++];
+		Edge next_edge = graph->edges[i++];
 
-		int x = find(subsets, next_edge.src);
-		int y = find(subsets, next_edge.dest);
+		int x = Find(subsets, next_edge.src);
+		int y = Find(subsets, next_edge.dst);
 
 		// If including this edge does't cause cycle,
 		// include it in result and increment the index
@@ -71,7 +72,7 @@ void KruskalMST(struct Graph* graph)
 	for (i = 0; i < e; ++i)
 	{
 		printf("%d -- %d == %d\n", result[i].src,
-			result[i].dest, result[i].weight);
+			result[i].dst, result[i].weight);
 		minimumCost += result[i].weight;
 	}
 	printf("Minimum Cost Spanning tree : %d",minimumCost);

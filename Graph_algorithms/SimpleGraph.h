@@ -15,7 +15,7 @@
 typedef int Vertex;
 typedef struct Edge {
 	int src, dst;
-	double weight;
+	int weight;
 } Edge;
 
 // 単純グラフ型
