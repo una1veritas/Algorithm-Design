@@ -4,6 +4,7 @@
 #include <ctype.h>
 
 #include "simplegraph.h"
+#include "kruskal.h"
 
 int isoneof(const char c, const char * charlist) {
 	for(int i = 0; charlist[i] != 0; ++i) {
@@ -30,20 +31,26 @@ int main(int argc, char **argv) {
 		Graph_add_vertex(&g, i);
 	}
 	char * ptr = argv[2];
-	unsigned long u, v;
-	Edge anedge = {0, 0};
+	unsigned long u, v, w;
+	Edge anedge = {0, 0, 0};
 	do {
 		for( ; isoneof(*ptr," ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
 		u = strtol(ptr, &ptr, 10);
 		for( ; isoneof(*ptr, "- "); ++ptr );   // "- " をスキップ
 		v = strtol(ptr, &ptr, 10);
 		//printf("%lu, %lu\n", u, v);
+		for( ; isoneof(*ptr, ": "); ++ptr );   // "- " をスキップ
+		w = strtol(ptr, &ptr, 10);
 		anedge.src = u;
 		anedge.dst = v;
-		Graph_add_edge(&g,anedge);
+		anedge.weight = w;
+		Graph_add_edge(&g, anedge);
 		for( ; isoneof(*ptr, " ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
 	} while ( *ptr );
 
 	Graph_print(&g);
+
+	KruskalMST(&g);
+
 	return 0;
 }
