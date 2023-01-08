@@ -9,84 +9,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-// a structure to represent a weighted edge in graph
-struct Edge {
-	int src, dest, weight;
-};
-
-// a structure to represent a connected, undirected
-// and weighted graph
-struct Graph {
-	// V-> Number of vertices, E-> Number of edges
-	int V, E;
-
-	// graph is represented as an array of edges.
-	// Since the graph is undirected, the edge
-	// from src to dest is also edge from dest
-	// to src. Both are counted as 1 edge here.
-	struct Edge* edge;
-};
-
-// Creates a graph with V vertices and E edges
-struct Graph* createGraph(int V, int E)
-{
-	struct Graph* graph = malloc( sizeof(struct Graph) );
-	graph->V = V;
-	graph->E = E;
-
-	graph->edge = malloc( sizeof(struct Edge)*E );
-
-	return graph;
-}
-
-// A structure to represent a subset for union-find
-struct subset {
-	int parent;
-	int rank;
-};
-
-// A utility function to find set of an element i
-// (uses path compression technique)
-int find(struct subset subsets[], int i)
-{
-	// find root and make root as parent of i
-	// (path compression)
-	if (subsets[i].parent != i)
-		subsets[i].parent
-			= find(subsets, subsets[i].parent);
-
-	return subsets[i].parent;
-}
-
-// A function that does union of two sets of x and y
-// (uses union by rank)
-void Union(struct subset subsets[], int x, int y)
-{
-	int xroot = find(subsets, x);
-	int yroot = find(subsets, y);
-
-	// Attach smaller rank tree under root of high
-	// rank tree (Union by Rank)
-	if (subsets[xroot].rank < subsets[yroot].rank)
-		subsets[xroot].parent = yroot;
-	else if (subsets[xroot].rank > subsets[yroot].rank)
-		subsets[yroot].parent = xroot;
-
-	// If ranks are same, then make one as root and
-	// increment its rank by one
-	else
-	{
-		subsets[yroot].parent = xroot;
-		subsets[xroot].rank++;
-	}
-}
+#include "simplegraph.h"
 
 // Compare two edges according to their weights.
 // Used in qsort() for sorting an array of edges
-int myComp(const void* a, const void* b)
+int weight_descending(const void* a, const void* b)
 {
-	struct Edge* a1 = (struct Edge*)a;
-	struct Edge* b1 = (struct Edge*)b;
+	Edge* a1 = (Edge*)a;
+	Edge* b1 = (Edge*)b;
 	return a1->weight > b1->weight;
 }
 
@@ -94,9 +24,8 @@ int myComp(const void* a, const void* b)
 // algorithm
 void KruskalMST(struct Graph* graph)
 {
-	int V = graph->V;
-	struct Edge
-		result[V]; // Tnis will store the resultant MST
+	int vsize = graph->vsize;
+	Edge result[vsize]; // Tnis will store the resultant MST
 	int e = 0; // An index variable, used for result[]
 	int i = 0; // An index variable, used for sorted edges
 
@@ -104,12 +33,10 @@ void KruskalMST(struct Graph* graph)
 	// order of their weight. If we are not allowed to
 	// change the given graph, we can create a copy of
 	// array of edges
-	qsort(graph->edge, graph->E, sizeof(graph->edge[0]),
-		myComp);
+	qsort(graph->edges, graph->esize, sizeof(graph->edges[0]), weight_descending);
 
 	// Allocate memory for creating V ssubsets
-	struct subset* subsets
-		= (struct subset*)malloc(V * sizeof(struct subset));
+	struct subset* subsets = (struct subset*)malloc(V * sizeof(struct subset));
 
 	// Create V subsets with single elements
 	for (int v = 0; v < V; ++v) {
@@ -193,5 +120,6 @@ int main()
 
 	KruskalMST(graph);
 
+	free(graph);
 	return 0;
 }
