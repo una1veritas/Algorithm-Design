@@ -7,7 +7,7 @@ CPPFLAGS = -O2 -g -Wall
 INCLUDES =
 
 TARGET = kruskal.exe
-OBJS = kruskal.o
+OBJS = Graph_algorithms.o SimpleGraph.o UnionFind.o kruskal.o
 LIBS = 
 
 %.o:	%.c $(INCLUDES)

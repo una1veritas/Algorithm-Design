@@ -1,25 +1,28 @@
 プログラムのコンパイル，実行のしかた (202/12/27)
 
-(1) kruskal.c のコンパイルと入力の与え方
-オリジナルは Kruskal’s Minimum Spanning Tree Algorithm | Greedy Algo-2
+(1) コンパイルと入力の与え方
+Kruskal のアルゴリズムの部分のオリジナルは Kruskal’s Minimum Spanning Tree Algorithm | Greedy Algo-2
  - GeeksforGeeks で，
-真剣な Set union-find を使った実装のプログラムを C コンパイラでコンパイルできるよう
-手を加えたもの．
+オリジナルの単純辺重み付きグラフを対象として動作する真剣な Set union-find を使ったC言語
+での実装として手を加えたもの．
 
 まずCコンパイラでコンパイルする．
-% gcc kruskal.c -o kruskal.exe
+% make
+
+または
+% gcc -std=c11 -o kruskal.exe Graph_algorithms.c SimpleGraph.c UnionFind.c kruskal.c
 % ls
    ...
-   kruskal.c   kruskal.exe
+   kruskal.exe
    ...
 実行形式ファイル kruskal.exe の名前はなんでもよい
-実行　（linux の場合）
-% ./kruskal.exe
+実行　（linux, Msys64/MinGW の場合）
+% ./kruskal.exe  "0, 1, 2, 3" "0-1:10, 0-2:6, 0-3: 5, 1 - 3 : 15, 2 - 3: 4"
 実行　（windows プロンプトの場合）
-C:\(省略)>.\kruskal.exe
+C:\(省略)>.\kruskal.exe "0, 1, 2, 3" "0-1:10, 0-2:6, 0-3: 5, 1 - 3 : 15, 2 - 3: 4"
 
-プログラム中で定義されているごく簡単なグラフの MST が出力されます．
-入力の変更はプログラムの変更とコンパイルのしなおしが必要です．
+引数で定義される点数 4 のごく簡単な重み付きグラフの MST が出力されます．
+プログラムを簡単にするため点数は最大 16 になっています（SimpleGraph.h の MAX_VERTICES_SIZE で定義）．
 
 (2) kruskal.py の実行と入力の与え方
 Python バージョンは完全オリジナルの簡易 Set union-find 使用のプログラムです．

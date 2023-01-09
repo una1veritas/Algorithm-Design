@@ -16,31 +16,42 @@ int isoneof(const char c, const char * charlist) {
 
 int main(int argc, char **argv) {
 	if (argc < 3) {
-		printf("Requires two arguments: (1) the number of vertices and (2) edge definitions in '1-2, 2-3,...' form .\n");
+		printf("Requires two arguments: (1) sequence \"0, 1, 2...\" of the vertices, and (2) edge definitions in \"1-2, 2-3,...\" form .\n");
 	}
-	char buf[512];
+
 	Graph g;
 	Graph_init_empty(&g);
-	if ( !sscanf(argv[1], "%511[0-9]", buf) ) {
-		printf("No number of the vertices.\n");
-		return EXIT_FAILURE;
-	}
-	int n = strtol(buf, NULL, 10);
-	printf("n = %d\n", n);
-	for(Vertex i = 0; i < n; ++i) {
-		Graph_add_vertex(&g, i);
-	}
-	char * ptr = argv[2];
-	unsigned long u, v, w;
+
+	char * ptr;
+	int u, v, w;
+	// read the sequence of verices
+	ptr = argv[1];
+	do {
+		for( ; isoneof(*ptr," ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
+		v = strtol(ptr, &ptr, 10);
+		Graph_add_vertex(&g, v);
+	} while ( *ptr );
+
+	// read the sequences of weighted wdges
+	ptr = argv[2];
+	int found_colon;
 	Edge anedge = {0, 0, 0};
 	do {
 		for( ; isoneof(*ptr," ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
 		u = strtol(ptr, &ptr, 10);
 		for( ; isoneof(*ptr, "- "); ++ptr );   // "- " をスキップ
 		v = strtol(ptr, &ptr, 10);
-		//printf("%lu, %lu\n", u, v);
-		for( ; isoneof(*ptr, ": "); ++ptr );   // "- " をスキップ
-		w = strtol(ptr, &ptr, 10);
+		found_colon = 0;
+		// ": " をスキップ
+		for( ; isoneof(*ptr, ": "); ++ptr ) {
+			if (*ptr == ':')
+				found_colon = 1;
+		}
+		if (found_colon) {
+			w = strtol(ptr, &ptr, 10);
+		} else {
+			w = 1;
+		}
 		anedge.src = u;
 		anedge.dst = v;
 		anedge.weight = w;
@@ -54,3 +65,16 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
+
+/* Let us create following weighted graph
+		10
+	0--------1
+	| \	 |
+	6| 5\ |15
+	|	 \ |
+	2--------3
+		4
+
+"0, 1, 2, 3" "0-1:10, 0-2:6, 0-3: 5, 1 - 3 : 15, 2 - 3: 4"
+*/
+
