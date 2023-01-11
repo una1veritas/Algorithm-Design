@@ -24,6 +24,18 @@ struct datafileinfo {
 	uint32_t garbages[garbages_max+1];
 };
 
+bool check_data_file(const string & datafilename) {
+	struct stat test;
+	if ( stat(datafilename.c_str(), &test) != 0 ) {
+		cout << "Cannot open file..." << flush;
+		std::ofstream tfile(datafilename, ios::binary | ios::out );
+		tfile.close();
+		cout << " created." << endl;
+		return true;
+	}
+	return true;
+}
+
 int main(int argc, char * argv[]) {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 
@@ -33,27 +45,12 @@ int main(int argc, char * argv[]) {
 	cout << sizeof(datafileinfo) << endl;
 	char buffer[buffer_size];
 	char text[buffer_size] = "This is a pen, this is an apple, an apple pen.";
-	/*
-	if ( bfile.read(buffer, buffer_size) ) {
-	    memcpy((void *) &header, (const void *) buffer, sizeof(datafileinfo));
-	    cout << "read." << endl;
-	} else if ( bfile.gcount() < buffer_size ) {
-		header.capacity = 0;
-		header.size = 0;
-		header.garbages[0] = 0;
-			*/
 
 	if (argc > 1) {
 		strcpy(text, argv[1]);
 	}
 	string datafilename = "data.bin";
-	struct stat test;
-	if ( stat(datafilename.c_str(), &test) != 0 ) {
-		cout << "Cannot open file..." << flush;
-		std::ofstream tfile(datafilename, ios::binary | ios::out );
-		tfile.close();
-		cout << " created." << endl;
-	}
+	check_data_file(datafilename);
 
 	std::fstream bfile;
 	bfile.open("data.bin", ios::binary | ios::out | ios::in );
@@ -65,19 +62,6 @@ int main(int argc, char * argv[]) {
 	bfile.write(text, buffer_size);
 	bfile.close();
 	cout << "written." << endl;
-		/*
-    } else {
-    	cout << "unknown status." << endl;
-    	return EXIT_FAILURE;
-	}
-	*/
-	/*
-		bfile.seekg (0);
-	    bfile.read (buffer, buffer_size);
-	    cout << bfile.gcount() << endl;
-	    cout << "read. " << buffer << endl;
 
-		bfile.close();
-		*/
 	return EXIT_SUCCESS;
 }
