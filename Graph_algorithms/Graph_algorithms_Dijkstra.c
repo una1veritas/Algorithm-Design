@@ -63,10 +63,10 @@ int main(int argc, char **argv) {
 	Graph_print(&g);
 
 	// クラスカルのアルゴリズムを呼び出し
-	Graph * T = KruskalMST(&g);
+	Vertex * T = Dijkstra(&g, 0, 3);
 
-	printf("\nMST: \n");
-	Graph_print(T);
+	//printf("\nMST: \n");
+	//Graph_print(T);
 
 	free(T);
 
@@ -84,3 +84,4 @@ int main(int argc, char **argv) {
 
 "0, 1, 2, 3" "0-1:10, 0-2:6, 0-3: 5, 1 - 3 : 15, 2 - 3: 4"
 */
+
