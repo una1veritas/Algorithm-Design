@@ -23,10 +23,13 @@ int weight_descending(const void* a, const void* b)
 
 // The main function to construct MST using Kruskal's
 // algorithm
-void KruskalMST(Graph* graph)
+// 出力： 新しく動的に作られた最小広域木（グラフ）
+Graph * KruskalMST(Graph* graph)
 {
 	int vsize = graph->vsize;
-	Edge result[vsize]; // Tnis will store the resultant MST
+	Graph * mst = (Graph *) malloc(sizeof(Graph)); // Tnis will store the resultant MST
+	Graph_init(mst, graph->vertices, graph->vsize, graph->edges, 0);
+
 	int e = 0; // An index variable, used for result[]
 	int i = 0; // An index variable, used for sorted edges
 
@@ -58,23 +61,12 @@ void KruskalMST(Graph* graph)
 		// include it in result and increment the index
 		// of result for next edge
 		if (x != y) {
-			result[e++] = next_edge;
+			Graph_add_vertex(mst, x);
+			Graph_add_vertex(mst, y);
+			Graph_add_edge(mst, next_edge);
 			Union(subsets, x, y);
 		}
 		// Else discard the next_edge
 	}
-
-	// print the contents of result[] to display the
-	// built MST
-	printf(
-		"Following are the edges in the constructed MST\n");
-	int minimumCost = 0;
-	for (i = 0; i < e; ++i)
-	{
-		printf("%d -- %d == %d\n", result[i].src,
-			result[i].dst, result[i].weight);
-		minimumCost += result[i].weight;
-	}
-	printf("Minimum Cost Spanning tree : %d",minimumCost);
-	return;
+	return mst;
 }

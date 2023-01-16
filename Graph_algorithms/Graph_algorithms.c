@@ -6,7 +6,7 @@
 #include "simplegraph.h"
 #include "kruskal.h"
 
-int isoneof(const char c, const char * charlist) {
+int oneof(const char c, const char * charlist) {
 	for(int i = 0; charlist[i] != 0; ++i) {
 		if ( c == charlist[i] )
 			return 1;
@@ -24,26 +24,26 @@ int main(int argc, char **argv) {
 
 	char * ptr;
 	int u, v, w;
-	// read the sequence of verices
+	// 点の列を読み取る
 	ptr = argv[1];
 	do {
-		for( ; isoneof(*ptr," ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
+		for( ; oneof(*ptr," ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
 		v = strtol(ptr, &ptr, 10);
 		Graph_add_vertex(&g, v);
 	} while ( *ptr );
 
-	// read the sequences of weighted wdges
+	// 重みつき辺の列を読み取る
 	ptr = argv[2];
 	int found_colon;
 	Edge anedge = {0, 0, 0};
 	do {
-		for( ; isoneof(*ptr," ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
+		for( ; oneof(*ptr," ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
 		u = strtol(ptr, &ptr, 10);
-		for( ; isoneof(*ptr, "- "); ++ptr );   // "- " をスキップ
+		for( ; oneof(*ptr, "- "); ++ptr );   // "- " をスキップ
 		v = strtol(ptr, &ptr, 10);
 		found_colon = 0;
 		// ": " をスキップ
-		for( ; isoneof(*ptr, ": "); ++ptr ) {
+		for( ; oneof(*ptr, ": "); ++ptr ) {
 			if (*ptr == ':')
 				found_colon = 1;
 		}
@@ -56,12 +56,19 @@ int main(int argc, char **argv) {
 		anedge.dst = v;
 		anedge.weight = w;
 		Graph_add_edge(&g, anedge);
-		for( ; isoneof(*ptr, " ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
+		for( ; oneof(*ptr, " ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
 	} while ( *ptr );
 
+	// 入力されたグラフの定義を表示
 	Graph_print(&g);
 
-	KruskalMST(&g);
+	// クラスカルのアルゴリズムを呼び出し
+	Graph * T = KruskalMST(&g);
+
+	printf("\nMST: \n");
+	Graph_print(T);
+
+	free(T);
 
 	return 0;
 }

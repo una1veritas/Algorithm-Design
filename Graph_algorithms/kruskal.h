@@ -10,6 +10,6 @@
 
 #include "SimpleGraph.h"
 
-void KruskalMST(Graph* graph);
+Graph * KruskalMST(Graph* graph);
 
 #endif /* KRUSKAL_H_ */

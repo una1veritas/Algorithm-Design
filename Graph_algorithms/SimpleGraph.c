@@ -10,12 +10,12 @@
 #include "simplegraph.h"
 
 void Graph_init(Graph * gp, Vertex v[], int n, Edge e[], int m) {
-	gp->vsize = n;
-	gp->esize = m;
-	for(int i = 0; i < gp->vsize; ++i) {
+	gp->vsize = 0;
+	gp->esize = 0;
+	for(int i = 0; i < n; ++i) {
 		Graph_add_vertex(gp, v[i]);
 	}
-	for(int i = 0; i < gp->esize; i += 1) {
+	for(int i = 0; i < m; i += 1) {
 		Graph_add_edge(gp, e[i]);
 	}
 	return;
