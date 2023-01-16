@@ -8,7 +8,7 @@
 #ifndef KRUSKAL_H_
 #define KRUSKAL_H_
 
-#include "SimpleGraph.h"
+#include "simplegraph.h"
 
 Graph * KruskalMST(Graph* graph);
 

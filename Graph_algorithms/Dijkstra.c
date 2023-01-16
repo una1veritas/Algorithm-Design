@@ -5,9 +5,10 @@
  *      Author: Sin Shimozono
  */
 
+#include <stdio.h>
 #include <limits.h>
 
-#include "SimpleGraph.h"
+#include "simplegraph.h"
 
 int count_nonzero(int a[], int n) {
 	int count = 0;
@@ -26,7 +27,7 @@ int vertex_index(Graph * g, int val) {
 	return i;
 }
 
-Vertex* Dijkstra(Graph *g, int start, int goal) {
+Vertex * Dijkstra(Graph *g, int start, int goal) {
 	int l[g->vsize];
 	for(int i = 0; i < g->vsize; ++i) {
 		l[i] = INT_MAX;
@@ -40,7 +41,7 @@ Vertex* Dijkstra(Graph *g, int start, int goal) {
 	l[vertex_index(g, start)] = 0;
 	while ( !(count_nonzero(P, g->vsize) < g->vsize) ) {
 		// find the point u to which the path is shortest
-		int vindex;
+		int vindex = -1;
 		int lmin = INT_MAX;
 		for(int i = 0; i < g->vsize; ++i) {
 			if ( l[i] < lmin ) {
@@ -48,11 +49,11 @@ Vertex* Dijkstra(Graph *g, int start, int goal) {
 				lmin = l[i];
 			}
 		}
-		//cout << "nearest u = " << u << ", el[u] = " << el[u] << endl;
-		if (u == 0)
+		printf("nearest vindex = %d, l[vindex] = %d\n", vindex, l[vindex]);
+		if (vindex == -1)
 			break; // unreachable points?
-		vertices.erase(u); // the dist. of the shortest path to u is determined.
-		if (u == osmid_goal)
+		P[vindex] = 1; // the dist. of the shortest path to u is determined.
+		if (g->vertices[vindex] == goal)
 			break;
 		// for each point adjacent to u and in vertices
 		//cout << "update adjacents. " << endl;

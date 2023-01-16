@@ -3,8 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "Kruskal.h"
 #include "simplegraph.h"
-#include "kruskal.h"
 
 int oneof(const char c, const char * charlist) {
 	for(int i = 0; charlist[i] != 0; ++i) {

@@ -3,8 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "Dijkstra.h"
 #include "simplegraph.h"
-#include "kruskal.h"
 
 int oneof(const char c, const char * charlist) {
 	for(int i = 0; charlist[i] != 0; ++i) {
@@ -14,7 +14,7 @@ int oneof(const char c, const char * charlist) {
 	return 0;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char *argv[]) {
 	if (argc < 3) {
 		printf("Requires two arguments: (1) sequence \"0, 1, 2...\" of the vertices, and (2) edge definitions in \"1-2, 2-3,...\" form .\n");
 	}

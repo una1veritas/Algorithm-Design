@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "SimpleGraph.h"
+#include "simplegraph.h"
 #include "UnionFind.h"
 
 // Compare two edges according to their weights.

@@ -5,9 +5,10 @@
  *      Author: Sin Shimozono
  */
 
+#include "simplegraph.h"
+
 #include <stdio.h>
 
-#include "simplegraph.h"
 
 void Graph_init(Graph * gp, Vertex v[], int n, Edge e[], int m) {
 	gp->vsize = 0;
