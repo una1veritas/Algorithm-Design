@@ -11,6 +11,8 @@
 
 #include "simplegraph.h"
 
+#define MIN(x, y)  ((x) <= (y) ? (x) : (y))
+
 int count_nonzero(int a[], int n) {
 	int count = 0;
 	for(int i = 0; i < n; ++i) {
@@ -20,10 +22,10 @@ int count_nonzero(int a[], int n) {
 	return count;
 }
 
-int vertex_index(Graph * g, int val) {
+int vertex_index(Graph * g, Vertex val) {
 	int i;
 	for (i = 0; i < g->vsize; ++i)
-		if (g->vertices[i] == val)
+		if ( g->vertices[i] == val )
 			break;
 	return i;
 }
@@ -42,7 +44,7 @@ Vertex * Dijkstra(Graph *g, int start, int goal) {
 	int P[g->vsize]; // P[i] == 1 で i in P
 	for(int i = 0; i < g->vsize; ++i)
 		P[i] = 0;
-	while ( !(count_nonzero(P, g->vsize) < g->vsize) ) {
+	while ( count_nonzero(P, g->vsize) < g->vsize ) {
 		// find the point u to which the path is shortest
 		int vindex = -1;
 		int lmin = INT_MAX;
@@ -58,13 +60,11 @@ Vertex * Dijkstra(Graph *g, int start, int goal) {
 			return NULL; // unreachable points?
 		}
 		P[vindex] = 1; // the dist. of the shortest path to u is determined.
-		/*
-		 // abandon the remaining since the dist to goal has been determined.
-		if ( g->vertices[vindex] == goal ) {
-			// reached to the goral
-			break;
+		for(int i = 0; i < g->vsize; ++i) {
+			if ( Graph_adjacent(g, g->vertices[vindex], g->vertices[i]) ) {
+				l[i] = MIN(l[i], l[vindex] + Graph_edge_weight(g, g->vertices[vindex], g->vertices[i]));
+			}
 		}
-		*/
 	}
 
 	// backtrack
@@ -82,5 +82,11 @@ Vertex * Dijkstra(Graph *g, int start, int goal) {
 		}
 	}
 	path[path_length] = -1;
+	// reverse the order
+	for(int i = 0; i < (path_length>>1); ++i) {
+		int t = path[i];
+		path[i] = path[path_length - 1 - i];
+		path[path_length - 1 - i] = t;
+	}
 	return path;
 }

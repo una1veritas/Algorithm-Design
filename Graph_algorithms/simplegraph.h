@@ -14,7 +14,7 @@
 
 typedef int Vertex;
 typedef struct Edge {
-	int src, dst;
+	Vertex src, dst;
 	int weight;
 } Edge;
 

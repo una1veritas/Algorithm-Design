@@ -109,7 +109,7 @@ int Graph_adjacent_directed(Graph * gp, Vertex a, Vertex b) {
 	return 0;
 }
 
-void Graph_add_vertex(Graph * gp, int v) {
+void Graph_add_vertex(Graph * gp, Vertex v) {
 	int i;
 	// インサーションソート（昇順）で追加
 	for(i = 0; i < gp->vsize; i += 1) {

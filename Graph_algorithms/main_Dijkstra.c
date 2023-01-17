@@ -65,8 +65,11 @@ int main(int argc, char *argv[]) {
 	// クラスカルのアルゴリズムを呼び出し
 	Vertex * T = Dijkstra(&g, 0, 3);
 
-	//printf("\nMST: \n");
-	//Graph_print(T);
+	printf("\nShortest path: \n");
+	for(int i = 0; T[i] != -1; ++i) {
+		printf("%d, ", T[i]);
+	}
+	printf("\n");
 
 	free(T);
 
