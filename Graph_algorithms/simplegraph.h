@@ -31,6 +31,7 @@ void Graph_init_empty(Graph * gp);
 
 int Graph_has_vertex(Graph * gp, Vertex a);
 int Graph_adjacent(Graph * gp, Vertex a, Vertex b);
+int Graph_edge_weight(Graph * gp, Vertex a, Vertex b);
 int Graph_adjacent_directed(Graph * gp, Vertex a, Vertex b);
 void Graph_add_vertex(Graph * gp, int v);
 // 無向辺の追加

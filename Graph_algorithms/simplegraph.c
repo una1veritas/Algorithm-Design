@@ -62,6 +62,32 @@ int Graph_adjacent(Graph * gp, Vertex a, Vertex b) {
 	return 0;
 }
 
+int Graph_edge_weight(Graph * gp, Vertex a, Vertex b) {
+	Vertex u, v;
+	if (a < b) {
+		u = a; v = b;
+	} else {
+		u = b; v = a;
+	}
+	if (u == v)
+		return 0; //
+	int i;
+	for(i = 0; i < gp->esize; ++i) {
+		if ( gp->edges[i].src == u )
+			break;
+	}
+	if ( gp->edges[i].src != u )
+		return 0;
+	for( ; i < gp->esize; ++i) {
+		if ( gp->edges[i].src != u )
+			break;
+		if ( gp->edges[i].dst == v ) {
+			return gp->edges[i].weight;
+		}
+	}
+	return 0;
+}
+
 // 有向グラフとしての隣接性
 int Graph_adjacent_directed(Graph * gp, Vertex a, Vertex b) {
 	Vertex u = a, v = b;

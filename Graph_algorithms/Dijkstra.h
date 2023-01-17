@@ -8,6 +8,7 @@
 #ifndef DIJKSTRA_H_
 #define DIJKSTRA_H_
 
+#include "simplegraph.h"
 
 Vertex * Dijkstra(Graph *g, int start, int goal);
 
