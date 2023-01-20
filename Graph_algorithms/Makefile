@@ -6,8 +6,8 @@ CPPFLAGS = -O2 -g -Wall
 
 INCLUDES =
 
-TARGET = kruskal.exe
-OBJS = Graph_algorithms.o SimpleGraph.o UnionFind.o kruskal.o
+TARGET = kruskal
+OBJS = simplegraph.o UnionFind.o Dijkstra.o Kruskal.o
 LIBS = 
 
 %.o:	%.c $(INCLUDES)
@@ -16,10 +16,13 @@ LIBS =
 %.o:	%.cpp $(INCLUDES)
 	$(CXX) -c $(CPPFLAGS) -c $<
 
-$(TARGET): 	$(OBJS)
-	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
+kruskal: 	main_Kruskal.o $(OBJS)
+	$(CC) -o kruskal.exe main_Kruskal.o $(OBJS) $(LIBS)
 
-all:	$(TARGET)
+dijkstra: 	main_Dijkstra.o $(OBJS)
+	$(CC) -o dijkstra.exe main_Dijkstra.o $(OBJS) $(LIBS)
+
+all:	kruskal dijkstra
 
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -f $(OBJS) kruskal.exe dijkstra.exe

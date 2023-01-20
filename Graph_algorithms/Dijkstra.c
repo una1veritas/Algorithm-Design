@@ -31,7 +31,7 @@ int vertex_index(Graph * g, Vertex val) {
 }
 
 Vertex * Dijkstra(Graph *g, int start, int goal) {
-	// 整数 0,...,g->vsize - 1 を点の表現とし，
+	// 点列 g->vertices[] から整数 0,...,g->vsize - 1 にマップして点の表現とし，
 	// 点（のラベル，名前）は g->vertices[i] で参照，
 	// 隣接関係（辺）は (g->vertices[i], g->vertices[j]) で参照
 	int l[g->vsize];

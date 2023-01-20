@@ -15,13 +15,14 @@ int oneof(const char c, const char * charlist) {
 }
 
 int main(int argc, char *argv[]) {
-	if (argc < 3) {
-		printf("Requires two arguments: (1) sequence \"0, 1, 2...\" of the vertices, and (2) edge definitions in \"1-2, 2-3,...\" form .\n");
+	if (argc < 5) {
+		printf("Requires four arguments: (1) sequence \"0, 1, 2...\" of the vertices, and (2) edge definitions in \"1-2:3, 2-3:1,...\" form, (3) start point and (4) goal point.\n");
 	}
 
 	Graph g;
 	Graph_init_empty(&g);
 
+	int start = 0, goal = 0;
 	char * ptr;
 	int u, v, w;
 	// 点の列を読み取る
@@ -59,11 +60,15 @@ int main(int argc, char *argv[]) {
 		for( ; oneof(*ptr, " ,\t\n"); ++ptr);   // " ,\t\n" をスキップ
 	} while ( *ptr );
 
+	// 出発点、到達点を読み取る
+	start = strtol(argv[3], NULL, 10);
+	goal = strtol(argv[4], NULL, 10);
+
 	// 入力されたグラフの定義を表示
 	Graph_print(&g);
 
-	// クラスカルのアルゴリズムを呼び出し
-	Vertex * T = Dijkstra(&g, 0, 3);
+	// ダイクストラのアルゴリズムを呼び出し
+	Vertex * T = Dijkstra(&g, start, goal);
 
 	printf("\nShortest path: \n");
 	for(int i = 0; T[i] != -1; ++i) {
