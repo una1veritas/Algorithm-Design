@@ -44,17 +44,19 @@ Vertex * Dijkstra(Graph *g, int start, int goal) {
 	int P[g->vsize]; // P[i] == 1 で i in P
 	for(int i = 0; i < g->vsize; ++i)
 		P[i] = 0;
+	int vindex, lmin;
+	printf("\nDetermine distances:\n");
 	while ( count_nonzero(P, g->vsize) < g->vsize ) {
 		// find the point u to which the path is shortest
-		int vindex = -1;
-		int lmin = INT_MAX;
+		vindex = -1;
+		lmin = INT_MAX;
 		for(int i = 0; i < g->vsize; ++i) {
 			if ( P[i] == 0 && l[i] < lmin ) {
 				vindex = i;
 				lmin = l[i];
 			}
 		}
-		printf("nearest vindex = %d, l[vindex] = %d\n", vindex, l[vindex]);
+		printf("l[%d] = %d\n", g->vertices[vindex], l[vindex]);
 		if (vindex == -1) {
 			printf("unreachable points exist.\n");
 			return NULL; // unreachable points?
@@ -68,19 +70,23 @@ Vertex * Dijkstra(Graph *g, int start, int goal) {
 	}
 
 	// backtrack
-	int vindex = vertex_index(g, goal);
+	printf("\nRebuild the shortest path:\n");
+	vindex = vertex_index(g, goal);
+	printf("goal: %d\n", g->vertices[vindex]);
 	int path_length = 0;
 	Vertex * path = (Vertex *) malloc(sizeof(Vertex) * g->vsize);  // 長過ぎか
-	path[path_length++] = vindex;
+	path[path_length++] = g->vertices[vindex];
 	while ( g->vertices[vindex] != start ) {
 		for(int u = 0; u < g->vsize; ++u) {
 			if ( Graph_adjacent(g, g->vertices[vindex], g->vertices[u]) == 1
 					&& Graph_edge_weight(g, g->vertices[vindex], g->vertices[u]) + l[u] == l[vindex] ) {
-				path[path_length++] = u;
+				path[path_length++] = g->vertices[u];
 				vindex = u;
+				printf(" -> %d", path[path_length-1]);
 			}
 		}
 	}
+	printf("\n");
 	path[path_length] = -1;
 	// reverse the order
 	for(int i = 0; i < (path_length>>1); ++i) {

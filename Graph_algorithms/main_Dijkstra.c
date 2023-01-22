@@ -15,7 +15,7 @@ int oneof(const char c, const char * charlist) {
 }
 
 int main(int argc, char *argv[]) {
-	if (argc < 5) {
+	if (argc < 6) {
 		printf("Requires four arguments: (1) sequence \"0, 1, 2...\" of the vertices, and (2) edge definitions in \"1-2:3, 2-3:1,...\" form, (3) start point and (4) goal point.\n");
 	}
 
@@ -68,15 +68,15 @@ int main(int argc, char *argv[]) {
 	Graph_print(&g);
 
 	// ダイクストラのアルゴリズムを呼び出し
-	Vertex * T = Dijkstra(&g, start, goal);
+	Vertex * spath = Dijkstra(&g, start, goal);
 
 	printf("\nShortest path: \n");
-	for(int i = 0; T[i] != -1; ++i) {
-		printf("%d, ", T[i]);
+	for(int i = 0; spath[i] != -1; ++i) {
+		printf("%d, ", spath[i]);
 	}
 	printf("\n");
 
-	free(T);
+	free(spath);
 
 	return 0;
 }

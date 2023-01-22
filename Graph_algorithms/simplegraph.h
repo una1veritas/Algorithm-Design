@@ -26,6 +26,7 @@ typedef struct Graph {
 	int esize;
 } Graph;
 
+
 void Graph_init(Graph * gp, Vertex v[], int n, Edge e[], int m);
 void Graph_init_empty(Graph * gp);
 
