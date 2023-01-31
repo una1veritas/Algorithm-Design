@@ -7,14 +7,26 @@
 //============================================================================
 
 #include <iostream>
+#include <vector>
 #include <chrono>
 
 using namespace std;
 
 int main() {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+	vector<long> array;
+
 	std::chrono::system_clock::time_point start, stop;
 	start = std::chrono::system_clock::now();
+
+	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+	for(long i = 0; i < 10000; ++i)
+		for(long j = i; j < 10000; ++j)
+			array.push_back(j);
+
+	long sum = 0;
+	for(long i = 0; i < array.size(); ++i)
+		sum += array[i];
+	cout << "sum = " << sum << endl;
 
 	stop = std::chrono::system_clock::now();
 
