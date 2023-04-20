@@ -8,11 +8,9 @@
 #ifndef GCD_H_
 #define GCD_H_
 
-typedef unsigned long long ullong;
+extern unsigned long long counter;
 
-extern ullong counter;
-
-ullong gcd_euclidean(ullong a, ullong b);
-ullong gcd_naive(ullong a, ullong b);
+unsigned long long gcd_euclidean(unsigned long long a, unsigned long long b);
+unsigned long long gcd_naive(unsigned long long a, unsigned long long b);
 
 #endif /* GCD_H_ */

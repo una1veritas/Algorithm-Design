@@ -20,7 +20,7 @@ swatch = 33.802 sec.
 #include "gcd.h"
 
 int main(int argc, char * const argv[]) {
-	ullong input[2] = { 0, 0, };
+	unsigned long long input[2] = { 0, 0, };
 
 	if (argc == 2) {
 		char * ptr = argv[1];
@@ -35,9 +35,9 @@ int main(int argc, char * const argv[]) {
 		}
 	}
 	printf("inputs: %lld, %lld\n", input[0], input[1]);
-	printf("length: %lld\n", (ullong)ceil(log10((input[0] < input[1])? input[0] : input[1])));
+	printf("length: %lld\n", (unsigned long long)ceil(log10((input[0] < input[1])? input[0] : input[1])));
 
-	ullong output;
+	unsigned long long output;
 	clock_t swatch;
 
 	swatch = clock();
