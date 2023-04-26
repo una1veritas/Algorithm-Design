@@ -48,8 +48,7 @@ all:	$(TARGET)
 
 
 selection_asm:
-	gcc -O0 -S ./src/selection.c
-	gcc -O0 -o selection.exe ./src/selection.c
+	gcc -O2 -S ./src/selection_sort.c
 	
 clean:
 	rm -f $(OBJS) $(TARGET) *.exe *.o a.out

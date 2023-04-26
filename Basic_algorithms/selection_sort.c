@@ -6,35 +6,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "datadef.h"
+//#include "datadef.h"
 
 
-void selection_sort(data * d[], long n) {
-	data * t;
-	for (long i = 0; i < n; ++i) {
-		for (long j = i + 1; j < n; ++j) {
-			if ( lessthan(d[j], d[i]) ) {
-			//if ( d[j] < d[i] ) {
-				t = d[i];
-				d[i] = d[j];
-				d[j] = t;
+void selection_sort(long a[], long n) {
+	long i = 0, j = 0;
+	long t;
+	for (i = 0; i < n; ++i) {
+		for (j = i + 1; j < n; ++j) {
+			if ( a[i] > a[j] ) {
+				t = a[i];
+				a[i] = a[j];
+				a[j] = t;
 			}
 		}
 	}
 	return;
 }
 
-void selection_sort_reverse(data * d[], long n) {
-	data * t;
+void selection_sort_reverse(long a[], long n) {
+	long t;
 	for (long i = n - 1; i > 0; --i) {
 		for (long j = 0; j < i; ++j) {
-			if ( lessthan(d[i], d[j]) ) {
-				printf("0: %ld, %ld\n", i, j);
-				t = d[i];
-				d[i] = d[j];
-				d[j] = t;
-			} else {
-				printf("1: %ld, %ld\n", i, j);
+			if ( a[j] > a[i] ) {
+				t = a[i];
+				a[i] = a[j];
+				a[j] = t;
 			}
 		}
 	}
