@@ -17,8 +17,18 @@ unsigned long long gcd_euclidean(unsigned long long a, unsigned long long b) {
 		t = a % b;
 		a = b;
 		b = t;
-		 counter += 1;
+		// counter += 1;
 	} while (b != 0);
+	return a;
+}
+
+unsigned long long gcd_euclidean_while(unsigned long long a, unsigned long long b) {
+	unsigned long long t;
+	while (b != 0) {
+		t = a % b;
+		a = b;
+		b = t;
+	}
 	return a;
 }
 
