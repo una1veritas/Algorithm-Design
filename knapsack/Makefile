@@ -1,5 +1,5 @@
-CC = 	gcc -std=c11
-CXX = 	g++ -std=c++2a
+CC = 	gcc -std=c11 -O1
+CXX = 	g++ -std=c++2a -O1
 
 OBJS =		main.o
 INCS = 		
