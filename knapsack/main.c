@@ -8,21 +8,10 @@
 long counter;
 #endif
 
-char * new_array(int size) {
-	char * array = (char*) malloc(sizeof(char) * size);
-	for(int i = 0; i < size; ++i)
-		array[i] = 0;
-	return array;
-}
-
-void free_array(char * array) {
-	free(array);
-}
-
 int best_recursive(int * prices, int n, int budget, char cart[]) {
 	int sum, sum_backup;
-	char * cart0 = new_array(n);
-	char * cart1 = new_array(n);
+	char cart0[n];
+	char cart1[n];
 	
 #ifdef USE_COUNTER
 	counter ++;
@@ -74,6 +63,17 @@ int best_dp(int prices[], int n, int budget) {
 	}
 	
 	return best[n-1][budget];
+}
+
+char * new_array(int size) {
+	char * array = (char*) malloc(sizeof(char) * size);
+	for(int i = 0; i < size; ++i)
+		array[i] = 0;
+	return array;
+}
+
+void free_array(char * array) {
+	free(array);
 }
 
 int knapsack_allsubset(const int prices[], const int n, const int budget, char cart[]) {
