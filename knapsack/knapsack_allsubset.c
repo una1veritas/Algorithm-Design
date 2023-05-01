@@ -1,11 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int knapsack_allsubset(const int prices[], const int n, const int budget, char cart[]) {
+int knapsack_allsubset(const int prices[], const int budget, char cart[]) {
 	int sum, best;
-	int item;
+	int item, n;
+
+	for(n = 0; prices[n] != 0; ++n) ;
+
 	char subset[n+1];
-	memset(subset, 0, n+1);
+	for(int i = 0; i < n+1; ++i)
+		subset[i] = 0;
 
 	best = 0;
 	for(; subset[n] == 0 ;) {
@@ -17,7 +21,9 @@ int knapsack_allsubset(const int prices[], const int n, const int budget, char c
 		if (best < sum && sum <= budget ) {
 			//fprintf(stderr,"updated\n");
 			best = sum;
-			memcpy(cart, subset, n); // copy from subset to cart
+			for(int i = 0; i < n; ++i)
+				cart[i] = subset[i];
+			cart[n] = 0;
 		}
 		// increment subset
 		for(item = 0; item < n+1; ++item) {

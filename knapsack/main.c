@@ -3,121 +3,15 @@
 #include <string.h>
 #include <time.h>
 
+#include "knapsack.h"
+
 #define USE_COUNTER
 #ifdef USE_COUNTER
 long counter;
 #endif
 
-int best_recursive(int * prices, int n, int budget, char cart[]) {
-	int sum, sum_backup;
-	char cart0[n];
-	char cart1[n];
-	
-#ifdef USE_COUNTER
-	counter ++;
-#endif
-
-	if ( n == 0 )
-		return 0;
-
-	sum_backup = best_recursive(prices+1, n-1, budget, cart+1);
-	cart[0] = 0;
-	memcpy(cart0, cart, n);
-
-	if ( *prices <= budget) {
-		sum = *prices + best_recursive(prices+1, n-1, budget - *prices, cart+1);
-		cart[0] = 1;
-		if (sum > sum_backup) {
-			return sum;
-		}
-	}
-	memcpy(cart, cart_backup, n);
-	return sum_backup;
-}
-
-int best_dp(int prices[], int n, int budget) {
-	int i, b;
-	
-	int best[n][budget+1];
-
-	for (b = 0; b <= budget; b++) {
-		if (prices[0] > b) {
-			best[0][b] = 0;
-		} else {
-			best[0][b] = prices[0];
-		}
-	}
-
-	for (i = 1; i < n; i++) {
-		for (b = 0; b <= budget; b++) {
-			if (prices[i] > b) {
-				best[i][b] = best[i-1][b];
-				continue;
-			}
-			if ( best[i-1][b] > prices[i] + best[i-1][b-prices[i]] ) {
-				best[i][b] = best[i-1][b];
-			} else {
-				best[i][b] = prices[i] + best[i-1][b-prices[i]];
-			}
-		}
-	}
-	
-	return best[n-1][budget];
-}
-
-char * new_array(int size) {
-	char * array = (char*) malloc(sizeof(char) * size);
-	for(int i = 0; i < size; ++i)
-		array[i] = 0;
-	return array;
-}
-
-void free_array(char * array) {
-	free(array);
-}
-
-int knapsack_allsubset(const int prices[], const int n, const int budget, char cart[]) {
-	int sum, best;
-	int item;
-	char * subset = new_array(n+1);
-
-	best = 0;
-	//fprintf(stderr,"enter\n");
-	for(; subset[n] == 0 ;) {
-		/*
-		for(int i = 0; i < n+1; ++i) {
-			fprintf(stderr,"%d",subset[i]);
-		}
-		fprintf(stderr,"\n");
-		*/
-		sum = 0;
-		for(item = 0; item < n && sum <= budget; ++item) {
-			if (subset[item] != 0 )
-				sum += prices[item];
-		}
-		if (best < sum && sum <= budget ) {
-			//fprintf(stderr,"updated\n");
-			best = sum;
-			memcpy(cart, subset, n); // copy from subset to cart
-		}
-		// increment subset
-		for(item = 0; item < n+1; ++item) {
-			if ( subset[item] == 0 ) {
-					subset[item] = 1;
-					break;
-			}
-			subset[item] = 0;
-		}
-	}
-
-	free(subset);
-	return best;
-}
-
-
-
 int main (int argc, const char * argv[]) {
-	int budget;
+	int budget, total;
 	int n;
 	clock_t swatch;
 	
@@ -129,9 +23,11 @@ int main (int argc, const char * argv[]) {
 	n = argc - 2;
 
 	int plist[n];
-	for (int i = 0; i < n; ++i) {
+	int i;
+	for (i = 0; i < n; ++i) {
 		plist[i] = atoi(argv[2+i]);
 	}
+	plist[i] = 0;
 	
 	// Show our input.
 	printf("%d yen, %d items: \n", budget, n);
@@ -141,8 +37,8 @@ int main (int argc, const char * argv[]) {
 	printf("\n\n");
 
 	swatch = clock();
-	char * cart = new_array(n);
-	int total = knapsack_allsubset(plist, n, budget, cart);
+	char cart[n];
+	total = knapsack_allsubset(plist, budget, cart);
 	swatch = clock() - swatch;
 	printf("By enumeration: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
 	printf("Total %d yen.\n", total);
@@ -153,36 +49,36 @@ int main (int argc, const char * argv[]) {
 	}
 	printf("\n\n");
 
-	free(cart);
-/*
+
 #ifdef USE_COUNTER
 	counter = 0;
 #endif
 	// compute.
 	swatch = clock();
-	totalPrice = best_recursive(plist, itemCount, budget, cart);
+	total = knapsack_recursive(plist, budget, cart, n);
 	swatch = clock() - swatch;
 	// Show the result.
 	printf("By recursion: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
 #ifdef USE_COUNTER
 	printf("function calls = %ld\n", counter);
 #endif
-	printf("Total %d yen.\n", totalPrice);
+	printf("Total %d yen.\n", total);
 	printf("Buy item id ");
-	for (i = 0; i < itemCount; i++) {
+	for (i = 0; i < n; i++) {
 		if ( cart[i] == 1 )
 			printf("%d (%d), ", i, plist[i]);
 	}
 	printf("\n\n");
 
+	/*
 	swatch = clock();
-	totalPrice = best_dp(plist, itemCount, budget);
+	total = best_dp(plist, itemCount, budget);
 	swatch = clock() - swatch;
 	// Show the result.
 	printf("By dp: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
 
 	printf("Total %d yen.\n", totalPrice);
-	*/
+	 */
     return 0;
 }
 /*

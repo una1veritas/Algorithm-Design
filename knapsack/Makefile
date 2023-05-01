@@ -1,7 +1,7 @@
 CC = 	gcc -std=c11 -O1
 CXX = 	g++ -std=c++2a -O1
 
-OBJS =		main.o
+OBJS =		main.o knapsack_allsubset.o knapsack_recursive.o
 INCS = 		
 LIBS =
 SRC  =  
