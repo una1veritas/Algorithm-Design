@@ -39,7 +39,7 @@ int main (int argc, const char * argv[]) {
 	char cart[n];
 	for(int i = 0; i < n; ++i)
 		cart[i] = 0;
-	if ( n <= 30 ) {
+	//if ( n <= 30 ) {
 		swatch = clock();
 		total = knapsack_allsubset(plist, budget, cart);
 		swatch = clock() - swatch;
@@ -51,7 +51,7 @@ int main (int argc, const char * argv[]) {
 				printf("%d (%d), ", i, plist[i]);
 		}
 		printf("\n\n");
-	}
+	//}
 
 #ifdef USE_COUNTER
 	counter = 0;
