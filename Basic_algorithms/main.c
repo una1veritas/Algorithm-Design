@@ -16,24 +16,39 @@ swatch = 33.802 sec.
 #include <ctype.h>
 #include <time.h>
 #include <math.h>
+#include <errno.h>
 
-#include "gcd.h"
+//#include "gcd.h"
+#include "factorial.h"
+
+#define TYPE_INT 0
+#define TYPE_STR 1
 
 int main(int argc, char * const argv[]) {
-	unsigned long long input[2] = { 0, 0, };
+	if (argc == 1) {
+		exit(1);
+	}
 
-	if (argc == 2) {
-		char * ptr = argv[1];
-		input[0] = strtoull(ptr, &ptr, 10);
-		while ( !isdigit(*++ptr) );
-		if ( ! *ptr )
-			exit(1);
-		input[1] = strtoull(ptr, NULL, 10);
-	} else {
-		for (int i = 0; i < argc - 1; ++i) {
-			input[i] = strtoull(argv[i+1], NULL, 10);
+	int datacount = argc - 1;
+	struct {
+		int type;
+		long long val;
+	} inputs[datacount];
+	for(int i = 0; i < datacount; ++i) {
+		char * ptr;
+		inputs[i].type = TYPE_INT;
+		inputs[i].val = strtoll(argv[i+1], &ptr, 0);
+		if ( errno == ERANGE ) {
+			inputs[i].type = TYPE_STR;
+			inputs[i].val = (long long) argv[i+1];
 		}
 	}
+
+	long long input = inputs[0].val;
+	printf("inputs: %lld\n", input);
+	long long result = factorial(input);
+	printf("result %lld\n", result);
+	/*
 	printf("inputs: %lld, %lld\n", input[0], input[1]);
 	printf("length: %lld\n", (unsigned long long)ceil(log10((input[0] < input[1])? input[0] : input[1])));
 
@@ -55,6 +70,7 @@ int main(int argc, char * const argv[]) {
 	printf("result = %lld.\n", output);
 	printf("counter = %lld.\n", counter);
 	printf("swatch = %.3f sec.\n", (float)swatch/CLOCKS_PER_SEC);
+	 */
 
 	return EXIT_SUCCESS;
 }

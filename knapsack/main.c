@@ -36,23 +36,28 @@ int main (int argc, const char * argv[]) {
 	}
 	printf("\n\n");
 
-	swatch = clock();
 	char cart[n];
-	total = knapsack_allsubset(plist, budget, cart);
-	swatch = clock() - swatch;
-	printf("By enumeration: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
-	printf("Total %d yen.\n", total);
-	printf("Buy item id ");
-	for (int i = 0; i < n; i++) {
-		if ( cart[i] != 0 )
-			printf("%d (%d), ", i, plist[i]);
+	for(int i = 0; i < n; ++i)
+		cart[i] = 0;
+	if ( n <= 30 ) {
+		swatch = clock();
+		total = knapsack_allsubset(plist, budget, cart);
+		swatch = clock() - swatch;
+		printf("By enumeration: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
+		printf("Total %d yen.\n", total);
+		printf("Buy item id ");
+		for (int i = 0; i < n; i++) {
+			if ( cart[i] != 0 )
+				printf("%d (%d), ", i, plist[i]);
+		}
+		printf("\n\n");
 	}
-	printf("\n\n");
-
 
 #ifdef USE_COUNTER
 	counter = 0;
 #endif
+	for(int i = 0; i < n; ++i)
+		cart[i] = 0;
 	// compute.
 	swatch = clock();
 	total = knapsack_recursive(plist, budget, cart, n);

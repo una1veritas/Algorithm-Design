@@ -1,5 +1,5 @@
-CC = 	gcc -std=c11 -O1
-CXX = 	g++ -std=c++2a -O1
+CC = 	gcc -std=c11 -O2
+CXX = 	g++ -std=c++2a -O2
 
 OBJS =		main.o knapsack_allsubset.o knapsack_recursive.o
 INCS = 		
@@ -8,8 +8,8 @@ SRC  =
 
 TARGET =	knapsack.exe
 
-CXX +=	-O0 -g -Wall -fmessage-length=0
-CC  += 	-O0 -g -Wall
+CXX +=	-g -Wall -fmessage-length=0
+CC  += 	-g -Wall
 
 
 %.o: $(SRC)/%.c $(SRC)/$(INCS)
