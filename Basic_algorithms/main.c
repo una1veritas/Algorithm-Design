@@ -44,10 +44,13 @@ int main(int argc, char * const argv[]) {
 		}
 	}
 
-	long long input = inputs[0].val;
-	printf("inputs: %lld\n", input);
-	long long result = factorial(input);
-	printf("result %lld\n", result);
+	long input = inputs[0].val;
+	long result;
+	printf("inputs: %ld\n", input);
+	result = factorial(input);
+	printf("result %ld\n", result);
+	result = factorial_tailrecursive(input, 1);
+	printf("result %ld\n", result);
 	/*
 	printf("inputs: %lld, %lld\n", input[0], input[1]);
 	printf("length: %lld\n", (unsigned long long)ceil(log10((input[0] < input[1])? input[0] : input[1])));

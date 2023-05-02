@@ -8,8 +8,7 @@
 #ifndef FACTORIAL_H_
 #define FACTORIAL_H_
 
-long long factorial(const long long n);
-
-
+long factorial(const long n);
+long factorial_tailrecursive(const long n, const long r);
 
 #endif /* FACTORIAL_H_ */

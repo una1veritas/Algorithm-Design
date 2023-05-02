@@ -27,7 +27,6 @@ int main (int argc, const char * argv[]) {
 	for (i = 0; i < n; ++i) {
 		plist[i] = atoi(argv[2+i]);
 	}
-	plist[i] = 0;
 	
 	// Show our input.
 	printf("%d yen, %d items: \n", budget, n);
@@ -41,7 +40,7 @@ int main (int argc, const char * argv[]) {
 		cart[i] = 0;
 	//if ( n <= 30 ) {
 		swatch = clock();
-		total = knapsack_allsubset(plist, budget, cart);
+		total = knapsack_allsubset(plist, n, budget, cart);
 		swatch = clock() - swatch;
 		printf("By enumeration: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
 		printf("Total %d yen.\n", total);
@@ -60,7 +59,7 @@ int main (int argc, const char * argv[]) {
 		cart[i] = 0;
 	// compute.
 	swatch = clock();
-	total = knapsack_recursive(plist, budget, cart, n);
+	total = knapsack_recursive(plist, n, budget, cart);
 	swatch = clock() - swatch;
 	// Show the result.
 	printf("By recursion: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
