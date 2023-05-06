@@ -9,24 +9,24 @@ int knapsack_dp(const int prices[], int nsize, const int budget, char cart[]) {
 		return 0;
 	}
 
-  int best[nsize+1][budget+1];
+  int best[nsize][budget+1];
   
   // top row and left-most column
   int i = 0, b = 0;
+  for (i = 0; i < nsize; i++) {
+	  best[i][0] = 0 ;
+  }
   for (b = 0; b <= budget; b++) {
 	  best[0][b] = prices[0] <= b ? prices[0] : 0 ;
-  }
-  for (i = 0; i <= nsize; i++) {
-	  best[i][0] = 0 ;
   }
   
   // fill up the DP-table by revurrence.
   int best_buy, best_skip;
-  for (i = 1; i <= nsize; i++) {
+  for (i = 1; i < nsize; i++) {
 	  for (b = 1; b <= budget; b++) {
-		  best_skip = best[i-1][b];
-		  if (b >= prices[i-1]) {
-			  best_buy = best[i-1][b - prices[i-1]] + prices[i-1];
+		  best_skip = best[i][b];
+		  if (b >= prices[i]) {
+			  best_buy = best[i][b - prices[i]] + prices[i];
 			  best[i][b] = best_buy > best_skip ? best_buy : best_skip;
 		  } else {
 			  best[i][b] = best_skip;
@@ -34,17 +34,23 @@ int knapsack_dp(const int prices[], int nsize, const int budget, char cart[]) {
 	  }
   }
 
-
-  for (i = val.size() - 1, b = budget; i > 0 ; i-- ) {
-    cout << "(" << i << ", " << b << ") ";
-    if ( best[i][b] == best[i - 1][b] ) {
-      //cout << "(skip " << i << "th) ";
-    } else {
-      //cout << i << " (" << val[i] << " yen), ";
-      buylist.push_back(i);
-      b = b - val[i];
-    }
+  printf("best = %d\n", best[nsize-1][budget]);
+  // back-track the table.
+  // i must be a signed integer.
+  for (i = nsize - 1, b = budget; i >= 0 ; i-- ) {
+	  if ( best[i][b] - prices[i] == best[i-1][b-prices[i]] ) {
+		  // the i-th item was bought
+		  cart[i] = 1;
+		  b = b - prices[i];
+		  printf("prices[%d] = %d, b = %d\n", i, prices[i], b);
+	  } else {
+		  // the i-th item was not bought
+		  cart[i] = 0;
+		  printf("item %d skipped. b = %d\n", i, b);
+	  }
   }
+
+  /*
   cout << "(" << 0 << ", " << b << ") ";
   if (best[0][b] != 0)
     buylist.push_back(0);
@@ -55,6 +61,6 @@ int knapsack_dp(const int prices[], int nsize, const int budget, char cart[]) {
     cout << *i << ", ";
   }
   cout << "totally " << best[val.size()-1][budget] << " yen." << endl;
-  
-  return 0;
+*/
+  return best[nsize-1][budget];
 }

@@ -5,7 +5,7 @@
 
 #include "knapsack.h"
 
-#define USE_COUNTER
+//#define USE_COUNTER
 #ifdef USE_COUNTER
 long counter;
 #endif
@@ -74,15 +74,21 @@ int main (int argc, const char * argv[]) {
 	}
 	printf("\n\n");
 
-	/*
+	for(int i = 0; i < n; ++i)
+		cart[i] = 0;
 	swatch = clock();
-	total = best_dp(plist, itemCount, budget);
+	total = knapsack_dp(plist, n, budget, cart);
 	swatch = clock() - swatch;
 	// Show the result.
 	printf("By dp: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
+	printf("Total %d yen.\n", total);
+	printf("Buy item id ");
+	for (i = 0; i < n; i++) {
+		if ( cart[i] == 1 )
+			printf("%d (%d), ", i, plist[i]);
+	}
+	printf("\n\n");
 
-	printf("Total %d yen.\n", totalPrice);
-	 */
     return 0;
 }
 /*
