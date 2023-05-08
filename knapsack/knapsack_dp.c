@@ -20,13 +20,13 @@ int knapsack_dp(const int prices[], int nsize, const int budget, char cart[]) {
 	  best[0][b] = prices[0] <= b ? prices[0] : 0 ;
   }
   
-  // fill up the DP-table by revurrence.
+  // fill up the DP-table by recurrence.
   int best_buy, best_skip;
   for (i = 1; i < nsize; i++) {
 	  for (b = 1; b <= budget; b++) {
-		  best_skip = best[i][b];
+		  best_skip = best[i-1][b];
 		  if (b >= prices[i]) {
-			  best_buy = best[i][b - prices[i]] + prices[i];
+			  best_buy = best[i-1][b - prices[i]] + prices[i];
 			  best[i][b] = best_buy > best_skip ? best_buy : best_skip;
 		  } else {
 			  best[i][b] = best_skip;
@@ -34,19 +34,30 @@ int knapsack_dp(const int prices[], int nsize, const int budget, char cart[]) {
 	  }
   }
 
-  printf("best = %d\n", best[nsize-1][budget]);
+  // to show the dp-table.
+  /*
+  for(i = 0; i < nsize; ++i) {
+	  for(b = 0; b <=budget; ++b) {
+		  printf("%3d ", best[i][b]);
+	  }
+	  printf("\n");
+  }
+  printf("\n\n");
+  */
   // back-track the table.
   // i must be a signed integer.
   for (i = nsize - 1, b = budget; i >= 0 ; i-- ) {
-	  if ( best[i][b] - prices[i] == best[i-1][b-prices[i]] ) {
+	  if ( best[i][b] == best[i-1][b]) {
+		  // the i-th item was not bought
+		  cart[i] = 0;
+		  //printf("item %d skipped. b = %d\n", i, b);
+	  } else if ( best[i][b] - prices[i] == best[i-1][b-prices[i]] ) {
 		  // the i-th item was bought
 		  cart[i] = 1;
 		  b = b - prices[i];
-		  printf("prices[%d] = %d, b = %d\n", i, prices[i], b);
+		  //printf("prices[%d] = %d, b = %d\n", i, prices[i], b);
 	  } else {
-		  // the i-th item was not bought
-		  cart[i] = 0;
-		  printf("item %d skipped. b = %d\n", i, b);
+		  fprintf(stderr, "back tracking failed!\n");
 	  }
   }
 

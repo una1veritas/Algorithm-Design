@@ -34,15 +34,17 @@ int main (int argc, const char * argv[]) {
 		printf("%d, ", plist[i]);
 	}
 	printf("\n\n");
+	fflush(stdout);
 
 	char cart[n];
 	for(int i = 0; i < n; ++i)
 		cart[i] = 0;
-	//if ( n <= 30 ) {
+	if ( n <= 36 ) {
 		swatch = clock();
 		total = knapsack_allsubset(plist, n, budget, cart);
 		swatch = clock() - swatch;
 		printf("By enumeration: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
+		printf("By enumeration: %.3f sec.\n", (double) swatch / CLOCKS_PER_SEC);
 		printf("Total %d yen.\n", total);
 		printf("Buy item id ");
 		for (int i = 0; i < n; i++) {
@@ -50,7 +52,10 @@ int main (int argc, const char * argv[]) {
 				printf("%d (%d), ", i, plist[i]);
 		}
 		printf("\n\n");
-	//}
+	} else {
+		printf("skip the enumelation algorithm.\n");
+	}
+	fflush(stdout);
 
 #ifdef USE_COUNTER
 	counter = 0;
@@ -63,6 +68,7 @@ int main (int argc, const char * argv[]) {
 	swatch = clock() - swatch;
 	// Show the result.
 	printf("By recursion: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
+	printf("By recursion: %.3f sec.\n", (double) swatch / CLOCKS_PER_SEC);
 #ifdef USE_COUNTER
 	printf("function calls = %ld\n", counter);
 #endif
@@ -135,5 +141,20 @@ Buy item id 14 (30), 15 (30), 16 (30), 19 (10), 20 (100), 23 (21), 24 (21), 25 (
 
 By dp: 0.000 milli sec.
 Total 500 yen.
+
+500 yen, 47 items:
+49, 28, 38, 55, 23, 12, 98, 118, 35, 18, 63, 28, 27, 52, 68, 38, 78, 38, 38, 55, 39, 48, 103, 29, 41, 34, 45, 78, 78, 58, 58, 68, 58, 48, 65, 58, 28, 33, 45, 56, 15, 55, 48, 29, 65, 18, 38,
+
+skip the enumelation algorithm.
+By recursion: 700780.000 milli sec.
+By recursion: 700.780 sec.
+Total 500 yen.
+Buy item id 0 (49), 1 (28), 2 (38), 3 (55), 4 (23), 6 (98), 7 (118), 10 (63), 11 (28),
+
+By dp: 0.000 milli sec.
+Total 500 yen.
+Buy item id 0 (49), 1 (28), 2 (38), 3 (55), 4 (23), 6 (98), 7 (118), 10 (63), 11 (28),
+
+
  *
  */
