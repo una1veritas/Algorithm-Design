@@ -56,7 +56,15 @@ int main(int argc, char * const argv[]) {
 	swatch = clock() - swatch;
 	printf("swatch = %.3f sec.\n", (float)swatch/CLOCKS_PER_SEC);
 
-	printf("result %llu\n", result);
+	printf("recursive result %llu\n", result);
+
+	swatch = clock();
+	result = fibo_recursive_dp(input);
+	swatch = clock() - swatch;
+	printf("swatch = %.3f sec.\n", (float)swatch/CLOCKS_PER_SEC);
+
+	printf("dp result %llu\n", result);
+
 	/*
 	printf("inputs: %lld, %lld\n", input[0], input[1]);
 	printf("length: %lld\n", (unsigned long long)ceil(log10((input[0] < input[1])? input[0] : input[1])));
