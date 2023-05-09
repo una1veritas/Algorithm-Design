@@ -29,6 +29,11 @@ int lessthan(const data * x, const data * y) {
 	return (*x < *y);
 }
 
+int lessthanoreq(const data * x, const data * y) {
+	return (*x <= *y);
+}
+
+
 long cast_to_long(const data x) {
 	return x;
 }

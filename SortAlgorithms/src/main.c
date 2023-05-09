@@ -33,7 +33,8 @@ int main(int argc, char **argv) {
 	//counting_sort(db, num, range, keyval);
 	//insertion_sort(a, num);
 	//selection_sort_reverse(a, num);
-	heap_sort(a, num);
+	//heap_sort(a, num);
+	merge_sort(a, num);
 
 	for(long i = 0; i < num; ++i) {
 		printf("%ld, ", *a[i]);

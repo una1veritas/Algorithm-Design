@@ -16,6 +16,7 @@ typedef long data;
 long keycode(const data * d1);
 int  equals(const data * d1, const data * d2);
 int  lessthan(const data * d1, const data * d2);
+int  lessthanoreq(const data * d1, const data * d2);
 int  fprintf_data(FILE * fp, const data * d);
 
 #endif /* DATADEF_H_ */
