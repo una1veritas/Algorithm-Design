@@ -20,12 +20,15 @@ long passcount[] = { 0, 0 };
 int main(int argc, char **argv) {
 	long num = argc - 1;
 	data db[num];
-	data * a[num];
+	//data * a[num];
+	LList list;
+	LList_init(&list);
 
 	for(long i = 0; i < num; ++i) {
 		db[i] = atol(argv[1+i]);
 		printf("%ld, ", db[i]);
-		a[i] = &db[i];
+		//a[i] = &db[i];
+		LList_append(&list, db[i]);
 	}
 	printf("\n");
 
@@ -34,13 +37,15 @@ int main(int argc, char **argv) {
 	//insertion_sort(a, num);
 	//selection_sort_reverse(a, num);
 	//heap_sort(a, num);
-	merge_sort(a, num);
+	merge_sort_llist(&list);
 
+	LList_fprintf(stdout, &list, "%ld, ");
+	/*
 	for(long i = 0; i < num; ++i) {
 		printf("%ld, ", *a[i]);
 	}
 	printf("\n");
-
+	*/
 	//printf("passcount [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
 
 	return EXIT_SUCCESS;

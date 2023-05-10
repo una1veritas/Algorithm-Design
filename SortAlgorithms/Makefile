@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 
-OBJS =  datadef.o selection_sort.o heap_sort.o insertion_sort.o mergesort.o
+OBJS =  datadef.o selection_sort.o heap_sort.o insertion_sort.o mergesort.o mergesort_llist.o llist.o
 #OBJS =	insertion_sort.o heap_sort.o selection_sort.o counting_sort.o main_test.o
 #OBJS += binsearch.o 
 MAINOBJ = main.o
@@ -51,5 +51,5 @@ selection_asm:
 	gcc -O2 -S ./src/selection_sort.c
 	
 clean:
-	rm -f $(OBJS) $(TARGET) *.exe *.o a.out
+	rm -f $(OBJS) $(MAINOBJ) $(TARGET) *.exe *.o a.out
 

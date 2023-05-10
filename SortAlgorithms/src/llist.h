@@ -25,6 +25,8 @@ LList * LList_init(LList *);
 void LList_free(LList *);
 void LList_fprintf(FILE *, LList *, const char * fmt);
 
+int LList_size(LList *);
+
 ListNode * LList_append(LList * list, data);
 ListNode * LList_push(LList * list, data);
 data LList_pop(LList * list);

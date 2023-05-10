@@ -49,7 +49,7 @@ int main(void) {
 
 	ListNode * thenode = LList_find(&list, (void *)s, equals );
 	if ( thenode != LList_end(&list) ) {
-		printf("found: %s\n", thenode->data);
+		printf("found: %s\n", (char *) thenode->data);
 	} else {
 		printf("not found.\n");
 	}
