@@ -9,7 +9,26 @@
 
 void merge(data * dst[], data * a[], int l, data * b[], int m) {
 	int i, j, t;
-	for (i = 0, j = 0, t = 0; i < l && j < m; t++) {
+	/*
+	printf("\nl = %d, m = %d\n",l,m);
+	printf("merge a[] = \n");
+	for(i = 0; i < l; ++i) {
+		printf("%ld, ", *a[i]);
+	}
+	printf("\nwith b[] = \n");
+	for(i = 0; i < m; ++i) {
+		printf("%ld, ", *(b[i]));
+	}
+	fflush(stdout);
+	*/
+	for (i = 0, j = 0, t = 0; i < l || j < m; t++) {
+		/*
+		if (i < l)
+			printf("\ni = %d, *a[i] = %ld\n",i, *(a[i]));
+		if (j < m)
+			printf("\nj = %d, *b[j] = %ld, t = %d\n", j, *(b[j]), t);
+		fflush(stdout);
+		*/
 		if (i == l) {
 			dst[t] = b[j];
 			++j;
@@ -26,27 +45,28 @@ void merge(data * dst[], data * a[], int l, data * b[], int m) {
 			}
 		}
 	}
+	/*
+	printf("\ndst[] = \n");
+	for(i = 0; i < l+m; ++i) {
+		printf("%ld, ", *(dst[i]));
+	}
+	printf("\n");
+	fflush(stdout);
+	*/
 }
 
 void merge_sort(data * array[], int n) {
-	int i, j, l = n/2, m = n - l;
-	data * a[l];
-	data * b[m];
-
+	int i, l = n/2, m = n - l;
 	if (n <= 1)
 		return;
-	printf("copying... %d, %d, %d\n", l, m, n);
-	for (i = 0; i < l; i++) {
-		a[i] = array[i];
-	}
-	for (j = 0; j < m; ++j, ++i) {
-		printf("i = %d\n",i);
-		b[j] = array[i];
-	}
+	data ** a = &array[0];
+	data ** b = &array[l];
 	merge_sort(a, l);
 	merge_sort(b, m);
-	merge(array, a, l, b, m);
-	printf("mergerd.\n");
+	data * temp[n];
+	merge(temp, a, l, b, m);
+	for(i = 0; i < n; ++i)
+		array[i] = temp[i];
 	return;
 }
 
