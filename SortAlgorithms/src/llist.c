@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "datadef.h"
 #include "llist.h"
 
 LList * LList_init(LList * list) {
@@ -19,6 +20,14 @@ LList * LList_init(LList * list) {
 	list->elemcount = 0;
 	return list;
 }
+
+/*
+void LList_part(LList * list, ListNode * ptr, LList * head, LList * tail) {
+	head->head.next = list->head.next;
+	head->head.prev = NULL;
+	head->tail.next = list->head.next;
+}
+*/
 
 void LList_free(LList * list) {
 	ListNode * t;
@@ -31,14 +40,16 @@ void LList_free(LList * list) {
 	list->elemcount = 0;
 }
 
-int LList_size(LList * list) {
+/*
+int LList_length(LList * list) {
 	return list->elemcount;
 }
+*/
 
 // append the node with data as the last node of list
-ListNode * LList_append(LList * list, data d) {
+ListNode * LList_append(LList * list, data * ptr) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
-	node->data = d;
+	node->dataptr = ptr;
 	LList_append_node(list, node);
 	return node;
 }
@@ -53,9 +64,9 @@ ListNode * LList_append_node(LList * list, ListNode * node) {
 }
 
 // push the node with data into the front of list
-ListNode * LList_push(LList * list, data d) {
+ListNode * LList_push(LList * list, data * ptr) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
-	node->data = d;
+	node->dataptr = ptr;
 	node->next = list->head.next;
 	list->head.next = node;
 	node->next->prev = node;
@@ -78,21 +89,21 @@ ListNode * LList_pop_node(LList * list) {
 }
 
 // pop from the front of list
-data LList_pop(LList * list) {
+data * LList_pop(LList * list) {
 	ListNode * node = LList_pop_node(list);
-	data d = node->data;
+	data * d = node->dataptr;
 	free(node);
 	return d;
 }
 
 
-data LList_peek(LList * list) {
+data * LList_peek(LList * list) {
 	if ( list->elemcount == 0 ) {
 		/* tried pop an empty list */
 		fprintf(stderr, "Error: LList_peek: list is empty.\n");
-		return list->head.data;
+		return list->head.dataptr;
 	}
-	return list->head.next->data;
+	return list->head.next->dataptr;
 }
 
 ListNode * LList_begin(LList * list) {
@@ -103,11 +114,12 @@ ListNode * LList_end(LList * list) {
 	return &list->tail;
 }
 
-ListNode * LList_find(LList * list, const data d, int (*equals)(const data, const data) ) {
+//ListNode * LList_find(LList * list, const data * ptr, int (*equals)(const data, const data) ) {
+ListNode * LList_find(LList * list, const data * ptr) {
 	ListNode * node;
 	for(node = LList_begin(list);
 			node != LList_end(list); node = node->next) {
-		if ( equals(d, node->data) )
+		if ( equals(ptr, node->dataptr) )
 			return node;
 	}
 	return node;
@@ -136,7 +148,7 @@ int LList_is_empty(LList * list) {
 void LList_fprintf(FILE * f, LList * list, const char * fmt) {
 	ListNode * node = list->head.next;
 	while ( node != &list->tail ) {
-		fprintf(f, fmt, node->data);
+		fprintf(f, fmt, node->dataptr);
 		node = node->next;
 	}
 }

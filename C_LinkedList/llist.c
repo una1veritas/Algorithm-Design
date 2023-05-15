@@ -34,7 +34,7 @@ void LList_free(LList * list) {
 // append as the last node
 ListNode * LList_append(LList * list, data d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
-	node->data = d;
+	node->dataptr = d;
 	LList_append_node(list, node);
 	return node;
 }
@@ -51,7 +51,7 @@ ListNode * LList_append_node(LList * list, ListNode * node) {
 // push into the first node
 ListNode * LList_push(LList * list, data d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
-	node->data = d;
+	node->dataptr = d;
 	node->next = list->head.next;
 	list->head.next = node;
 	node->next->prev = node;
@@ -75,7 +75,7 @@ ListNode * LList_pop_node(LList * list) {
 
 data LList_pop(LList * list) {
 	ListNode * node = LList_pop_node(list);
-	data d = node->data;
+	data d = node->dataptr;
 	free(node);
 	return d;
 }
@@ -92,7 +92,7 @@ ListNode * LList_find(LList * list, const data d, int (*equals)(const data, cons
 	ListNode * node;
 	for(node = LList_begin(list);
 			node != LList_end(list); node = node->next) {
-		if ( equals(d, node->data) )
+		if ( equals(d, node->dataptr) )
 			return node;
 	}
 	return node;
@@ -121,7 +121,7 @@ int LList_is_empty(LList * list) {
 void LList_fprintf(FILE * f, LList * list, const char * fmt) {
 	ListNode * node = list->head.next;
 	while ( node != &list->tail ) {
-		fprintf(f, fmt, node->data);
+		fprintf(f, fmt, node->dataptr);
 		node = node->next;
 	}
 }

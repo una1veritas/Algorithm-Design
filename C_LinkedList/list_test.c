@@ -34,7 +34,7 @@ int main(void) {
 
 	printf("\n");
 	for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
-		printf("%s -> ", (char *) ptr->data );
+		printf("%s -> ", (char *) ptr->dataptr );
 	}
 	printf("\n");
 
@@ -43,13 +43,13 @@ int main(void) {
 	LList_push(&list,"Car");
 	LList_push(&list,"Bag");
 	for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
-		printf("%s -> ", (char *) ptr->data );
+		printf("%s -> ", (char *) ptr->dataptr );
 	}
 	printf("\n");
 
 	ListNode * thenode = LList_find(&list, (void *)s, equals );
 	if ( thenode != LList_end(&list) ) {
-		printf("found: %s\n", (char *) thenode->data);
+		printf("found: %s\n", (char *) thenode->dataptr);
 	} else {
 		printf("not found.\n");
 	}
@@ -59,7 +59,7 @@ int main(void) {
 		data = LList_pop(&list);
 		printf("%s \n", (char *) data );
 		for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
-			printf("%s -> ", (char *) ptr->data );
+			printf("%s -> ", (char *) ptr->dataptr );
 		}
 		printf("\n");
 	}

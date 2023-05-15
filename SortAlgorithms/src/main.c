@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 		db[i] = atol(argv[1+i]);
 		printf("%ld, ", db[i]);
 		//a[i] = &db[i];
-		LList_append(&list, db[i]);
+		LList_append(&list, &db[i]);
 	}
 	printf("\n");
 

@@ -15,7 +15,7 @@ void bucketSort_list(LList * dlist, long m, long (*key)(const data)) {
 	}
 	while ( !LList_is_empty(dlist) ) {
 		node = LList_pop_node(dlist);
-		LList_append_node(&list[key(node->data)], node);
+		LList_append_node(&list[key(node->dataptr)], node);
 	}
 	for(int i = 0; i < m; ++i) {
 		while ( ! LList_is_empty(&list[i]) ) {

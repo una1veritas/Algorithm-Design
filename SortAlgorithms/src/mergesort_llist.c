@@ -15,7 +15,7 @@ void merge_llist(LList * dst, LList * a, LList * b) {
 		} else if ( LList_is_empty(b) ) {
 			LList_append(dst, LList_pop(a));
 		} else {
-			if ( lessthanoreq( & LList_begin(a)->data, & LList_begin(b)->data) ) {
+			if ( lessthanoreq( LList_begin(a)->dataptr, LList_begin(b)->dataptr) ) {
 				LList_append(dst, LList_pop(a));
 			} else {
 				LList_append(dst, LList_pop(b));
@@ -25,20 +25,18 @@ void merge_llist(LList * dst, LList * a, LList * b) {
 }
 
 void merge_sort_llist(LList * list) {
-	int n = LList_size(list);
+	int n = list->elemcount;
 	if (n <= 1)
 		return;
 	LList a, b;
 	LList_init(&a);
 	LList_init(&b);
-	ListNode * ptr = list->head.next;
-	while (ptr != list->tail.prev && ptr != &list->tail ) {
-		ptr = ptr->next->next;
-		LList_append_node(&a, LList_pop_node(list) );
+	ListNode * ptr = LList_begin(list), * probe = ptr;
+	while ( probe != LList_last(list) && probe != LList_end(list)) {
+		ptr = ptr->next;
+		probe = probe->next->next;
 	}
-	while ( ! LList_is_empty(list) ) {
-		LList_append_node(&b, LList_pop_node(list));
-	}
+	LList_part(list, ptr, a, b);
 	merge_sort_llist(&a);
 	merge_sort_llist(&b);
 	merge_llist(list, &a, &b);

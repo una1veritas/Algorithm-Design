@@ -11,7 +11,7 @@
 #include "datadef.h"
 
 typedef struct ListNode {
-	data data;
+	data dataptr;
 	struct ListNode * next, * prev;
 } ListNode;
 
