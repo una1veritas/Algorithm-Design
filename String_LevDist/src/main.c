@@ -102,7 +102,7 @@ int main (int argc, const char * argv[]) {
 
 	stopwatch_start(&sw);
 
-	d = weaving_edist(frame, text, n, patt, m);
+	d = dp_edist(frame, text, n, patt, m);
 
 	stopwatch_stop(&sw);
 
