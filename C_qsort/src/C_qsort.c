@@ -1,24 +1,32 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
-int order(const void * a, const void * b) {
-      int inta = * (int*)a, intb = * (int*)b;
-      /* inta と intb を使った計算 */
-      return (inta % 6) - (intb % 6);
+const int NAMELENGTHLIMIT = 32;
+typedef struct Data {
+	unsigned int id;
+	char name[NAMELENGTHLIMIT];
+} Data;
+
+int Data_sortbyname(const void * a, const void * b) {
+	Data * d0 = (Data *) a, *d1 = (Data *) b;
+	if ( strncmp(d0->name, d1->name, NAMELENGTHLIMIT) >= 0 )
+		return 1;
+	return 0;
 }
 
 int main(const int argc, char *argv[]) {
       long n = argc - 1;
-      int a[n];
+      Data data[n];
       for (int i = 0; i < n; ++i) {
-            a[i] = atoi(argv[1 + i]);
-            printf("%d, ", a[i]);
+    	  data[i].id = 1 + i;
+          strncpy(data[i].name, argv[1 + i], NAMELENGTHLIMIT);
+          printf("(%u, %s), ", data[i].id, data[i].name);
       }
       printf("\n\n");
-      qsort(a, n, sizeof(a[0]), order);
+      qsort(data, n, sizeof(data[0]), Data_sortbyname);
       for (int i = 0; i < n; ++i) {
-            printf("%d, ", a[i]);
-      }
+          printf("(%u, %s), ", data[i].id, data[i].name);
+     }
       printf("\n\n");
       return 0;
 }
