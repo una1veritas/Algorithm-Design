@@ -11,9 +11,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "sort_algorithm.h"
+#include "sort_algorithms.h"
 
-void counting_sort(data d[], long index[], long n, long range, long (*keycode)(const data *)) {
+void bucketSort(data * a[], long n, long index_begin, long index_end, int (*keyval)(const data * d)) {
+	long range = index_end - index_begin;
 	long number[range];
 	long counter[range];
 

@@ -5,8 +5,8 @@
  *      Author: sin
  */
 
-#ifndef SRC_SORT_ALGORITHM_H_
-#define SRC_SORT_ALGORITHM_H_
+#ifndef SRC_SORT_ALGORITHMS_H_
+#define SRC_SORT_ALGORITHMS_H_
 
 #include "datadef.h"
 #include "llist.h"
@@ -18,6 +18,7 @@ void selection_sort_reverse(data * a[], long n);
 void merge_sort(data * a[], long n);
 void merge_sort_llist(LList * a);
 
-void counting_sort(data * a[], long n, long range, long (*keycode)(const data *) );
+void bucket_sort(data * a[], long n, long index_begin, long index_end, int (*keyval)(const data * d));
+void counting_sort(data * a[], long n, long index_begin, long index_end, int (*keyval)(const data * d));
 
-#endif /* SRC_SORT_ALGORITHM_H_ */
+#endif /* SRC_SORT_ALGORITHMS_H_ */

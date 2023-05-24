@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "datadef.h"
-#include "sort_algorithm.h"
+#include "sort_algorithms.h"
 
 int down_to_leaf(data * a[], long i, long n) {
 	int j;

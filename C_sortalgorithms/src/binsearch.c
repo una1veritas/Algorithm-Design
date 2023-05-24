@@ -6,7 +6,7 @@
  */
 
 #include "datadef.h"
-#include "sort_algorithm.h"
+#include "sort_algorithms.h"
 
 long binsearch(data * a[], data b, long l, long r) {
 	printf("[%ld, %ld)\n", l, r);

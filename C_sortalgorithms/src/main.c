@@ -13,7 +13,7 @@
 
 #include "binsearch.h"
 #include "datadef.h"
-#include "sort_algorithm.h"
+#include "sort_algorithms.h"
 
 long passcount[] = { 0, 0 };
 
