@@ -13,7 +13,7 @@
 //typedef char * data;
 typedef long data;
 
-long keycode(const data * d1);
+long keyval(const data * d);
 int  equals(const data * d1, const data * d2);
 int  lessthan(const data * d1, const data * d2);
 int  lessthanoreq(const data * d1, const data * d2);

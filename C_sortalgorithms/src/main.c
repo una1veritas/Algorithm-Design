@@ -31,11 +31,12 @@ int main(int argc, char **argv) {
 	printf("\n");
 
 	//long range = 100;
-	//counting_sort(db, num, range, keyval);
+	counting_sort(a, num, 0, 101, keyval);
 	//insertion_sort(a, num);
 	//selection_sort_reverse(a, num);
 	//heap_sort(a, num);
-	merge_sort(a, num);
+	//merge_sort(a, num);
+	//bucket_sort(a, num, -100, 201, keyval);
 
 	for(long i = 0; i < num; ++i) {
 		printf("%ld, ", *a[i]);

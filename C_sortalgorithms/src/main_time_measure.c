@@ -5,8 +5,8 @@
 #include "sortalgorithms.h.old"
 #include "stopwatch.h"
 
-int lhd_int(const void * d[], const int a, const int b) {
-	return (const int *) d[a] > (const int *) d[b];
+int unlhd_int(const void * d[], const int a, const int b) {
+	return (const int *) d[a] <= (const int *) d[b];
 }
 
 /*

@@ -5,59 +5,26 @@
 #include <stdlib.h>
 
 #include "datadef.h"
-#include "llist.h"
+#include "vlarray.h"
 
-/*
-void bucketSort_list(LList * dlist, long m, long (*key)(const data)) {
-	LList list[m];
-	ListNode * node;
-	for(int i = 0; i < m; ++i) {
-		LList_init(&list[i]);
-	}
-	while ( !LList_is_empty(dlist) ) {
-		node = LList_pop_node(dlist);
-		LList_append_node(&list[key(node->dataptr)], node);
-	}
-	for(int i = 0; i < m; ++i) {
-		while ( ! LList_is_empty(&list[i]) ) {
-			node = LList_pop_node(&list[i]);
-			LList_append_node(dlist, node);
-		}
-	}
-}
-*/
-
-void bucket_sort(data * a[], long n, long index_begin, long index_end, int (*keyval)(const data * d)) {
-	long range = index_end - index_begin;
-	struct {
-		data ** bucket;
-		unsigned int count;
-		unsigned int bucket_size;
-	} buckets[range];
-	for(long i = 0; i < range; ++i) {
-		buckets[i].bucket_size = 4;
-		buckets[i].bucket = (data **) malloc(sizeof(data *) * buckets[i].bucket_size);
-		buckets[i].count = 0;
+void bucket_sort(data * a[], long n, long range_origin, long range_width, int (*keyval)(const data * d)) {
+	vlarray bucket[range_width];
+	for(long i = 0; i < range_width; ++i) {
+		vlarray_init(& bucket[i], 4); // assumes the number of same data would be no greater than 4.
 	}
 	for(long i = 0; i < n; ++i) {
-		long index = keyval(a[i]);
-		if ( ! (buckets[index].count < buckets[index].bucket_size) ) {
-			data ** newbucket = (data **) malloc(sizeof(data*) * (buckets[index].bucket_size << 1) );
-			buckets[index].bucket_size <<= 1;
-			for(long j = 0; j < buckets[index].bucket_size; ++j) {
-				newbucket[j] = buckets[index].bucket[j];
-			}
-			free(buckets[index].bucket);
-			buckets[index].bucket = newbucket;
+		long index = keyval(a[i]) - range_origin;
+		if ( ! (bucket[index].n < vlarray_capacity(& bucket[index]) ) ) {
+			vlarray_enlarge(& bucket[index]);
 		}
-		buckets[index].bucket[buckets[index].count++] = a[i];
+		vlarray_append(&bucket[index], a[i]);
 	}
 	long dstindex = 0;
-	for(long i = 0; i < range; ++i) {
-		for(unsigned int j = 0; j < buckets[i].count; ++j) {
-			a[dstindex] = buckets[i].bucket[j];
+	for(long i = 0; i < range_width; ++i) {
+		for(unsigned int j = 0; j < bucket[i].n; ++j) {
+			a[dstindex++] = bucket[i].a[j];
 		}
-		free(buckets[i].bucket);
+		vlarray_delete(&bucket[i]);
 	}
 
 }

@@ -11,34 +11,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "datadef.h"
 #include "sort_algorithms.h"
 
-void bucketSort(data * a[], long n, long index_begin, long index_end, int (*keyval)(const data * d)) {
-	long range = index_end - index_begin;
-	long number[range];
-	long counter[range];
+void counting_sort(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d)) {
+	data * result[n];
+	long counter[range_width];
 
-	for(long i = 0; i < range; ++i) {
-		number[i] = 0;
+	for(long i = 0; i < range_width; ++i) {
+		counter[i] = 0;
 	}
 	for(long i = 0; i < n; ++i) {
-		number[keycode(d+i)] += 1;
+		++counter[keyval(a[i]) - range_origin];
 	}
-	printf("\n");
-	for(long i = 1; i < range; ++i) {
-		number[i] += number[i-1];
-		counter[i] = number[i-1];
-	}
+	// let counter[i] be the first position of the i-th element (keyvalue i ). counter[0] = 0.
+	long prev = counter[0];
 	counter[0] = 0;
-	for(long i = 0; i < n; ) {
-		long ix = keycode(d+index[i]);
-		if ( counter[ix] != number[ix] ) {
-			long t = index[counter[ix]];
-			index[counter[ix]] = index[i];
-			index[i] = t;
-			counter[ix] += 1;
-		} else {
-			i += 1;
-		}
+	for(long i = 1; i < range_width; ++i) {
+		long t = counter[i];
+		counter[i] = prev;
+		prev += t;
 	}
+
+	for(long i = 0; i < n; ++i) {
+		long ix = keyval(a[i]) - range_origin;
+		result[counter[ix]++] = a[i];
+	}
+	for(long i = 0; i < n; ++i)
+		a[i] = result[i];
 }
