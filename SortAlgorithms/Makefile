@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 
-OBJS =  datadef.o selection_sort.o heap_sort.o insertion_sort.o mergesort.o mergesort_llist.o llist.o
+OBJS =  datadef.o selection_sort.o heap_sort.o insertion_sort.o mergesort.o 
 #OBJS =	insertion_sort.o heap_sort.o selection_sort.o counting_sort.o main_test.o
 #OBJS += binsearch.o 
 MAINOBJ = main.o
