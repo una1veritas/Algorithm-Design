@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 #include "datadef.h"
-#include "sort_algorithm.h"
+#include "sort_algorithms.h"
 
 void insertion_sort(data * a[], long n) {
 	long i;

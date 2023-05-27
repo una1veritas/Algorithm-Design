@@ -30,3 +30,12 @@ int main(const int argc, char *argv[]) {
       printf("\n\n");
       return 0;
 }
+
+/*
+ * ./a.out Robert Thomas Elizabeth Hellen Meg
+ *
+ * (1, Robert), (2, Thomas), (3, Elizabeth), (4, Hellen), (5, Meg),
+ *
+ * (3, Elizabeth), (4, Hellen), (5, Meg), (1, Robert), (2, Thomas),
+ *
+ */
