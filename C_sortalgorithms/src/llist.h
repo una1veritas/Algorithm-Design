@@ -37,7 +37,7 @@ ListNode * LList_end(LList * list);
 ListNode * LList_find(LList * list, const data d, int (*equals)(const data, const data *) );
 ListNode * LList_remove(LList * list, const data d, int (*equals)(const data, const data *) );
 ListNode * LList_last(LList * list);
-void LList_part(LList * list, ListNode * ptr, LList * a, LList * b);
+void LList_apart(LList * list, ListNode * nodeptr, LList * b);
 
 int LList_is_empty(LList * list);
 

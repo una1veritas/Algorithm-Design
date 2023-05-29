@@ -145,6 +145,34 @@ int LList_is_empty(LList * list) {
 	return list->elemcount == 0;
 }
 
+void LList_apart(LList * list, ListNode * nodeptr, LList * b) {
+	LList_init(b);
+	ListNode * lastnode = list->head;
+	// エラー処理
+
+	b->head = nodeptr;
+	b->tail = nodeptr;
+	b->elemcount = 1;
+	int count = 1;
+	while ( lastnode != NULL ) {
+		if ( lastnode == nodeptr || lastnode->next == nodeptr ) {
+			break;
+		}
+		lastnode = lastnode->next;
+		++count;
+	}
+	if (lastnode == NULL) {
+		fprintf(stderr, "LList_apart encountered NULL.\n");
+		return;
+	}
+	list->tail = lastnode;
+	b->elemcount = list->elemcount - count;
+	list->elemcount = count;
+	while () {
+
+	}
+}
+
 void LList_fprintf(FILE * f, LList * list, const char * fmt) {
 	ListNode * node = list->head.next;
 	while ( node != &list->tail ) {

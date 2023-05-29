@@ -10,8 +10,10 @@
 
 #include "vlarray.h"
 
+#define VLARRAY_MIN_SIZE 8
+
 int vlarray_init(vlarray * vla, unsigned int capa) {
-	vla->limit = capa;
+	vla->limit = capa > VLARRAY_MIN_SIZE ? capa : VLARRAY_MIN_SIZE;
 	vla->a = (data **) malloc(sizeof(data *) * vla->limit);
 	if ( vla->a ) {
 		vla->n = 0;
