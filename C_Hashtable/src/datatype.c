@@ -10,7 +10,7 @@
 
 #include "datatype.h"
 
-// calcurate unsigned long hash code (32 bit in Win 64) from id (char [8]).
+// calculate unsigned long hash code (32 bit in Win 64) from id (char [8]).
 unsigned long hash_code(const datatype * d) {
 	unsigned long sum = 0;
 	unsigned long hi8;
