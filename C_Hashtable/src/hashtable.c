@@ -43,7 +43,6 @@ void Hashtable_free(Hashtable * h) {
 
 ListNodePair Hashtable_findList(Hashtable * h, const datatype * d) {
 	long hash = hash_code(d) % h->tablesize;
-	printf("%ld\n", hash);
 	ListNodePair pair;
 	pair.listptr = & h->table[hash];
 	pair.nodeptr = LList_find(pair.listptr, d, equals);
