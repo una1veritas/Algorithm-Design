@@ -33,10 +33,12 @@ void counting_sort(data * a[], long n, long range_origin, long range_width, long
 		prev += t;
 	}
 
+	// move each element to the sorted array result[].
 	for(long i = 0; i < n; ++i) {
 		long ix = keyval(a[i]) - range_origin;
 		result[counter[ix]++] = a[i];
 	}
+	// copy back to a[].
 	for(long i = 0; i < n; ++i)
 		a[i] = result[i];
 }
