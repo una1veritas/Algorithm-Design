@@ -9,14 +9,14 @@
 #define SRC_DATATYPE_H_
 
 typedef struct {
-	long id;
+	char id[8];
 	char name[32];
-} idname;
-typedef idname * datatype;
+} PII;
+typedef PII datatype;
 
 
-long key(const datatype d);
-int equals(const datatype d1, const datatype d2);
-int sprint(char * buf, datatype d);
+unsigned long hash_code(const datatype * d);
+int equals(const datatype * d1, const datatype * d2);
+int sprint(char * buf, const datatype * d);
 
 #endif /* SRC_DATATYPE_H_ */

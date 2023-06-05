@@ -25,15 +25,15 @@ LList * LList_init(LList *);
 void LList_free(LList *);
 void LList_fprintf(FILE *, LList *, const char * fmt);
 
-ListNode * LList_append(LList * list, datatype);
-ListNode * LList_push(LList * list, datatype);
+ListNode * LList_append(LList * list, const datatype *);
+ListNode * LList_push(LList * list, const datatype *);
 datatype LList_pop(LList * list);
 ListNode * LList_append_node(LList * list, ListNode * node);
 ListNode * LList_pop_node(LList * list);
 ListNode * LList_begin(LList * list);
 ListNode * LList_end(LList * list);
-ListNode * LList_find(LList * list, const datatype d, int (*equals)(const datatype, const datatype) );
-ListNode * LList_remove(LList * list, const datatype d, int (*equals)(const datatype, const datatype) );
+ListNode * LList_find(LList * list, const datatype * d, int (*equals)(const datatype *, const datatype *) );
+ListNode * LList_remove(LList * list, const datatype * d, int (*equals)(const datatype *, const datatype *) );
 ListNode * LList_last(LList * list);
 int LList_is_empty(LList * list);
 
