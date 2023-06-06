@@ -42,9 +42,9 @@ struct MyDataType {
 int main(const int argc, const char * argv[]) {
 	std::unordered_map<MyDataType, int, MyDataType> map;
 
-	map[ {"82541854", "simozuma", "sinichi"} ] = 0;
-	map[ {"212C1805", "tomiyama", "kenta"} ] = 2;
-	map[ {"82541854", "simozuma", "sinichi"} ] = 1;
+	map[ {"228C3014", "Yamamoto", "Yama"} ] = 0;
+	map[ {"228C3042", "Kawano", "Sakana"} ] = 2;
+	map[ {"228E2204", "Murano", "Tanbo"} ] = 1;
 
 	for (auto & data : map) {
 		std::cout << data.first.sid << ": " << data.first.surname << ", " << data.first.givenname
