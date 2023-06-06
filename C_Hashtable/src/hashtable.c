@@ -43,7 +43,6 @@ void Hashtable_free(Hashtable * h) {
 
 ListNodePair Hashtable_findList(Hashtable * h, const datatype * d) {
 	long hash = hash_code(d) % h->tablesize;
-	printf("%ld\n", hash);
 	ListNodePair pair;
 	pair.listptr = & h->table[hash];
 	pair.nodeptr = LList_find(pair.listptr, d, equals);
@@ -112,3 +111,20 @@ int main(const int argc, const char * argv[]) {
 	printf("finished. quit.\n");
 	return EXIT_SUCCESS;
 }
+
+/*
+ *
+Hash table size = 7
+the number of entries = 6
+tablesize = 7
+table =
+0: (333C1193: Jouji Shou) 3468268706,
+1: (332C1105: Tate Chabashira) 3458912892,
+2: (333C2307: Takamine Yamada) 3468240106, (332C1088: Kouki Han) 3458912368,
+3:
+4: (333C1089: Takashi Nami) 3468267590,
+5:
+6: (333C1306: Batuta Shouryou) 3468266934,
+
+finished. quit.
+ */

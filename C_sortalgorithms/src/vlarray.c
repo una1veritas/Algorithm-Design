@@ -10,7 +10,7 @@
 
 #include "vlarray.h"
 
-#define VLARRAY_MIN_SIZE 8
+#define VLARRAY_MIN_SIZE 4
 
 int vlarray_init(vlarray * vla, unsigned int capa) {
 	vla->limit = capa > VLARRAY_MIN_SIZE ? capa : VLARRAY_MIN_SIZE;
@@ -32,7 +32,7 @@ unsigned int vlarray_capacity(vlarray * vla) {
 
 int vlarray_append(vlarray * vla, data * d) {
 	if ( ! (vla->n < vla->limit) )
-		return -1; // capacity limit exceeded
+		return vlarray_enlarge(vla); // capacity limit exceeded
 	vla->a[vla->n++] = d;
 	return 0;
 }

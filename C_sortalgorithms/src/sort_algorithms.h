@@ -19,6 +19,7 @@ void merge_sort(data * a[], long n);
 void merge_sort_llist(LList * a);
 
 void bucket_sort(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d));
+void bucket_sort_fixed(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d));
 void counting_sort(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d));
 
 #endif /* SRC_SORT_ALGORITHMS_H_ */

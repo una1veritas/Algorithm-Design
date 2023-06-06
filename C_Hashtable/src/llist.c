@@ -32,9 +32,9 @@ void LList_free(LList * list) {
 }
 
 // append as the last node
-ListNode * LList_append(LList * list, datatype d) {
+ListNode * LList_append(LList * list, const datatype * d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
-	node->data = d;
+	memcpy(& node->data, d, sizeof(datatype));
 	LList_append_node(list, node);
 	return node;
 }
@@ -49,9 +49,9 @@ ListNode * LList_append_node(LList * list, ListNode * node) {
 }
 
 // push into the first node
-ListNode * LList_push(LList * list, datatype d) {
+ListNode * LList_push(LList * list, const datatype * d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
-	node->data = d;
+	memcpy(& node->data, d, sizeof(datatype));
 	node->next = list->head.next;
 	list->head.next = node;
 	node->next->prev = node;
@@ -88,17 +88,17 @@ ListNode * LList_end(LList * list) {
 	return &list->tail;
 }
 
-ListNode * LList_find(LList * list, const datatype d, int (*equals)(const datatype, const datatype) ) {
+ListNode * LList_find(LList * list, const datatype * d, int (*equals)(const datatype *, const datatype *) ) {
 	ListNode * node;
 	for(node = LList_begin(list);
 			node != LList_end(list); node = node->next) {
-		if ( equals(d, node->data) )
+		if ( equals(d, & node->data) )
 			return node;
 	}
 	return node;
 }
 
-ListNode * LList_remove(LList * list, const datatype d, int (*equals)(const datatype, const datatype) ) {
+ListNode * LList_remove(LList * list, const datatype * d, int (*equals)(const datatype *, const datatype *) ) {
 	ListNode * node = LList_find(list, d, equals);
 	if ( node != LList_end(list) ) {
 		node->next->prev = node->prev;

@@ -10,12 +10,12 @@
 
 #include "datatype.h"
 
-// calcurate unsigned long hash code (32 bit in Win 64) from id (char [8]).
+// calculate unsigned long hash code (32 bit in Win 64) from id (char [8]).
 unsigned long hash_code(const datatype * d) {
 	unsigned long sum = 0;
 	unsigned long hi8;
 	for(int i = 0; i < 8; ++i) {
-		hi8 = (sum>>24) & 0xff;
+		hi8 = (sum>>(sizeof(unsigned long)*8 - 8)) & 0xff;
 		sum *= 27;
 		sum ^= d->id[i];
 		sum ^= hi8;
@@ -32,5 +32,5 @@ int sprint(char * buf, const datatype * d) {
 	for(int i = 0; i < 8; ++i)
 		tmp[i] = d->id[i];
 	tmp[8] = 0;
-	return sprintf(buf, "(%s: %s)", tmp, d->name);
+	return sprintf(buf, "(%s: %s) %lu", tmp, d->name, hash_code(d));
 }
