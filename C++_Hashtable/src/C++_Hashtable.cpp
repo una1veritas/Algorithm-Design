@@ -8,16 +8,27 @@ unsigned int hash(int d) {
 	return d;  // 整数のハッシュ値は，その値そのもの．
 }
 
+/*
+unsigned int hash(char idstr[]) {
+     unsigned int hv = 0;
+     for(int i = 4; i > 0; --i) {
+          hv <<= 7;
+          hv += idstr[i] ^ idstr[3+i];
+     }
+     return hv;
+}
+*/
+
 int main(int argc, char **argv) {
 	if ( argc <= 1 ) {
-		printf("input numbers as arguments.\n");
+		printf("input table size as arguments.\n");
 		return 1; // エラー終了
 	}
 
 	int m = 11;
 	int argpos = 1;
 	std::string argstr = argv[argpos];
-	if ( argstr.starts_with("-size=") ) {
+	if ( argstr.starts_with("-size=") ) { // requires C++ 20 ( -std=c++2a )
 		m = std::stoi(argstr.substr(std::strlen("-size=")));
 		++argpos;
 	}
