@@ -40,6 +40,7 @@ void radixsort_binary(int d[], const int n) {
 	}
 }
 
+/*
 int main(const int argc, const char *argv[]) {
 	int n = argc - 1;
 	int d[n];
@@ -62,3 +63,4 @@ int main(const int argc, const char *argv[]) {
 
 	return 0;
 }
+*/

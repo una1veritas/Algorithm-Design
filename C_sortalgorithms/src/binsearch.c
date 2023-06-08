@@ -14,7 +14,7 @@ long binsearch(data * a[], data b, long l, long r) {
 		return -1;
 	if (r - l < 4) {
 		for(; l < r; ++l) {
-			printf("a[%ld] = %ld == %ld > ",l,*a[l],b);
+			//printf("a[%ld] = %ld == %ld > ",l,*a[l],b);
 			if ( equals(a[l], &b) )
 				return l;
 		}

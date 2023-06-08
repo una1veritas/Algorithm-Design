@@ -23,8 +23,8 @@ int main(int argc, char **argv) {
 	data * a[num];
 
 	for(long i = 0; i < num; ++i) {
-		db[i] = atol(argv[1+i]);
-		printf("%ld, ", db[i]);
+		db[i] = argv[1+i];
+		printf("%s, ", db[i]);
 		a[i] = &db[i];
 		//LList_append(&list, &db[i]);
 	}
@@ -34,13 +34,13 @@ int main(int argc, char **argv) {
 	//counting_sort(a, num, 0, 101, keyval);
 	//insertion_sort(a, num);
 	//selection_sort_reverse(a, num);
-	//heap_sort(a, num);
+	heap_sort(a, num);
 	//merge_sort(a, num);
-	bucket_sort(a, num, 0, 201, keyval);
+	//bucket_sort(a, num, 0, 201, keyval);
 	//bucket_sort_fixed(a, num, 0, 101, keyval);
 
 	for(long i = 0; i < num; ++i) {
-		printf("%ld, ", *a[i]);
+		printf("%s, ", *a[i]);
 	}
 	printf("\n");
 

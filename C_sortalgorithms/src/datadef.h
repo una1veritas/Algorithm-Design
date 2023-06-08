@@ -10,8 +10,8 @@
 
 #include <stdio.h>
 
-//typedef char * data;
-typedef long data;
+typedef char * data;
+//typedef long data;
 
 long keyval(const data * d);
 int  equals(const data * d1, const data * d2);

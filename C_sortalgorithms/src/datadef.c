@@ -18,8 +18,21 @@ long keyval(const data * x) {
 }
 */
 
-//#include <string.h>
+#include <string.h>
 
+int equals(const data * x, const data * y) {
+	return strcmp((char *) *x, (char *) *y) == 0;
+}
+
+int lessthan(const data * x, const data * y) {
+	return strcmp((char *) *x, (char *) *y) < 0;
+}
+
+int lessthanoreq(const data * x, const data * y) {
+	return strcmp((char *) *x, (char *) *y) <= 0;
+}
+
+/*
 int equals(const data * x, const data * y) {
 	return (*x == *y);
 }
@@ -32,11 +45,12 @@ int lessthan(const data * x, const data * y) {
 int lessthanoreq(const data * x, const data * y) {
 	return (*x <= *y);
 }
-
-
+*/
+/*
 long cast_to_long(const data x) {
 	return x;
 }
+*/
 
 long keyval(const data * x) {
 	/*
@@ -54,5 +68,5 @@ long keyval(const data * x) {
 
 int  fprintf_data(FILE * fp, const data * d) {
 	//return fprintf(fp, "%s", *d);
-	return fprintf(fp, "%ld", *d);
+	return fprintf(fp, "%s", *d);
 }

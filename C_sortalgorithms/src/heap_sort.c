@@ -20,7 +20,7 @@ int down_to_leaf(data * a[], long i, long n) {
 		}
 		if ( lessthan(a[j], a[i]) )
 			break;
-		printf("a[%d] %d <--> a[%d] = %d\n", (int) i, (int) *a[i], (int) j, (int) *a[j]);
+		//printf("a[%d] %d <--> a[%d] = %d\n", (int) i, (int) *a[i], (int) j, (int) *a[j]);
 		t = a[i], a[i] = a[j], a[j] = t;
 	}
 	return 1;
@@ -51,7 +51,7 @@ void heap_sort(data * a[], long n) {
 		// a[0] is always the maximum.
 		t = a[0], a[0] = a[i], a[i] = t;
 		down_to_leaf(a, 0, i);
-
+/*
 		fprintf(stdout,"heap and sorted suffix [%ld, %ld):\n",i,n);
 		for(int j = 0; j < n; ++j) {
 			fprintf_data(stdout, a[j]);
@@ -62,6 +62,17 @@ void heap_sort(data * a[], long n) {
 			}
 		}
 		fprintf(stdout,"\n");
+		*/
 	}
 	return;
 }
+
+/*
+ * hektor, summicron, elmarit, nokton, planar, distagon, sonnar, xenotar, tessar,
+making heap..
+heap:
+xenotar tessar sonnar summicron planar distagon elmarit nokton hektor
+
+distagon, elmarit, hektor, nokton, planar, sonnar, summicron, tessar, xenotar,
+ *
+ */
