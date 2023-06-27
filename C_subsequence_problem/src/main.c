@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "subsequence_problem.h"
 
 int main(const int argc, const char * argv[]) {
 	int n = argc - 1;
@@ -22,21 +23,9 @@ int main(const int argc, const char * argv[]) {
 	}
 	fprintf(stdout,"\n");
 
-	int start_longest = 0, length_longest = 1;
-	int start = 0, length = 1;
-	for(int i = 1; i < n; ++i) {
-		if ( a[i-1] <= a[i] ) {
-			length += 1;
-			if ( length > length_longest ) {
-				start_longest = start;
-				length_longest = length;
-			}
-		} else {
-			start = i;
-			length = 1;
-		}
-		fprintf(stdout, "start = %d, length = %d\n", start, length);
-	}
-	fprintf(stdout, "longest increasing sequence starts from %d with length %d.\n", start_longest, length_longest);
+	tuple ans = largest_contiguous_sum(a, n);
+	fprintf(stdout, "largest contiguous subsequence starts from %d with length %d, sum is %d.\n", ans.start, ans.length, ans.sum);
+
+//	fprintf(stdout, "longest increasing sequence starts from %d with length %d.\n", ans.start, ans.length);
 	return EXIT_SUCCESS;
 }
