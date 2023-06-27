@@ -20,7 +20,7 @@ typedef struct {
 	int sum;
 } tuple;
 
-tuple longest_increasing(const int a[], const int n);
+tuple longest_increasing_seq(const int a[], const int n);
 tuple largest_contiguous_sum(const int a[], const int n);
 
 #endif /* SRC_SUBSEQUENCE_PROBLEM_H_ */

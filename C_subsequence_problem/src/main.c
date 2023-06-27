@@ -23,8 +23,8 @@ int main(const int argc, const char * argv[]) {
 	}
 	fprintf(stdout,"\n");
 
-	tuple ans = largest_contiguous_sum(a, n);
-	fprintf(stdout, "largest contiguous subsequence starts from %d with length %d, sum is %d.\n", ans.start, ans.length, ans.sum);
+	tuple ans = longest_increasing_seq(a, n);
+	fprintf(stdout, "largest contiguous subsequence starts from %d with length %d.\n", ans.start, ans.length);
 
 //	fprintf(stdout, "longest increasing sequence starts from %d with length %d.\n", ans.start, ans.length);
 	return EXIT_SUCCESS;
