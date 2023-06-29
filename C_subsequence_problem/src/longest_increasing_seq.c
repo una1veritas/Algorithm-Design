@@ -13,6 +13,25 @@
 #include "subsequence_problem.h"
 
 tuple longest_increasing_seq(const int a[], const int n) {
+	tuple ans;
+	int length = 1, start = 0;
+	ans.start = start;
+	ans.length = length;
+	for(int i = 1; i <= n; ++i) {
+		if ( a[i-1] > a[i] || i == n  ) {
+			length = i - start;
+			fprintf(stdout, "start = %d, length = %d\n", start, length);
+			if ( ans.length < length ) {
+				ans.length = length;
+				ans.start = start;
+			}
+			start = i;
+		}
+	}
+	return ans;
+}
+
+tuple longest_increasing_seq_1(const int a[], const int n) {
 	int length[n];
 	length[0] = 1;
 	tuple ans;
@@ -36,7 +55,7 @@ tuple longest_increasing_seq(const int a[], const int n) {
 	return ans;
 }
 
-tuple longest_increasing_seq_1(const int a[], const int n) {
+tuple longest_increasing_seq_0(const int a[], const int n) {
 	tuple ans;
 	ans.start = 0;
 	ans.length = 1;
