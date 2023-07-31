@@ -38,14 +38,14 @@ int main(int argc, char * argv[]) {
 		month = atoi(argv[2]);
 		date = atof(argv[3]);
 	} else {
-		fprintf(stderr, "input error.¥n") ;
+		fprintf(stderr, "input error.\n") ;
 		return EXIT_FAILURE;
 	}
 	//
-	printf("Year %d , month %d, date %f¥n", year, month, date);
+	printf("Year %d, month %d, date %f\n", year, month, date);
 	//
 	jd = JulianDay(year, month, date);
-	printf("Julian Day number = %f¥n", jd);
+	printf("Julian Day number = %f\n", jd);
 	/*
 	cout << "Day of the week = " << INT(INT(jd)+1.5) %7 << "." << endl;
 	cout << endl;
@@ -104,7 +104,7 @@ double CalendarDate(double jd) {
 	} else {
 		year = c - 4715;
 	}
-	return SIGN(year)*(abs(year)*10000 + month*100 + date);
+	return SIGN(year)*(labs(year)*10000 + month*100 + date);
 }
 
 double JulianDay(int y, int m, double d) {
