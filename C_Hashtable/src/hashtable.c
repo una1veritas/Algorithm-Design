@@ -16,17 +16,17 @@
 
 #include "llist.h"
 
-typedef struct Hashtable {
+typedef struct OpenHashtable {
 	LList * table;
 	long tablesize, elemcount;
-} Hashtable;
+} OpenHashtable;
 
 typedef struct ListNodePair {
 	LList * listptr;
 	ListNode * nodeptr;
 } ListNodePair;
 
-void Hashtable_init(Hashtable * h, long n) {
+void OpenHashtable_init(OpenHashtable * h, long n) {
 	h->tablesize = n;
 	h->table = (void*) malloc(sizeof(LList) * h->tablesize);
 	for(long i = 0; i < h->tablesize; ++i) {
@@ -35,13 +35,13 @@ void Hashtable_init(Hashtable * h, long n) {
 	h->elemcount = 0;
 }
 
-void Hashtable_free(Hashtable * h) {
+void OpenHashtable_free(OpenHashtable * h) {
 	for(long i = 0; i < h->tablesize; ++i)
 		LList_free(&h->table[i]);
 	free(h->table);
 }
 
-ListNodePair Hashtable_findList(Hashtable * h, const datatype * d) {
+ListNodePair OpenHashtable_findList(OpenHashtable * h, const datatype * d) {
 	long hash = hash_code(d) % h->tablesize;
 	ListNodePair pair;
 	pair.listptr = & h->table[hash];
@@ -49,28 +49,28 @@ ListNodePair Hashtable_findList(Hashtable * h, const datatype * d) {
 	return pair;
 }
 
-ListNode * Hashtable_find(Hashtable * h, const datatype * d) {
-	ListNodePair pair = Hashtable_findList(h, d);
+ListNode * OpenHashtable_find(OpenHashtable * h, const datatype * d) {
+	ListNodePair pair = OpenHashtable_findList(h, d);
 	return pair.nodeptr;
 }
 
-void Hashtable_add(Hashtable * h, const datatype * d) {
-	ListNodePair pair = Hashtable_findList(h, d);
+void OpenHashtable_add(OpenHashtable * h, const datatype * d) {
+	ListNodePair pair = OpenHashtable_findList(h, d);
 	if ( pair.nodeptr == LList_end(pair.listptr) ) {
 		LList_append(pair.listptr, d);
 		h->elemcount += 1;
 	}
 }
 
-void Hashtable_remove(Hashtable * h, const datatype * d) {
-	ListNodePair pair = Hashtable_findList(h, d);
+void OpenHashtable_remove(OpenHashtable * h, const datatype * d) {
+	ListNodePair pair = OpenHashtable_findList(h, d);
 	if ( pair.nodeptr != LList_end(pair.listptr) ) {
 		LList_remove(pair.listptr, d, equals);
 		h->elemcount -= 1;
 	}
 }
 
-void Hashtable_fprintf(FILE * f, Hashtable * h, const char * fmt) {
+void OpenHashtable_fprintf(FILE * f, OpenHashtable * h, const char * fmt) {
 	char buf[256];
 	printf("tablesize = %ld\ntable = \n", h->tablesize);
 	for(long i = 0; i < h->tablesize; ++i) {
@@ -88,8 +88,22 @@ void Hashtable_fprintf(FILE * f, Hashtable * h, const char * fmt) {
 	fprintf(f,"\n");
 }
 
+typedef struct ClosedHashtable {
+	datatype ** table;
+	long tablesize, elemcount;
+} ClosedHashtable;
+
+void ClosedHashtable_init(ClosedHashtable * h, long n) {
+	h->tablesize = n;
+	h->table = (datatype **) malloc(sizeof(datatype *) * h->tablesize);
+	for(long i = 0; i < h->tablesize; ++i) {
+		h->table[i] = NULL;
+	}
+	h->elemcount = 0;
+}
+
 int main(const int argc, const char * argv[]) {
-	Hashtable tbl;
+	OpenHashtable tbl;
 	long tblsize = atol(argv[1]);
 	const char ** arg = &argv[2];
 	long n = (argc - 2)>>1;
@@ -100,14 +114,14 @@ int main(const int argc, const char * argv[]) {
 		d[i].name[31] = 0;
 	}
 	printf("Hash table size = %ld\n", tblsize);
-	Hashtable_init(&tbl, tblsize);
+	OpenHashtable_init(&tbl, tblsize);
 	for(long i = 0; i < n; ++i)
-		Hashtable_add(&tbl, &d[i]);
+		OpenHashtable_add(&tbl, &d[i]);
 
 	printf("the number of entries = %ld\n", tbl.elemcount);
-	Hashtable_fprintf(stdout, &tbl, "%s, ");
+	OpenHashtable_fprintf(stdout, &tbl, "%s, ");
 
-	Hashtable_free(&tbl);
+	OpenHashtable_free(&tbl);
 	printf("finished. quit.\n");
 	return EXIT_SUCCESS;
 }
