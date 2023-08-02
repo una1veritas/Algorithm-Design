@@ -83,7 +83,7 @@ void OpenHashtable_fprintf(FILE * f, OpenHashtable * h, const char * fmt) {
 			sprint(buf, & node->data);
 			fprintf(f,"%s, ", buf);
 		}
-		fprintf(f,"\n");
+		fprintf(f, "\n");
 	}
 	fprintf(f,"\n");
 }
