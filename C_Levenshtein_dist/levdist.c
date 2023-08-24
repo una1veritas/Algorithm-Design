@@ -133,3 +133,24 @@ Sequence of edit operations is R>>RR>.
 
  *
  */
+/*
+ *            a    a    b    a    a    b
+--------------------------------------
+ |    0    1    2    3    4    5    6
+a|    1    0    1    2    3    4    5
+b|    2    1    1    1    2    3    4
+b|    3    2    2    1    2    3    3
+a|    4    3    2    2    1    2    3
+a|    5    4    3    3    2    1    2
+b|    6    5    4    3    3    2    1
+
+i = 6, j = 6, oplen = 0
+i = 5, j = 5, oplen = 1
+i = 4, j = 4, oplen = 2
+i = 3, j = 3, oplen = 3
+i = 2, j = 2, oplen = 4
+i = 1, j = 1, oplen = 5
+Levenshtein distance between abbaab and aabaab is 1.
+Sequence of edit operations is >R>>>>.
+ *
+ */
