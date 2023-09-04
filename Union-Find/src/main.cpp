@@ -28,7 +28,7 @@ using std::endl;
 static int r;
 
 int rnd() {
-//	static int r = 1102; /* 自分の学生番号の下4 桁に書き換える */
+	//static int r = 1102; /* 自分の学生番号の下4 桁に書き換える */
 	// 2022 ver. r = ((r + 1013) * 171) % 1331;
 	r = ((r + 1019) * 173) % 1331;
 	return r;
