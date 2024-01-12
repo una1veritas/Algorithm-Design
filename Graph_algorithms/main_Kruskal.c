@@ -16,7 +16,7 @@ int oneof(const char c, const char * charlist) {
 
 int main(int argc, char **argv) {
 	if (argc < 3) {
-		printf("Requires two arguments: (1) sequence \"0, 1, 2...\" of the vertices, and (2) edge definitions in \"1-2, 2-3,...\" form .\n");
+		printf("Requires two arguments: (1) sequence \"0, 1, 2...\" of the vertices, and (2) edge definitions in \"1-2:4, 2-3:3,...\" form .\n");
 	}
 
 	Graph g;

@@ -193,7 +193,7 @@ void Graph_print(Graph * gp) {
 	printf("}, {");
 	for(int i = 0; i < gp->esize; ++i) {
 		printf("(%d, %d)", gp->edges[i].src, gp->edges[i].dst);
-		if (gp->edges[i].weight != 1) {
+		if (gp->edges[i].weight > 0) {
 			printf(":%d",gp->edges[i].weight);
 		}
 		if (i+1 < gp->esize)

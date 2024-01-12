@@ -18,7 +18,7 @@ int weight_descending(const void* a, const void* b)
 {
 	Edge* a1 = (Edge*)a;
 	Edge* b1 = (Edge*)b;
-	return a1->weight > b1->weight;
+	return a1->weight - b1->weight;
 }
 
 // The main function to construct MST using Kruskal's
