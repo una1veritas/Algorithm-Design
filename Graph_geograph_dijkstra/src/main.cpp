@@ -174,7 +174,11 @@ int main(int argc, char * argv[]) {
 
 int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route) {
 	constexpr unsigned int WINDOW_MIN_WIDTH = 1024;
-	constexpr unsigned int WINDOW_MIN_HEIGHT = 768;
+	constexpr unsigned int WINDOW_MIN_HEIGHT = 1024;
+	constexpr unsigned int SCREEN_DPI = 90;
+	constexpr double SCREEN_DPM = double(SCREEN_DPI)/0.0254;
+	constexpr double MAP_SCALE = 5000;
+
 	SDL_Window * window = NULL;
 	SDL_Renderer * renderer = NULL;
 
@@ -199,19 +203,42 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 		unsigned int w, h;
 	} winrect = {WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT};
 
-	georect area(route);
-	//cout << traj_area.width_meter() << ", " << traj_area.height_meter() << endl;
-	// pixel per degree
-	double vscale, hscale;
-	if ( area.width_meter() >= area.height_meter()) {
-		hscale = 0.75 * double(WINDOW_MIN_WIDTH) / (area.west - area.east);
-		vscale = 0.75 * double(WINDOW_MIN_WIDTH) / area.aspect_ratio() / (area.north - area.south);
-	} else {
-		vscale = 0.75 * double(WINDOW_MIN_HEIGHT) / (area.north - area.south);
-		hscale = 0.75 * double(WINDOW_MIN_HEIGHT) * area.aspect_ratio() / (area.west - area.east);
+	georect route_area(route);
+	/*
+	georect map_area;
+	auto itr = map.cbegin();
+	map_area(itr->second.point().lat,
+			itr->second.point().lon,
+			itr->second.point().lat,
+			itr->second.point().lon);
+	++itr;
+	for( ; itr!= map.cend(); ++itr) {
+		const geopoint & p = itr->second.point();
+		map_area.east = std::min(map_area.east, p.lon);
+		map_area.west = std::max(map_area.west, p.lon);
+		map_area.south = std::min(map_area.south, p.lat);
+		map_area.north = std::max(map_area.north, p.lat);
 	}
-	georect viewarea(area);
-	cout << "hscale = " << hscale << ", vscale = " << vscale << endl;
+	std::cout << route_area << ", " << map_area << std::endl;
+	*/
+	std::cout << route_area.width_meter() << ", " << route_area.height_meter() << ", " << route_area.aspect_ratio() << std::endl;
+	std::cout << route_area.width_meter()/route_area.width_degree() << ", " << route_area.height_meter()/route_area.height_degree() << ", " << route_area.aspect_ratio() << std::endl;
+	double mperlon = route_area.width_meter()/route_area.width_degree();
+	double mperlat = route_area.height_meter()/route_area.height_degree();
+	cout << route_area.width_degree() * mperlon * SCREEN_DPM / MAP_SCALE << endl;
+	double h_scale =  mperlon * SCREEN_DPM / MAP_SCALE;
+	cout << route_area.height_degree() * mperlat * SCREEN_DPM / MAP_SCALE << endl;
+	double v_scale =  mperlat * SCREEN_DPM / MAP_SCALE;
+	geopoint map_center = route_area.center();
+	cout << h_scale << " " << v_scale << " " << map_center << endl;
+
+	georect draw_area(map_center.lat + double(winrect.h/2)/v_scale,
+			map_center.lon + double(winrect.w/2)/h_scale,
+			map_center.lat - double(winrect.h/2)/v_scale,
+			map_center.lon - double(winrect.w/2)/h_scale);
+	cout << map_center << ", " << draw_area << endl;
+	cout << draw_area.width_meter() << " " << draw_area.height_meter() << endl;
+/*
 	if ( (SDL_Init( SDL_INIT_VIDEO ) < 0)
 			or !(window = SDL_CreateWindow( "Geograph", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 					winrect.w, winrect.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE))
@@ -256,10 +283,10 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 					break;
 				case SDL_MOUSEBUTTONUP:
 					if (mx0 != mx1 or my0 != my1) {
-						diff_h = (mx1 - mx0) / hscale;
-						diff_v = (my1 - my0) / vscale;
+						diff_h = (mx1 - mx0);
+						diff_v = (my1 - my0);
 						mx0 = mx1; my0 = my1;
-						viewarea.shift(diff_v, -diff_h);
+						//viewarea.shift(diff_v, -diff_h);
 						update = true;
 					}
 					if ( show_track == false ) {
@@ -272,21 +299,21 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 					// resize function is still incomplete;
 					// map-drawing of enlarged area is postponed
 					// after the succeeding resize.
-					/*
+
 					switch (event.window.event) {
 					case SDL_WINDOWEVENT_SIZE_CHANGED:
 						winrect.w = event.window.data1;
 						winrect.h = event.window.data2;
-						//cout << "CHANGED " << winrect.h << ", " << winrect.w << endl;
+						cout << "CHANGED " << winrect.h << ", " << winrect.w << endl;
 						//break;
 					//case SDL_WINDOWEVENT_RESIZED:
 						update = true;
 						//cout << "RESIZED" << endl;
-						viewarea.south = viewarea.north - double(winrect.h) / vscale;
-						viewarea.west = viewarea.east + double(winrect.w) / hscale;
+						//viewarea.south = viewarea.north - double(winrect.h) / vscale;
+						//viewarea.west = viewarea.east + double(winrect.w) / hscale;
 						break;
 					}
-					*/
+
 				break;
 			}
 
@@ -299,10 +326,10 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 				SDL_RenderClear(renderer);
 				//cout << mx0 << ", " << my0 << "; " << mx1 << ", " << my1 << endl;
 				// tweak the view rect
-				diff_h = (mx1 - mx0) / hscale;
-				diff_v = (my1 - my0) / vscale;
-				georect drawrect(viewarea);
-				drawrect.shift(diff_v, -diff_h);
+				//diff_h = (mx1 - mx0) / hscale;
+				//diff_v = (my1 - my0) / vscale;
+				//georect drawrect(viewarea);
+				//drawrect.shift(diff_v, -diff_h);
 
 				for(auto itr = map.cbegin(); itr!= map.cend(); ++itr) {
 					const geopoint & p = itr->second.point();
@@ -352,5 +379,6 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 		window = NULL;
 	}
 	SDL_Quit();
+	*/
 	return EXIT_SUCCESS;
 }

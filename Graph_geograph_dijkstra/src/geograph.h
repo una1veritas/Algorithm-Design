@@ -130,7 +130,7 @@ struct georect {
 	}
 
 	double height_meter() const {
-		return geopoint(south, east).distance_to(geopoint(north,east));
+		return geopoint(south, (east+west)/2).distance_to(geopoint(north,(east+west)/2));
 	}
 
 	geopoint center() const {
@@ -145,6 +145,12 @@ struct georect {
 		return  (p.lat >= south) and (p.lat <= north)
 				and (p.lon >= east) and (p.lon <= west);
 	}
+
+	friend ostream & operator<<(ostream & out, const georect & r) {
+		out << " (" << r.north << ", " << r.east << ", " << r.south << ", " << r.west << ") ";
+		return out;
+	}
+
 };
 
 struct geograph {
