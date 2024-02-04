@@ -99,8 +99,8 @@ struct georect {
 			north = vec[0].lat, east = vec[0].lon, south = vec[0].lat, west = vec[0].lon;
 		}
 		for(const auto & p : vec) {
-			east = std::min(east, p.lon);
-			west = std::max(west, p.lon);
+			east = std::max(east, p.lon);
+			west = std::min(west, p.lon);
 			south = std::min(south, p.lat);
 			north = std::max(north, p.lat);
 		}
@@ -118,7 +118,7 @@ struct georect {
 	}
 
 	double width_degree() const {
-		return west - east;
+		return east - west;
 	}
 
 	double height_degree() const {
@@ -142,8 +142,8 @@ struct georect {
 	}
 
 	bool contains(const geopoint & p) const {
-		return  (p.lat >= south) and (p.lat <= north)
-				and (p.lon >= east) and (p.lon <= west);
+		return  (south <= p.lat) and (p.lat <= north)
+				and (west <= p.lon) and (p.lon <= east);
 	}
 
 	friend ostream & operator<<(ostream & out, const georect & r) {
