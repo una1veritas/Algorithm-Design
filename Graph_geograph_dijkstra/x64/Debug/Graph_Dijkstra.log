@@ -1,0 +1,123 @@
+﻿  geograph.cpp
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\bgeohash.h(52,21): warning C4267: '初期化中': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\bgeohash.h(224,23): warning C4334: '<<': 32 ビット シフトの結果が暗黙的に 64 ビットに変換されました (64 ビット シフトに意図的に変換しようとしましたか?)
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\bgeohash.h(238,23): warning C4334: '<<': 32 ビット シフトの結果が暗黙的に 64 ビットに変換されました (64 ビット シフトに意図的に変換しようとしましたか?)
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\numbers(11): warning STL4038: The contents of <numbers> are available only with C++20 or later.
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(49,25): error C2146: 構文エラー: ';' が、識別子 'and' の前に必要です。
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(49,25): error C2065: 'and': 定義されていない識別子です。
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(49,29): error C2146: 構文エラー: ';' が、識別子 'p' の前に必要です。
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(49,35): warning C4553: '==': 式の結果が使用されていません。'=' を意図していますか?
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(145,28): error C2146: 構文エラー: ';' が、識別子 'and' の前に必要です。
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(145,28): error C3861: 'and': 識別子が見つかりませんでした
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(146,5): error C2146: 構文エラー: ';' が、識別子 'and' の前に必要です。
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(146,5): error C3861: 'and': 識別子が見つかりませんでした
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(146,25): error C2146: 構文エラー: ';' が、識別子 'and' の前に必要です。
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(146,25): error C3861: 'and': 識別子が見つかりませんでした
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.h(217,47): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+  (ソース ファイル 'src/geograph.cpp' をコンパイルしています)
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(32,16): error C2039: 'numbers': 'std' のメンバーではありません
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\cinttypes(21,1):
+  'std' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(32,16): error C3083: 'numbers': '::' の左側のシンボルには、型を指定しなければなりません
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(32,16): error C2039: 'pi': 'std' のメンバーではありません
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\cinttypes(21,1):
+  'std' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(32,16): error C2065: 'pi': 定義されていない識別子です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(33,16): error C2039: 'numbers': 'std' のメンバーではありません
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\cinttypes(21,1):
+  'std' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(33,16): error C3083: 'numbers': '::' の左側のシンボルには、型を指定しなければなりません
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(33,16): error C2039: 'pi': 'std' のメンバーではありません
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\cinttypes(21,1):
+  'std' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(33,16): error C2065: 'pi': 定義されていない識別子です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(34,16): error C2039: 'numbers': 'std' のメンバーではありません
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\cinttypes(21,1):
+  'std' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(34,16): error C3083: 'numbers': '::' の左側のシンボルには、型を指定しなければなりません
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(34,16): error C2039: 'pi': 'std' のメンバーではありません
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\cinttypes(21,1):
+  'std' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(34,16): error C2065: 'pi': 定義されていない識別子です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(35,16): error C2039: 'numbers': 'std' のメンバーではありません
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\cinttypes(21,1):
+  'std' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(35,16): error C3083: 'numbers': '::' の左側のシンボルには、型を指定しなければなりません
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(35,16): error C2039: 'pi': 'std' のメンバーではありません
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\cinttypes(21,1):
+  'std' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(35,16): error C2065: 'pi': 定義されていない識別子です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(82,17): error C2146: 構文エラー: ')' が、識別子 'or' の前に必要です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(82,17): error C2065: 'or': 定義されていない識別子です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(82,20): error C2146: 構文エラー: ';' が、識別子 'bnorm' の前に必要です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(82,30): error C2059: 構文エラー: ')'
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(83,3): error C2143: 構文エラー: ';' が 'return' の前にありません。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(82,26): warning C4553: '==': 式の結果が使用されていません。'=' を意図していますか?
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(158,37): error C2146: 構文エラー: ')' が、識別子 'or' の前に必要です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(158,37): error C2065: 'or': 定義されていない識別子です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(158,40): error C2146: 構文エラー: ';' が、識別子 'nodes' の前に必要です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(158,70): error C2059: 構文エラー: ')'
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(159,102): error C2059: 構文エラー: ';'
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(162,12): error C2065: 'id0': 定義されていない識別子です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(162,2): error C3927: '->': 後続の戻り値の型は、関数以外の宣言子の後に許可されていません
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(162,16): error C3484: 構文エラー: 戻り値の型の前に '->' が必要です
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(162,17): error C3613: '->' の後に戻り型が指定されていません ('int' と見なされます)
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(162,23): error C4430: 型指定子がありません - int と仮定しました。メモ: C++ は int を既定値としてサポートしていません
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(162,17): error C2146: 構文エラー: ';' が、識別子 'insert' の前に必要です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(163,12): error C2065: 'id1': 定義されていない識別子です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(163,2): error C3927: '->': 後続の戻り値の型は、関数以外の宣言子の後に許可されていません
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(163,16): error C3484: 構文エラー: 戻り値の型の前に '->' が必要です
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(163,17): error C3613: '->' の後に戻り型が指定されていません ('int' と見なされます)
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(163,23): error C4430: 型指定子がありません - int と仮定しました。メモ: C++ は int を既定値としてサポートしていません
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(163,2): error C2086: 'int adjacents[0]': 再定義されました。
+  C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(162,2):
+  'adjacents' の宣言を確認してください
+  
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(163,17): error C2146: 構文エラー: ';' が、識別子 'insert' の前に必要です。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(164,1): error C2059: 構文エラー: '}'
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(164,1): error C2143: 構文エラー: ';' が '}' の前にありません。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(166,80): error C2143: 構文エラー: ';' が '{' の前にありません。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geograph.cpp(166,80): error C2447: '{': 対応する関数ヘッダーがありません (旧形式の仮引数リスト?)
+  geohash.cpp
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geohash.cpp(89,13): warning C4244: '*=': 'double' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\geohash.cpp(170,11): warning C4267: '初期化中': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+  main.cpp
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\main.cpp(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+C:\Users\Sin Shimozono\Documents\Projects\Algorithm-Design\Graph_geograph_dijkstra\src\main.cpp(17,10): error C1083: include ファイルを開けません。'SDL2/SDL.h':No such file or directory
+  コードを生成中...
