@@ -177,7 +177,7 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 	constexpr unsigned int WINDOW_MIN_HEIGHT = 1024;
 	constexpr unsigned int SCREEN_DPI = 124;
 	constexpr double SCREEN_DPM = double(SCREEN_DPI)/0.0254;
-	constexpr double MAP_SCALE = 10000;
+	constexpr double MAP_SCALE = 25000;
 
 	SDL_Window * window = NULL;
 	SDL_Renderer * renderer = NULL;
@@ -237,9 +237,9 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 	double mperlon = route_area.width_meter()/route_area.width_degree();
 	double mperlat = route_area.height_meter()/route_area.height_degree();
 	//cout << route_area.width_degree() * mperlon * SCREEN_DPM / MAP_SCALE << endl;
-	double h_scale =  mperlon * SCREEN_DPM / MAP_SCALE;
+	double h_scale =  mperlon * SCREEN_DPM / MAP_SCALE; // dots per longitude in degree
 	//cout << route_area.height_degree() * mperlat * SCREEN_DPM / MAP_SCALE << endl;
-	double v_scale =  mperlat * SCREEN_DPM / MAP_SCALE;
+	double v_scale =  mperlat * SCREEN_DPM / MAP_SCALE; // dots per latitude in degree
 	geopoint map_center = route_area.center();
 	//cout << "scales: " << h_scale << " " << v_scale << " " << map_center << endl;
 
@@ -258,13 +258,13 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 		return EXIT_FAILURE;
 	} else {
 		int mx0 = 0, my0 = 0, mx1 = 0, my1 = 0;
-		double diff_h = 0, diff_v = 0;
 		Color c, c2;
 		bool quit = false;
 		bool update = true;
 		bool show_track = true;
 		bool dragging = false;
 		SDL_Event event;
+		georect draw_area;
 		while (!quit) {
 			SDL_Delay(10);
 			SDL_PollEvent(&event);
@@ -273,39 +273,34 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 					quit = true;
 					break;
 				// TODO input handling code goes here
-				/*
-				case SDL_MOUSEMOTION:
-					if (dragging and
-							(mx1 != event.button.x or my1 != event.button.y)) {
-						mx1 = event.button.x;
-						my1 = event.button.y;
-						update = true;
-						//cout << mx1 << ",  " << my1 << endl;
-					}
-					break;
+
 				case SDL_MOUSEBUTTONDOWN:
 					if (show_track == true ) {
 						show_track = false;
 						update = true;
 					}
 					dragging = true; // start dragging
-					mx0 = event.button.x;
+					mx0 = event.button.x;  // starting point of this dragging
 					my0 = event.button.y;
 					mx1 = mx0; my1 = my0;
 					break;
 				case SDL_MOUSEBUTTONUP:
-					if (mx0 != mx1 or my0 != my1) {
-						diff_h = (mx1 - mx0);
-						diff_v = (my1 - my0);
-						mx0 = mx1; my0 = my1;
-						//viewarea.shift(diff_v, -diff_h);
-						update = true;
-					}
 					if ( show_track == false ) {
 						show_track = true;
 						update = true;
 					}
-					dragging = false; // finish dragging
+					dragging = false; // end dragging
+					view_area = draw_area;
+					mx0 = mx1; my0 = my1;
+					break;
+				case SDL_MOUSEMOTION:
+					if (dragging and
+							(mx1 != event.button.x or my1 != event.button.y)) {
+						mx1 = event.button.x;  // ending point of this dragging
+						my1 = event.button.y;
+						update = true;
+						//cout << mx1 << ",  " << my1 << endl;
+					}
 					break;
 				case SDL_WINDOWEVENT:
 					// resize function is still incomplete;
@@ -326,7 +321,7 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 						break;
 					}
 					break;
-				*/
+
 			}
 
 			// TODO rendering code goes here
@@ -338,24 +333,22 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 				SDL_RenderClear(renderer);
 				//cout << mx0 << ", " << my0 << "; " << mx1 << ", " << my1 << endl;
 				// tweak the view rect
-				//diff_h = (mx1 - mx0) / hscale;
-				//diff_v = (my1 - my0) / vscale;
-				//georect drawrect(viewarea);
-				//drawrect.shift(diff_v, -diff_h);
+				draw_area = view_area;
+				draw_area.shift(double(my1 - my0) / v_scale, - double(mx1 - mx0) / h_scale);
 
 				for(auto itr = map.cbegin(); itr!= map.cend(); ++itr) {
 					const geopoint & p = itr->second.point();
 					//cout << p << ", " << view_area << endl;
-					if ( view_area.contains(p) ) {
-						int x0 = (p.lon - view_area.center().lon) * h_scale + winrect.center_x();
-						int y0 = (view_area.center().lat - p.lat) * v_scale + winrect.center_y();
+					if ( draw_area.contains(p) ) {
+						int x0 = (p.lon - draw_area.center().lon) * h_scale + winrect.center_x();
+						int y0 = (draw_area.center().lat - p.lat) * v_scale + winrect.center_y();
 						//cout << p << " " << x0 << " " << y0 << endl;
 						c(192,192,192);
 						c2(64,64,64);
 						filledCircleColor(renderer, x0, y0, 1, c.color);
 						for(auto & adjid : map.adjacent_nodes(itr->first)) {
-							int x1 = (map.node(adjid).point().lon - view_area.center().lon) * h_scale + winrect.center_x();
-							int y1 = (view_area.center().lat - map.node(adjid).point().lat) * v_scale + winrect.center_y();
+							int x1 = (map.node(adjid).point().lon - draw_area.center().lon) * h_scale + winrect.center_x();
+							int y1 = (draw_area.center().lat - map.node(adjid).point().lat) * v_scale + winrect.center_y();
 							filledCircleColor(renderer, x1, y1, 1, c2.color);
 							lineColor(renderer, x0, y0, x1, y1, c.color);
 							//cout << x0 << ", " << y0 << "; " << x1 << ", " << y1 << endl;
@@ -365,13 +358,13 @@ int show_in_sdl_window(const geograph & map, const std::vector<geopoint> & route
 
 				if ( show_track ) {
 					for(unsigned int i = 0; i < route.size() - 1; ++i ) {
-						if ( view_area.contains(route[i]) ) {
-							int x0 = (route[i].lon - view_area.center().lon) * h_scale + winrect.center_x();
-							int y0 = (view_area.center().lat - route[i].lat) * v_scale + winrect.center_y();
+						if ( draw_area.contains(route[i]) ) {
+							int x0 = (route[i].lon - draw_area.center().lon) * h_scale + winrect.center_x();
+							int y0 = (draw_area.center().lat - route[i].lat) * v_scale + winrect.center_y();
 							c(0,0,0x7f);
 							filledCircleColor(renderer, x0, y0, 2, c.color);
-							int x1 = (route[i+1].lon -  view_area.center().lon) * h_scale + winrect.center_x();
-							int y1 = (view_area.center().lat - route[i+1].lat) * v_scale + winrect.center_y();
+							int x1 = (route[i+1].lon -  draw_area.center().lon) * h_scale + winrect.center_x();
+							int y1 = (draw_area.center().lat - route[i+1].lat) * v_scale + winrect.center_y();
 							filledCircleColor(renderer, x0, y0, 2, c.color);
 							lineColor(renderer, x0, y0, x1, y1, c.color);
 						}

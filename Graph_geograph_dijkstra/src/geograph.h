@@ -92,6 +92,14 @@ struct georect {
 		return *this;
 	}
 
+	georect & operator=(const georect & org) {
+		north = org.north;
+		east = org.east;
+		south = org.south;
+		west = org.west;
+		return *this;
+	}
+
 	void set(const vector<geopoint> & vec) {
 		if (vec.size() == 0) {
 			north = 0, east = 0, south = 0, west = 0;
