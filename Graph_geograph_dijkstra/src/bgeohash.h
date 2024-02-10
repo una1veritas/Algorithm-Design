@@ -49,7 +49,7 @@ public:
 	}
 
 	bgeohash(const string & str) {
-		unsigned int prec = str.length() * 5;
+		size_t prec = str.length() * 5;
 		hash = geohash::binvalue(str.c_str()) | prec;
 	}
 
@@ -221,7 +221,7 @@ public:
 
 	bgeohash north_side() const {
 		bgeohash g(*this);
-		uint64_t uintval = 1<<(64 - precision());
+		uint64_t uintval = uint64_t(1)<<(64 - precision());
 		if ((precision() & 1) != 0)
 			uintval <<= 1;
 		uint64_t latbits = g.hash & 0x5555555555555500;
@@ -235,7 +235,7 @@ public:
 
 	bgeohash south_side() const {
 		bgeohash g(*this);
-		uint64_t uintval = 1<<(64 - precision());
+		uint64_t uintval = uint64_t(1)<<(64 - precision());
 		if ((precision() & 1) != 0)
 			uintval <<= 1;
 		uint64_t latbits = g.hash & 0x5555555555555500;
@@ -249,7 +249,7 @@ public:
 
 	bgeohash east_side() const {
 		bgeohash g(*this);
-		uint64_t uintval = 2<<(64 - precision());
+		uint64_t uintval = uint64_t(2)<<(64 - precision());
 		if ((precision() & 1) != 0)
 			uintval >>= 1;
 		uint64_t latbits = g.hash & 0x5555555555555500;

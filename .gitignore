@@ -9,6 +9,7 @@ RemoteSystemsTempFiles
 a.out
 *.exe
 *.dll
+*.ipch
 .cproject
 .project
 .settings/
@@ -16,6 +17,7 @@ a.out
 .metadata
 language.settings.xml
 build
+x64/Debug/
 *.pyc
 
 *.dSym

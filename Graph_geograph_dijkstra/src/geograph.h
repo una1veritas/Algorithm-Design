@@ -222,7 +222,7 @@ private:
 public:
 	geograph() : topleft(-100,200), bottomright(100,-200), nodes(), adjacents(), hashes() {}
 
-	unsigned int size() const { return nodes.size(); }
+	size_t size() const { return nodes.size(); }
 	const geonode & node(const uint64_t & id) const { return nodes.at(id); }
 	const geopoint & point(const uint64_t & id) const { return nodes.at(id).point(); }
 

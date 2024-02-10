@@ -14,8 +14,10 @@
 #include <algorithm>
 #include <limits>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
+//#include <SDL2/SDL.h>
+//#include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL.h>
+#include "SDL2_gfxPrimitives.h"
 
 #include "geograph.h"
 #include "bgeohash.h"
