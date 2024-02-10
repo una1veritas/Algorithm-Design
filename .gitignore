@@ -12,6 +12,7 @@ a.out
 .cproject
 .project
 .settings/
+.vs/
 .metadata
 language.settings.xml
 build
