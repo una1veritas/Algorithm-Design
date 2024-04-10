@@ -11,7 +11,7 @@
 
 unsigned long long counter;
 
-unsigned long long gcd_euclidean(unsigned long long a, unsigned long long b) {
+unsigned long long gcd_euclidean_do(unsigned long long a, unsigned long long b) {
 	unsigned long long t;
 	do {
 		t = a % b;
@@ -22,7 +22,7 @@ unsigned long long gcd_euclidean(unsigned long long a, unsigned long long b) {
 	return a;
 }
 
-unsigned long long gcd_euclidean_while(unsigned long long a, unsigned long long b) {
+unsigned long long gcd_euclidean(unsigned long long a, unsigned long long b) {
 	unsigned long long t;
 	while (b != 0) {
 		t = a % b;
@@ -33,12 +33,14 @@ unsigned long long gcd_euclidean_while(unsigned long long a, unsigned long long 
 }
 
 unsigned long long gcd_naive(unsigned long long a, unsigned long long b) {
-	unsigned long long c = (a <= b) ? a : b;
+	unsigned long long c = a;
+	if (b < a)
+		c = b;
 	while ( c > 1 ) {
-		 counter += 1;
+		// counter += 1;
 		if ( (a % c) == 0 && (b % c) == 0 )
 			break;
-		c -= 1;
+		--c;
 	}
 	return c;
 }
