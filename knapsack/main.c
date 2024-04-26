@@ -39,6 +39,7 @@ int main (int argc, const char * argv[]) {
 	char cart[n];
 	for(int i = 0; i < n; ++i)
 		cart[i] = 0;
+	/*
 	if ( n <= 36 ) {
 		swatch = clock();
 		total = knapsack_allsubset(plist, n, budget, cart);
@@ -56,7 +57,7 @@ int main (int argc, const char * argv[]) {
 		printf("skip the enumelation algorithm.\n");
 	}
 	fflush(stdout);
-
+*/
 #ifdef USE_COUNTER
 	counter = 0;
 #endif
@@ -75,7 +76,7 @@ int main (int argc, const char * argv[]) {
 	printf("Total %d yen.\n", total);
 	printf("Buy item id ");
 	for (i = 0; i < n; i++) {
-		if ( cart[i] == 1 )
+		if ( cart[i] )
 			printf("%d (%d), ", i, plist[i]);
 	}
 	printf("\n\n");
