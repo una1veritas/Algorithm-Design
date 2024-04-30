@@ -23,13 +23,13 @@ int knapsack_recursive(const int prices[], const int nsize, const int budget, ch
 		sum1 = prices[nsize - 1] +
 				knapsack_recursive(prices, nsize - 1, budget - prices[nsize - 1], cart1);
 		if ( sum1 > sum0 ) {
-			// 購入すると合計額がより大きくなる場合, cart に cart1[0],...,cart1[nsize-2] をコピー
+			// 購入すると合計額がより大きくなる場合, cart に cart1[0],...,cart1[nsize-1] をコピー
 			for(int i = 0; i < nsize; ++i)
 				cart[i] = cart1[i];
 			return sum1;
 		}
 	}
-	//購入しないと決定し cart に cart0[0],...,cart0[nsize-1] をコピー
+	//購入しないと決定，cart[0],...,[nsize-1] に cart0[0],...,cart0[nsize-1] をコピー
 	for(int i = 0; i < nsize; ++i) {
 		cart[i] = cart0[i];
 	}
