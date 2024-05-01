@@ -12,19 +12,20 @@ int knapsack_allsubset(const int prices[], int nsize, const int budget, char car
 	int sum, best;
 	int item;
 
-	char subset[nsize+1];  // 部分集合とその空集合への初期化
+	char subset[nsize+1]; 	// 計算中の仮の購入リストを宣言
 	for(int i = 0; i < nsize+1; ++i)
-		subset[i] = 0;
+		subset[i] = 0;  	// 仮の購入リストを空集合に初期化
 
 	best = 0;
-	for(; subset[nsize] == 0 ;) { // subset の nsize+1 ビット目が 1 になれば終了
+	for(; subset[nsize] == 0 ;) { 	// subset の nsize+1 ビット目は
+									//終了フラグ（オーバーフロー）として使用する
 		sum = 0;
-		// subset が持つアイテムの合計を求める
+		// 仮の購入リスト subset のアイテムの合計金額を求める
 		for(item = 0; item < nsize && sum <= budget; ++item) {
 			if (subset[item] != 0 )
 				sum += prices[item];
 		}
-		// 合計が budget 以下かつ best より大きい場合更新する
+		// 合計が budget 以下かつ best より大きい場合 cart を更新する
 		if (best < sum && sum <= budget ) {
 			best = sum;
 			// 仮の最もよい購入リストとして cart に subset を保存

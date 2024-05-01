@@ -47,10 +47,11 @@ int main (int argc, const char * argv[]) {
 		cart[i] = 0;
 	// compute.
 	swatch = clock();
-	total = knapsack_recursive(plist, n, budget, cart);
+	//total = knapsack_recursive(plist, n, budget, cart);
+	total = knapsack_allsubset(plist, n, budget, cart);
 	swatch = clock() - swatch;
 	// Show the result.
-	printf("By recursion: %.3f milli sec.\n", (double) swatch*1000 / CLOCKS_PER_SEC);
+	printf("By enumerating all subsets: %.3f sec.\n", (double) swatch / CLOCKS_PER_SEC);
 	//printf("By recursion: %.3f sec.\n", (double) swatch / CLOCKS_PER_SEC);
 #ifdef USE_COUNTER
 	printf("function calls = %ld\n", counter);
