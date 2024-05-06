@@ -34,8 +34,8 @@ ListNode * LList_append_node(LList * list, ListNode * node);
 ListNode * LList_pop_node(LList * list);
 ListNode * LList_begin(LList * list);
 ListNode * LList_end(LList * list);
-ListNode * LList_find(LList * list, const data d, int (*equals)(const data, const data *) );
-ListNode * LList_remove(LList * list, const data d, int (*equals)(const data, const data *) );
+ListNode * LList_find(LList * list, const data * d);
+ListNode * LList_remove(LList * list, const data * d);
 ListNode * LList_last(LList * list);
 void LList_apart(LList * list, ListNode * nodeptr, LList * b);
 

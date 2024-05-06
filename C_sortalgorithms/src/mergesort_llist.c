@@ -28,18 +28,18 @@ void merge_sort_llist(LList * list) {
 	int n = list->elemcount;
 	if (n <= 1)
 		return;
-	LList a, b;
-	LList_init(&a);
-	LList_init(&b);
+	LList * a, * b;
+	LList_init(a);
+	LList_init(b);
 	ListNode * ptr = LList_begin(list), * probe = ptr;
 	while ( probe != LList_last(list) && probe != LList_end(list)) {
 		ptr = ptr->next;
 		probe = probe->next->next;
 	}
-	LList_part(list, ptr, a, b);
-	merge_sort_llist(&a);
-	merge_sort_llist(&b);
-	merge_llist(list, &a, &b);
+	LList_apart(list, ptr, b);
+	merge_sort_llist(a);
+	merge_sort_llist(b);
+	merge_llist(list, a, b);
 	return;
 }
 

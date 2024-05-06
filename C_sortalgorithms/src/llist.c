@@ -125,8 +125,8 @@ ListNode * LList_find(LList * list, const data * ptr) {
 	return node;
 }
 
-ListNode * LList_remove(LList * list, const data d, int (*equals)(const data, const data) ) {
-	ListNode * node = LList_find(list, d, equals);
+ListNode * LList_remove(LList * list, const data * d ) {
+	ListNode * node = LList_find(list, d);
 	if ( node != LList_end(list) ) {
 		node->next->prev = node->prev;
 		node->prev->next = node->next;
@@ -147,11 +147,11 @@ int LList_is_empty(LList * list) {
 
 void LList_apart(LList * list, ListNode * nodeptr, LList * b) {
 	LList_init(b);
-	ListNode * lastnode = list->head;
+	ListNode * lastnode = &list->head;
 	// エラー処理
 
-	b->head = nodeptr;
-	b->tail = nodeptr;
+	b->head = *nodeptr;
+	b->tail = *nodeptr;
 	b->elemcount = 1;
 	int count = 1;
 	while ( lastnode != NULL ) {
@@ -165,12 +165,9 @@ void LList_apart(LList * list, ListNode * nodeptr, LList * b) {
 		fprintf(stderr, "LList_apart encountered NULL.\n");
 		return;
 	}
-	list->tail = lastnode;
+	list->tail = *lastnode;
 	b->elemcount = list->elemcount - count;
 	list->elemcount = count;
-	while () {
-
-	}
 }
 
 void LList_fprintf(FILE * f, LList * list, const char * fmt) {
