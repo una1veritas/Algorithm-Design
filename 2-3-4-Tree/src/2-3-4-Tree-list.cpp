@@ -1,49 +1,62 @@
-//============================================================================
-// Name        : 2-3-4-Tree.cpp
-// Author      : Sin Shimozono
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
-//============================================================================
+/*
+ * 2-3-4-Tree-list.cpp
+ *
+ *  Created on: 2024/05/01
+ *      Author: sin
+ */
 
 #include <iostream>
-#include <vector>
+#include <forward_list>
 #include <string>
 
 using namespace std;
 
-typedef std::string Key;
+struct DataType {
+	std::string key;
+
+	friend bool operator<(const DataType & a, const DataType & b) {
+		return a.key < b.key ;
+	}
+
+	friend bool operator==(const DataType & a, const DataType & b) {
+		return a.key == b.key ;
+	}
+};
 
 struct Node234 {
 private:
-	Node234 * parent;
-	const Key * keyptr[3];
+	//Node234 * parent;
+	std::forward_list<DataType> data;
+	std::forward_list<Node234 *> children;
 	unsigned int keycount;  // == nodecount - 1
-	Node234 * childptr[4];
 
 	constexpr static unsigned int key_max_size = 3;
 	constexpr static unsigned int children_max_size = 4;
 
 public:
-	Node234() : parent(NULL), keycount(0) {
-		keyptr[0] = NULL;
-		childptr[0] = NULL;
+	Node234(const DataType & d) : parent(NULL), keycount(1) {
+		data.append(d);
+		children.append(NULL);
+		children.append(NULL);
 	}
 
-	Node234(const Key & k, Node234 * par = NULL, Node234 * left = NULL, Node234 * right = NULL)
-	: parent(par), keycount(0) {
+	Node234(const DataType & d, Node234 * par = NULL, Node234 * left = NULL, Node234 * right = NULL)
+	: parent(par), keycount(1) {
 		// construct a 2-node.
 		// NULL, NULL, NULL makes a root-leaf.
-		keyptr[keycount++] = &k;
-		childptr[0] = left;
+		data.append(d);
+		children.append(left);
+		/*
 		if (left != NULL) {
-			childptr[0]->parent = this;
+			leftmostchild->parent = this;
 		}
-		childptr[1] = right;
+		*/
+		children.append(right);
+		/*
 		if (right != NULL) {
-			childptr[1]->parent = this;
+			list.begin()->second->parent = this;
 		}
-
+		*/
 	}
 
 	~Node234() {
