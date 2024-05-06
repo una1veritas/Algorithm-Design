@@ -50,46 +50,22 @@ void merge_sort_recursive(data * array[], long n) {
 
 
 void merge_sort_doubles(data * array[], long n) {
-	data * tmp[n/2 + 1];
-	long l, i, right_begin, right_length, t;
+	data * tmp[n];
+	long l, i, right_begin, right_length;
 
-	printf("n = %ld\n", n);
 	for(l = 1; l < n; l <<= 1) {
-		printf("l = %ld\n", l);
 		// (log n) loop
 		for(i = 0; i < n; i += (l<<1) ) {
 			// (n / (2l)) loop
 			right_begin = i + l;
-			printf("left = %ld, right = %ld\n", i, right_begin);
-			if ( right_begin >= n ) {
-				printf("right is empty\n");
+			if ( right_begin >= n )
 				break;
-			}
 			right_length = (n < right_begin + l) ? n - right_begin : l; // min{ }
-			printf("right_length = %ld\n", right_length);
-			fflush(stdout);
-			for(t = 0; t < n; ++t) {
-				fprintf_data(stdout, array[t]);
-				printf(" ");
-			}
-			printf("\n");
-			fflush(stdout);
-			merge(tmp, array + i, l, array + right_begin, right_length);
-			for(t = 0; t < n; ++t) {
-				fprintf_data(stdout, array[t]);
-				printf(" ");
-			}
-			printf("\n");
-			fflush(stdout);
-			printf("right_length = %ld\n", right_length);
-			fflush(stdout);
-			printf("now copying back. %ld\n", l + right_length);
-			fflush(stdout);
-			for(t = 0; t < l + right_length; ++t) {
-				printf("i = %ld, t = %ld\n", i, t);
-				array[i+t] = tmp[t];
-			}
+			merge(tmp + i, array + i, l, array + right_begin, right_length);
 		}
+		// copy back tmp to array
+		for(i = 0; i < n; ++i)
+			array[i] = tmp[i];
 	}
 	return;
 }
