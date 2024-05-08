@@ -20,7 +20,7 @@ unsigned long long fibo_rdp(const unsigned long long n, unsigned long long f[]) 
 	return f[n];
 }
 
-unsigned long long fibo_recursive_dp(const unsigned long long n) {
+unsigned long long fibo_dp(const unsigned long long n) {
 	unsigned long long * f = (unsigned long long *) malloc(n * sizeof(unsigned long long));
 	unsigned long long r;
 	f[0] = 1;
