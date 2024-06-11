@@ -323,13 +323,12 @@ int main(int argc, char * argv[]) {
 	unsigned int i, count;
 	cout << "Hello!" << endl;
 	if ( argc == 1 ) {
-		cout << "supply arguments." << endl;
+		cout << "Argument(s) required." << endl;
 		return -1;
-	} else {
-		args = new std::string [argc-1];
-		for(i = 1, count = 0; i < (unsigned int) argc; ++i, ++count){
-			args[count] = argv[i];
-		}
+	}
+	args = new std::string [argc-1];
+	for(i = 1, count = 0; i < (unsigned int) argc; ++i, ++count){
+		args[count] = argv[i];
 	}
 
 	Tree234 tree234;
@@ -342,11 +341,11 @@ int main(int argc, char * argv[]) {
 
 	cout << "done." << std::endl;
 
-	tree234.remove(string("P"));
+	tree234.remove(string("Peter"));
  	cout << tree234 << endl;
-	tree234.remove(string("N"));
+	tree234.remove(string("Nicholas"));
  	cout << tree234 << endl;
-	tree234.remove(string("M"));
+	tree234.remove(string("Michael"));
  	cout << tree234 << endl;
 
 
