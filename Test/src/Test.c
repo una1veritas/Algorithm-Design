@@ -14,6 +14,10 @@
 static const int N = 5; // rows
 static const int M = 7; // columns
 
+typedef struct XY {
+	int x, y;
+} XY;
+
 int xy2v(int x, int y) {
 	// x -- column, y -- row
 	if ( x < 0 || y < 0 || x >= M || y >= N ) {
@@ -22,10 +26,6 @@ int xy2v(int x, int y) {
 	}
 	return y * M + x;
 }
-
-typedef struct {
-	int x, y;
-} XY;
 
 XY v2xy(int v) {
 	// x -- column, y -- row
@@ -39,9 +39,8 @@ XY v2xy(int v) {
 	return result;
 }
 
-int * enum_moves(int v) {
-	int * result = (int *)malloc(sizeof(int)*5);
-	static XY leftupKnight[4] = {
+int * enum_moves(int v, int result[4]) {
+	static XY knightmoves[4] = {
 			{-2, -1},
 			{-2, +1},
 			{-1, -2},
@@ -51,9 +50,9 @@ int * enum_moves(int v) {
 	int cnt = 0;
 	int cellnum;
 	for(int i = 0; i < 4; ++i) {
-		printf("x = %d, y = %d\n", pos.x + leftupKnight[i].x, pos.y + leftupKnight[i].y);
-		cellnum = xy2v(pos.x + leftupKnight[i].x, pos.y + leftupKnight[i].y);
+		cellnum = xy2v(pos.x + knightmoves[i].x, pos.y + knightmoves[i].y);
 		if (cellnum != -1) {
+			printf("x = %d, y = %d\n", pos.x + knightmoves[i].x, pos.y + knightmoves[i].y);
 			result[cnt] = cellnum;
 			++cnt;
 		}
@@ -62,17 +61,35 @@ int * enum_moves(int v) {
 	return result;
 }
 
+int move_depth(int x, int y) {
+	int mv[4];
+	int t, best = 0;
+	XY pos, bestpos;
+	enum_moves(xy2v(x,y), mv);
+	for(int i = 0; i <= 4 && mv[i] != -1; ++i) {
+		pos = v2xy(mv[i]);
+		t = 1 + move_depth(pos.x, pos.y);
+		if (t > best) {
+			best = t;
+			bestpos = pos;
+		}
+	}
+	printf("%d, %d\n", bestpos.x, bestpos.y);
+	return best;
+}
+
 int main(void) {
 
 	printf("%d\n", xy2v(4, 2));
 
 	XY r = v2xy(29);
-	printf("x = %d, y = %d \n", r.x, r.y);
-	int * ptr = enum_moves(xy2v(1,3));
-	for(int * p = ptr; *p != -1; ++p) {
-		printf("%d, ", *p);
+	printf("x = %d, y = %d \n\n", r.x, r.y);
+	int moves[4];
+	enum_moves(xy2v(1,3), moves);
+	for(int i = 0; i <= 4 && moves[i] != -1; ++i) {
+		printf("%d, ", moves[i]);
 	}
 	printf("\n");
-	free(ptr);
+	printf("moves = %d\n\n", move_depth(5,3));
 	return EXIT_SUCCESS;
 }
