@@ -87,7 +87,7 @@ private:
 		return i;
 	}
 
-	// insert the pointer of given key at an apropriate position
+	// insert the pointer of given key at an appropriate position
 	// to keyptr[i] and copy the childptr[i] as its left and right
 	unsigned int insert_key_to_node(const Key & k) {
 		if ( is_full() ) {
@@ -120,7 +120,6 @@ private:
 			//cout << "going to find " << k << " in " << *att << std::endl;
 			if (att->is_full() and split) {
 				//std::cout << "encountered a node must be splitted." << std::endl;
-				//cout << *att << endl;
 				att = att->split();
 				//cout << *att << endl;
 			}
@@ -234,7 +233,7 @@ public:
 			return node;
 		} else {
 			// split
-			std::cout << "encountered full-node to insert " << *node << std::endl;
+			std::cout << "error: encountered a 4-node to insert " << *node << std::endl;
 		}
 		return NULL;
 	}
@@ -341,14 +340,14 @@ int main(int argc, char * argv[]) {
 
 	cout << "done." << std::endl;
 
+	/*
 	tree234.remove(string("Peter"));
  	cout << tree234 << endl;
 	tree234.remove(string("Nicholas"));
  	cout << tree234 << endl;
 	tree234.remove(string("Michael"));
  	cout << tree234 << endl;
-
-
+	 */
 	delete [] args;
 	return 0;
 }
