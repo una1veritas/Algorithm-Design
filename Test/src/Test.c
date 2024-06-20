@@ -21,7 +21,7 @@ typedef struct XY {
 int xy2v(int x, int y) {
 	// x -- column, y -- row
 	if ( x < 0 || y < 0 || x >= M || y >= N ) {
-		printf("xy2v domain error: %d, %d \n", x, y);
+		//printf("xy2v domain error: %d, %d \n", x, y);
 		return -1;
 	}
 	return y * M + x;
@@ -31,7 +31,7 @@ XY v2xy(int v) {
 	// x -- column, y -- row
 	XY result = {-1, -1};
 	if ( v < 0 || v >= N * M ) {
-		printf("v2xy domain error. \n");
+		//printf("v2xy domain error. \n");
 		return result;
 	}
 	result.y = v / M;
@@ -46,18 +46,23 @@ int * enum_moves(int v, int result[4]) {
 			{-1, -2},
 			{+1, -2},
 	};
+	if ( v < 0 || v >= N * M) {
+		result[0] = -1;
+		return result;
+	}
 	XY pos = v2xy(v);
 	int cnt = 0;
 	int cellnum;
 	for(int i = 0; i < 4; ++i) {
 		cellnum = xy2v(pos.x + knightmoves[i].x, pos.y + knightmoves[i].y);
 		if (cellnum != -1) {
-			printf("x = %d, y = %d\n", pos.x + knightmoves[i].x, pos.y + knightmoves[i].y);
+			//printf("x = %d, y = %d\n", pos.x + knightmoves[i].x, pos.y + knightmoves[i].y);
 			result[cnt] = cellnum;
 			++cnt;
 		}
 	}
-	result[cnt] = -1;
+	if ( cnt < 4 )
+		result[cnt] = -1;
 	return result;
 }
 
@@ -90,6 +95,6 @@ int main(void) {
 		printf("%d, ", moves[i]);
 	}
 	printf("\n");
-	printf("moves = %d\n\n", move_depth(5,3));
+	printf("moves = %d\n\n", move_depth(6, 2));
 	return EXIT_SUCCESS;
 }
