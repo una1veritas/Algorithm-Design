@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static const int N = 5; // rows
-static const int M = 7; // columns
+static int N = 32; // rows
+static int M = 32; // columns
 
 typedef struct XY {
 	int x, y;
@@ -79,11 +79,19 @@ int move_depth(int x, int y) {
 			bestpos = pos;
 		}
 	}
-	printf("%d, %d\n", bestpos.x, bestpos.y);
+	//printf("%d, %d\n", bestpos.x, bestpos.y);
 	return best;
 }
 
-int main(void) {
+int main(int argc, char * argv[]) {
+	int t, startx, starty;
+	if (argc > 1 && argc < 4) {
+		startx = atoi(argv[1]);
+		starty = atoi(argv[2]);
+	} else {
+		printf("Invalid number of arguments.\n");
+		return EXIT_FAILURE;
+	}
 
 	printf("%d\n", xy2v(4, 2));
 
@@ -95,6 +103,6 @@ int main(void) {
 		printf("%d, ", moves[i]);
 	}
 	printf("\n");
-	printf("moves = %d\n\n", move_depth(6, 2));
+	printf("moves = %d\n\n", move_depth(startx, starty));
 	return EXIT_SUCCESS;
 }
