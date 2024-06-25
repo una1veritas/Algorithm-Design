@@ -17,49 +17,45 @@ int greaterThanOrEq(const long a, const long b) {
 }
 
 void heap_checker(long a[], const int n) {
-	for (unsigned int i = 0; i < (n>>1); ++i) {
+	for (unsigned int i = 0; i < (n-1)>>1; ++i) {
 		int lc = (i<<1) + 1;
-		int rc = (i<<1) + 2;
 		if ( ! greaterThanOrEq(a[i], a[lc]) ) {
 			printf("(%d, %d), ", i, lc);
 		}
-		if ( ! greaterThanOrEq(a[i], a[rc]) ) {
-			printf("(%d, %d), ", i, rc);
+		if ( lc + 1 < n && ! greaterThanOrEq(a[i], a[lc + 1]) ) {
+			printf("(%d, %d), ", i, lc+1);
 		}
 	}
 	printf("\n");
 }
 
 void down_to_leaf(long a[], const int n, int i) {
-	int lc, rc, target;
-	while ((i<<1)+1 < n) {
-		lc = (i<<1) + 1;
-		rc = (i<<1) + 2;
-		target = i;
-		if ( rc < n ) {
-			if ( !greaterThanOrEq(a[i], a[lc]) ) {
-				target = lc;
-			}
-			if ( !greaterThanOrEq(a[lc], a[rc]) ) {
-				target = rc;
-			}
-		} else {
-			if ( !greaterThanOrEq(a[i], a[lc]) ) {
-				target = lc;
-			}
+	int lc, tc;
+	while ((lc = (i<<1)+1) < n) {
+		tc = i;
+		//printf("i = %d, lc = %d\n",i,lc);
+		if ( ! greaterThanOrEq(a[i], a[lc]) ) {
+			tc = lc;
 		}
-		if ( target != i ) {
-			long t = a[target];
-			a[target] = a[i];
+		if ( (lc + 1 < n)  && (! greaterThanOrEq(a[tc], a[lc+1])) ) {
+			//printf("a[tc] = %ld, a[lc+1] = %ld\n",a[tc], a[lc+1]);
+			// if i has a right child and not left is greater than or eq right
+			tc = lc + 1;
+		}
+		if ( tc != i ) {
+			//printf("chg: a[%d] = %ld -> a[%d] = %ld\n", i, a[i], tc, a[tc]);
+			long t = a[tc];
+			a[tc] = a[i];
 			a[i] = t;
-			i = target;
+			i = tc;
 		} else
 			break;
 	}
+	//printf("stopped.\n");
 }
 
 void heapify(long a[], const int n) {
-	for(int i = ((n-1)>>1) - 1; i >= 0; --i) {
+	for(int i = (n>>1) - 1; i >= 0; --i) {
 		down_to_leaf(a, n, i);
 	}
 }
@@ -84,17 +80,19 @@ int main(const int argc, const char *argv[]) {
 	}
 	printf("\n");
 
-	long t = a[n-1];
-	a[n-1] = a[0];
-	a[0] = t;
-	down_to_leaf(a, n-1, 0);
-	for (int i = 0; i < n-1; ++i) {
-		printf("%ld, ", a[i]);
+	for(int sz = n; sz > 1; --sz) {
+		long t = a[sz-1];
+		a[sz-1] = a[0];
+		a[0] = t;
+		down_to_leaf(a, sz-1, 0);
+		for (int i = 0; i < sz-1; ++i) {
+			printf("%ld, ", a[i]);
+		}
+		printf(";");
+		for (int i = sz-1; i < n; ++i) {
+			printf("%ld, ", a[i]);
+		}
+		printf("\n");
 	}
-	printf(";");
-	for (int i = n-1; i < n; ++i) {
-		printf("%ld, ", a[i]);
-	}
-	printf("\n");
 	return 0;
 }
