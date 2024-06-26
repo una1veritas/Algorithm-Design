@@ -30,20 +30,17 @@ void heap_checker(long a[], const int n) {
 }
 
 void down_to_leaf(long a[], const int n, int i) {
-	int lc, tc;
+	int lc, tc; // left child, target child
 	while ((lc = (i<<1)+1) < n) {
 		tc = i;
-		//printf("i = %d, lc = %d\n",i,lc);
 		if ( ! greaterThanOrEq(a[i], a[lc]) ) {
 			tc = lc;
 		}
+		// if i has a right child and not left is greater than or eq right
 		if ( (lc + 1 < n)  && (! greaterThanOrEq(a[tc], a[lc+1])) ) {
-			//printf("a[tc] = %ld, a[lc+1] = %ld\n",a[tc], a[lc+1]);
-			// if i has a right child and not left is greater than or eq right
 			tc = lc + 1;
 		}
 		if ( tc != i ) {
-			//printf("chg: a[%d] = %ld -> a[%d] = %ld\n", i, a[i], tc, a[tc]);
 			long t = a[tc];
 			a[tc] = a[i];
 			a[i] = t;
@@ -51,11 +48,10 @@ void down_to_leaf(long a[], const int n, int i) {
 		} else
 			break;
 	}
-	//printf("stopped.\n");
 }
 
 void heapify(long a[], const int n) {
-	for(int i = (n>>1) - 1; i >= 0; --i) {
+	for(int i = (n>>1); i >= 0; --i) {
 		down_to_leaf(a, n, i);
 	}
 }
