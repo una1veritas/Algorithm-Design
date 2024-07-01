@@ -319,15 +319,17 @@ public:
 
 int main(int argc, char * argv[]) {
 	std::string * args;
-	unsigned int i, count;
+	unsigned int idx, count;
 	cout << "Hello!" << endl;
 	if ( argc == 1 ) {
 		cout << "Argument(s) required." << endl;
 		return -1;
 	}
 	args = new std::string [argc-1];
-	for(i = 1, count = 0; i < (unsigned int) argc; ++i, ++count){
-		args[count] = argv[i];
+	for(idx = 1, count = 0; idx < (unsigned int) argc; ++idx, ++count){
+		if ( std::string("-r") == argv[idx] )
+			break;
+		args[count] = argv[idx];
 	}
 
 	Tree234 tree234;
@@ -340,14 +342,15 @@ int main(int argc, char * argv[]) {
 
 	cout << "done." << std::endl;
 
-	/*
-	tree234.remove(string("Peter"));
- 	cout << tree234 << endl;
-	tree234.remove(string("Nicholas"));
- 	cout << tree234 << endl;
-	tree234.remove(string("Michael"));
- 	cout << tree234 << endl;
-	 */
+	if ( string("-r") == argv[idx]) {
+		++idx;
+		for ( ; idx < (unsigned int) argc; ++idx) {
+			cout << "Removing " << argv[idx] << endl;
+			tree234.remove(std::string(argv[idx]));
+			cout << tree234 << endl << endl;
+		}
+	}
 	delete [] args;
 	return 0;
 }
+
