@@ -28,7 +28,7 @@ class Mancala:
             self.board[pos // self.nholes][pos % self.nholes] += 1
             last_index = pos
         print("last ", last_index, last_index % self.nholes)
-        if last_index % self.nholes <= self.nholes - self.nstones :
+        if last_index % self.nholes >= self.nholes - self.nstores :
             return True
         else:
             return False
