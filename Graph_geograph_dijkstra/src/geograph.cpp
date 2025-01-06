@@ -6,7 +6,6 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-#include <iostream>
 #include <vector>
 #include <set>
 #include <map>
@@ -19,8 +18,8 @@
 using std::cout;
 using std::endl;
 
-#include "bgeohash.h"
 #include "geograph.h"
+#include "bgeohash.h"
 
 #define DEG2RAD(x)  ((std::numbers::pi / 180.0) * (x))
 double geopoint::distance_to(const geopoint & q) const {
