@@ -93,8 +93,6 @@ G = Graph(V, E)
 #確認のためグラフを表示
 print('G='+str(G)+', start = ' + str(s))
 
-def prn(v):
-    print(v)
 #計算し，得られた木を表示
 print('\nBreadth First Search:')
 print('BFS Tree =', BreadthFirstSearch(G, s, do_vertex=lambda v: print('visited ', v), do_edge=lambda e: print('checked', e)))
