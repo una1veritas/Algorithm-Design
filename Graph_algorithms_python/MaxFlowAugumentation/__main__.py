@@ -29,24 +29,11 @@ class Graph:
         return 'Graph(' + str(self.vertices) + ', ' + str(self.edges) + ') '
 
 class DiGraph(Graph):
-    def forward(self, u, v):
-        return (u,v) in self.edges
-    
-    def backward(self, u, v):
-        return (v, u) in self.edges
-    
     def direction(self, u, v):
         if (u,v) in self.edges : return 1
         if (v,u) in self.edges : return -1
         return 0
     
-    def destination_points(self, v):
-        adjs = list()
-        for u in self.vertices:
-            if self.forward(v, u) :
-                adjs.append(u)
-        return adjs
-
     def __str__(self):
         res = 'DiGraph(' + str(self.vertices) + ', {'
         cnt = 0
@@ -61,29 +48,26 @@ class DiGraph(Graph):
 def find_aug_path(digraph, capacity, source, sink, flow):
     stack = [(source, float('inf'))]
     augpath = list()
-    # counter = 0
     while len(stack) != 0 :
-        if len(augpath) > 0 and stack[-1][0] == augpath[-1] :
+        if len(augpath) > 0 and augpath[-1] == stack[-1][0] :
+            '''バックトラック'''
             stack.pop()
             augpath.pop()
+            continue
+        v, c = stack[-1]
+        augpath.append(v)
+        if augpath[-1] == sink :
+            stack.clear()
+            return (augpath, c)
         else:
-            v, c = stack[-1]
-            augpath.append(v)
-            if augpath[-1] == sink :
-                ''' found a path '''
-                return (augpath, c)
-            else:
-                for dst in digraph.adjacent_points(v) :
-                    if dst in augpath : # already visited point
-                        continue # to the next iteration
-                    if digraph.forward(v, dst) and capa[(v, dst)] > flow[(v,dst)] :
-                        stack.append( (dst, min(c, capa[(v, dst)] - flow[(v,dst)]) ) )
-                    elif digraph.backward(v, dst) and flow[(dst, v)] > 0 :
-                        stack.append( (dst, min(c, flow[(dst,v)])) )
-                if stack[-1][0] == v :
-                    ''''no more available adjacent points'''
-                    stack.pop()
-                    augpath.pop()
+            for dst in digraph.adjacent_points(v) :
+                if dst in augpath : 
+                    ''' すでにパスが通過済み '''
+                    continue
+                if digraph.direction(v, dst) > 0 and capa[(v, dst)] > flow[(v,dst)] :
+                    stack.append( (dst, min(c, capa[(v, dst)] - flow[(v,dst)]) ) )
+                elif digraph.direction(v, dst) < 0 and flow[(dst, v)] > 0 :
+                    stack.append( (dst, min(c, flow[(dst,v)])) )
     return None
 
 def maxflow(dg, capa, src, snk):    
@@ -95,9 +79,9 @@ def maxflow(dg, capa, src, snk):
     while (aug := find_aug_path(dg, capa, src, snk, flow)) != None:
         path, augval = aug
         for i in range(len(path) - 1):
-            if dg.forward(path[i], path[i+1]) :
+            if dg.direction(path[i], path[i+1]) > 0 :
                 flow[(path[i], path[i+1])] += augval
-            elif dg.backward(path[i], path[i+1]) :
+            elif dg.direction(path[i], path[i+1]) < 0 :
                 print(path)
                 flow[(path[i+1], path[i])] -= augval
         print('augumented '+str(augval)+' on path = ', path)
@@ -123,6 +107,7 @@ if __name__ == '__main__':
     g = DiGraph(V, E)
     #確認のためグラフを表示
     print('G='+str(g))
+    print('capacity func = ' + str(capa))
     print('source = ' + str(s) + ', sink = ' + str(t))
     flow = maxflow(g, capa, s, t)
     print('max flow = ' )
