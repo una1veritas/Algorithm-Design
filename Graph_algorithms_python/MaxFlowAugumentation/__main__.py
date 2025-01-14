@@ -4,6 +4,7 @@ Created on 2025/01/11
 @author: sin
 '''
 import sys
+'''グラフを表すデータ構造 Graph, DiGraph の定義 '''
 
 class Graph:
     def __init__(self, vertices={}, edges={}):
@@ -62,22 +63,26 @@ def find_aug_path(digraph, capacity, source, sink, flow):
         else:
             for dst in digraph.adjacent_points(v) :
                 if dst in augpath : 
-                    ''' すでにパスが通過済み '''
+                    ''' 点 dst はすでにパスが通過済み '''
                     continue
                 if digraph.direction(v, dst) > 0 and capa[(v, dst)] > flow[(v,dst)] :
+                    '''順辺'''
                     stack.append( (dst, min(c, capa[(v, dst)] - flow[(v,dst)]) ) )
                 elif digraph.direction(v, dst) < 0 and flow[(dst, v)] > 0 :
+                    '''逆辺'''
                     stack.append( (dst, min(c, flow[(dst,v)])) )
     return None
 
 def maxflow(dg, capa, src, snk):    
-    # 自明なフローを定義
+    ''' 自明なフローを定義 '''
     flow = dict()
     for e in capa:
         flow[e] = 0
-    # 道の探索
+    ''' 残余ネットワーク residual network 上の道の探索と flow の更新 '''
     while (aug := find_aug_path(dg, capa, src, snk, flow)) != None:
+        ''' 返値を道 path と増分 aug にわける'''
         path, augval = aug
+        '''道の各辺の流量を aug だけ変更 '''
         for i in range(len(path) - 1):
             if dg.direction(path[i], path[i+1]) > 0 :
                 flow[(path[i], path[i+1])] += augval
