@@ -106,6 +106,7 @@ if __name__ == '__main__':
         t = eval(sys.argv[4])
     else:
         print('error.')
+        print("usage: python3 MaxFlowAugumentation \"{'s', 'u', 'v', 'w', 'x', 'y', 'z', 't'}\" \"{('s','u'):5, ('s', 'v'):6, ('s', 'w'):2, ('u', 'x'):3, ('u', 'y'):2, ('v', 'x'):4, ('v', 'z'):3, ('w', 'y'):3, ('w', 'z'):1, ('x', 't'):3, ('y', 't'):2, ('z', 't'):5}\" \"'s'\" \"'t'\"")
         exit(1)
     
     #グラフを定義（G に (V, E) を代入）
