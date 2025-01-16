@@ -4,10 +4,12 @@ Created on 2025/01/11
 @author: sin
 '''
 import sys
-'''グラフを表すデータ構造 Graph, DiGraph の定義 '''
 
+'''グラフを表すデータ構造（クラス） Graph, DiGraph の定義 '''
 class Graph:
     def __init__(self, vertices={}, edges={}):
+        '''辺は点の組 tuple で表す．\
+        点と辺それぞれの集合は、集合型（ハッシュテーブル）で表す．'''
         self.vertices = set(vertices)
         self.edges = set([tuple(e) for e in edges])
     
@@ -17,10 +19,12 @@ class Graph:
         self.edges.add( (u, v) )
 
     def adjacent(self, u, v):
+        ''' (u, v) と (v, u) は一般にハッシュ値が異なる'''
         return (u,v) in self.edges or (v,u) in self.edges
         
     def adjacent_points(self, v):
         adjs = list()
+        '''全探索'''
         for u in self.vertices:
             if self.adjacent(u, v) :
                 adjs.append(u)
@@ -29,6 +33,7 @@ class Graph:
     def __str__(self):
         return 'Graph(' + str(self.vertices) + ', ' + str(self.edges) + ') '
 
+'''Graph のサブクラスとして有向グラフ directed graphのクラスを定義する'''
 class DiGraph(Graph):
     def direction(self, u, v):
         if (u,v) in self.edges : return 1
@@ -46,6 +51,8 @@ class DiGraph(Graph):
         res += '}) '
         return res
     
+'''digraph と capacity について, flow に残余がある辺からなる source から sink への道を一つみつけ\
+道と通しでの残余値の組を返す．深さ優先探索'''
 def find_aug_path(digraph, capacity, source, sink, flow):
     stack = [(source, float('inf'))]
     augpath = list()
@@ -64,6 +71,8 @@ def find_aug_path(digraph, capacity, source, sink, flow):
             for dst in digraph.adjacent_points(v) :
                 if dst in augpath : 
                     ''' 点 dst はすでにパスが通過済み '''
+                    '''めんどうなので線形探索になっている．\
+                    augpathの点の集合を別に持てば多少高速化'''
                     continue
                 if digraph.direction(v, dst) > 0 and capa[(v, dst)] > flow[(v,dst)] :
                     '''順辺'''
