@@ -109,8 +109,8 @@ if __name__ == '__main__':
         Ew = eval(sys.argv[2])
         E = set(Ew.keys())
         capa = dict(Ew)
-        print(V, E)
-        print(capa)
+        #print(V, E)
+        #print(capa)
         s = eval(sys.argv[3])
         t = eval(sys.argv[4])
     else:

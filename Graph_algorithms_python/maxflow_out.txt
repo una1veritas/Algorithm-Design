@@ -1,0 +1,18 @@
+G=DiGraph({'t', 'w', 's', 'v', 'y', 'z', 'x', 'u'}, {(s -> u), (v -> x), (w -> y), (y -> t), (v -> z), (u -> y), (w -> z), (z -> t), (s -> w), (x -> t), (s -> v), (u -> x)}) 
+capacity func = {('s', 'u'): 5, ('s', 'v'): 6, ('s', 'w'): 2, ('u', 'x'): 3, ('u', 'y'): 2, ('v', 'x'): 4, ('v', 'z'): 3, ('w', 'y'): 3, ('w', 'z'): 1, ('x', 't'): 3, ('y', 't'): 2, ('z', 't'): 5}
+source = s, sink = t
+augumented 3 on path =  ['s', 'u', 'x', 't']
+augumented 2 on path =  ['s', 'u', 'y', 't']
+augumented 3 on path =  ['s', 'v', 'z', 't']
+augumented 1 on path =  ['s', 'w', 'z', 't']
+max flow = 
+('s', 'u') 5
+('s', 'v') 3
+('s', 'w') 1
+('u', 'x') 3
+('u', 'y') 2
+('v', 'z') 3
+('w', 'z') 1
+('x', 't') 3
+('y', 't') 2
+('z', 't') 4
