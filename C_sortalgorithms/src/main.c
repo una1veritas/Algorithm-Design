@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 	//counting_sort(a, num, 0, 101, keyval);
 	//insertion_sort(a, num);
 	//selection_sort_reverse(a, num);
-	heap_sort(a, num);
+	//heap_sort(a, num);
 	//merge_sort_recursive(a, num);
 	//merge_sort_doubles(a, num);
 	//bucket_sort(a, num, 0, 201, keyval);

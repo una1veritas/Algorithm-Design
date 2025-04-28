@@ -18,6 +18,7 @@ void selection_sort_reverse(data * a[], long n);
 void merge_sort_recursive(data * a[], long n);
 void merge_sort_doubles(data * a[], long n);
 void merge_sort_llist(LList * a);
+void bubble_sort(data * a[], long n);
 
 void bucket_sort(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d));
 void bucket_sort_fixed(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d));
