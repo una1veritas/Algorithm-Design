@@ -35,7 +35,7 @@ int knapsack_allsubset(const int prices[], int nsize, const int budget, char car
 		}
 		// 部分集合 subset を二進数と見なしてインクリメントする
 		for(item = 0; item < nsize + 1; ++item) {
-			if ( subset[item] == 0 ) {
+			if ( subset[item] = 0 ) {
 					subset[item] = 1;
 					break;
 			}
