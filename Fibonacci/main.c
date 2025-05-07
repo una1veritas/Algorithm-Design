@@ -19,24 +19,44 @@ result by dp = 24157817
 #include <stdlib.h>
 #include <time.h>
 
-uint64_t counter_fibo = 0;
-uint64_t counter_fibo_loop = 0;
+long long counter_fibo = 0;
+long long counter_fibo_loop = 0;
+long long counter_fibo_memo = 0;
 
-uint64_t fibo(uint64_t n) {
+long long fibo(long long n) {
 	if ( n < 2 )
 		return 1;
 	counter_fibo++;
 	return fibo(n-1) + fibo(n-2);
 }
 
-uint64_t fibo_loop(uint64_t n) {
-	uint64_t f_1 = 1;
-	uint64_t f_2 = 1;
-	uint64_t f;
+long long * f;
+long long fibo_inner(long long n) {
+	counter_fibo_memo++;
+	if (f[n] != 0) return f[n];
+	f[n] = fibo_inner(n-1) + fibo_inner(n-2);
+	return f[n];
+}
+
+long long fibo_memo(long long n) {
+	f = (long long *) malloc(sizeof(long long)*(n+1));
+	f[0] = 1;
+	f[1] = 1;
+	for(long long i = 2; i < n+1; ++i)
+		f[i] = 0;
+	long long result = fibo_inner(n);
+	free(f);
+	return result;
+}
+
+long long fibo_loop(long long n) {
+	long long f_1 = 1;
+	long long f_2 = 1;
+	long long f;
 
 	if ( n < 2 )
 		return f_1;
-	uint64_t i;
+	long long i;
 	for(i = 2; i <= n; i++) {
 		counter_fibo_loop++;
 
@@ -48,7 +68,7 @@ uint64_t fibo_loop(uint64_t n) {
 }
 
 int main(int argc, char * argv[]) {
-	uint64_t n, result;
+	long long n, result;
 
 	n = atol(argv[1]);
 	printf("input = %llu\n", n);
@@ -65,6 +85,13 @@ int main(int argc, char * argv[]) {
 	swatch = clock() - swatch; 	/* 時間計測用 */
 	printf("f(%llu) by loop = %llu.\n", n, result);
 	printf("iterations in fibo_loop %llu time, ", counter_fibo_loop);
+	printf("took %g ms.\n", swatch/(double)CLOCKS_PER_SEC * 1000); /* for stop watch */
+
+	swatch = clock(); 	/* 時間計測用 */
+	result = fibo_memo(n);
+	swatch = clock() - swatch; 	/* 時間計測用 */
+	printf("f(%llu) by loop = %llu.\n", n, result);
+	printf("iterations in fibo_memo %llu time, ", counter_fibo_memo);
 	printf("took %g ms.\n", swatch/(double)CLOCKS_PER_SEC * 1000); /* for stop watch */
 
 	return 0;
