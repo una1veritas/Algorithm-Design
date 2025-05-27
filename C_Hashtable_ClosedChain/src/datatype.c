@@ -32,5 +32,5 @@ int sprint(char * buf, const datatype * d) {
 	for(int i = 0; i < 8; ++i)
 		tmp[i] = d->id[i];
 	tmp[8] = 0;
-	return sprintf(buf, "(%s: %s) %lu", tmp, d->name, hash_code(d));
+	return sprintf(buf, "(%s: %s) hash = %lu", tmp, d->name, hash_code(d));
 }

@@ -88,20 +88,6 @@ void OpenHashtable_fprintf(FILE * f, OpenHashtable * h, const char * fmt) {
 	fprintf(f,"\n");
 }
 
-typedef struct ClosedHashtable {
-	datatype ** table;
-	long tablesize, elemcount;
-} ClosedHashtable;
-
-void ClosedHashtable_init(ClosedHashtable * h, long n) {
-	h->tablesize = n;
-	h->table = (datatype **) malloc(sizeof(datatype *) * h->tablesize);
-	for(long i = 0; i < h->tablesize; ++i) {
-		h->table[i] = NULL;
-	}
-	h->elemcount = 0;
-}
-
 int main(const int argc, const char * argv[]) {
 	OpenHashtable tbl;
 	long tblsize = atol(argv[1]);
