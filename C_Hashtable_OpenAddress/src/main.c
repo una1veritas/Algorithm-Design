@@ -18,20 +18,31 @@
 int main(const int argc, const char * argv[]) {
 	OAHashtable * tbl;
 	long tblsize = 17;
+	char * entry[] = {
+			"242G1022", "Takako",
+			"242G1103", "Hiroto",
+			"242G1209", "Shouichi",
+			"242G1376", "Aki",
+			"242G1183", "Shiori",
+	};
+	printf("entry size = %d\n", sizeof(entry));
+	int n = 5;
+	/*
 	int n = (argc - 1)>>1;
+	*/
 	datatype d[n];
-	int i = 0, argix = 1;
+	int i = 0, argix = 0;
 	while (i < n) {
-		strncpy(d[i].id, argv[argix], 8);
+		strncpy(d[i].id, entry[argix], 8);
 		++argix;
-		strncpy(d[i].name, argv[argix], 32);
+		strncpy(d[i].name, entry[argix], 32);
 		d[i].name[31] = 0;
 		++argix;
 		++i;
 	}
 
 	printf("Hash table size = %ld\n", tblsize);
-	tbl = malloc_OAHashtable(tblsize);
+	tbl = allocate_OAHashtable(tblsize);
 	for(long i = 0; i < n; ++i)
 		OAHashtable_add(tbl, &d[i]);
 
