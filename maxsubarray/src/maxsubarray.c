@@ -18,11 +18,11 @@ int main(int argc, char * argv[]) {
 	}
 
 	int num = 0;
-	long a[argc - 1];
+	int a[argc - 1];
 	for(int i = 1; i < argc; ++i, ++num) {
 		char * ptr;
-		a[num] = strtol(argv[i], &ptr, 10);
-		// printf("%ld ", a[num]);
+		a[num] = (int) strtol(argv[i], &ptr, 10);
+		// printf("%d ", a[num]);
 		if ( *ptr != 0 ) {
 			a[num] = 0;
 			break;
@@ -31,32 +31,33 @@ int main(int argc, char * argv[]) {
 
 	fprintf(stdout, "\nInput: \n");
 	for(int i = 0; i < num; ++i) {
-		fprintf(stdout, "%ld, ",a[i]);
+		fprintf(stdout, "%d, ",a[i]);
 	}
 	fprintf(stdout, "\n");
 
 	fprintf(stdout, "\nFind a subarray whose sum is the maximum.\n");
 
-	long suffixsum[num+1];
-	suffixsum[0] = 0; // suffixsum[i] is the best sum from a[0] to a[i-1]
-	long best = 0;
-	int best_left = 0, best_end = 0; // best_right is the next index of the index of the last element
-	for(int last = 0; last < num; ++last) {
-		fprintf(stdout, "a[%d] = %ld, suffixsum = %ld\n", last, a[last], suffixsum[last]);
-		if ( suffixsum[last] + a[last] < a[last] ) {
-			best_left = last;
-			suffixsum[last+1] = a[last];
-			best_end = last + 1;
-		} else if ( suffixsum[last] + a[last] >= a[last] ) {
-			suffixsum[last+1] = suffixsum[last] + a[last];
-			best_end = last + 1;
+	int subsum[num];
+	int max_start = 0, max_last = 0, max_sum = a[0];
+	int start, last;
+	subsum[0] = a[0];
+	for(last = 1, start = 0; last < num; ++last) {
+		if ( subsum[last-1] + a[last] >= a[last] ) {
+			subsum[last] = subsum[last-1] + a[last];
+		} else {
+			subsum[last] = a[last];
+			start = last;
 		}
+		if ( subsum[last] > max_sum ) {
+			max_start = start, max_last = last, max_sum = subsum[last];
+		}
+		fprintf(stdout, "subsum[%d] = %d, max_start = %d, max_last = %d, max_sum = %d\n", last, subsum[last], max_start, max_last, max_sum);
 	}
-	fprintf(stdout, "\nsuffixsum:\n");
+	fprintf(stdout, "\nsubsum:\n");
 	for(int i = 0; i <= num; i++) {
-		fprintf(stdout, "%ld, ", suffixsum[i]);
+		fprintf(stdout, "%d, ", subsum[i]);
 	}
 	fprintf(stdout, "\n");
-	fprintf(stdout, "best subarray [%d, %d), the sum is %ld\n", best_left, best_end, best);
+	fprintf(stdout, "best subarray max last = %d, max_length = %d, the sum is %d\n", max_last, max_length, max_sum);
 	return EXIT_SUCCESS;
 }
