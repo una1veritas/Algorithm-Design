@@ -11,143 +11,113 @@
 
 using namespace std;
 
-struct DataType {
-	std::string key;
-
-	friend bool operator<(const DataType & a, const DataType & b) {
-		return a.key < b.key ;
-	}
-
-	friend bool operator==(const DataType & a, const DataType & b) {
-		return a.key == b.key ;
-	}
-};
+typedef std::string Data;
 
 struct Node234 {
 private:
 	//Node234 * parent;
-	std::list<DataType> data;
+	std::list<Data> data;
 	std::list<Node234 *> children;
-	unsigned int keycount;  // == nodecount - 1
 
 	constexpr static unsigned int key_max_size = 3;
-	constexpr static unsigned int children_max_size = 4;
+	constexpr static unsigned int children_max_size = key_max_size + 1;
 
 public:
-	Node234(const DataType & d) : /* parent(NULL),*/ keycount(1) {
-		data.push_back(d);
-		children.push_back(NULL);
-		children.push_back(NULL);
-	}
 
-	Node234(const DataType & d, /* Node234 * par = NULL,*/ Node234 * left = NULL, Node234 * right = NULL)
-	: /* parent(par),*/ keycount(1) {
+	Node234(const Data & d, Node234 * left = NULL, Node234 * right = NULL) {
 		// construct a 2-node.
 		// NULL, NULL, NULL makes a root-leaf.
+		data.clear();
 		data.push_back(d);
+		children.clear();
 		children.push_back(left);
-		/*
-		if (left != NULL) {
-			leftmostchild->parent = this;
-		}
-		*/
 		children.push_back(right);
-		/*
-		if (right != NULL) {
-			list.begin()->second->parent = this;
-		}
-		*/
 	}
 
 	~Node234() {
-		for(unsigned int i = 0; i < keycount; ++i) {
-			delete childptr[i];
-		}
-		delete childptr[keycount];
-		keycount = 0;
+		data.clear();
+		children.clear();
 	}
 
 	bool is_empty() const {
-		return keycount == 0;
+		return data.size() == 0;
 	}
 
+	const unsigned int count() const {
+		return data.size();
+	}
+
+	/*
 	bool is_root() const {
 		return parent == NULL;
 	}
+	 */
 
 	bool is_leaf() const {
-		if (childptr[0] == NULL)
-			return true;
-		return false;
+		return children.size() == 0;
 	}
 
 	bool is_full() const {
-		return keycount == key_max_size;
+		return count() == key_max_size;
 	}
 
 	bool is_2node() const {
-		return keycount == 1;
+		return count() == 1;
 	}
 
-private:
-	unsigned int key_ub_index(const DataType & k) {
-		// assuming one or more key(s) exist(s).
-		unsigned int i;
-		for (i = 0 ; i < keycount ; ++i) {
-			if ( k <= *keyptr[i] )
-				break;
-		}
-		return i;
+public:
+	std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator>
+	key_ub_iterator(const Data & k) {
+		// assuming one or more data exist(s).
+		auto key_itr = data.begin();
+		auto cld_itr = children.begin();
+		for(; *key_itr < k and key_itr != data.end(); ++key_itr, ++cld_itr) ;
+		return std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator>(key_itr, cld_itr);
 	}
 
 	// insert the pointer of given key at an apropriate position
-	// to keyptr[i] and copy the childptr[i] as its left and right
-	unsigned int insert_key_to_node(const DataType & k) {
+	std::list<Data>::iterator insert_data(const Data & k) {
 		if ( is_full() ) {
-			cerr << "error: insert_in_data234 failure." << endl;
-			return key_max_size;
+			cerr << "error: insert_data failure." << endl;
+			return data.end();
 		}
 		//cout << *this << ", " << k << endl;
-		if (keycount == 0) { // empty root
-			keyptr[0] = &k;
-			childptr[0] = NULL;
-			childptr[1] = NULL;
-			keycount = 1;
-			return 0;
-		}
-		unsigned int i = key_ub_index(k);
-		childptr[keycount+1] = childptr[keycount];
-		for(unsigned int j = keycount; j > i; --j) {
-			keyptr[j] = keyptr[j-1];
-			childptr[j] = childptr[j-1];
-		}
-		keyptr[i] = &k;
-		++keycount;
+		std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator>
+		itr_pair = key_ub_iterator(k);
+		data.insert(itr_pair.first, k);
+		children.insert(itr_pair.second, NULL);
+
 		//cout << *this << endl;
-		return i;
+		return itr_pair.first;
 	}
 
-	Node234 * find_leaf_or_node(const DataType & k, const bool leaf = true, const bool split = true) {
+	std::pair<Node234 *,std::list<Data>::iterator>
+	find_data_in_node(const Data & k, const bool leaf = true, const bool split = true) {
 		Node234 * att = this;
+		std::list<Data>::iterator itr;
 		for(;;) {
 			//cout << "going to find " << k << " in " << *att << std::endl;
+			/*
 			if (att->is_full() and split) {
 				//std::cout << "encountered a node must be splitted." << std::endl;
 				//cout << *att << endl;
 				att = att->split();
 				//cout << *att << endl;
 			}
+			*/
+			std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator>
+			itr_pair = att->key_ub_iterator(k);
+			//std::cout << "att = " << *att << " pos = " << i << std::endl;
+			if ( *itr_pair.first == k ) {
+				return std::pair<Node234 *,std::list<Data>::iterator>(att, itr_pair.first);
+			}
 			if ( att->is_leaf() )
 				break;
-			unsigned int i = att->key_ub_index(k);
-			//std::cout << "att = " << *att << " pos = " << i << std::endl;
-			if ( i < att->keycount and *(att->keyptr[i]) == k) {
-				if (! leaf) break;
-			}
-			att = att->childptr[i];
+			att = *(itr_pair.second);
 		}
-		return att;
+		return std::pair<Node234 *,std::list<Data>::iterator>(att, att->data.end());
 	}
+	/*
 
 	Node234 * find_remove_leaf(const DataType & k) {
 		Node234 * att = this;
@@ -291,20 +261,23 @@ public:
 			return node;
 		}
 	}
+	*/
 
 	friend ostream & operator<<(ostream & out, const Node234 & node) {
 		out << "(";
 		//out << "[" << node.parent << "]";
-		for(unsigned int i = 0; i < node.keycount; ++i) {
-			if (node.childptr[i] != NULL) {
-				out << * node.childptr[i];
-				out << ", ";
+		auto dt_itr = node.data.begin();
+		auto ch_itr = node.children.begin();
+		for( ;dt_itr != node.data.end(); ++dt_itr, ++ch_itr) {
+			if (*ch_itr != NULL) {
+				out << **ch_itr << ", ";
 			}
-			out << * node.keyptr[i] << ",";
+			out << *dt_itr << ", ";
 		}
-		if (node.childptr[node.keycount] != NULL)
-			out << * node.childptr[node.keycount];
-		out << ")";
+		if (*ch_itr != NULL) {
+			out << **ch_itr << ", ";
+		}
+		out << ") ";
 		return out;
 	}
 
@@ -312,21 +285,26 @@ public:
 };
 
 struct Tree234 {
-	Node234 root;
+	Node234 * root;
 public:
 
-	Tree234() : root() {}
+	Tree234() : root(NULL) {}
 
-	void insert(const Key & k) {
-		root.insert(k);
+	void insert(const Data & k) {
+		if (root == NULL) {
+			root = new Node234(k);
+		} else {
+			root->insert(k);
+		}
 	}
 
+	/*
 	void remove(const Key & k) {
 		root.remove(k);
 	}
-
+*/
 	friend ostream & operator<<(ostream & out, const Tree234 & tree) {
-		out << "234Tree" << tree.root ;
+		out << "234Tree" << *(tree.root) ;
 		return out;
 	}
 };
@@ -355,13 +333,14 @@ int main(int argc, char * argv[]) {
 
 	cout << "done." << std::endl;
 
+	/*
 	tree234.remove(string("P"));
  	cout << tree234 << endl;
 	tree234.remove(string("N"));
  	cout << tree234 << endl;
 	tree234.remove(string("M"));
  	cout << tree234 << endl;
-
+*/
 
 	delete [] args;
 	return 0;
