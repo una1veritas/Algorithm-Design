@@ -22,6 +22,8 @@ private:
 	constexpr static unsigned int key_max_size = 3;
 	constexpr static unsigned int children_max_size = key_max_size + 1;
 
+	typedef std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator> iter_pair;
+
 public:
 
 	Node234(const Data & d, Node234 * left = NULL, Node234 * right = NULL) {
@@ -30,8 +32,10 @@ public:
 		data.clear();
 		data.push_back(d);
 		children.clear();
-		children.push_back(left);
-		children.push_back(right);
+		if (right != NULL and left != NULL) {
+			children.push_back(left);
+			children.push_back(right);
+		}
 	}
 
 	~Node234() {
@@ -39,8 +43,8 @@ public:
 		children.clear();
 	}
 
-	bool is_empty() const {
-		return data.size() == 0;
+	bool empty() const {
+		return data.empty();
 	}
 
 	const unsigned int count() const {
@@ -54,7 +58,7 @@ public:
 	 */
 
 	bool is_leaf() const {
-		return children.size() == 0;
+		return children.empty();
 	}
 
 	bool is_full() const {
@@ -65,36 +69,43 @@ public:
 		return count() == 1;
 	}
 
+
 public:
-	std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator>
-	key_ub_iterator(const Data & k) {
+	std::list<Data>::iterator upper_boud_data_iterator(const Data & k) {
+		// assuming one or more data exist(s).
+		auto key_itr = data.begin();
+		for(;key_itr != data.end(); ++key_itr) {
+			if ( k < *key_itr)
+				return key_itr;
+		}
+		return data.end();
+	}
+
+	iter_pair upper_boud_iterators(const Data & k) {
 		// assuming one or more data exist(s).
 		auto key_itr = data.begin();
 		auto cld_itr = children.begin();
 		for(; *key_itr < k and key_itr != data.end(); ++key_itr, ++cld_itr) ;
-		return std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator>(key_itr, cld_itr);
+		return iter_pair(key_itr, cld_itr);
 	}
 
 	// insert the pointer of given key at an apropriate position
-	std::list<Data>::iterator insert_data(const Data & k) {
+	std::list<Data>::iterator insert_data_in_leaf(const Data & k) {
 		if ( is_full() ) {
-			cerr << "error: insert_data failure." << endl;
+			cerr << "error: node is full, insert_data failed." << endl;
 			return data.end();
 		}
-		//cout << *this << ", " << k << endl;
-		std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator>
-		itr_pair = key_ub_iterator(k);
-		data.insert(itr_pair.first, k);
-		children.insert(itr_pair.second, NULL);
+		cout << *this << ", " << k << endl;
+		std::list<Data>::iterator itr = upper_boud_data_iterator(k);
+		data.insert(itr, k);
 
-		//cout << *this << endl;
-		return itr_pair.first;
+		cout << *this << endl;
+		return itr;
 	}
 
-	std::pair<Node234 *,std::list<Data>::iterator>
-	find_data_in_node(const Data & k, const bool leaf = true, const bool split = true) {
+	std::pair<Node234 *,iter_pair> find_position(const Data & k, const bool leaf = true, const bool split = true) {
 		Node234 * att = this;
-		std::list<Data>::iterator itr;
+		iter_pair itpair;
 		for(;;) {
 			//cout << "going to find " << k << " in " << *att << std::endl;
 			/*
@@ -105,17 +116,27 @@ public:
 				//cout << *att << endl;
 			}
 			*/
-			std::pair<std::list<Data>::iterator,std::list<Node234*>::iterator>
-			itr_pair = att->key_ub_iterator(k);
-			//std::cout << "att = " << *att << " pos = " << i << std::endl;
-			if ( *itr_pair.first == k ) {
-				return std::pair<Node234 *,std::list<Data>::iterator>(att, itr_pair.first);
+			itpair = att->upper_boud_iterators(k);
+			/*
+			if ( itr_pair.first != att->data.end()) {
+				cout << "reached the end." << endl ;
 			}
-			if ( att->is_leaf() )
-				break;
-			att = *(itr_pair.second);
+			std::cout << "att = " << *att << " pos = " << *itr_pair.first << std::endl;
+			*/
+			if ( *itpair.first == k ) {
+				//cout << " found " << endl;
+				return std::pair<Node234 *,iter_pair>(att, itpair);
+			} else {
+				//cout << " not found " << endl;
+				if ( att->is_leaf() ) {
+					//cout << "i'm a leaf. " << endl;
+					break;
+				}
+			}
+			att = *(itpair.second);
 		}
-		return std::pair<Node234 *,std::list<Data>::iterator>(att, att->data.end());
+		//cout << " not found exit " << endl;
+		return std::pair<Node234 *,iter_pair>(att, itpair);
 	}
 	/*
 
@@ -206,22 +227,35 @@ public:
 		}
 		return NULL;
 	}
-
+*/
 public:
-	Node234 * insert(const DataType & k) {
-		// std::cout << "inserting " << d << std::endl;
-		Node234 * node = this->find_leaf_or_node(k, true, true);
-
-		if ( !node->is_full() ) {
-			node->insert_key_to_node(k);
-			return node;
-		} else {
-			// split
-			std::cout << "encountered full-node to insert " << *node << std::endl;
-		}
+	const Data * find(const Data & key) {
+		std::pair<Node234 *,iter_pair>  pos = find_position(key);
+		if (* pos.second.first == key)
+			return &(*pos.second.first);
 		return NULL;
 	}
 
+	Node234 * insert(const Data & k) {
+		std::cout << "inserting " << k << std::endl;
+		std::pair<Node234 *,iter_pair> pos = this->find_position(k, true, true);
+		Node234 *node = pos.first;
+		cout << "node = " << *node << endl;
+		//iter_pair itrs = pos.second;
+		if (node->is_leaf()) {
+			if ( !node->is_full() ) {
+				//cout << "not full." << endl;
+				node->insert_data_in_leaf(k);
+				return node;
+
+			} else {
+				// split
+				std::cout << "encountered full-node to insert " << *node << std::endl;
+			}
+		}
+		return node;
+	}
+/*
 	const DataType * remove_key_from_node(const DataType & k) {
 		const Key * ptr = NULL;
 		bool found = false;
@@ -294,6 +328,7 @@ public:
 		if (root == NULL) {
 			root = new Node234(k);
 		} else {
+			cout << "calling insert.,.. ";
 			root->insert(k);
 		}
 	}
@@ -330,6 +365,14 @@ int main(int argc, char * argv[]) {
 		tree234.insert(args[i]);
 		cout << tree234 << endl << endl;
 	}
+
+	if ( tree234.root->find("this") != NULL) {
+		cout << "found.";
+	} else {
+		cout << "not found.";
+	}
+	cout << endl << endl;
+
 
 	cout << "done." << std::endl;
 
