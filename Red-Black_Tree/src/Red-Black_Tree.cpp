@@ -187,7 +187,7 @@ private:
 public:
 	RedBlackNode * insert(const Key & k) {
 		RedBlackNode * p = this->find_parent(k);
-		RedBlackNode ** handler;
+		RedBlackNode ** handler = NULL;
 		// re-determine the insertion point
 		if ( p->is_stub() or k <= *p->keyptr )
 			handler = &(p->lchild);
