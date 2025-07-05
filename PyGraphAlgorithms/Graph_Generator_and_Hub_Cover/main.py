@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 
 def edges_hub_covered_by(g : nx.Graph, node : int):
     hcov = set()
-    #adjnodes = set(g.neighbors(node))
     for v in g.neighbors(node):
         if v < node :
             hcov.add( (v, node) )
@@ -27,7 +26,7 @@ def node_set(edges):
         nodes.add(v)
     return nodes
     
-def greedy_Hub_Cover(g):
+def greedy_Hub_Cover(g, weight=None):
     hub_cover = set()
     node_remained = set(g.nodes)
     edge_remained = set(g.edges)
@@ -36,15 +35,18 @@ def greedy_Hub_Cover(g):
         #print(hub_cover, edge_remained)
         # find the best node
         best_node = None
-        #best_gain = None
+        best_cost = 0
         best_covered = set()
         for v in node_remained :
             new_covered = edges_hub_covered_by(g, v) - edge_covered
-            #weight = len(set(g.neighbors(v)).intersection(node_remained))
             if len(new_covered) == 0 :
                 continue
-            if best_node is None or len(new_covered) > len(best_covered) :
+            cost = 1/len(new_covered)
+            if weight is not None:
+                cost = weight[v]/len(new_covered) 
+            if best_node is None or cost < best_cost :
                 best_node = v
+                best_cost = cost
                 best_covered = new_covered
                 
         # add to cover and merge newly covered edges
@@ -60,18 +62,20 @@ if __name__ == '__main__':
         for i in range(10):
             # Example: create a random graph
             G = nx.erdos_renyi_graph(n, 0.5)
-            res = greedy_Hub_Cover(G)
-            weight = dict()
+            vweight = dict()
+            noweitght = dict()
             for v in G.nodes:
-                weight[v] = len(node_set(edges_hub_covered_by(G, v))) + 1
-            #res_wv = greedy_Hub_Cover(G, weight)
-            #print(len(G.nodes), round(len(G.edges)/len(G.nodes),2), round(len(res)/len(G.nodes),2), round(len(res_wv)/len(G.nodes),2) )
-            print(len(G.nodes), round(len(G.edges)/len(G.nodes),2), round(len(res)/len(G.nodes),2) )
+                adjacents = set(G.neighbors(v))
+                vweight[v] = len(adjacents) #/len(edges_hub_covered_by(G, v))
+                #
+            res1 = greedy_Hub_Cover(G)
+            res2 = greedy_Hub_Cover(G,vweight)
+            print(len(G.nodes), round(len(G.edges)/len(G.nodes),2), round(len(res1)/len(G.nodes),2) , round(len(res2)/len(G.nodes),2) )
     
     exit()
     color_list = []
     for v in G.nodes:
-        if v in res:
+        if v in res2:
             color_list.append('skyblue')
         else:
             color_list.append('lightgray')
