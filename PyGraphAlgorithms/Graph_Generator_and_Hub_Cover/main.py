@@ -7,7 +7,7 @@ import networkx as nx
 import itertools
 import matplotlib.pyplot as plt
 
-def edges_hub_covered_by(g : nx.Graph, node : int):
+def covered_by_hub(g : nx.Graph, node : int):
     hcov = set()
     for v in g.neighbors(node):
         if v < node :
@@ -18,6 +18,16 @@ def edges_hub_covered_by(g : nx.Graph, node : int):
         if g.has_edge(u,v) :
             hcov.add( (u, v) )
     return hcov
+
+def is_hub_cover(g: nx.Graph, nodeset : set):
+    edges = list(g.edges())
+    for v in nodeset:
+        if v not in g.nodes() :
+            print('unknown node exists: ' + str(v))
+            continue
+        edges = [(u, w) for (u, w) in edges \
+                 if (u != v and w != v) and not (g.has_edge(u, v) and g.has_edge(w, v))]
+    return len(edges) == 0
 
 def node_set(edges):
     nodes = set()
@@ -38,7 +48,7 @@ def greedy_Hub_Cover(g, weight=None):
         best_cost = 0
         best_covered = set()
         for v in node_remained :
-            new_covered = edges_hub_covered_by(g, v) - edge_covered
+            new_covered = covered_by_hub(g, v) - edge_covered
             if len(new_covered) == 0 :
                 continue
             cost = 1/len(new_covered)
@@ -66,10 +76,12 @@ if __name__ == '__main__':
             noweitght = dict()
             for v in G.nodes:
                 adjacents = set(G.neighbors(v))
-                vweight[v] = len(adjacents) #/len(edges_hub_covered_by(G, v))
+                vweight[v] = len(adjacents) #/len(covered_by_hub(G, v))
                 #
             res1 = greedy_Hub_Cover(G)
+            print("is_hub_cover ",is_hub_cover(G, res1))
             res2 = greedy_Hub_Cover(G,vweight)
+            print("is_hub_cover ",is_hub_cover(G, res2))
             print(len(G.nodes), round(len(G.edges)/len(G.nodes),2), round(len(res1)/len(G.nodes),2) , round(len(res2)/len(G.nodes),2) )
     
     exit()
