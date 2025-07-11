@@ -74,16 +74,36 @@ def greedy_Hub_Cover(g, weight=None):
     return hub_cover
     
 if __name__ == '__main__':
-
+    
+    plt.ion()  # Interactive mode
+    fig, ax = plt.subplots()
+    
     for n in range(16,100):
         for i in range(1):
             # Example: create a random graph
-            G = nx.erdos_renyi_graph(n, 0.25)
+            #G = nx.erdos_renyi_graph(n, 0.25)
+            G = nx.connected_watts_strogatz_graph(n=n, k=6, p=0.35)
+            
             minhubcover = find_min_hub_cover(G)
             print(len(minhubcover), minhubcover)                        
-
             res1 = greedy_Hub_Cover(G)
+            
+            vcolor = []
+            for v in G.nodes:
+                if v in res1 :
+                    vcolor.append('orange')
+                else:
+                    vcolor.append('lightgray')
             print(f'size of graph = {len(G.nodes)}, edge-vertex ratio = {round(len(G.edges)/len(G.nodes),2)}, perf. ratio = {len(res1)/len(minhubcover)}' )
+
+            ax.clear()
+            nx.draw(G, ax=ax, with_labels=True, node_color=vcolor)
+            plt.draw()
+            plt.pause(1)  # Pause to update the plot (1 second here)
+
+    
+    plt.ioff()
+    plt.show()
     
     exit()
     color_list = []
