@@ -29,6 +29,13 @@ def is_hub_cover(g: nx.Graph, nodeset : set):
                  if (u != v and w != v) and not (g.has_edge(u, v) and g.has_edge(w, v))]
     return len(edges) == 0
 
+def find_min_hub_cover(g : nx.Graph):
+    for n in range(1,len(g)):
+        for nsubset in itertools.combinations(set(G.nodes), n):
+            if is_hub_cover(G, nsubset):
+                return nsubset
+    return None
+            
 def node_set(edges):
     nodes = set()
     for u, v in edges:
@@ -69,20 +76,14 @@ def greedy_Hub_Cover(g, weight=None):
 if __name__ == '__main__':
 
     for n in range(16,100):
-        for i in range(10):
+        for i in range(1):
             # Example: create a random graph
-            G = nx.erdos_renyi_graph(n, 0.5)
-            vweight = dict()
-            noweitght = dict()
-            for v in G.nodes:
-                adjacents = set(G.neighbors(v))
-                vweight[v] = len(adjacents) #/len(covered_by_hub(G, v))
-                #
+            G = nx.erdos_renyi_graph(n, 0.25)
+            minhubcover = find_min_hub_cover(G)
+            print(len(minhubcover), minhubcover)                        
+
             res1 = greedy_Hub_Cover(G)
-            print("is_hub_cover ",is_hub_cover(G, res1))
-            res2 = greedy_Hub_Cover(G,vweight)
-            print("is_hub_cover ",is_hub_cover(G, res2))
-            print(len(G.nodes), round(len(G.edges)/len(G.nodes),2), round(len(res1)/len(G.nodes),2) , round(len(res2)/len(G.nodes),2) )
+            print(f'size of graph = {len(G.nodes)}, edge-vertex ratio = {round(len(G.edges)/len(G.nodes),2)}, perf. ratio = {len(res1)/len(minhubcover)}' )
     
     exit()
     color_list = []
