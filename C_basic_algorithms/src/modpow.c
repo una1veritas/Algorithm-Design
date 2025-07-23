@@ -24,7 +24,7 @@ long modpow_r(long x, long n, long m) {
 	}
 	return t;
 }
-
+/*
 int main(const int argc, const char * argv[]) {
 	if (argc < 4) { puts("error: give x, n and m.\n"); return EXIT_FAILURE; }
 	long x = atol(argv[1]), n = atol(argv[2]), m = atol(argv[3]);
@@ -33,3 +33,4 @@ int main(const int argc, const char * argv[]) {
 	printf("%ld^%ld mod %ld = %ld.\n", x, n, m, modpow_r(x,n,m));
 	return EXIT_SUCCESS;
 }
+*/

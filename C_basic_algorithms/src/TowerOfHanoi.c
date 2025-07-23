@@ -42,7 +42,7 @@ long Hanoi(DiskStack stacks[], int num, int id_src, int id_work, int id_dst) {
 	moves += Hanoi(stacks, num-1, id_work, id_src, id_dst);
 	return moves;
 }
-
+/*
 int main(int argc, char * argv[]) {
 	int n = (argc >= 2 ? atoi(argv[1]) : 3);
 	int moves;
@@ -58,7 +58,7 @@ int main(int argc, char * argv[]) {
 	printf("%d moves.\n", moves);
 	return EXIT_SUCCESS;
 }
-
+*/
 /*
  * Show disks on the rods.
  */

@@ -12,27 +12,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MIN(x, y) ((x) <= (y) ? (x) : (y))
-#define MAXPATLEN 7
-
-int stringmatching_naive(char * text, char * pattern) {
-	int txtlen = strlen(text), patlen = strlen(pattern);
-	int checklen = MIN(patlen, MAXPATLEN);
-
-	for(int i = 0; i < txtlen - checklen + 1; ++i) {
-		int j;
-		for(j = 0; j < checklen; ++j) {
-			if ( text[i+j] != pattern[j] )
+int strmatch_naive(const char * text, const char * pat, const int start) {
+	for(int ix = start; text[ix] != '\0'; ++ix) {
+		int iy;
+		for(iy = 0; pat[iy] != '\0'; ++iy) {
+			if (text[ix+iy] != pat[iy])
 				break;
 		}
-		if (j == checklen ) {
-			return i;
-			break;
-		}
+		if (pat[iy] == '\0')
+			return ix;
 	}
 	return -1;
 }
 
+/*
 int main(int argc, char * argv[]) {
 	if ( argc < 3 ) {
 		fprintf(stderr, "two strings as text and pattern requested.\n");
@@ -48,3 +41,4 @@ int main(int argc, char * argv[]) {
 	}
 	return EXIT_SUCCESS;
 }
+*/

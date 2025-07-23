@@ -22,7 +22,7 @@ public:
 
 	int find(const std::string & txt ) {
 		int pos; // pos represents the place which will be matched to the last character of the pattern.
-		char ch;
+		//char ch;
 		for (pos = 0; pos < txt.size() - pattern.size() + 1; ++pos) {
 			if ( compare(txt, pos) ) {
 #ifdef FIND_DEBUG
@@ -56,7 +56,7 @@ public:
 	}
 
 	friend std::ostream & operator<<(std::ostream & ost, const naive & pm) {
-		int count = 0;
+		//int count = 0;
 		ost << "naive('" << pm.pattern << "' ("<< pm.size() << ") )";
 		return ost;
 	}

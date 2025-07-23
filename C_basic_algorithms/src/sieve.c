@@ -26,9 +26,11 @@ int sieve(int n) {
 	return i;
 }
 
+/*
 int main(const int argc, const char * argv[]) {
 	if (argc < 2) { puts("error: give a limit number.\n"); return EXIT_FAILURE; }
 	int n = atoi(argv[1]);
 	printf("the largest prime no more than %d is: %d.\n", n, sieve(n));
 	return EXIT_SUCCESS;
 }
+*/
