@@ -6,21 +6,16 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-#include <iostream>
-#include <string>
-using namespace std;
+#include <stdio.h>
+#include <string.h>
 
-string reversed6(const string & s) {
-	string t;
-	for (int i = 0; i < s.size() and i < 6;++i)
-		t += s[s.size() - 1 - i];
-	return t;
-}
-
-int main(int argc, char * argv[]) {
-	string id(argv[1]);
-	id = reversed6(id);
+int main() {
+	char sid[] = "246E1024";
+	char id[7];
+	for(int i = 0; i < 6; ++i)
+		id[i] = sid[7 - i];
+	id[6] = (char) 0;
 	id[0] += 17;
-	cout << id << endl;
+	printf("%s\n", id);
 	return 0;
 }
