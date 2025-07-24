@@ -27,7 +27,8 @@ if __name__ == '__main__':
         always_xy=True
         )
     coords_trans = trans.transform(*list(zip(*coords)))  # 座標変換
-    print(list(zip(*coords_trans)))
+    # for x, y in list(zip(*coords_trans)):
+    #     print(x,y)
     
     list_epsilon = [0, 1, 5, 20, 100]  # ε リスト
     sf_w.field('epsilon', 'N')  # フィールド追加

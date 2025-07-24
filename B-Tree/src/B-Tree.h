@@ -21,7 +21,7 @@ typedef string Key;
 
 struct BTreeNode {
 private:
-	static constexpr unsigned int MINIMUM_DEGREE = 4;
+	static constexpr unsigned int MINIMUM_DEGREE = 2;
 	static constexpr unsigned int MIN_KEYS = MINIMUM_DEGREE - 1;
 	static constexpr unsigned int MAX_KEYS = 2*MINIMUM_DEGREE - 1;
 

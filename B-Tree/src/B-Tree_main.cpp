@@ -50,7 +50,8 @@ int main(const int argc, const char * argv[]) {
 		} else if (string("-R") == arg) {
 			mode = RANDOM_REMOVE;
 		} else {
-			unsigned int val = std::stoi(arg); //, NULL, 10);
+			//unsigned int val = std::stoi(arg); //, NULL, 10);
+			std::string val = arg;
 			if (mode == INSERT_FOLLOWING or mode == REMOVE_FOLLOWING) {
 				osstream.str("");
 				osstream.clear();
@@ -67,6 +68,7 @@ int main(const int argc, const char * argv[]) {
 					}
 				}
 			}else {
+				/*
 				for(unsigned int i = 0; i < val; ++i) {
 					osstream.str("");
 					osstream.clear();
@@ -87,6 +89,7 @@ int main(const int argc, const char * argv[]) {
 						}
 					}
 				}
+				*/
 			}
 		}
 	}
