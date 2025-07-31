@@ -10,15 +10,32 @@ def rdp_abstraction(x, y : np.array, epsilon):
     print(xy_rdp)
     return (xy_rdp[:,0], xy_rdp[:,1])
 
-def diff_vec(p0, p1):
-    return (p1[0]-p0[0], p1[1]-p0[1])
+def diff_vec(orig, dest : np.array): 
+    return dest - orig
 
-def inner_prod(v0, v1):
-    return v0[0]*v1[0] + v1[0]*v1[1]
+def norm(v : np.array):
+    return np.lialg.norm(v)
 
-def norm(v):
-    return math.sqrt(v[0]*v[0]+v[1]*v[1])
+def outer_prod_norm(v0, v1 : np.array):
+    return v[0]*v1[1] - v0[1]*v1[0]
+
+def distance_to_line(orig, dest, pt):
+    v_orig_dest = diff_vec(orig, dest)
+    v_orig_pt = diff_vec(orig, pt)
+    return abs(outer_prod_norm(v_orig_pt, v_orig_dest))/np.dot(v_orig_dest,v_orig_pt)
     
+    '''
+double gpspoint::distanceTo(const gpspoint &q1, const gpspoint &q2) const {
+    if ( inner_prod(q1, q2, *this) < epsilon ) { // < 0.0
+        return q1.distanceTo(*this);
+    }
+    if ( inner_prod(q2, q1, *this) < epsilon ) { // < 0.0
+        return q2.distanceTo(*this);
+    }
+    return ABS(norm_outer_prod(q1, q2, *this)) / q1.distanceTo(q2);
+}
+'''
+
 def abstraction(x,y,param):
     stk = list()
     ix = 2
@@ -40,7 +57,7 @@ def abstraction(x,y,param):
     return (x,y)
 
 if __name__ == '__main__':
-    
+    1
     tbl = np.genfromtxt('2023-06-22_16_48_37.csv', delimiter=',', skip_header=1, missing_values='', dtype=str)
     dt = np.datetime_as_string(tbl[:,3].astype(np.datetime64), timezone='UTC')
     dt = dt.astype(np.datetime64)
