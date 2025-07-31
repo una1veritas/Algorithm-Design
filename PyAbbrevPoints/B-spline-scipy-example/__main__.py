@@ -36,53 +36,26 @@ double gpspoint::distanceTo(const gpspoint &q1, const gpspoint &q2) const {
 }
 '''
 
-def abstraction(x,y,param):
+def abstraction(x, y, distance, rotation):
     path = list()
     ix = 2
     for i in range(ix):
-        path.append( (x[i], y[i]) )
+        path.append( np.array([x[i], y[i]]) )
     while ix < len(x):
-        currpoint =  np.array([x[ix-1], y[ix-1]])
-        prevpoint =  np.array([x[ix-2], y[ix-2]])
-        nextpoint = np.array([x[ix], y[ix]])
-        v_pc = diff_vec(prevpoint,currpoint)
-        v_cn = diff_vec(currpoint,nextpoint)
-        print(currpoint,prevpoint,nextpoint,v_pc,v_cn)
-        print(outer_prod_norm(v_pc, v_cn), distance_to_line(prevpoint, currpoint,nextpoint))
-        print()
+        prev = path[-2]
+        curr = path[-1]
+        next = np.array([x[ix],y[ix]])
+        outer_prod = outer_prod_norm(diff_vec(prev,curr),diff_vec(curr,next))
+        dist = distance_to_line(prev, curr, next)
+        print(outer_prod)
+        if dist >= distance or outer_prod >= rotation :
+            path.append( np.array([x[ix],y[ix]]) )
         ix += 1
-    
-    if path[-1] != (x[-1],y[-1]) :
-        path.append((x[-1],y[-1]))
-    return (x,y)
-'''
-[130.34680449 -33.59433694] [130.34643064 -33.59438019] [130.34717437 -33.59437509] [3.73849645e-04 4.32422385e-05] [ 3.69876623e-04 -3.81460413e-05]
--3.025517716438429e-08 0.10872903378191999
+        
+    if tuple(path[-1]) != ([x[-1], y[-1]]) :
+        path.append( np.array([x[-1], y[-1]]))
+    return (np.array([e[0] for e in path]), np.array([e[1] for e in path]))
 
-[130.34717437 -33.59437509] [130.34680449 -33.59433694] [130.34757566 -33.59432562] [ 3.69876623e-04 -3.81460413e-05] [4.01291996e-04 4.94699925e-05]
-3.360549485782847e-08 0.11799463393082653
-
-[130.34757566 -33.59432562] [130.34717437 -33.59437509] [130.34790472 -33.59431959] [4.01291996e-04 4.94699925e-05] [3.29056755e-04 6.02658838e-06]
--1.3860013511547907e-08 0.04685151160193921
-
-[130.34790472 -33.59431959] [130.34757566 -33.59432562] [130.34821946 -33.59435583] [3.29056755e-04 6.02658838e-06] [ 3.14740464e-04 -3.62349674e-05]
--1.3820172006795417e-08 0.06529304473802645
-
-[130.34821946 -33.59435583] [130.34790472 -33.59431959] [130.34858979 -33.5943425 ] [ 3.14740464e-04 -3.62349674e-05] [3.70329246e-04 1.33272260e-05]
-1.7613485465983608e-08 0.08137467757518727
-
-[130.34858979 -33.5943425 ] [130.34821946 -33.59435583] [130.34898754 -33.59434802] [3.70329246e-04 1.33272260e-05] [ 3.97754833e-04 -5.51529228e-06]
--7.343442601213891e-09 0.025807384989097532
-
-[130.34898754 -33.59434802] [130.34858979 -33.5943425 ] [130.34936503 -33.59437273] [ 3.97754833e-04 -5.51529228e-06] [ 3.77487391e-04 -2.47182325e-05]
--7.749843132276714e-09 0.025119167501418245
-
-[130.34936503 -33.59437273] [130.34898754 -33.59434802] [130.34979311 -33.59441615] [ 3.77487391e-04 -2.47182325e-05] [ 4.28082959e-04 -4.34127077e-05]
--5.806295690527742e-09 0.01898867766497508
-
-[130.34979311 -33.59441615] [130.34936503 -33.59437273] [130.35022431 -33.59441852] [ 4.28082959e-04 -4.34127077e-05] [ 4.31196227e-04 -2.37762934e-06]
-1.7701573164226558e-08 0.04786399601644937
-'''
 if __name__ == '__main__':
     1
     tbl = np.genfromtxt('2023-06-22_16_48_37.csv', delimiter=',', skip_header=1, missing_values='', dtype=str)
@@ -110,8 +83,9 @@ if __name__ == '__main__':
             x = np.append(x,longitude[i])
             y = np.append(y, -latitude[i])
     
-    abstraction(x, y, 1)
-    x, y = rdp_abstraction(x, y, 0.000125)
+    x, y = abstraction(x, y, 0.2, 1e-8)
+    #x, y = rdp_abstraction(x, y, 0.000125)
+
     print(len(x))
             
     ctrlparam = np.linspace(0,1,num=len(x),endpoint=True)
