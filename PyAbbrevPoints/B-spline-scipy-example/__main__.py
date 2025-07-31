@@ -24,7 +24,7 @@ def distance_to_line(orig, dest, pt):
     v_orig_pt = diff_vec(orig, pt)
     return abs(outer_prod_norm(v_orig_pt, v_orig_dest))/np.dot(v_orig_dest,v_orig_pt)
     
-    '''
+'''
 double gpspoint::distanceTo(const gpspoint &q1, const gpspoint &q2) const {
     if ( inner_prod(q1, q2, *this) < epsilon ) { // < 0.0
         return q1.distanceTo(*this);
