@@ -17,7 +17,7 @@ def norm(v : np.array):
     return np.lialg.norm(v)
 
 def outer_prod_norm(v0, v1 : np.array):
-    return v[0]*v1[1] - v0[1]*v1[0]
+    return v0[0]*v1[1] - v0[1]*v1[0]
 
 def distance_to_line(orig, dest, pt):
     v_orig_dest = diff_vec(orig, dest)
@@ -36,25 +36,25 @@ double gpspoint::distanceTo(const gpspoint &q1, const gpspoint &q2) const {
 }
 '''
 
-def abstraction(x,y,param):
-    stk = list()
+def abstraction(x, y, distance, rotation):
+    path = list()
     ix = 2
     for i in range(ix):
-        stk.append( (x[i], y[i]) )
+        path.append( np.array([x[i], y[i]]) )
     while ix < len(x):
-        stk.append( (x[ix],y[ix]) ) 
-        # last two vectors
-        p0 = stk[-3]
-        p1 = stk[-2]
-        v0 = (p1[0] - p0[0], p1[1] - p0[1])
-        p2 = stk[-1]
-        v1 = (p2[0] - p1[0], p2[1] - p1[1])
-        
-        
+        prev = path[-2]
+        curr = path[-1]
+        next = np.array([x[ix],y[ix]])
+        outer_prod = outer_prod_norm(diff_vec(prev,curr),diff_vec(curr,next))
+        dist = distance_to_line(prev, curr, next)
+        print(outer_prod)
+        if dist >= distance or outer_prod >= rotation :
+            path.append( np.array([x[ix],y[ix]]) )
         ix += 1
         
-    
-    return (x,y)
+    if tuple(path[-1]) != ([x[-1], y[-1]]) :
+        path.append( np.array([x[-1], y[-1]]))
+    return (np.array([e[0] for e in path]), np.array([e[1] for e in path]))
 
 if __name__ == '__main__':
     1
@@ -82,9 +82,9 @@ if __name__ == '__main__':
             last_datetime = dt[i]
             x = np.append(x,longitude[i])
             y = np.append(y, -latitude[i])
-    y = y * 10
     
-    x, y = rdp_abstraction(x, y, 0.0005)
+    x, y = abstraction(x, y, 0.2, 1e-8)
+    #x, y = rdp_abstraction(x, y, 0.000125)
     print(len(x))
             
     ctrlparam = np.linspace(0,1,num=len(x),endpoint=True)
