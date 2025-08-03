@@ -16,7 +16,7 @@ if __name__ == '__main__':
     x = np.linspace(0, 10, 100)
     y = np.sin(x) + np.random.normal(0, 0.2, 100) # Add some noise
     points = np.column_stack([x, y])
-    
+    print(points)
     # 2. Apply the RDP algorithm
     # epsilon is the maximum distance a point can be from the simplified line segment
     # and still be removed. A larger epsilon results in more simplification.
