@@ -3,10 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline
 import rdp
 import math
-
-def rdp_simplify(xy : np.array, epsilon):
-    xy_rdp = rdp.rdp(xy, epsilon=epsilon)
-    return xy_rdp
+from pyproj import Proj
 
 def diff_vec(orig, dest : np.array): 
     return dest - orig
@@ -34,7 +31,11 @@ double gpspoint::distanceTo(const gpspoint &q1, const gpspoint &q2) const {
 }
 '''
 
-def test_simplify(xy, dist, rot):
+def simplify_RDP(xy : np.array, epsilon):
+    xy_rdp = rdp.rdp(xy, epsilon=epsilon)
+    return xy_rdp
+
+def simplify_test(xy, dist, rot):
     path = list()
     ix = 2
     for i in range(ix):
@@ -55,84 +56,93 @@ def test_simplify(xy, dist, rot):
     return path
 
 '''  '''
-def min_simplify(xy : np.array, tolerance : float):
-    tbl = [[float('inf') for j in range(len(xy))] for i in range(len(xy))]
-    for from_ix in range(len(tbl)):
-        for to_ix in range(from_ix+1, len(tbl[from_ix])):
-            if from_ix == to_ix :
-                tbl[from_ix][to_ix] = 0 
-            elif from_ix + 1 == to_ix :
-                tbl[from_ix][to_ix] = 0
+def simplify_shortest(xy : np.array, tolerance : float):
+    n = len(xy)
+    smpl = dict()
+    for gap in range(n):
+        for fix in range(n):
+            tix = fix + gap
+            if not (tix < n) :
+                break
+            if fix == tix :
+                smpl[(fix, tix)] = (1, fix)
+            elif fix + 1 == tix :
+                smpl[(fix, tix)] = (2, fix)
             else:
-                max_ix = from_ix
-                max_dist = -float('inf')
-                for ix in range(from_ix+1, to_ix):
-                    ix_dist = distance_to_line(xy[from_ix], xy[to_ix], xy[ix])
-                    if ix_dist > max_dist :
-                        max_dist = ix_dist
-                        max_ix = ix
-                tbl[from_ix][to_ix] = max_dist #if max_dist <= tolerance else float('inf')
-                #print(from_ix, to_ix, max_ix, max_dist)
-        
-    # for rx in range(len(tbl)):
-    #     for cx in range(len(tbl[rx])):
-    #         if tbl[rx][cx] == float('inf') :
-    #             srep = ''
+                for mix in range(fix+1, tix):
+                    dist = distance_to_line(xy[fix], xy[tix], xy[mix])
+                    if dist > tolerance :
+                        if (fix, tix) not in smpl \
+                        or smpl[(fix, tix)][0] > smpl[(fix, mix)][0] - 1 + smpl[(mix, tix)][0] :
+                            smpl[(fix, tix)] = (smpl[(fix, mix)][0] - 1 + smpl[(mix, tix)][0], mix)
+                if (fix, tix) not in smpl :
+                    smpl[(fix, tix)] = (2, fix)
+    
+    # for rix in range(n):
+    #     for cix in range(n):
+    #         if (rix,cix) in smpl :
+    #             print(f'{smpl[(rix,cix)][0]:3} ', end='')
     #         else:
-    #             srep = f'{tbl[rx][cx]:3.2f}'
-    #         print(f'{srep:6} ', end='')
+    #             print('    ', end='')
+    #     print()
+    # print()
+    #
+    # for rix in range(midix.shape[0]):
+    #     for cix in range(midix.shape[1]):
+    #         print(f'{midix[rix,cix]:3} ', end='')
     #     print()
     # print()
     
-    path = list()
-    ix = len(xy) - 1
-    path.append(ix)
-    while ix > 0 :
-        dst = ix
-        for dx in range(0,ix):
-            if tbl[dx][ix] <= tolerance :
-                dst = dx
-                break
-        if dst == ix :
-            print('error')
-            return
-        ix = dst
-        path.append(ix)
-    path.reverse()
-    print(path)
-    newxy = np.array([xy[i] for i in path])
-    #print(newxy)
-    return newxy
+    def find_path(i, j):
+        if smpl[(i,j)][0] == 1 :
+            #print([i])
+            return [i]
+        elif smpl[(i,j)][0] == 2 :
+            #print([i,j])
+            return [i,j]
+        else:
+            mix = smpl[(i,j)][1]
+            return find_path(i,mix)[:-1] + find_path(mix, j)
+    path_ix = find_path(0,len(xy)-1)
+    #print(path_ix)
+    return np.array([xy[i] for i in path_ix])
 
 
 if __name__ == '__main__':
     tbl = np.genfromtxt('2023-06-22_16_48_37.csv', delimiter=',', skip_header=1, missing_values='', dtype=str)
     dt = np.datetime_as_string(tbl[:,3].astype(np.datetime64), timezone='UTC')
     dt = dt.astype(np.datetime64)
-    latitude =tbl[:,0].astype(np.float64)
-    longitude =tbl[:,1].astype(np.float64)
+    latitude = tbl[:,0].astype(np.float64)
+    longitude = tbl[:,1].astype(np.float64)
+    center = (np.mean(longitude), np.mean(latitude))
+    print(f'center = {center}')
     pnum = len(dt)
     print(f'{pnum} points.')
     #print(dt)
     
+    proj = Proj(proj='aeqd', lat_0=center[1], lon_0=center[0], datum='WGS84')
     xy = list()
     diff = list()
     last_datetime = None
     for i in range(len(tbl)):
         if last_datetime is None:
             last_datetime = dt[i]
-            xy.append(np.array([longitude[i], -latitude[i]]))
+            x, y = proj(longitude[i], latitude[i])
+            xy.append((x, y))
             continue
         past = dt[i] - last_datetime
         if past.item().total_seconds() >= 10 :
             last_datetime = dt[i]
-            xy.append(np.array([longitude[i], -latitude[i]]))
+            x, y = proj(longitude[i], latitude[i])
+            xy.append((x, y))
     xy = np.array(xy)
     
+    print(xy)
     print(len(xy))
-    simplified_xy = min_simplify(xy, 0.1)
+    simplified_xy = simplify_shortest(xy, 0.1)
     
-    #xy = rdp_simplify(xy, 0.000125)
+    
+    #xy = simplify_RDP(xy, 0.000125)
     print(len(simplified_xy))
     
     #exit()
@@ -147,7 +157,7 @@ if __name__ == '__main__':
     #     print(x_new[i], y_new[i])
     
     plt.plot(x, y, '.', lw=0.1, alpha=0.5)
-    plt.plot(sx, sy, '-')
+    plt.plot(sx, sy, 'b.-')
     plt.plot(x_new, y_new, '-')
     plt.legend(['Input points', 'Selected points', 'Interpolated B-spline', 'True'],loc='best')
     plt.title('B-Spline interpolation')
