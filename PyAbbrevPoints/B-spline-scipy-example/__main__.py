@@ -117,22 +117,26 @@ if __name__ == '__main__':
     tbl = np.genfromtxt('2023-06-22_16_48_37.csv', delimiter=',', skip_header=1, missing_values='', dtype=str)
     dt = np.datetime_as_string(tbl[:,3].astype(np.datetime64), timezone='UTC')
     dt = dt.astype(np.datetime64)
-    print(f'{len(dt)} points.')
+    print(f'raw data contains {len(dt)} points.')
     #print(dt)
     lati = tbl[:,0].astype(np.float64)
     longi = tbl[:,1].astype(np.float64)
     center_lonlat = (np.mean(longi), np.mean(lati))
     print(f'center = {center_lonlat}')
+    
+    tolerance = 12 
+    '''epsilon, the 1/2 width of simplified lines.'''
+    
     '''convert (lon, lat) to points on the cartesian plane by azimuthal equidistance projection. '''
     proj = Proj(proj='aeqd', lon_0=center_lonlat[0], lat_0=center_lonlat[1], datum='WGS84')
     xy = list()
     last_datetime = epoch_start
     for i in range(len(tbl)):
         past = dt[i] - last_datetime
-        if past.item().total_seconds() >= 1 :
+        if past.item().total_seconds() >= 5 :
             last_datetime = dt[i]
             x, y = proj(longi[i], lati[i])
-            if len(xy) > 0 and np.linalg.norm(np.array([x, y]) - xy[-1]) < 15/2 :
+            if len(xy) > 0 and np.linalg.norm(np.array([x, y]) - xy[-1]) < 1/2*tolerance :
                 continue
             xy.append((x, y))
     #xy =xy[95:160]
@@ -141,12 +145,12 @@ if __name__ == '__main__':
             for x, y in xy:
                 f.write(f'{x},{y}\n')
     xy = np.array(xy)
-    print(len(xy))
+    print(f'points in the input provided: {len(xy)}')
     
-    tolerance = 15
+    
     simple_xy, path = simplify_shortest(xy, tolerance)
     #simple_xy = simplify_RDP(xy, 0.000125)
-    print(len(simple_xy))
+    print(f'simplified xy size = {len(simple_xy)}')
     print(f'tolerance = {tolerance}')
     # for ix in range(len(path) - 1):
     #     print(path[ix], xy[path[ix]], xy[path[ix+1]])
