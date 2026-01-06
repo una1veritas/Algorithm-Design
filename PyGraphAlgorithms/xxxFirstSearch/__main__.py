@@ -61,19 +61,16 @@ def BreadthFirstSearch(G, start, do_vertex = None, do_edge = None):
 def DepthFirstSearch(G, start, do_vertex = None, do_edge = None):
     tree = Graph(G.vertices, {})         # 各点に最初に到達した時の道の辺をまとめた木
     visited = set()         # 訪問済みの点
-    history = deque()      # 訪問履歴の列（末尾がわからスタックとして利用）
+    path = deque()      # 訪問履歴の列（末尾がわからスタックとして利用）
     edges_checked = set()
     
-    history.append( start )    #push start
-    while history :  # while history is not empty
-        print(f'history = {history}, visited = {visited}')
-        v = history[-1]    # 訪問履歴の最後の要素を見る（削除はしない）
-        if v not in visited :
-            # 未訪問の場合
-            if callable(do_vertex) : 
-                do_vertex(v)    # v を訪問．先がけ順での実行
-            visited.add(v)      # v は訪問済み
-        nx = None
+    if callable(do_vertex) : 
+        do_vertex(start)    # v を訪問．先がけ順での実行
+    path.append( start )    # 訪問済みの点を path に push
+    while path :  # while history is not empty
+        print(f'path = {path}')
+        v = path[-1]    # 訪問履歴の最後の要素を見る（削除はしない）
+        nx = None   # 次に訪問する点
         for w in sorted(G.adjacent_points(v)) :
             if (v, w) not in edges_checked and (w, v) not in edges_checked:
                 if callable(do_edge) : 
@@ -84,10 +81,14 @@ def DepthFirstSearch(G, start, do_vertex = None, do_edge = None):
             nx = w
             break
         if nx != None :
-            history.append(nx)
+            # 未訪問の隣接点
+            if callable(do_vertex) : 
+                do_vertex(nx)    # v を訪問．先がけ順での実行
+            visited.add(nx)      # v は訪問済み
+            path.append(nx)
             tree.add_edge(v, nx)
         else:
-            history.pop()
+            path.pop()
                         
     return tree
 
