@@ -17,7 +17,7 @@ class Graph:
         self.vertices.add(u)
         self.vertices.add(v)
         self.edges.add( (u, v) )
-
+    
     def adjacent(self, u, v):
         return (u,v) in self.edges or (v,u) in self.edges
         
@@ -35,7 +35,7 @@ def BreadthFirstSearch(G, start, do_vertex = None, do_edge = None):
     T = Graph(G.vertices, {})
     Q = list()
     enqueued = set()
-    checked = set()
+    checked_edges = set()
     Q.append(start)  # push the initial front line
     enqueued.add(start)
     while len(Q) != 0 :
@@ -43,10 +43,10 @@ def BreadthFirstSearch(G, start, do_vertex = None, do_edge = None):
         if callable(do_vertex) : 
             do_vertex(v)  # v を訪問．
         for w in G.adjacent_points(v) :
-            if (v, w) not in checked and (w, v) not in checked :
+            if not ((v, w) in checked_edges or (w, v) in checked_edges) :
                 if callable(do_edge) :
                     do_edge( (v, w) )
-                checked.add( (v, w) )
+                checked_edges.add( (v, w) )
             if w not in enqueued : 
                 Q.append(w)
                 enqueued.add(w)
