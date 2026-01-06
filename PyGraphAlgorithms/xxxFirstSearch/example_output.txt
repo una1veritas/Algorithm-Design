@@ -1,0 +1,147 @@
+# "{'s', 'a', 'b', 'c', 'd', 'e', 'f', 'g'}" "{('s','a'), ('s', 'c'), ('a', 'b'), ('c', 'd'), ('c', 'e'), ('d', 'e'), ('d', 'f'), ('e', 'f'), ('e', 'g'), ('f', 'g')}" "'s'"
+
+{'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'} {('c', 'd'), ('d', 'f'), ('s', 'a'), ('c', 'e'), ('s', 'c'), ('d', 'e'), ('e', 'f'), ('a', 'b'), ('f', 'g'), ('e', 'g')}
+G=Graph({'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}, {('c', 'd'), ('d', 'f'), ('s', 'a'), ('c', 'e'), ('s', 'c'), ('d', 'e'), ('e', 'f'), ('a', 'b'), ('f', 'g'), ('e', 'g')}) , start = s
+
+Breadth First Search:
+schedule = deque(['s']), checked = {'s'}
+visiting s
+checked ('s', 'a')
+checked ('s', 'c')
+schedule = deque(['a', 'c']), checked = {'c', 'a', 's'}
+visiting a
+checked ('a', 'b')
+schedule = deque(['c', 'b']), checked = {'c', 'b', 'a', 's'}
+visiting c
+checked ('c', 'd')
+checked ('c', 'e')
+schedule = deque(['b', 'd', 'e']), checked = {'d', 'b', 's', 'e', 'c', 'a'}
+visiting b
+schedule = deque(['d', 'e']), checked = {'d', 'b', 's', 'e', 'c', 'a'}
+visiting d
+checked ('d', 'e')
+checked ('d', 'f')
+schedule = deque(['e', 'f']), checked = {'d', 'b', 's', 'e', 'c', 'f', 'a'}
+visiting e
+checked ('e', 'f')
+checked ('e', 'g')
+schedule = deque(['f', 'g']), checked = {'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}
+visiting f
+checked ('f', 'g')
+schedule = deque(['g']), checked = {'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}
+visiting g
+BFS Tree = Graph({'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}, {('c', 'd'), ('d', 'f'), ('s', 'a'), ('c', 'e'), ('s', 'c'), ('a', 'b'), ('e', 'g')}) 
+
+Depth First Search:
+history = deque(['s']), visited = set()
+visiting s
+checked ('s', 'a')
+history = deque(['s', 'a']), visited = {'s'}
+visiting a
+checked ('a', 'b')
+history = deque(['s', 'a', 'b']), visited = {'a', 's'}
+visiting b
+history = deque(['s', 'a']), visited = {'b', 'a', 's'}
+history = deque(['s']), visited = {'b', 'a', 's'}
+checked ('s', 'c')
+history = deque(['s', 'c']), visited = {'b', 'a', 's'}
+visiting c
+checked ('c', 'd')
+history = deque(['s', 'c', 'd']), visited = {'c', 'b', 'a', 's'}
+visiting d
+checked ('d', 'e')
+history = deque(['s', 'c', 'd', 'e']), visited = {'d', 'b', 's', 'c', 'a'}
+visiting e
+checked ('e', 'c')
+checked ('e', 'f')
+history = deque(['s', 'c', 'd', 'e', 'f']), visited = {'d', 'b', 's', 'e', 'c', 'a'}
+visiting f
+checked ('f', 'd')
+checked ('f', 'g')
+history = deque(['s', 'c', 'd', 'e', 'f', 'g']), visited = {'d', 'b', 's', 'e', 'c', 'f', 'a'}
+visiting g
+checked ('g', 'e')
+history = deque(['s', 'c', 'd', 'e', 'f']), visited = {'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}
+history = deque(['s', 'c', 'd', 'e']), visited = {'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}
+history = deque(['s', 'c', 'd']), visited = {'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}
+history = deque(['s', 'c']), visited = {'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}
+history = deque(['s']), visited = {'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}
+DFS Tree = Graph({'d', 'b', 'g', 's', 'e', 'c', 'f', 'a'}, {('c', 'd'), ('s', 'a'), ('s', 'c'), ('d', 'e'), ('e', 'f'), ('a', 'b'), ('f', 'g')}) 
+
+
+"{'s', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}" "{('s','c'), ('s', 'f'), ('a', 'b'), ('b', 'c'), ('b', 'f'), ('c', 'd'), ('c', 'e'), ('e', 'f'), ('f', 'g'), ('f', 'h'), ('g','h')}" "'s'"
+
+{'b', 'd', 's', 'a', 'e', 'f', 'g', 'h', 'c'} {('b', 'c'), ('c', 'e'), ('f', 'h'), ('f', 'g'), ('c', 'd'), ('s', 'f'), ('s', 'c'), ('g', 'h'), ('e', 'f'), ('b', 'f'), ('a', 'b')}
+G=Graph({'b', 'd', 's', 'a', 'e', 'f', 'g', 'h', 'c'}, {('b', 'c'), ('c', 'e'), ('f', 'h'), ('f', 'g'), ('c', 'd'), ('s', 'f'), ('e', 'f'), ('g', 'h'), ('s', 'c'), ('b', 'f'), ('a', 'b')}) , start = s
+
+Breadth First Search:
+schedule = deque(['s']), checked = {'s'}
+visiting s
+checked ('s', 'c')
+checked ('s', 'f')
+schedule = deque(['c', 'f']), checked = {'s', 'f', 'c'}
+visiting c
+checked ('c', 'b')
+checked ('c', 'd')
+checked ('c', 'e')
+schedule = deque(['f', 'b', 'd', 'e']), checked = {'b', 'd', 's', 'f', 'e', 'c'}
+visiting f
+checked ('f', 'b')
+checked ('f', 'e')
+checked ('f', 'g')
+checked ('f', 'h')
+schedule = deque(['b', 'd', 'e', 'g', 'h']), checked = {'b', 'd', 's', 'f', 'e', 'g', 'h', 'c'}
+visiting b
+checked ('b', 'a')
+schedule = deque(['d', 'e', 'g', 'h', 'a']), checked = {'b', 'd', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+visiting d
+schedule = deque(['e', 'g', 'h', 'a']), checked = {'b', 'd', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+visiting e
+schedule = deque(['g', 'h', 'a']), checked = {'b', 'd', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+visiting g
+checked ('g', 'h')
+schedule = deque(['h', 'a']), checked = {'b', 'd', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+visiting h
+schedule = deque(['a']), checked = {'b', 'd', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+visiting a
+BFS Tree = Graph({'b', 'd', 's', 'a', 'e', 'f', 'g', 'h', 'c'}, {('c', 'e'), ('f', 'h'), ('f', 'g'), ('c', 'd'), ('b', 'a'), ('s', 'f'), ('s', 'c'), ('c', 'b')}) 
+
+Depth First Search:
+history = deque(['s']), visited = set()
+visiting s
+checked ('s', 'c')
+history = deque(['s', 'c']), visited = {'s'}
+visiting c
+checked ('c', 'b')
+history = deque(['s', 'c', 'b']), visited = {'s', 'c'}
+visiting b
+checked ('b', 'a')
+history = deque(['s', 'c', 'b', 'a']), visited = {'s', 'c', 'b'}
+visiting a
+history = deque(['s', 'c', 'b']), visited = {'s', 'a', 'c', 'b'}
+checked ('b', 'f')
+history = deque(['s', 'c', 'b', 'f']), visited = {'s', 'a', 'c', 'b'}
+visiting f
+checked ('f', 'e')
+history = deque(['s', 'c', 'b', 'f', 'e']), visited = {'b', 's', 'a', 'f', 'c'}
+visiting e
+checked ('e', 'c')
+history = deque(['s', 'c', 'b', 'f']), visited = {'b', 's', 'a', 'f', 'e', 'c'}
+checked ('f', 'g')
+history = deque(['s', 'c', 'b', 'f', 'g']), visited = {'b', 's', 'a', 'f', 'e', 'c'}
+visiting g
+checked ('g', 'h')
+history = deque(['s', 'c', 'b', 'f', 'g', 'h']), visited = {'b', 's', 'a', 'f', 'e', 'g', 'c'}
+visiting h
+checked ('h', 'f')
+history = deque(['s', 'c', 'b', 'f', 'g']), visited = {'b', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+history = deque(['s', 'c', 'b', 'f']), visited = {'b', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+checked ('f', 's')
+history = deque(['s', 'c', 'b']), visited = {'b', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+history = deque(['s', 'c']), visited = {'b', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+checked ('c', 'd')
+history = deque(['s', 'c', 'd']), visited = {'b', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+visiting d
+history = deque(['s', 'c']), visited = {'b', 'd', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+history = deque(['s']), visited = {'b', 'd', 's', 'a', 'f', 'e', 'g', 'h', 'c'}
+DFS Tree = Graph({'b', 'd', 's', 'a', 'e', 'f', 'g', 'h', 'c'}, {('f', 'g'), ('c', 'd'), ('f', 'e'), ('b', 'a'), ('b', 'f'), ('g', 'h'), ('s', 'c'), ('c', 'b')}) 

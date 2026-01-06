@@ -73,7 +73,7 @@ def DepthFirstSearch(G, start, do_vertex = None, do_edge = None):
             if callable(do_vertex) : 
                 do_vertex(v)    # v を訪問．先がけ順での実行
             visited.add(v)      # v は訪問済み
-        next = None
+        nx = None
         for w in sorted(G.adjacent_points(v)) :
             if (v, w) not in edges_checked and (w, v) not in edges_checked:
                 if callable(do_edge) : 
@@ -81,17 +81,19 @@ def DepthFirstSearch(G, start, do_vertex = None, do_edge = None):
                 edges_checked.add( (v, w) )
             if w in visited :
                 continue
-            next = w
+            nx = w
             break
-        if next != None :
-            history.append(next)
-            tree.add_edge(v, next)
+        if nx != None :
+            history.append(nx)
+            tree.add_edge(v, nx)
         else:
             history.pop()
                         
     return tree
 
 #"{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}" "{('a','c'), ('a', 'e'), ('a', 'd'), ('b', 'c'), ('b', 'h'), ('c', 'd'), ('c', 'h'), ('d', 'h'), ('e', 'f'), ('e', 'g'), ('e', 'h')}" "'a'"
+# "{'s', 'a', 'b', 'c', 'd', 'e', 'f', 'g'}" "{('s','a'), ('s', 'c'), ('a', 'b'), ('c', 'd'), ('c', 'e'), ('d', 'e'), ('d', 'f'), ('e', 'f'), ('e', 'g'), ('f', 'g')}" "'s'"
+
 #入力を集合として解釈
 V = eval(sys.argv[1])
 E = eval(sys.argv[2])
