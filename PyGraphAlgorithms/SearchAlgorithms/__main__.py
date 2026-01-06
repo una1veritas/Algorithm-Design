@@ -7,6 +7,7 @@ Created on 2019/12/23
 # example execution:
 # python3 BreadthFirstSearch.py "{1, 2, 3, 4, 5, 6}" "{(1, 2), (2, 3), (1, 4), (3, 4), (4, 5), (2,6), (3, 6)}" 1
 import sys
+from collections import deque
 
 class Graph:
     def __init__(self, vertices={}, edges={}):
@@ -32,50 +33,63 @@ class Graph:
         return 'Graph(' + str(self.vertices) + ', ' + str(self.edges) + ') '
     
 def BreadthFirstSearch(G, start, do_vertex = None, do_edge = None):
-    T = Graph(G.vertices, {})
-    Q = list()
-    enqueued = set()
-    checked_edges = set()
-    Q.append(start)  # push the initial front line
-    enqueued.add(start)
-    while len(Q) != 0 :
-        v = Q.pop(0)
+    ''' initialization '''
+    tree = Graph(G.vertices, {})    # 根は start
+    schedule = deque()              # 訪問予約の列
+    checked = set()                 # 訪問済みまたは訪問予約済みの点
+    edges_checked = set()                 # 訪問済みの辺
+    schedule.append(start)      # push the initial vertex
+    checked.add(start)
+    
+    '''search loop'''
+    while schedule : # while schedule is not empty
+        print(f'schedule = {schedule}, checked = {checked}')
+        v = schedule.popleft()
         if callable(do_vertex) : 
-            do_vertex(v)  # v を訪問．
-        for w in G.adjacent_points(v) :
-            if not ((v, w) in checked_edges or (w, v) in checked_edges) :
-                if callable(do_edge) :
+            do_vertex(v)  # v を訪問して必要な作業を実行
+        for w in sorted(G.adjacent_points(v)) :
+            if (v, w) not in edges_checked and (w, v) not in edges_checked :
+                if callable(do_edge) : 
                     do_edge( (v, w) )
-                checked_edges.add( (v, w) )
-            if w not in enqueued : 
-                Q.append(w)
-                enqueued.add(w)
-                T.add_edge(v, w)
-    return T
+                edges_checked.add( (v, w) )
+            if w not in checked : 
+                schedule.append(w)
+                checked.add(w)
+                tree.add_edge(v, w)
+    return tree
 
 def DepthFirstSearch(G, start, do_vertex = None, do_edge = None):
-    T = Graph(G.vertices, {})         # 各点に最初に到達した時の道の辺をまとめた木
-    visited = set()     # 訪問済みの点の集合
-    S = list()          # 始点からの探索パスを表す列（スタックとして使用）
-    S.append( start )   
-    while len(S) > 0 :  # == 0 なら S は
-        v = S[-1]       # スタックのトップ（最後の要素）を訪問する v として参照
+    tree = Graph(G.vertices, {})         # 各点に最初に到達した時の道の辺をまとめた木
+    visited = set()         # 訪問済みの点
+    history = deque()      # 訪問履歴の列（末尾がわからスタックとして利用）
+    edges_checked = set()
+    
+    history.append( start )    #push start
+    while history :  # while history is not empty
+        print(f'history = {history}, visited = {visited}')
+        v = history[-1]    # 訪問履歴の最後の要素を見る（削除はしない）
         if v not in visited :
             # 未訪問の場合
             if callable(do_vertex) : 
-                do_vertex(v)  # v を訪問．先がけ順での実行となる
-            visited.add(v)  # v を訪問済みに
-            for w in G.adjacent_points(v):
-                if not T.adjacent(v, w) :
-                    if callable(do_edge) : 
-                        do_edge( (v, w) )
-                if w not in visited :
-                    S.append(w)
-                    T.add_edge(v, w)
+                do_vertex(v)    # v を訪問．先がけ順での実行
+            visited.add(v)      # v は訪問済み
+        next = None
+        for w in sorted(G.adjacent_points(v)) :
+            if (v, w) not in edges_checked and (w, v) not in edges_checked:
+                if callable(do_edge) : 
+                    do_edge( (v, w) )
+                edges_checked.add( (v, w) )
+            if w in visited :
+                continue
+            next = w
+            break
+        if next != None :
+            history.append(next)
+            tree.add_edge(v, next)
         else:
-            # 訪問済み（戻ってきたところ）の場合
-            S.pop()
-    return T
+            history.pop()
+                        
+    return tree
 
 #"{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}" "{('a','c'), ('a', 'e'), ('a', 'd'), ('b', 'c'), ('b', 'h'), ('c', 'd'), ('c', 'h'), ('d', 'h'), ('e', 'f'), ('e', 'g'), ('e', 'h')}" "'a'"
 #入力を集合として解釈
@@ -95,6 +109,6 @@ print('G='+str(G)+', start = ' + str(s))
 
 #計算し，得られた木を表示
 print('\nBreadth First Search:')
-print('BFS Tree =', BreadthFirstSearch(G, s, do_vertex=lambda v: print('visited ', v), do_edge=lambda e: print('checked', e)))
+print('BFS Tree =', BreadthFirstSearch(G, s, do_vertex=lambda v: print(f'visiting {v}'), do_edge=lambda e: print(f'checked {e}')))
 print('\nDepth First Search:')
-print('DFS Tree =', DepthFirstSearch(G, s, do_vertex=lambda v: print('visited ', v), do_edge=lambda e: print('checked', e)))
+print('DFS Tree =', DepthFirstSearch(G, s, do_vertex=lambda v: print(f'visiting {v}'), do_edge=lambda e: print(f'checked {e}')))
