@@ -37,13 +37,13 @@ def BreadthFirstSearch(G, start, do_vertex = None, do_edge = None):
     tree = Graph(G.vertices, {})    # 根は start
     schedule = deque()              # 訪問予約の列
     checked = set()                 # 訪問済みまたは訪問予約済みの点
-    edges_checked = set()                 # 訪問済みの辺
+    edges_checked = set()           # 訪問済みの辺
     schedule.append(start)      # push the initial vertex
     checked.add(start)
     
     '''search loop'''
     while schedule : # while schedule is not empty
-        print(f'schedule = {schedule}, checked = {checked}')
+        print(f'schedule = {schedule}, \nchecked = {checked}\n')
         v = schedule.popleft()
         if callable(do_vertex) : 
             do_vertex(v)  # v を訪問して必要な作業を実行
@@ -67,6 +67,7 @@ def DepthFirstSearch(G, start, do_vertex = None, do_edge = None):
     if callable(do_vertex) : 
         do_vertex(start)    # v を訪問．先がけ順での実行
     path.append( start )    # 訪問済みの点を path に push
+    visited.add(start)
     while path :  # while history is not empty
         print(f'path = {path}')
         v = path[-1]    # 訪問履歴の最後の要素を見る（削除はしない）
@@ -112,6 +113,6 @@ print('G='+str(G)+', start = ' + str(s))
 
 #計算し，得られた木を表示
 print('\nBreadth First Search:')
-print('BFS Tree =', BreadthFirstSearch(G, s, do_vertex=lambda v: print(f'visiting {v}'), do_edge=lambda e: print(f'checked {e}')))
+print('BFS Tree =', BreadthFirstSearch(G, s, do_vertex=lambda v: print(f'visiting {v}'), do_edge=lambda e: print(f'{e}')))
 print('\nDepth First Search:')
-print('DFS Tree =', DepthFirstSearch(G, s, do_vertex=lambda v: print(f'visiting {v}'), do_edge=lambda e: print(f'checked {e}')))
+print('DFS Tree =', DepthFirstSearch(G, s, do_vertex=lambda v: print(f'visiting {v}'), do_edge=lambda e: print(f'{e}')))
