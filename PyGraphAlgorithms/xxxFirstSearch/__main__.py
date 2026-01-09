@@ -75,7 +75,7 @@ def DepthFirstSearch(G, start, do_vertex = None, do_edge = None):
         for w in sorted(G.adjacent_points(v)) :
             if (v, w) not in edges_checked and (w, v) not in edges_checked:
                 if callable(do_edge) : 
-                    do_edge( (v, w) )
+                    do_edge( (v, w) )   #e を訪問
                 edges_checked.add( (v, w) )
             if w in visited :
                 continue
@@ -113,6 +113,6 @@ print('G='+str(G)+', start = ' + str(s))
 
 #計算し，得られた木を表示
 print('\nBreadth First Search:')
-print('BFS Tree =', BreadthFirstSearch(G, s, do_vertex=lambda v: print(f'visiting {v}'), do_edge=lambda e: print(f'{e}')))
+print('BFS Tree =', BreadthFirstSearch(G, s, do_vertex=lambda v: print(f'visit {v}'), do_edge=lambda e: print(f'visit {e}')))
 print('\nDepth First Search:')
-print('DFS Tree =', DepthFirstSearch(G, s, do_vertex=lambda v: print(f'visiting {v}'), do_edge=lambda e: print(f'{e}')))
+print('DFS Tree =', DepthFirstSearch(G, s, do_vertex=lambda v: print(f'visit {v}'), do_edge=lambda e: print(f'visit {e}')))
