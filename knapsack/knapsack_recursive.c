@@ -8,8 +8,7 @@ int knapsack_recursive(const int prices[], const int budget, bool cart[]) {
 	int sum0, sum1;   	// prices[nsize - 1] を購入しない場合と購入した場合それぞれの合計金額
 	int nsize;
 	for (nsize = 0; prices[nsize] ; ++nsize) {}
-	bool cart0[nsize];	// 購入しない場合の nsize 番目までについてのベストな購入リスト
-	bool cart1[nsize];	// 購入する場合の nsize 番目までについてのベストな購入リスト
+	bool bettercart[nsize];	// nsize 番目以降についてのよりよい購入リスト
 
 	// price 列の終端に至った場合
 	if ( prices[0] == 0 ) {
