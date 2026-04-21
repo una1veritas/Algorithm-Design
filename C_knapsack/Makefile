@@ -2,6 +2,8 @@ PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 OBJS = knapsack.o
 
+BUILD_MODE = run
+
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -g
 else ifeq ($(BUILD_MODE),run)
@@ -10,14 +12,15 @@ else ifeq ($(BUILD_MODE),linuxtools)
 	CFLAGS += -g -pg -fprofile-arcs -ftest-coverage
 	LDFLAGS += -pg -fprofile-arcs -ftest-coverage
 else
-#    $(error Build mode $(BUILD_MODE) not supported by this Makefile)
+   $(error Build mode $(BUILD_MODE) not supported by this Makefile)
     CFLAGS = -g -Wall
 endif
 
 all:	knapsack.exe
 
 knapsack.exe:	$(OBJS)
-	$(CXX) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^
+#	$(CXX) $(LDFLAGS) -o $@ $^
 
 %.o:	$(PROJECT_ROOT)%.cpp
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<

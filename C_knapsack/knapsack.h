@@ -8,17 +8,14 @@
 #ifndef KNAPSACK_H_
 #define KNAPSACK_H_
 
-typedef struct {
-	int * prices;
-	int   number;
-} PriceList;
+#include <stdbool.h>
 
 /*
 
 int best_recursive(Knapsack * list, int fromIndex, Knapsack * best);
 */
-int best_recursive(PriceList * list, int start, int budget);
-int best_enumerate(PriceList * list, int number, int budget);
+int best_recursive(int list[], int num, int spot, int budget, bool cart[]);
+int best_enumerate(int list[], int num, int budget);
 /*
 int best_dp(PriceList list, int budget, char cart[]);
 */
