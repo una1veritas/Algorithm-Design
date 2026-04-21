@@ -9,7 +9,8 @@
 #define KNAPSACK_H_
 
 
-int knapsack_allsubset(const int prices[], const int budget, bool cart[]);
+int knapsack_enumerate(const int prices[], const int budget, bool cart[]);
+
 int knapsack_recursive(const int prices[], const int budget, bool cart[]);
 int knapsack_dp(const int prices[], const int budget, bool cart[]);
 

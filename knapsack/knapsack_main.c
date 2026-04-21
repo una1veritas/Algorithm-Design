@@ -50,13 +50,9 @@ int main (int argc, const char * argv[]) {
 	printf("\n\n");
 	fflush(stdout);
 
-<<<<<<< HEAD
 	bool cart[n];
-=======
-	char cart[n];
->>>>>>> knapsack_recursive_revert
 	for(int i = 0; i < n; ++i)
-		cart[i] = 0;
+		cart[i] = false;
 
 	// compute.
 	printf("Find the best by recursive function.\n");
@@ -64,11 +60,7 @@ int main (int argc, const char * argv[]) {
 	counter = 0;
 #endif
 	timespec_get(&start, TIME_UTC); 	// swatch = clock();
-<<<<<<< HEAD
 	total = knapsack_recursive(plist, budget, cart);
-=======
-	total = knapsack_recursive(plist, n, budget, cart);
->>>>>>> knapsack_recursive_revert
 	timespec_get(&stop, TIME_UTC);
 	secs = stop.tv_sec - start.tv_sec; // swatch = clock() - swatch;
 	nanos = stop.tv_nsec - start.tv_nsec;
@@ -84,21 +76,14 @@ int main (int argc, const char * argv[]) {
 	}
 	printf("\n\n");
 
-<<<<<<< HEAD
-=======
-
->>>>>>> knapsack_recursive_revert
+/*
 	// -----------------------
 	printf("Find the best by enumerating all subsets.\n");
 #ifdef USE_COUNTER
 	counter = 0;
 #endif
 	timespec_get(&start, TIME_UTC); 	// swatch = clock();
-<<<<<<< HEAD
-	total = knapsack_allsubset(plist, budget, cart);
-=======
-	total = knapsack_allsubset(plist, n, budget, cart);
->>>>>>> knapsack_recursive_revert
+	total = knapsack_enumerate(plist, budget, cart);
 	timespec_get(&stop, TIME_UTC); 	// swatch = clock() - swatch;
 	secs = stop.tv_sec - start.tv_sec; // swatch = clock() - swatch;
 	nanos = stop.tv_nsec - start.tv_nsec;
@@ -113,6 +98,6 @@ int main (int argc, const char * argv[]) {
 			printf("%d (%d), ", i, plist[i]);
 	}
 	printf("\n\n");
-
+*/
     return 0;
 }

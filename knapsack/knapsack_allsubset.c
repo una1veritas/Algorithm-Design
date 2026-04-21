@@ -5,7 +5,7 @@
 #include "knapsack.h"
 // 入力： prices 商品の価格リスト, nsize リストの先頭から購入を検討する商品の数（リストの長さ）, budget 予算額
 // 出力： 返値はベストな購入での合計額, cart はベストな購入で i 番目の商品が選ばれているかを格納
-int knapsack_allsubset(const int prices[], const int budget, bool cart[]) {
+int knapsack_enumerate(const int prices[], const int budget, bool cart[]) {
 	int nsize;
 	for (nsize = 0; prices[nsize] ; ++nsize) {}
 
@@ -40,14 +40,9 @@ int knapsack_allsubset(const int prices[], const int budget, bool cart[]) {
 		}
 		// 部分集合 subset を二進数と見なしてインクリメントする
 		for(item = 0; item < nsize + 1; ++item) {
-<<<<<<< HEAD
 			if ( subset[item] == false ) {
-					subset[item] = true;
-=======
-			if ( subset[item] == 0 ) {
-					subset[item] = 1;
->>>>>>> knapsack_recursive_revert
-					break;
+				subset[item] = 1;
+				break;
 			}
 			subset[item] = false;
 		}
