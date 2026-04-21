@@ -40,8 +40,13 @@ int knapsack_allsubset(const int prices[], const int budget, bool cart[]) {
 		}
 		// 部分集合 subset を二進数と見なしてインクリメントする
 		for(item = 0; item < nsize + 1; ++item) {
+<<<<<<< HEAD
 			if ( subset[item] == false ) {
 					subset[item] = true;
+=======
+			if ( subset[item] == 0 ) {
+					subset[item] = 1;
+>>>>>>> knapsack_recursive_revert
 					break;
 			}
 			subset[item] = false;
