@@ -8,18 +8,25 @@ RM := rm
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include subdir.mk
--include objects.mk
-
+-include src/subdir.mk
 ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(strip $(C++M_DEPS)),)
+-include $(C++M_DEPS)
+endif
 ifneq ($(strip $(C++_DEPS)),)
 -include $(C++_DEPS)
+endif
+ifneq ($(strip $(CCM_DEPS)),)
+-include $(CCM_DEPS)
 endif
 ifneq ($(strip $(CC_DEPS)),)
 -include $(CC_DEPS)
 endif
 ifneq ($(strip $(CPP_DEPS)),)
 -include $(CPP_DEPS)
+endif
+ifneq ($(strip $(CXXM_DEPS)),)
+-include $(CXXM_DEPS)
 endif
 ifneq ($(strip $(CXX_DEPS)),)
 -include $(CXX_DEPS)
@@ -29,6 +36,12 @@ ifneq ($(strip $(C_DEPS)),)
 endif
 ifneq ($(strip $(C_UPPER_DEPS)),)
 -include $(C_UPPER_DEPS)
+endif
+ifneq ($(strip $(INO_DEPS)),)
+-include $(INO_DEPS)
+endif
+ifneq ($(strip $(PDE_DEPS)),)
+-include $(PDE_DEPS)
 endif
 endif
 
@@ -54,7 +67,7 @@ all: main-build
 main-build: C++_Hashtable
 
 # Tool invocations
-C++_Hashtable: $(OBJS) $(USER_OBJS) makefile objects.mk $(OPTIONAL_TOOL_DEPS)
+C++_Hashtable: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MacOS X C++ Linker'
 	g++  -o "C++_Hashtable" $(OBJS) $(USER_OBJS) $(LIBS)

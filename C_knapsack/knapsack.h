@@ -10,11 +10,10 @@
 
 #include <stdbool.h>
 
-/*
 
-int best_recursive(Knapsack * list, int fromIndex, Knapsack * best);
-*/
-int best_recursive(int list[], int num, int spot, int budget, bool cart[]);
+int best_pruning(int list[], int num, int budget, bool cart[]);
+int best_pruning_recursive(int list[], int num, int spot, int budget, bool cart[]);
+
 int best_enumerate(int list[], int num, int budget);
 /*
 int best_dp(PriceList list, int budget, char cart[]);
