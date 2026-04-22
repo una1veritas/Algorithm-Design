@@ -1,0 +1,47 @@
+ca65 V2.19 - N/A
+Main file   : selection_sort.asm
+Current file: selection_sort.asm
+
+000000r 1               ; Selection Sort for 6502 (Ascending)
+000000r 1               ; Data to sort is in 'ARRAY', length is in 'LEN'
+000000r 1               ; Uses zero page locations for pointers
+000000r 1               
+000000r 1               ARRAY   = $0200         ; Start address of data
+000000r 1               LEN     = 10            ; Length of array
+000000r 1               
+000000r 1               ptr1    = $10           ; Zero page pointers
+000000r 1               ptr2    = $12
+000000r 1               
+000000r 1               SORT:
+000000r 1  A2 00            LDX #0              ; Outer loop index
+000002r 1               OUTER:
+000002r 1  86 10            STX ptr1            ; Store outer loop index
+000004r 1  8A               TXA
+000005r 1  A8               TAY                 ; Inner loop starts from OUTER+1
+000006r 1  C8               INY
+000007r 1               
+000007r 1               MIN_LOOP:
+000007r 1  C0 0A            CPY #LEN            ; Check if end of array
+000009r 1  B0 16            BCS NEXT_OUTER
+00000Br 1               
+00000Br 1  B9 00 02         LDA ARRAY, Y
+00000Er 1  DD 00 02         CMP ARRAY, X        ; Compare current min with Y element
+000011r 1  B0 0B            BCS NO_SWAP         ; If ARRAY[X] <= ARRAY[Y], no swap
+000013r 1               
+000013r 1                   ; Swap elements
+000013r 1  48               PHA
+000014r 1  BD 00 02         LDA ARRAY, X
+000017r 1  99 00 02         STA ARRAY, Y
+00001Ar 1  68               PLA
+00001Br 1  9D 00 02         STA ARRAY, X
+00001Er 1               
+00001Er 1               NO_SWAP:
+00001Er 1  C8               INY
+00001Fr 1  D0 E6            BNE MIN_LOOP        ; Loop until Y wraps
+000021r 1               
+000021r 1               NEXT_OUTER:
+000021r 1  E8               INX
+000022r 1  E0 09            CPX #LEN-1          ; Check if done
+000024r 1  D0 DC            BNE OUTER
+000026r 1  60               RTS
+000026r 1               
