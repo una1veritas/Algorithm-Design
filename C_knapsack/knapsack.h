@@ -11,9 +11,8 @@
 #include <stdbool.h>
 
 
-int best_pruning(int list[], int budget, bool cart[]);
-int best_enumeration(int list[], int budget, bool cart[]);
-/*
-int best_dp(PriceList list, int budget, char cart[]);
-*/
+int best_pruning(const int list[], const int budget, bool cart[]);
+int best_enumeration(const int list[], const int budget, bool cart[]);
+int best_dp(const int prices[], const int budget, bool buyornot[]);
+
 #endif /* KNAPSACK_H_ */
