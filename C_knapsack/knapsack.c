@@ -178,23 +178,27 @@ int best_dp(const int prices[], const int budget, bool buyornot[]) {
 int main (int argc, const char * argv[]) {
 	struct timespec start, stop;
 	long secs, nanos;
-	bool do_enumeration = false; //, do_pruning = false;
 
+	bool do_enumeration = false, x100 = false; //, do_pruning = false;
 	int budget = 0, number = 0;
 	if ( argc < 3 ) {
-		printf("usage: command [-num=xx] budget price_1 price_2 ...\n");
+		printf("usage: command [-num=xx] [-enum] budget price_1 price_2 ...\n");
 		return EXIT_FAILURE;
 	}
 	int argix = 1;
 	while (argix < argc) {
+		//printf("%d: %s\n", argix, argv[argix]);
 		if ( strncmp(argv[argix], "-num=", 5) == 0 ) {
 			number = atoi(argv[argix] + 5);
 			++argix;
 		} else if ( strncmp(argv[argix], "-enum", 5) == 0 ) {
 			do_enumeration = true;
 			++argix;
+		} else if ( strncmp(argv[argix], "-tax", 4) == 0 ) {
+			x100 = true;
+			++argix;
 		} else if (budget == 0) {
-			budget = atof(argv[argix]) * 100;
+			budget = atoi(argv[argix]);
 			++argix;
 			break;
 		}
@@ -205,15 +209,26 @@ int main (int argc, const char * argv[]) {
 	int prices[number];
 	int totalPrice;
 	bool buyornot[number + 1];
-	for (int i = 0; i < number; ++i) {
-		prices[i] = atof(argv[argix+i]) * 100;
+	if ( x100 ) {
+		budget *= 100;
+		for (int i = 0; i < number; ++i)
+			prices[i] = (int) (atof(argv[argix+i]) * 100);
+	} else {
+		for (int i = 0; i < number; ++i)
+			prices[i] = atoi(argv[argix+i]);
 	}
 	prices[number] = 0; // sentinel
 	
 	// Show the input.
-	printf("%d yen, the following %d items:\n", budget, number);
+	if ( x100 )
+		printf("%.2f yen, the following %d items:\n", budget/(double)100, number);
+	else
+		printf("%d yen, the following %d items:\n", budget, number);
 	for (int i = 0; i < number; ++i) {
-		printf("%d, ", prices[i]);
+		if ( x100 )
+			printf("%.2f, ", prices[i]/(double)100);
+		else
+			printf("%d, ", prices[i]);
 	}
 	printf("\n\n");
 
@@ -228,9 +243,9 @@ int main (int argc, const char * argv[]) {
 		printf("buy items: ");
 		for (int i = 0; i < number; ++i) {
 			if ( buyornot[i] )
-				printf("[%d] %.2f, ", i, prices[i]/(double)100);
+				printf("[%d] %d, ", i, prices[i]);
 		}
-		printf("\ntotally %.2f yen.\n\n", ceil(totalPrice/(double)100));
+		printf("\ntotally %d yen.\n\n", (x100 ? (int)ceil(totalPrice/(double)100): totalPrice) );
 	}
 
 	printf("買うの？買わないの？\n");
@@ -242,10 +257,14 @@ int main (int argc, const char * argv[]) {
 	printf("全探索枝刈り: %.6f sec.\n", (double) secs + ((double) nanos/1e9) );
 	printf("buy items: ");
 	for (int i = 0; i < number; ++i) {
-		if ( buyornot[i] )
-			printf("[%d] %.2f, ", i, prices[i]/(double)100);
+		if ( buyornot[i] ) {
+			if ( x100 )
+				printf("[%d] %.2f, ", i, prices[i]/(double)100);
+			else
+				printf("[%d] %d, ", i, prices[i]);
+		}
 	}
-	printf("\ntotally %.2f yen.\n\n", ceil(totalPrice/(double)100) );
+	printf("\ntotally %d yen.\n\n", (x100 ? (int)ceil(totalPrice/(double)100): totalPrice) );
 
 
 	printf("買うの？買わないの？\n");
@@ -257,10 +276,13 @@ int main (int argc, const char * argv[]) {
 	printf("動的計画法: %.6f sec.\n", (double) secs + ((double) nanos/1e9) );
 	printf("buy items: ");
 	for (int i = 0; i < number; ++i) {
-		if ( buyornot[i] )
-			printf("[%d] %.2f, ", i, prices[i]/(double)100);
+		if ( buyornot[i] ) {
+			if ( x100 )
+				printf("[%d] %.2f, ", i, prices[i]/(double)100);
+			else
+				printf("[%d] %d, ", i, prices[i]);
+		}
 	}
-	printf("\ntotally %.2f yen.\n\n", ceil(totalPrice/(double)100) );
-
+	printf("\ntotally %d yen.\n\n", (x100 ? (int)ceil(totalPrice/(double)100): totalPrice) );
 	return 0;
 }
