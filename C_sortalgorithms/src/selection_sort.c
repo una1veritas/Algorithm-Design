@@ -9,11 +9,11 @@
 #include "datadef.h"
 
 
-void selection_sort(data * d[], long n) {
+void selection_sort(data * d[], long n, int (* less)(const void *, const void *)) {
 	data * t;
 	for (long i = 0; i < n; ++i) {
 		for (long j = i + 1; j < n; ++j) {
-			if ( lessthan(d[j], d[i]) ) {
+			if ( less(d[j], d[i]) ) {
 			//if ( d[j] < d[i] ) {
 				t = d[i];
 				d[i] = d[j];
@@ -24,11 +24,11 @@ void selection_sort(data * d[], long n) {
 	return;
 }
 
-void selection_sort_reverse(data * d[], long n) {
+void selection_sort_reverse(data * d[], long n, int (* less)(const void *, const void *)) {
 	data * t;
 	for (long i = n - 1; i > 0; --i) {
 		for (long j = 0; j < i; ++j) {
-			if ( lessthan(d[i], d[j]) ) {
+			if ( less(d[i], d[j]) ) {
 				printf("0: %ld, %ld\n", i, j);
 				t = d[i];
 				d[i] = d[j];

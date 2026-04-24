@@ -14,13 +14,13 @@
 #include "datadef.h"
 #include "sort_algorithms.h"
 
-void insertion_sort(data * a[], long n) {
+void insertion_sort(data * a[], long n, int (* less)(const void *, const void *)) {
 	long i;
 	data * t;
 	for (long sorted_end = 1; sorted_end < n; ++sorted_end) {
 		//++passcount[0];
 		t = a[sorted_end];
-		for (i = sorted_end; i > 0 && !lessthan(a[i-1], t); --i ) {
+		for (i = sorted_end; i > 0 && ! less(a[i-1], t); --i ) {
 			a[i] = a[i-1];
 			//++passcount[1];
 		}

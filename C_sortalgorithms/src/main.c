@@ -10,12 +10,22 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "binsearch.h"
+//#include "binsearch.h"
 #include "datadef.h"
 #include "sort_algorithms.h"
 
 long passcount[] = { 0, 0 };
+
+int strncpytochr(char * dst, char * src, int n, char delim) {
+	int pos;
+	for (pos = 0; src[pos] != delim && src[pos] != '\0' && pos < n; ++pos) {
+		dst[pos] = src[pos];
+	}
+	dst[pos] = '\0';
+	return pos;
+}
 
 int main(int argc, char **argv) {
 	long num = argc - 1;
@@ -23,19 +33,24 @@ int main(int argc, char **argv) {
 	data * a[num];
 
 	for(long i = 0; i < num; ++i) {
-		db[i] = argv[1+i];
+		char * id = argv[1+i];
+		char * name;
+		int len = strncpytochr(db[i].id, id, 8, ':');
+		name = id + len + 1;
+		strncpy(db[i].name, name, 15);
+		db[i].name[15] = '\0';
 		a[i] = &db[i];
 		//LList_append(&list, &db[i]);
 		fprintf_data(stdout, a[i]);
-		printf(" ");
+		printf(", ");
 	}
 	printf("\n");
 
 	//long range = 100;
 	//counting_sort(a, num, 0, 101, keyval);
-	//insertion_sort(a, num);
-	//selection_sort_reverse(a, num);
-	//heap_sort(a, num);
+	insertion_sort(a, num, lessthan);
+	//selection_sort(a, num, lessthan);
+	//heap_sort(a, num, lessthan);
 	//merge_sort_recursive(a, num);
 	//merge_sort_doubles(a, num);
 	//bucket_sort(a, num, 0, 201, keyval);
@@ -44,7 +59,7 @@ int main(int argc, char **argv) {
 	printf("result:\n");
 	for(long i = 0; i < num; ++i) {
 		fprintf_data(stdout, a[i]);
-		printf(", ");
+		fprintf(stdout,", ");
 	}
 	printf("\n");
 

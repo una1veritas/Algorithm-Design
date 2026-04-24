@@ -11,10 +11,10 @@
 #include "datadef.h"
 #include "llist.h"
 
-void insertion_sort(data * a[],  long n);
-void heap_sort(data * a[], long n);
-void selection_sort(data * a[], long n);
-void selection_sort_reverse(data * a[], long n);
+void insertion_sort(data * a[], long n, int (* less)(const void *, const void *));
+void heap_sort(data * a[], long n, int (* less)(const void *, const void *));
+void selection_sort(data * a[], long n, int (* less)(const void *, const void *));
+void selection_sort_reverse(data * a[], long n, int (* less)(const void *, const void *));
 void merge_sort_recursive(data * a[], long n);
 void merge_sort_doubles(data * a[], long n);
 void merge_sort_llist(LList * a);

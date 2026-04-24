@@ -20,53 +20,31 @@ long keyval(const data * x) {
 
 #include <string.h>
 
-int equals(const data * x, const data * y) {
-	return strcmp((char *) *x, (char *) *y) == 0;
+int equals(const void * x, const void * y) {
+	const data * a = (const data *)x, * b = (const data *) y;
+	return strcmp(a->name, b->name) == 0;
 }
 
-int lessthan(const data * x, const data * y) {
-	return strcmp((char *) *x, (char *) *y) < 0;
+int lessthan(const void * x, const void * y) {
+	const data * a = (const data *)x, * b = (const data *) y;
+	return strcmp(a->name, b->name) < 0;
 }
 
-int lessthanoreq(const data * x, const data * y) {
-	return strcmp((char *) *x, (char *) *y) <= 0;
+int lessoreq(const data * x, const data * y) {
+	return strcmp((char *) x->name, (char *) y->name) <= 0;
 }
 
-/*
-int equals(const data * x, const data * y) {
-	return (*x == *y);
-}
-
-int lessthan(const data * x, const data * y) {
-//	return strcmp(*x, *y) < 0;
-	return (*x < *y);
-}
-
-int lessthanoreq(const data * x, const data * y) {
-	return (*x <= *y);
-}
-*/
-/*
-long cast_to_long(const data x) {
-	return x;
-}
-*/
-
-long keyval(const data * x) {
-	/*
-	char * str = *x;
+long keyval(const void * x) {
+	const char * str = ((const data *)x)->name;
 	long t = 0;
-	long f = 31;
 	for (int i = 0; str[i]; ++i) {
-		t+= str[i]*31;
-		f *= 31;
+		t *= 31;
+		t += str[i];
 	}
 	return t;
-	*/
-	return (long) *x;
 }
 
 int  fprintf_data(FILE * fp, const data * d) {
 	//return fprintf(fp, "%s", *d);
-	return fprintf(fp, "%s", *d);
+	return fprintf(fp, "%s: %s", d->id, d->name);
 }
