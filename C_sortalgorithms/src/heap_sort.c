@@ -8,7 +8,7 @@
 #include "datadef.h"
 #include "sort_algorithms.h"
 
-int down_to_leaf(data * a[], long i, long n) {
+int down_to_leaf(data * a[], long i, long n, int( * lessthan)(const void *key, const void *element)) {
 	int j;
 	data * t;
 	for ( ;(j = (i<<1) + 1) < n ; i = j) {
@@ -26,19 +26,19 @@ int down_to_leaf(data * a[], long i, long n) {
 	return 1;
 }
 
-void make_heap(data * a[], long n) {
+void make_heap(data * a[], long n, int( * lessthan)(const void *key, const void *element)) {
 	long i;
 	for (i = (n>>1); i > 0; --i) {
-		down_to_leaf(a, i-1, n);
+		down_to_leaf(a, i-1, n, lessthan);
 	}
 	return;
 }
 
-void heap_sort(data * a[], long n) {
+void heap_sort(data * a[], long n, int( * lessthan)(const void *key, const void *element)) {
 	long i;
 	data * t;
 	fprintf(stdout, "making heap..\n");
-	make_heap(a, n);
+	make_heap(a, n, lessthan);
 
 	fprintf(stdout,"heap:\n");
 	for(int j = 0; j < n; ++j) {
@@ -50,7 +50,7 @@ void heap_sort(data * a[], long n) {
 	for (i = n - 1; i > 0; --i) {
 		// a[0] is always the maximum.
 		t = a[0], a[0] = a[i], a[i] = t;
-		down_to_leaf(a, 0, i);
+		down_to_leaf(a, 0, i, lessthan);
 /*
 		fprintf(stdout,"heap and sorted suffix [%ld, %ld):\n",i,n);
 		for(int j = 0; j < n; ++j) {

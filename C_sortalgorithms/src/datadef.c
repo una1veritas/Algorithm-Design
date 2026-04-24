@@ -9,6 +9,8 @@
 #include "datadef.h"
 
 /*
+ * will be casted to (int (*)(const void *, const void *)) lessthan
+ *
 int lessthan(const data * x, const data * y) {
 	return *x < *y;
 }

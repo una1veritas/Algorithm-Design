@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "datadef.h"
 #include "sort_algorithms.h"
 
 void counting_sort(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d)) {

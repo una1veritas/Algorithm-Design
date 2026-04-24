@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 
-const int NAMELENGTHLIMIT = 32;
+const int NAME_LENGTH_LIMIT = 32;
 typedef struct Data {
 	unsigned int id;
-	char name[NAMELENGTHLIMIT];
+	char name[NAME_LENGTH_LIMIT];
 } Data;
 
-int Data_sortbyname(const void * a, const void * b) {
-	Data * d0 = (Data *) a, *d1 = (Data *) b;
-	if ( strncmp(d0->name, d1->name, NAMELENGTHLIMIT) >= 0 )
+int Data_sortbyname(const Data * a, const Data * b) {
+	if ( strncmp(a->name, b->name, NAME_LENGTH_LIMIT) >= 0 )
 		return 1;
 	return 0;
 }
@@ -19,11 +18,11 @@ int main(const int argc, char *argv[]) {
       Data data[n];
       for (int i = 0; i < n; ++i) {
     	  data[i].id = 1 + i;
-          strncpy(data[i].name, argv[1 + i], NAMELENGTHLIMIT);
+          strncpy(data[i].name, argv[1 + i], NAME_LENGTH_LIMIT);
           printf("(%u, %s), ", data[i].id, data[i].name);
       }
       printf("\n\n");
-      qsort(data, n, sizeof(data[0]), Data_sortbyname);
+      qsort(data, n, sizeof(data[0]), (int (*)(const void *, const void *)) Data_sortbyname);
       for (int i = 0; i < n; ++i) {
           printf("(%u, %s), ", data[i].id, data[i].name);
      }

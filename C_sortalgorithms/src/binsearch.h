@@ -8,8 +8,6 @@
 #ifndef SRC_BINSEARCH_H_
 #define SRC_BINSEARCH_H_
 
-#include "datadef.h"
-
 long binsearch(data * a[], data b, long l, long r);
 
 

@@ -8,13 +8,12 @@
 #ifndef SRC_SORT_ALGORITHMS_H_
 #define SRC_SORT_ALGORITHMS_H_
 
-#include "datadef.h"
 #include "llist.h"
 
 void insertion_sort(data * a[],  long n);
-void heap_sort(data * a[], long n);
-void selection_sort(data * a[], long n);
-void selection_sort_reverse(data * a[], long n);
+void heap_sort(data * a[], long n, int( * lessthan)(const void *key, const void *element));
+void selection_sort(data * a[], long n, int( * lessthan)(const void *key, const void *element));
+void selection_sort_reverse(data * a[], long n, int( * lessthan)(const void *key, const void *element));
 void merge_sort_recursive(data * a[], long n);
 void merge_sort_doubles(data * a[], long n);
 void merge_sort_llist(LList * a);

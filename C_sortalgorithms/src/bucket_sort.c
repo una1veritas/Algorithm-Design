@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "datadef.h"
 #include "vlarray.h"
 
 #define BUCKET_MAXLENGTH 5
