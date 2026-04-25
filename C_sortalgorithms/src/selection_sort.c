@@ -9,7 +9,7 @@
 #include "datadef.h"
 
 
-void selection_sort(data * d[], long n, int (* less)(const void *, const void *)) {
+void selection_sort(data * d[], long n, compfunc less) {
 	data * t;
 	for (long i = 0; i < n; ++i) {
 		for (long j = i + 1; j < n; ++j) {
@@ -24,7 +24,7 @@ void selection_sort(data * d[], long n, int (* less)(const void *, const void *)
 	return;
 }
 
-void selection_sort_reverse(data * d[], long n, int (* less)(const void *, const void *)) {
+void selection_sort_reverse(data * d[], long n, compfunc less) {
 	data * t;
 	for (long i = n - 1; i > 0; --i) {
 		for (long j = 0; j < i; ++j) {

@@ -11,17 +11,17 @@
 #include "datadef.h"
 #include "llist.h"
 
-void insertion_sort(data * a[], long n, int (* less)(const void *, const void *));
-void heap_sort(data * a[], long n, int (* less)(const void *, const void *));
-void selection_sort(data * a[], long n, int (* less)(const void *, const void *));
-void selection_sort_reverse(data * a[], long n, int (* less)(const void *, const void *));
-void merge_sort_recursive(data * a[], long n);
-void merge_sort_doubles(data * a[], long n);
-void merge_sort_llist(LList * a);
-void bubble_sort(data * a[], long n);
+void insertion_sort(data * a[], long n, compfunc less);
+void heap_sort(data * a[], long n, compfunc less);
+void selection_sort(data * a[], long n, compfunc less);
+void selection_sort_reverse(data * a[], long n, compfunc less);
+void merge_sort_recursive(data * a[], long n, compfunc less);
+void merge_sort_doubles(data * a[], long n, compfunc less);
+void merge_sort_llist(LList * a, compfunc less);
+void bubble_sort(data * a[], long n, compfunc less);
 
-void bucket_sort(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d));
-void bucket_sort_fixed(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d));
-void counting_sort(data * a[], long n, long range_origin, long range_width, long (*keyval)(const data * d));
+void bucket_sort(data * a[], long n, long range_origin, long range_width, hashfunc keyval);
+void bucket_sort_fixed(data * a[], long n, long range_origin, long range_width, hashfunc keyval);
+void counting_sort(data * a[], long n, long range_origin, long range_width, hashfunc keyval);
 
 #endif /* SRC_SORT_ALGORITHMS_H_ */
