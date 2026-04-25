@@ -13,14 +13,12 @@ int best_enumeration(const int prices[], const int budget, bool buyornot[]) {
 	int num;
 	//商品の数を数える
 	for (num = 0; prices[num] != 0; ++num) {}
-
 	if ( num == 0 ) {
 		return 0;
 	}
 
 	int sum, best;
 	int item;
-
 	bool subset[num + 1]; 	// 計算に使う仮の購入リスト．buyornot はサイズが num で buyornot[num] が使えるかどうか保証されないため．
 	for(int i = 0; i < num + 1; ++i)
 		subset[i] = false;  	// 仮の購入リストを空集合に初期化
@@ -110,17 +108,16 @@ int best_pruning(const int pricelist[], const int budget, bool buyornot[]) {
 // 出力： 返値はベストな購入での合計額, cart はベストな購入で i 番目の商品が選ばれているかを格納
 int best_dp(const int prices[], const int budget, bool buyornot[]) {
 	int nsize;
-
 	for (nsize = 0; prices[nsize] != 0; ++nsize) {
 		buyornot[nsize] = false;
 	}
 	if ( nsize== 0 )
 		return 0;
 
-	int best[nsize][budget + 1];
+	int best[nsize][budget + 1];  // nsize rows, budget + 1 columns
 	int i, b;
 
-	// initialize cells in the top row and the left-most column
+	// initialize cells in the left-most column and the top row
 	for (i = 0; i < nsize; i++) {
 		best[i][0] = 0;
 	}
@@ -128,7 +125,7 @@ int best_dp(const int prices[], const int budget, bool buyornot[]) {
 		best[0][b] = prices[0] <= b ? prices[0] : 0;
 	}
 
-	// fill up the DP-table by recurrence.
+	// fill up other cells in DP-table by recurrence, from left column to right ones
 	for (i = 1; i < nsize; i++) {
 		for (b = 1; b <= budget; b++) {
 			int best_skip = best[i - 1][b];
@@ -140,7 +137,7 @@ int best_dp(const int prices[], const int budget, bool buyornot[]) {
 			}
 		}
 	}
-	// back-track the table.
+	// back-track the table to find out combination.
 	// i must be a signed integer.
 	for (i = nsize - 1, b = budget; i >= 0; i--) {
 		if (best[i][b] == best[i - 1][b]) {
@@ -158,6 +155,7 @@ int best_dp(const int prices[], const int budget, bool buyornot[]) {
 	return best[nsize - 1][budget];
 }
 
+// utility to process the input
 int strcmplen(const char * s, const char * t) {
 	int n;
 	for (n = 0; s[n] == t[n] && s[n] != '\0'; ++n) ;
