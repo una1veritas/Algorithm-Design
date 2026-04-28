@@ -26,11 +26,12 @@ int main(void) {
 
 	LList_init(&list);
 	printf("List size = %d\n", list.elemcount);
-	LList_append(&list, &"Hello.");
-	LList_append(&list, &"-3");
-	LList_append(&list, &"800,000,000");
+	LList_push_back(&list, &"Hello.");
+	LList_push_back(&list, &"-3");
+	LList_push_back(&list, &"800,000,000");
 	printf("List size = %d\n", list.elemcount);
 	LList_fprintf(stdout, &list, "; ");
+	fflush(stdout);
 
 	printf("\n");
 	for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
@@ -38,16 +39,21 @@ int main(void) {
 	}
 	printf("\n");
 
-	LList_pop(&list);
-	LList_push(&list,"Halo.");
-	LList_push(&list,"Car");
-	LList_push(&list,"Bag");
+	LList_pop_back(&list);
+	LList_push_back(&list,"Halo.");
+	LList_push_back(&list,"Key");
+	LList_push_back(&list,"Car");
+	LList_push_back(&list,"Brdige");
+	LList_push_back(&list,"Moon");
+	LList_push_back(&list,"Brdige");
 	for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
 		printf("%s -> ", (char *) ptr->dataptr );
 	}
 	printf("\n");
 
-	ListNode * thenode = LList_find(&list, (void *)s, equals );
+	ListNode * thenode;
+
+	thenode = LList_find_r(&list, LList_begin(&list), (void *)s, equals );
 	if ( thenode != LList_end(&list) ) {
 		printf("found: %s\n", (char *) thenode->dataptr);
 	} else {
@@ -56,7 +62,7 @@ int main(void) {
 
 	void * data;
 	while ( !LList_is_empty(&list) ) {
-		data = LList_pop(&list);
+		data = LList_pop_back(&list);
 		printf("%s \n", (char *) data );
 		for(ListNode * ptr = LList_begin(&list); ptr != LList_end(&list); ptr = ptr->next) {
 			printf("%s -> ", (char *) ptr->dataptr );

@@ -32,7 +32,7 @@ void LList_free(LList * list) {
 }
 
 // append as the last node
-ListNode * LList_append(LList * list, const datatype * d) {
+ListNode * LList_push_back(LList * list, const datatype * d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
 	memcpy(& node->data, d, sizeof(datatype));
 	LList_append_node(list, node);

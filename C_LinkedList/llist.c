@@ -32,24 +32,36 @@ void LList_free(LList * list) {
 }
 
 // append as the last node
-ListNode * LList_append(LList * list, data d) {
+ListNode * LList_push_back(LList * list, data d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
 	node->dataptr = d;
-	LList_append_node(list, node);
-	return node;
-}
-
-ListNode * LList_append_node(LList * list, ListNode * node) {
 	node->next = &list->tail;
 	node->prev = list->tail.prev;
-	node->prev->next = node;
 	list->tail.prev = node;
+	node->prev->next = node;
 	list->elemcount += 1;
 	return node;
 }
 
+data LList_pop_back(LList * list) {
+	if ( list->elemcount == 0 ) {
+		/* tried pop an empty list */
+		fprintf(stderr, "Error: LList_pop: list is empty.\n");
+		return NULL;
+	}
+	ListNode * node = list->tail.prev;
+	list->tail.prev = node->prev;
+	node->prev->next = &list->tail;
+	list->elemcount -= 1;
+	data d = node->dataptr;
+	free(node);
+	return d;
+}
+
+
+/*
 // push into the first node
-ListNode * LList_push(LList * list, data d) {
+ListNode * LList_push_front(LList * list, data d) {
 	ListNode * node = (ListNode*) malloc(sizeof(ListNode));
 	node->dataptr = d;
 	node->next = list->head.next;
@@ -60,9 +72,9 @@ ListNode * LList_push(LList * list, data d) {
 	return node;
 }
 
-ListNode * LList_pop_node(LList * list) {
+data LList_pop_front(LList * list) {
 	if ( list->elemcount == 0 ) {
-		/* tried pop an empty list */
+		// tried pop an empty list
 		fprintf(stderr, "Error: LList_pop: list is empty.\n");
 		return NULL;
 	}
@@ -70,15 +82,12 @@ ListNode * LList_pop_node(LList * list) {
 	list->head.next = node->next;
 	node->next->prev = &list->head;
 	list->elemcount -= 1;
-	return node;
-}
-
-data LList_pop(LList * list) {
-	ListNode * node = LList_pop_node(list);
 	data d = node->dataptr;
 	free(node);
 	return d;
 }
+*/
+
 
 ListNode * LList_begin(LList * list) {
 	return list->head.next;
@@ -125,3 +134,17 @@ void LList_fprintf(FILE * f, LList * list, const char * fmt) {
 		node = node->next;
 	}
 }
+
+ListNode * LList_find_r(LList * list, ListNode * node, const data d, int (*equals)(const data, const data) ) {
+	if ( node == NULL) {
+		node = LList_begin(list);
+	}
+	if ( node == LList_end(list) ) {
+		return NULL;
+	}
+	if ( equals(d, node->dataptr) ) {
+		return node;
+	}
+	return LList_find_r(list, node->next, d, equals);
+}
+

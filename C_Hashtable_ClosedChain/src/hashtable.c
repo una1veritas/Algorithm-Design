@@ -57,7 +57,7 @@ ListNode * OpenHashtable_find(OpenHashtable * h, const datatype * d) {
 void OpenHashtable_add(OpenHashtable * h, const datatype * d) {
 	ListNodePair pair = OpenHashtable_findList(h, d);
 	if ( pair.nodeptr == LList_end(pair.listptr) ) {
-		LList_append(pair.listptr, d);
+		LList_push_back(pair.listptr, d);
 		h->elemcount += 1;
 	}
 }

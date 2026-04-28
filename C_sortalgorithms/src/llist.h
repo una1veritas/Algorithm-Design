@@ -28,7 +28,7 @@ void LList_fprintf(FILE *, LList *, const char * fmt);
 //int LList_length(LList * );
 data * LList_pop(LList * list);
 data * LList_peek(LList * list);
-ListNode * LList_append(LList * list, data *);
+ListNode * LList_push_back(LList * list, data *);
 ListNode * LList_push(LList * list, data *);
 ListNode * LList_append_node(LList * list, ListNode * node);
 ListNode * LList_pop_node(LList * list);

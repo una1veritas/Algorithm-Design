@@ -8,7 +8,7 @@
 #ifndef DATADEF_H_
 #define DATADEF_H_
 
-typedef void * data;
+typedef char * data;
 
 unsigned long keycode(const data d1);
 int equals(const data d1, const data d2);
