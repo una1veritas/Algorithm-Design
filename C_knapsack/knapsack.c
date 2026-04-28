@@ -13,14 +13,12 @@ int best_enumeration(const int prices[], const int budget, bool buyornot[]) {
 	int num;
 	//商品の数を数える
 	for (num = 0; prices[num] != 0; ++num) {}
-
 	if ( num == 0 ) {
 		return 0;
 	}
 
 	int sum, best;
 	int item;
-
 	bool subset[num + 1]; 	// 計算に使う仮の購入リスト．buyornot はサイズが num で buyornot[num] が使えるかどうか保証されないため．
 	for(int i = 0; i < num + 1; ++i)
 		subset[i] = false;  	// 仮の購入リストを空集合に初期化
@@ -110,17 +108,16 @@ int best_pruning(const int pricelist[], const int budget, bool buyornot[]) {
 // 出力： 返値はベストな購入での合計額, cart はベストな購入で i 番目の商品が選ばれているかを格納
 int best_dp(const int prices[], const int budget, bool buyornot[]) {
 	int nsize;
-
 	for (nsize = 0; prices[nsize] != 0; ++nsize) {
 		buyornot[nsize] = false;
 	}
 	if ( nsize== 0 )
 		return 0;
 
-	int best[nsize][budget + 1];
+	int best[nsize][budget + 1];  // nsize rows, budget + 1 columns
 	int i, b;
 
-	// initialize cells in the top row and the left-most column
+	// initialize cells in the left-most column and the top row
 	for (i = 0; i < nsize; i++) {
 		best[i][0] = 0;
 	}
@@ -128,7 +125,7 @@ int best_dp(const int prices[], const int budget, bool buyornot[]) {
 		best[0][b] = prices[0] <= b ? prices[0] : 0;
 	}
 
-	// fill up the DP-table by recurrence.
+	// fill up other cells in DP-table by recurrence, from left column to right ones
 	for (i = 1; i < nsize; i++) {
 		for (b = 1; b <= budget; b++) {
 			int best_skip = best[i - 1][b];
@@ -140,35 +137,29 @@ int best_dp(const int prices[], const int budget, bool buyornot[]) {
 			}
 		}
 	}
-
-	/*
-	// to show the dp-table.
-	 for (i = 0; i < nsize; ++i) {
-		for (b = 0; b <= budget; ++b) {
-			printf("%3d\t", best[i][b]);
-		}
-		printf("\n");
-	}
-	printf("\n\n");
-	*/
-	// back-track the table.
+	// back-track the table to find out combination.
 	// i must be a signed integer.
 	for (i = nsize - 1, b = budget; i >= 0; i--) {
 		if (best[i][b] == best[i - 1][b]) {
-			// the i-th item was not bought
+			// the i-th item was skipped
 			buyornot[i] = 0;
-			//printf("item %d skipped. b = %d\n", i, b);
 		} else if (best[i][b] - prices[i] == best[i - 1][b - prices[i]]) {
 			// the i-th item was bought
 			buyornot[i] = 1;
-			b = b - prices[i];
-			//printf("prices[%d] = %d, b = %d\n", i, prices[i], b);
+			b -= prices[i];
 		} else {
 			fprintf(stderr, "back tracking failed!\n");
 		}
 	}
 
 	return best[nsize - 1][budget];
+}
+
+// utility to process the input
+int strcmplen(const char * s, const char * t) {
+	int n;
+	for (n = 0; s[n] == t[n] && s[n] != '\0'; ++n) ;
+	return n;
 }
 
 // 300 15, 20, 49, 52, 19, 18, 68, 38, 38, 38, 55, 39, 108, 103, 18, 41, 44, 45, 78, 78, 58, 58, 68, 58, 128,
@@ -178,41 +169,41 @@ int best_dp(const int prices[], const int budget, bool buyornot[]) {
 int main (int argc, const char * argv[]) {
 	struct timespec start, stop;
 	long secs, nanos;
-	bool do_enumeration = false; //, do_pruning = false;
 
-	int budget = 0, number = 0;
+	bool do_enumeration = false;
+	int budget = 0, number = argc - 2;
 	if ( argc < 3 ) {
-		printf("usage: command [-num=xx] budget price_1 price_2 ...\n");
+		printf("usage: command [-upto=xx] [-enumeration] budget price_1 price_2 ...\n");
 		return EXIT_FAILURE;
 	}
+	// get options
 	int argix = 1;
 	while (argix < argc) {
-		if ( strncmp(argv[argix], "-num=", 5) == 0 ) {
-			number = atoi(argv[argix] + 5);
+		//printf("%d %s\n", argix, argv[argix]);
+		if ( strcmplen(argv[argix], "-upto=") == 6 ) {
+			number = atoi(argv[argix] + 6);
 			++argix;
-		} else if ( strncmp(argv[argix], "-enum", 5) == 0 ) {
+		} else if ( strcmp(argv[argix], "-enumeration") == 0 ) {
 			do_enumeration = true;
 			++argix;
-		} else if (budget == 0) {
-			budget = atof(argv[argix]) * 100;
-			++argix;
+		} else {
 			break;
 		}
 	}
 	// Set up the input.
-	if (number <= 0)
-		number = argc - argix - 1;
-	int prices[number];
+	budget = atoi(argv[argix]);
+	++argix;
+	number = (argc - argix - 1 < number ? argc - argix - 1 : number);
+
+	int prices[number + 1];
 	int totalPrice;
 	bool buyornot[number + 1];
-	for (int i = 0; i < number; ++i) {
-		prices[i] = atof(argv[argix+i]) * 100;
-	}
 	prices[number] = 0; // sentinel
 	
 	// Show the input.
 	printf("%d yen, the following %d items:\n", budget, number);
 	for (int i = 0; i < number; ++i) {
+		prices[i] = atoi(argv[argix + i]);
 		printf("%d, ", prices[i]);
 	}
 	printf("\n\n");
@@ -228,9 +219,9 @@ int main (int argc, const char * argv[]) {
 		printf("buy items: ");
 		for (int i = 0; i < number; ++i) {
 			if ( buyornot[i] )
-				printf("[%d] %.2f, ", i, prices[i]/(double)100);
+				printf("[%d] %d, ", i, prices[i]);
 		}
-		printf("\ntotally %.2f yen.\n\n", ceil(totalPrice/(double)100));
+		printf("\ntotally %d yen.\n\n", totalPrice );
 	}
 
 	printf("買うの？買わないの？\n");
@@ -239,13 +230,14 @@ int main (int argc, const char * argv[]) {
 	timespec_get(&stop, TIME_UTC);		// 計測終了
 	secs = stop.tv_sec - start.tv_sec; // swatch = clock() - swatch;
 	nanos = stop.tv_nsec - start.tv_nsec;
-	printf("全探索枝刈り: %.6f sec.\n", (double) secs + ((double) nanos/1e9) );
+	printf("枝刈りあり全探索: %.6f sec.\n", (double) secs + ((double) nanos/1e9) );
 	printf("buy items: ");
 	for (int i = 0; i < number; ++i) {
-		if ( buyornot[i] )
-			printf("[%d] %.2f, ", i, prices[i]/(double)100);
+		if ( buyornot[i] ) {
+			printf("[%d] %d, ", i, prices[i]);
+		}
 	}
-	printf("\ntotally %.2f yen.\n\n", ceil(totalPrice/(double)100) );
+	printf("\ntotally %d yen.\n\n", totalPrice );
 
 
 	printf("買うの？買わないの？\n");
@@ -257,10 +249,10 @@ int main (int argc, const char * argv[]) {
 	printf("動的計画法: %.6f sec.\n", (double) secs + ((double) nanos/1e9) );
 	printf("buy items: ");
 	for (int i = 0; i < number; ++i) {
-		if ( buyornot[i] )
-			printf("[%d] %.2f, ", i, prices[i]/(double)100);
+		if ( buyornot[i] ) {
+			printf("[%d] %d, ", i, prices[i]);
+		}
 	}
-	printf("\ntotally %.2f yen.\n\n", ceil(totalPrice/(double)100) );
-
+	printf("\ntotally %d yen.\n\n", totalPrice );
 	return 0;
 }

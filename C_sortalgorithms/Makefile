@@ -12,8 +12,8 @@ INCLUDES = ../C_LinkedList/llist.h
 INCDIRS = -I./src/ -I../C_LinkedList/
 
 #CC += -O0 -g -Wall $(INCDIRS) 
-CC += -O0 -g -Wall 
-CXX +=	-O0 -g -Wall -fmessage-length=0
+CC += -O2 -g -Wall 
+CXX +=	-O2 -g -Wall -fmessage-length=0
 
 
 %.o:./src/%.c $(INCLUDES)

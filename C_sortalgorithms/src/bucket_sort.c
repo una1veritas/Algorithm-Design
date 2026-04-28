@@ -14,7 +14,7 @@ typedef struct {
 	data * darray[BUCKET_MAXLENGTH];
 } Bucket5;
 
-void bucket_sort_fixed(data * a[], long n, long range_origin, long range_width, int (*keyval)(const data * d)) {
+void bucket_sort_fixed(data * a[], long n, long range_origin, long range_width, hashfunc keyval) {
 	Bucket5 bucket[range_width];
 	for(long i = 0; i < range_width; ++i) {
 		bucket[i].length = 0;

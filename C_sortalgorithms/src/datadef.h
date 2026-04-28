@@ -10,13 +10,18 @@
 
 #include <stdio.h>
 
-typedef char * data;
-//typedef long data;
+//typedef char * data;
+typedef struct MEMBER {
+	char id[10];
+	char name[16];
+} data;
 
-long keyval(const data * d);
-int  equals(const data * d1, const data * d2);
-int  lessthan(const data * d1, const data * d2);
-int  lessthanoreq(const data * d1, const data * d2);
+typedef int (* compfunc)(const void *, const void *);
+typedef int (* hashfunc)(const void *);
+
+long keyval(const void * d);
+int  equals(const void * d1, const void * d2);
+int  lessthan(const void * d1, const void * d2);
 int  fprintf_data(FILE * fp, const data * d);
 
 #endif /* DATADEF_H_ */

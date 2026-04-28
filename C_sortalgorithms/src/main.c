@@ -10,12 +10,49 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "binsearch.h"
+//#include "binsearch.h"
 #include "datadef.h"
 #include "sort_algorithms.h"
 
 long passcount[] = { 0, 0 };
+
+// compfunc
+int equals(const void * x, const void * y) {
+	const data * a = (const data *)x, * b = (const data *) y;
+	return strcmp(a->name, b->name) == 0;
+}
+
+int lessthan(const void * x, const void * y) {
+	const data * a = (const data *)x, * b = (const data *) y;
+	return strcmp(a->name, b->name) < 0;
+}
+
+// hashfunc
+long keyval(const void * x) {
+	const char * str = ((const data *)x)->name;
+	long t = 0;
+	for (int i = 0; str[i]; ++i) {
+		t *= 31;
+		t += str[i];
+	}
+	return t;
+}
+
+int  fprintf_data(FILE * fp, const data * d) {
+	//return fprintf(fp, "%s", *d);
+	return fprintf(fp, "%s: %s", d->id, d->name);
+}
+
+int strpbrkncpy(char * dst, char * src, int n, const char * delimchars) {
+	char * ptr = strpbrk(src, delimchars);
+	int l = ptr - src;
+	l = l > n ? n : l ;
+	strncpy(dst, src, l);
+	dst[l] = '\0';
+	return l;
+}
 
 int main(int argc, char **argv) {
 	long num = argc - 1;
@@ -23,28 +60,34 @@ int main(int argc, char **argv) {
 	data * a[num];
 
 	for(long i = 0; i < num; ++i) {
-		db[i] = argv[1+i];
+		char * id = argv[1+i];
+		char * name;
+		int len = strpbrkncpy(db[i].id, id, 8, ",:");
+		name = id + len + 1;
+		strncpy(db[i].name, name, 15);
+		db[i].name[15] = '\0';
 		a[i] = &db[i];
 		//LList_append(&list, &db[i]);
 		fprintf_data(stdout, a[i]);
-		printf(" ");
+		printf(",\n");
 	}
 	printf("\n");
 
 	//long range = 100;
-	//counting_sort(a, num, 0, 101, keyval);
-	//insertion_sort(a, num);
-	//selection_sort_reverse(a, num);
-	//heap_sort(a, num);
-	//merge_sort_recursive(a, num);
-	//merge_sort_doubles(a, num);
+	//insertion_sort(a, num, lessthan);
+	selection_sort(a, num, lessthan);
+	//heap_sort(a, num, lessthan);
+	//merge_sort_recursive(a, num, lessthan);
+	//merge_sort_doubles(a, num, lessthan);
 	//bucket_sort(a, num, 0, 201, keyval);
 	//bucket_sort_fixed(a, num, 0, 101, keyval);
+	//counting_sort(a, num, 0, 101, keyval);
+	//qsort(a, num, sizeof(a[0]), lessthan);
 
 	printf("result:\n");
 	for(long i = 0; i < num; ++i) {
 		fprintf_data(stdout, a[i]);
-		printf(", ");
+		fprintf(stdout,",\n");
 	}
 	printf("\n");
 
