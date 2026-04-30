@@ -1,6 +1,6 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-OBJS = llist.o main.o
+OBJS = ldeque.o main.o
 
 BUILD_MODE = run
 
