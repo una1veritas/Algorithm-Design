@@ -6,12 +6,13 @@
  */
 
 #include "datadef.h"
-#include "llist.h"
+#include "ldeque.h"
 
-void merge_llist(LList * dst, LList * a, LList * b) {
-	while ( ! LList_is_empty(a) || ! LList_is_empty(b) ) {
-		if ( LList_is_empty(a) ) {
-			LList_push_back(dst, LList_pop(b));
+void merge_LinkedDeque(LinkedDeque * dst, LinkedDeque * a, LinkedDeque * b) {
+	while ( LinkedDeque_size > 0 ||  LinkedDeque_size(b) > 0 ) {
+		if ( LinkedDeque_size(a) == 0 ) {
+			LinkedDeque_append(dst, LinkedDeque_front(b));
+			LinkedDeque_remove_front(b);
 		} else if ( LList_is_empty(b) ) {
 			LList_push_back(dst, LList_pop(a));
 		} else {

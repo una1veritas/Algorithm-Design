@@ -10,8 +10,10 @@
 
 #include <stdbool.h>
 
+#include "datadef.h"
+
 typedef struct DequeNode {
-	const char * datastr;
+	data node_data;
 	struct DequeNode * prev, * next;
 } DequeNode;
 
@@ -21,9 +23,11 @@ typedef struct LinkedDeque {
 	unsigned int elemcount;
 } LinkedDeque;
 
-bool LinkedDeque_append(LinkedDeque * ldequep, const char * datastr);
-bool LinkedDeque_prepend(LinkedDeque * ldequep, const char * datastr);
-bool LinkedDeque_remove_last(LinkedDeque * ldequep);
+unsigned int LinkedDeque_size(LinkedDeque * ldequep);
+
+bool LinkedDeque_append(LinkedDeque * ldequep, const data * datap);
+bool LinkedDeque_prepend(LinkedDeque * ldequep, const data * datap);
+bool LinkedDeque_remove_back(LinkedDeque * ldequep);
 bool LinkedDeque_remove_front(LinkedDeque * ldequep);
 bool LinkedDeque_remove_node(LinkedDeque * ldequep, DequeNode * nodep);
 void LinkedDeque_free(LinkedDeque * ldequep);

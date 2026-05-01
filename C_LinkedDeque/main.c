@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "datadef.h"
 #include "ldeque.h"
@@ -35,39 +36,50 @@ long keyval(const void * x) {
 	return t;
 }
 
+/*
 int  fprintf_data(FILE * fp, const data * d) {
 	//return fprintf(fp, "%s", *d);
 	return fprintf(fp, "%s: %s", d->id, d->name);
 }
+*/
 
 int recursive_print(DequeNode * nodep) {
 	if ( nodep == NULL )
 		return 0;
-	int n = printf("%s, ", nodep->datastr);
+	int n = printf("%s: %s, ", nodep->node_data.id, nodep->node_data.name);
 	return n + recursive_print(nodep->next);
 }
 
 int print(DequeNode * nodep) {
 	int n = 0;
 	for( ; nodep != NULL; nodep = nodep->next) {
-		n += printf("%s, ", nodep->datastr);
+		n = printf("%s: %s, ", nodep->node_data.id, nodep->node_data.name);
 	}
 	return n;
 }
 
 int main(const int argc, const char * argv[]) {
-
+	data d;
 	LinkedDeque list = { NULL, NULL, 0}; 	// カラのリスト
 
+	printf("reading input:\n");
 	for (int ix = 1; ix < argc; ++ix) {
-		LinkedDeque_append(&list, argv[ix]);
+		snprintf(d.id, 9, "A%03d", ix);
+		snprintf(d.name, 31, "%s", argv[ix]);
+		printf("%s: %s, ", d.id, d.name);
+		LinkedDeque_append(&list, &d);
 	}
+	printf("\n");
+
+	printf("\nprint out linked deque:\n");
 
 	int n;
+	printf("\nby loop\n");
 	n = print(list.head);
 	printf("\n");
 	printf("total length = %d\n", n);
 
+	printf("\nby recursion\n");
 	n = recursive_print(list.head);
 	printf("\n");
 	printf("total length = %d\n", n);

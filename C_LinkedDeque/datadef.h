@@ -13,7 +13,7 @@
 //typedef char * data;
 typedef struct MEMBER {
 	char id[10];
-	char name[16];
+	char name[32];
 } data;
 
 typedef int (* compfunc)(const void *, const void *);

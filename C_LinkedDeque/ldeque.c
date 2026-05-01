@@ -7,32 +7,37 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ldeque.h"
 
-bool LinkedDeque_append(LinkedDeque * ldequep, const char * datastr) {
-	DequeNode * nodeptr = (DequeNode *) malloc(sizeof(DequeNode));
-	if ( nodeptr == NULL )
+unsigned int LinkedDeque_size(LinkedDeque * ldequep) {
+	return ldequep->elemcount;
+}
+
+bool LinkedDeque_append(LinkedDeque * ldequep, const data * datap) {
+	DequeNode * nodep = (DequeNode *) malloc(sizeof(DequeNode));
+	if ( nodep == NULL )
 		return false;
 	if ( ldequep->tail == NULL ) {
 		// リストがカラ
-		ldequep->head = nodeptr;
-		ldequep->tail = nodeptr;
-		nodeptr->prev = NULL;
-		nodeptr->next = NULL;
+		ldequep->head = nodep;
+		ldequep->tail = nodep;
+		nodep->prev = NULL;
+		nodep->next = NULL;
 	} else {
-		nodeptr->prev = ldequep->tail;
-		nodeptr->next = NULL;
-		nodeptr->prev->next = nodeptr;
-		ldequep->tail = nodeptr;
+		nodep->prev = ldequep->tail;
+		nodep->next = NULL;
+		nodep->prev->next = nodep;
+		ldequep->tail = nodep;
 	}
-	nodeptr->datastr = datastr;
+	memcpy(&nodep->node_data, datap, sizeof(data));
 
 	ldequep->elemcount += 1;
 	return true;
 }
 
-bool LinkedDeque_prepend(LinkedDeque * ldequep, const char * datastr) {
+bool LinkedDeque_prepend(LinkedDeque * ldequep, const data * datap) {
 	DequeNode * nodep = (DequeNode *) malloc(sizeof(DequeNode));
 	if ( nodep == NULL ) {
 		// malloc エラー
@@ -51,7 +56,9 @@ bool LinkedDeque_prepend(LinkedDeque * ldequep, const char * datastr) {
 		nodep->next->prev = nodep;
 		ldequep->head = nodep;
 	}
-	nodep->datastr = datastr;
+	//printf("datap %s* %s, \n", datap->id, datap->name);
+	memcpy(&nodep->node_data, datap, sizeof(data));
+	//printf("node_data %s* %s, \n", nodep->node_data.id, nodep->node_data.name);
 
 	ldequep->elemcount += 1;
 	return true;
