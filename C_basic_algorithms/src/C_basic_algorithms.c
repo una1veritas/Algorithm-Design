@@ -11,9 +11,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef STRING_MATCHING_NAIVE
 #include "strmatch_naive.h"
+#endif
+
+#include <time.h>
+
+#include "fibo.h"
 
 int main(const int argc, const char * argv[]) {
+#ifdef STRING_MATCHING_NAIVE
 	if ( argc < 3 ) {
 		fprintf(stderr, "two strings, text and pattern, requested.\n");
 		return EXIT_FAILURE;
@@ -27,5 +34,26 @@ int main(const int argc, const char * argv[]) {
 		fprintf(stdout, "pattern found in text at %d\n", pos);
 		pos += 1;
 	}
+#endif
+
+	if (argc < 2) {
+		fprintf(stderr, "two strings, text and pattern, requested.\n");
+		return EXIT_FAILURE;
+	}
+
+	unsigned long long n = strtoul(argv[1], NULL, 0);
+
+	clock_t swatch = clock();
+	unsigned long long fnth = fibo_recursive(n);
+	swatch = clock() - swatch;
+	fprintf(stdout, "f_n = %llu\n", fnth);
+	fprintf(stdout, "spent clocks = %f\n", (double) swatch / CLOCKS_PER_SEC);
+
+	swatch = clock();
+	fnth = fibo(n);
+	swatch = clock() - swatch;
+	fprintf(stdout, "f_n = %llu\n", fnth);
+	fprintf(stdout, "spent clocks = %f\n", (double) swatch / CLOCKS_PER_SEC);
+
 	return EXIT_SUCCESS;
 }

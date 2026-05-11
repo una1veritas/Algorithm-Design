@@ -10,7 +10,9 @@
 
 
 unsigned long long fibo_recursive(const unsigned long long n);
+unsigned long long fibo_memorize(const unsigned long long n);
 unsigned long long fibo_dp(const unsigned long long n);
+unsigned long long fibo(const unsigned long long n);
 
 
 #endif /* FIBO_H_ */
