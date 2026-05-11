@@ -14,9 +14,11 @@ unsigned long long fibo_recursive(const unsigned long long n) {
 }
 
 unsigned long long fibo_memorize(const unsigned long long n, unsigned long long f[]) {
-	if ( f[n-1] == 0 )
-		fibo_memorize(n-1, f);
-	f[n] = f[n-1] + f[n-2];
+	if (n <= 1) {
+		f[n] = 1;
+	} else if ( f[n-1] == 0 ) {
+		f[n] = fibo_memorize(n-1, f) + fibo_memorize(n-2, f);
+	}
 	return f[n];
 }
 

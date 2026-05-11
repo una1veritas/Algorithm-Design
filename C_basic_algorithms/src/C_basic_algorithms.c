@@ -37,23 +37,45 @@ int main(const int argc, const char * argv[]) {
 #endif
 
 	if (argc < 2) {
-		fprintf(stderr, "two strings, text and pattern, requested.\n");
+		fprintf(stderr, "argument(s) requested.\n");
 		return EXIT_FAILURE;
 	}
 
-	unsigned long long n = strtoul(argv[1], NULL, 0);
+	unsigned long long fnth, n;
+	clock_t swatch;
 
-	clock_t swatch = clock();
-	unsigned long long fnth = fibo_recursive(n);
-	swatch = clock() - swatch;
-	fprintf(stdout, "f_n = %llu\n", fnth);
-	fprintf(stdout, "spent clocks = %f\n", (double) swatch / CLOCKS_PER_SEC);
+	for(int i = 1; i < argc; ++i) {
 
-	swatch = clock();
-	fnth = fibo(n);
-	swatch = clock() - swatch;
-	fprintf(stdout, "f_n = %llu\n", fnth);
-	fprintf(stdout, "spent clocks = %f\n", (double) swatch / CLOCKS_PER_SEC);
+		n = strtoul(argv[i], NULL, 0);
+		fprintf(stdout, "n = %llu\n", n);
+
+		swatch = clock();
+		fnth = fibo_recursive(n);
+		swatch = clock() - swatch;
+		fprintf(stdout, "f_n = %llu\n", fnth);
+		fprintf(stdout, "fibo_recursive	fib_memorize	fibo_dp 	fibo simple\n");
+		fprintf(stdout, "%4.6f	", (double) swatch / CLOCKS_PER_SEC);
+
+		swatch = clock();
+		unsigned long long memo[n+1];
+		for (unsigned long long ix = 0; ix <= n; ++ix)
+			memo[ix] = 0;
+		fnth = fibo_memorize(n, memo);
+		swatch = clock() - swatch;
+		fprintf(stdout, "%4.6f	", (double) swatch / CLOCKS_PER_SEC);
+
+		swatch = clock();
+		fnth = fibo_dp(n);
+		swatch = clock() - swatch;
+		fprintf(stdout, "%4.6f	", (double) swatch / CLOCKS_PER_SEC);
+
+		swatch = clock();
+		fnth = fibo(n);
+		swatch = clock() - swatch;
+		fprintf(stdout, "%4.6f	", (double) swatch / CLOCKS_PER_SEC);
+
+		fprintf(stdout, "\n\n");
+	}
 
 	return EXIT_SUCCESS;
 }
