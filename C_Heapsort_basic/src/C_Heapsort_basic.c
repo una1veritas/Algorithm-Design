@@ -11,33 +11,40 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int greaterThanOrEq(const long a, const long b) {
-	int res = a - b;
-	return res >= 0;
+int lessThan(const long a, const long b) {
+	return a - b < 0;
+}
+
+int equals(const long a, const long b) {
+	return a == b;
 }
 
 void heap_checker(long a[], const int n) {
-	for (unsigned int i = 0; i < (n-1)>>1; ++i) {
+	int counter = 0;
+	for (unsigned int i = 0; i < (n - 1)>>1; ++i) {
 		int lc = (i<<1) + 1;
-		if ( ! greaterThanOrEq(a[i], a[lc]) ) {
-			printf("(%d, %d), ", i, lc);
+		if ( lessThan(a[i], a[lc]) ) {
+			printf("([%d] <- [%d]), ", i, lc);
+			counter += 1;
 		}
-		if ( lc + 1 < n && ! greaterThanOrEq(a[i], a[lc + 1]) ) {
-			printf("(%d, %d), ", i, lc+1);
+		if ( lc + 1 < n && lessThan(a[i], a[lc + 1]) ) {
+			printf("([%d] <- [%d]), ", i, lc+1);
+			counter += 1;
 		}
 	}
+	printf("%d violations.\n", counter);
 	printf("\n");
 }
 
 void down_to_leaf(long a[], const int n, int i) {
 	int lc, tc; // left child, target child
-	while ((lc = (i<<1)+1) < n) {
+	while ((lc = (i<<1) + 1) < n) {
 		tc = i;
-		if ( ! greaterThanOrEq(a[i], a[lc]) ) {
+		if ( lessThan(a[i], a[lc]) ) {
 			tc = lc;
 		}
 		// if i has a right child and not left is greater than or eq right
-		if ( (lc + 1 < n)  && (! greaterThanOrEq(a[tc], a[lc+1])) ) {
+		if ( (lc + 1 < n)  && lessThan(a[tc], a[lc+1]) ) {
 			tc = lc + 1;
 		}
 		if ( tc != i ) {
@@ -51,8 +58,69 @@ void down_to_leaf(long a[], const int n, int i) {
 }
 
 void heapify(long a[], const int n) {
-	for(int i = (n>>1); i >= 0; --i) {
+	for(int i = n>>1; i >= 0; --i) {
 		down_to_leaf(a, n, i);
+		printf("%d: ", i);
+		for (int i = 0; i < n; ) {
+			printf("%ld", a[i]);
+			++i;
+			if ( i < n ) {
+				printf(", ");
+			}
+		}
+		printf("\n");	}
+}
+
+unsigned int print_array(long a[], int b, int n) {
+	unsigned int len = 0;
+	for (int i = 0; i < n; ) {
+		len += printf("%ld", a[i]);
+		++i;
+		if ( i == b - 1) {
+			len += printf("| ");
+		} else if ( i < n ) {
+			len += printf(", ");
+		}
+	}
+	len += printf("\n");
+	return len;
+}
+
+void heap_sort(long a[], int n) {
+
+	heapify(a, n);
+
+	heap_checker(a,n);
+
+	for (int i = 0; i < n; ) {
+		printf("%ld", a[i]);
+		++i;
+		if ( i < n ) {
+			printf(", ");
+		} else {
+			printf("| ");
+		}
+	}
+	printf("\n");
+
+	for(int heap_size = n; heap_size > 1; --heap_size) {
+//		long t = a[sz-1];
+//		a[sz-1] = a[0];
+//		a[0] = t;
+		a[0] ^= a[heap_size-1];
+		a[heap_size-1] = a[0]^a[heap_size-1];
+		a[0] = a[0]^a[heap_size-1];
+		down_to_leaf(a, heap_size-1, 0);
+		for (int i = 0; i < n; ) {
+			printf("%ld", a[i]);
+			++i;
+			if ( i == heap_size - 1) {
+				printf("| ");
+			} else if ( i < n ) {
+				printf(", ");
+			}
+		}
+		printf("\n");
 	}
 }
 
@@ -67,28 +135,32 @@ int main(const int argc, const char *argv[]) {
 	printf("\n");
 
 	heap_checker(a, n);
-	/*
-	heap_sort(argv + 1, idx, n); //argv+1 は配列 argv の 2 番目の要素から始まる
-	*/
-	heapify(a, n);
-	for (int i = 0; i < n; ++i) {
-		printf("%ld, ", a[i]);
-	}
-	printf("\n");
 
-	for(int sz = n; sz > 1; --sz) {
-		long t = a[sz-1];
-		a[sz-1] = a[0];
-		a[0] = t;
-		down_to_leaf(a, sz-1, 0);
-		for (int i = 0; i < sz-1; ++i) {
-			printf("%ld, ", a[i]);
-		}
-		printf(";");
-		for (int i = sz-1; i < n; ++i) {
-			printf("%ld, ", a[i]);
-		}
-		printf("\n");
-	}
+	heap_sort(a, n);
+
 	return 0;
 }
+/*
+ * 4, 1, 9, 3, 8, 5, 3, 6, 7, 4,
+([1] <- [4]), ([1] <- [5]), ([3] <- [12]), 3 violations.
+
+5: 4, 1, 9, 3, 8, 5, 3, 6, 7, 4
+4: 4, 1, 9, 3, 8, 5, 3, 6, 7, 4
+3: 4, 1, 9, 3, 8, 5, 3, 6, 7, 4
+2: 4, 1, 9, 3, 8, 5, 3, 6, 7, 4
+1: 4, 8, 9, 3, 1, 5, 3, 6, 7, 4
+0: 8, 5, 9, 3, 1, 4, 3, 6, 7, 4
+([3] <- [12]), 1 violations.
+
+8, 5, 9, 3, 1, 4, 3, 6, 7, 4|
+5, 4, 9, 3, 1, 4, 3, 6, 7| 8
+7, 4, 9, 3, 1, 4, 3, 6| 5, 8
+6, 4, 9, 3, 1, 4, 3| 7, 5, 8
+4, 4, 9, 3, 1, 3| 6, 7, 5, 8
+4, 3, 9, 3, 1| 4, 6, 7, 5, 8
+3, 1, 9, 3| 4, 4, 6, 7, 5, 8
+3, 1, 9| 3, 4, 4, 6, 7, 5, 8
+9, 1| 3, 3, 4, 4, 6, 7, 5, 8
+1| 9, 3, 3, 4, 4, 6, 7, 5, 8
+ *
+ */
