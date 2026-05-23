@@ -59,6 +59,7 @@ int main(int argc, char **argv) {
 	data db[num];
 	data * a[num];
 
+	printf("Input: \n");
 	for(long i = 0; i < num; ++i) {
 		char * id = argv[1+i];
 		char * name;
@@ -75,7 +76,8 @@ int main(int argc, char **argv) {
 
 	//long range = 100;
 	//insertion_sort(a, num, lessthan);
-	selection_sort(a, num, lessthan);
+	//selection_sort(a, num, lessthan);
+	shell_sort(a, num, lessthan);
 	//heap_sort(a, num, lessthan);
 	//merge_sort_recursive(a, num, lessthan);
 	//merge_sort_doubles(a, num, lessthan);
