@@ -19,6 +19,7 @@ void merge_sort_recursive(data * a[], long n, compfunc less);
 void merge_sort_doubles(data * a[], long n, compfunc less);
 void merge_sort_ldeque(LinkedDeque * a, compfunc less);
 void bubble_sort(data * a[], long n, compfunc less);
+void shell_sort(data * a[], long n, compfunc less);
 
 void bucket_sort(data * a[], long n, long range_origin, long range_width, hashfunc keyval);
 void bucket_sort_fixed(data * a[], long n, long range_origin, long range_width, hashfunc keyval);
