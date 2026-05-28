@@ -16,16 +16,21 @@ void shell_sort(data * a[], long n, int (* less)(const void *, const void *)) {
         for (long i = gap; i < n; i++) {
 
             // Current element to be placed correctly
-            data * ptr = a[i];
+            data * tmp = a[i];
             long j = i;
 
             // Shift elements that are greater than temp to make space
-            while (j >= gap && less(ptr, a[j - gap]) ) {
+            while (j >= gap && less(tmp, a[j - gap]) ) {
                 a[j] = a[j - gap];
                 j -= gap;
             }
             // Place temp in its correct location
-            a[j] = ptr;
+            a[j] = tmp;
+
+            for(int i = 0; i < n; ++i) {
+            	fprintf_data(stdout, a[i]);
+            }
+            fprintf(stdout, "\n");
         }
     }
 }

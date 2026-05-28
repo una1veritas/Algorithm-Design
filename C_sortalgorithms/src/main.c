@@ -30,9 +30,9 @@ int lessthan(const void * x, const void * y) {
 }
 
 // hashfunc
-long keyval(const void * x) {
+int keyval(const void * x) {
 	const char * str = ((const data *)x)->name;
-	long t = 0;
+	int t = 0;
 	for (int i = 0; str[i]; ++i) {
 		t *= 31;
 		t += str[i];

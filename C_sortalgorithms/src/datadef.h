@@ -19,7 +19,7 @@ typedef struct MEMBER {
 typedef int (* compfunc)(const void *, const void *);
 typedef int (* hashfunc)(const void *);
 
-long keyval(const void * d);
+int keyval(const void * d);
 int  equals(const void * d1, const void * d2);
 int  lessthan(const void * d1, const void * d2);
 int  fprintf_data(FILE * fp, const data * d);
