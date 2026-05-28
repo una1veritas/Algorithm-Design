@@ -7,18 +7,16 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "datatype.h"
 
 // calculate unsigned long hash code (32 bit in Win 64) from id (char [8]).
-unsigned long hash_code(const datatype * d) {
-	unsigned long sum = 0;
-	unsigned long hi8;
-	for(int i = 0; i < 8; ++i) {
-		hi8 = (sum>>(sizeof(unsigned long)*8 - 8)) & 0xff;
-		sum *= 27;
-		sum ^= d->id[i];
-		sum ^= hi8;
+uint32_t hash_code(const datatype * d) {
+	uint32_t sum = 0;
+	for(int i = 0; d->name[i] != 0; ++i) {
+		sum *= 31;
+		sum += d->name[i];
 	}
 	return sum;
 }

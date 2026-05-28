@@ -15,7 +15,7 @@ typedef struct {
 typedef PII datatype;
 
 
-unsigned long hash_code(const datatype * d);
+uint32_t hash_code(const datatype * d);
 int equals(const datatype * d1, const datatype * d2);
 int sprint(char * buf, const datatype * d);
 

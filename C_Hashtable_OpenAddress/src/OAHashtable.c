@@ -50,6 +50,11 @@ int OAHashtable_add(OAHashtable * htbl, datatype * obj) {
 	return find_ix;
 }
 
+int OAHashtable_remove(OAHashtable * htbl, datatype * obj) {
+	unsigned int find_ix = OAHashtable_find_or_NULL(htbl, obj);
+
+}
+
 int OAHashtable_fprintf(FILE * fp, OAHashtable * htbl, const char * fmt) {
 	int sum = 0;
 	char buf[256];
