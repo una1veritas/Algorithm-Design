@@ -8,15 +8,16 @@
 #ifndef DATATYPE_H_
 #define DATATYPE_H_
 
+#include <stdio.h>
+
 typedef struct {
-	char id[8];
+	char id[12];
 	char name[32];
-} PII;
-typedef PII datatype;
+} datatype;
 
 
 unsigned int hash_code(const datatype * d);
 int equals(const datatype * d1, const datatype * d2);
-int sprint(char * buf, const datatype * d);
+size_t printOn(FILE * stream, const datatype * d);
 
 #endif /* DATATYPE_H_ */

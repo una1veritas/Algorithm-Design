@@ -15,11 +15,11 @@
 
 typedef struct OAHashtable {
 	datatype ** table;
-	unsigned int tablesize, elemcount;
+	unsigned int tablesize, count;
 } OAHashtable;
 
-OAHashtable * allocate_OAHashtable(unsigned int size);
-void free_OAHashtable(OAHashtable * htbl);
+OAHashtable * OAHashtable_allocate(unsigned int size);
+void OAHashtable_free(OAHashtable * htbl);
 
 unsigned int OAHashtable_find_or_NULL(OAHashtable * htbl, datatype * obj);
 int OAHashtable_add(OAHashtable * htbl, datatype * obj);
