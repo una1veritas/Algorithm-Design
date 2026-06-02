@@ -14,10 +14,9 @@
 unsigned int hash_code(const datatype * d) {
 	unsigned int sum = 0;
 	//unsigned long hi8;
-	for(int i = 0; i < 8; ++i) {
-		//hi8 = (sum>>(sizeof(unsigned long)*8 - 8)) & 0xff;
+	for(int i = 0; d->name[i] != 0; ++i) {
 		sum *= 31;
-		sum += d->id[i];
+		sum += d->name[i];
 	}
 	return sum;
 }

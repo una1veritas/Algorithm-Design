@@ -26,65 +26,61 @@ void OAHashtable_free(OAHashtable * h) {
 	free(h);
 }
 
-unsigned int OAHashtable_find_or_NULL(OAHashtable * htbl, datatype * ptr) {
-	unsigned int start_ix = hash_code(ptr) % htbl->tablesize;
+unsigned int OAHashtable_find_or_NULL(OAHashtable * htbl, datatype * obj) {
+	unsigned int start_ix = hash_code(obj) % htbl->tablesize;
 	unsigned int i;
 	for(i = 0; i < htbl->tablesize; ++i) {
-		if ( htbl->table[(start_ix + i) % htbl->tablesize] == NULL ) {
-			//fprintf(stdout, "found NULL\n");
-			return start_ix + i;
+		unsigned int ix = (start_ix + i) % htbl->tablesize;
+		if ( htbl->table[ix] == NULL ) {
+			//fprintf(stdout, "found NULL @ %d\n", ix);
+			return ix;
 		}
-		if ( equals(htbl->table[(start_ix + i) % htbl->tablesize], ptr) ) {
-			//fprintf(stdout, "found elem\n");
-			return start_ix + i;
+		if ( equals(htbl->table[ix], obj) ) {
+			//fprintf(stdout, "found the obj @ %d\n", ix);
+			return ix;
 		}
 	}
+	// error. table[] has no NULL!
 	return i;
 }
 
-int OAHashtable_add(OAHashtable * htbl, datatype * obj) {
+bool OAHashtable_add(OAHashtable * htbl, datatype * obj) {
 	unsigned int find_ix = OAHashtable_find_or_NULL(htbl, obj);
-	if ( find_ix == htbl->tablesize ) {
-		fprintf(stderr, "Error: Hashtable is full!!\n");
-		return -1;
+	if ( htbl->count >= htbl->tablesize - 1 ) {
+		fprintf(stdout, "Error: Hashtable is full!!\n");
+		return false;
 	}
 
 	if ( htbl->table[find_ix] == NULL ) {
-		//fprintf(stdout, "put into %d\n", find_ix);
 		htbl->table[find_ix] = obj;
+		++htbl->count;
+		//fprintf(stdout, "%d is filled\n", find_ix);
 	}
-	return find_ix;
+	// If != NULL, obj is already included. Do nothing.
+	return true;
 }
 
-int OAHashtable_remove(OAHashtable * htbl, datatype * obj) {
-	unsigned int start = OAHashtable_find_or_NULL(htbl, obj);
-	unsigned int ix = 0;
-	for( ; ix < htbl->tablesize ; ++ix) {
-		datatype * ptr = htbl->table[(start + ix) % htbl->tablesize];
-		if ( ptr == NULL )
-			return ix; 	// no such data and thus removal is completed.
-		if ( equals(ptr, obj) ) {
-			htbl->table[(start + ix) % htbl->tablesize] = NULL;
-			break;
+bool OAHashtable_remove(OAHashtable * htbl, datatype * obj) {
+	unsigned int startix = OAHashtable_find_or_NULL(htbl, obj);
+
+	if ( htbl->table[startix] == NULL )
+		return false; 	// obj is not included, do nothing.
+
+	htbl->table[startix] = NULL; 	// made the space empty
+	--htbl->count;
+
+	// startix indicates the original empty cell.
+	for (unsigned int i = 1; htbl->table[(startix + i) % htbl->tablesize] != NULL ; ++i) {
+		unsigned int left = hash_code(htbl->table[(startix + i) % htbl->tablesize]) % htbl->tablesize;
+		fprintf(stdout, "startix = %d, i = %d, left = %d\n", startix, i, left);
+		if ( left <= startix ) {
+			fprintf(stdout, "move from %d\n", (startix + i) % htbl->tablesize);
+			htbl->table[startix] = htbl->table[(startix + i) % htbl->tablesize];
+			htbl->table[(startix + i) % htbl->tablesize] = NULL;
+			startix = (startix + i) % htbl->tablesize;
 		}
 	}
-
-	if ( ix == htbl->tablesize ) {
-		fprintf(stderr, "Error: Hashtable is full!!\n");
-		return -1;
-	}
-
-	start = (start + ix) % htbl->tablesize; // NULL cell
-	ix = 1;
-	while ( htbl->table[(start + ix) % htbl->tablesize] != NULL ) {
-		unsigned int h = hash_code(htbl->table[(start + ix) % htbl->tablesize]) % htbl->tablesize;
-		if ( h <= start ) {
-			htbl->table[start] = htbl->table[(start + ix) % htbl->tablesize];
-			start = (start + ix) % htbl->tablesize;
-		}
-		++ix;
-	}
-	return ix;
+	return true;
 }
 
 int OAHashtable_fprintf(FILE * fp, OAHashtable * htbl, const char * fmt) {

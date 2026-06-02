@@ -9,6 +9,7 @@
 #define OAHASHTABLE_H_
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "datatype.h"
 
@@ -22,8 +23,8 @@ OAHashtable * OAHashtable_allocate(unsigned int size);
 void OAHashtable_free(OAHashtable * htbl);
 
 unsigned int OAHashtable_find_or_NULL(OAHashtable * htbl, datatype * obj);
-int OAHashtable_add(OAHashtable * htbl, datatype * obj);
-int OAHashtable_remove(OAHashtable * htbl, datatype * obj);
+bool OAHashtable_add(OAHashtable * htbl, datatype * obj);
+bool OAHashtable_remove(OAHashtable * htbl, datatype * obj);
 int OAHashtable_fprintf(FILE *, OAHashtable * htbl, const char *);
 
 #endif /* OAHASHTABLE_H_ */
