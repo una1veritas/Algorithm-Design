@@ -69,9 +69,9 @@ bool OAHashtable_remove(OAHashtable * htbl, datatype * obj) {
 	--htbl->count;
 
 	htbl->table[startix] = NULL; 	// made the space empty
-	for (unsigned int i = 1; i < htbl->tablesize; ++i ) {
-		if ( htbl->table[(startix + i) % htbl->tablesize] == NULL )
-			return true;
+	// table has at least one empty cell
+	for (unsigned int i = 1; htbl->table[(startix + i) % htbl->tablesize] != NULL ; ++i ) {
+
 		unsigned int h = hash_code(htbl->table[(startix + i) % htbl->tablesize]) ;
 		for (unsigned int j = 0; j < htbl->tablesize; ++j) {
 			if ( (h + j) % htbl->tablesize == startix ) {
