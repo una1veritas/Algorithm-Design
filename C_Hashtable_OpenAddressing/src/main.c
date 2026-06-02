@@ -21,12 +21,12 @@ int main(const int argc, const char * argv[]) {
 	datatype entry[] = {
 			{ "242G1022", "Takako"},
 			{ "242G1103", "Hiroto"},
-			{ "242G1201", "Tomoya"},
 			{ "242G1039", "Fuyumi"},
 			{ "242G1209", "Shouichi"},
 			{ "242G1376", "Akio"},
 			{ "242G1211", "Natsu"},
 			{ "242G1371", "Haruyo"},
+			{ "242G1201", "Tomoya"},
 			{ "242G1183", "Shiori"},
 			//{ "", "" },
 	};
@@ -56,9 +56,9 @@ int main(const int argc, const char * argv[]) {
 	OAHashtable_fprintf(stdout, htbl, "%s, ");
 
 	fputs("\nremove element ", stdout);
-	printOn(stdout, &entry[4]);
+	printOn(stdout, &entry[0]);
 	fputs("\n", stdout);
-	OAHashtable_remove(htbl, &entry[4]);
+	OAHashtable_remove(htbl, &entry[0]);
 	OAHashtable_fprintf(stdout, htbl, "%s, ");
 
 	OAHashtable_free(htbl);

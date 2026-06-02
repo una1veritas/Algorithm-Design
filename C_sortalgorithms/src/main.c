@@ -41,8 +41,8 @@ int keyval(const void * x) {
 }
 
 int  fprintf_data(FILE * fp, const data * d) {
-	//return fprintf(fp, "%s", *d);
-	return fprintf(fp, "%s: %s", d->id, d->name);
+	return fprintf(fp, "%s ", d->name);
+	//return fprintf(fp, "%s: %s", d->id, d->name);
 }
 
 int strpbrkncpy(char * dst, char * src, int n, const char * delimchars) {

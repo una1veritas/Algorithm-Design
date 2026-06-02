@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "datatype.h"
 
@@ -21,7 +22,7 @@ unsigned int hash_code(const datatype * d) {
 	return sum;
 }
 
-int equals(const datatype * d1, const datatype * d2) {
+bool equals(const datatype * d1, const datatype * d2) {
 	return strncmp(d1->id, d2->id, 8) == 0;
 }
 

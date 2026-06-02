@@ -26,67 +26,67 @@ void OAHashtable_free(OAHashtable * h) {
 	free(h);
 }
 
-unsigned int OAHashtable_find_or_NULL(OAHashtable * htbl, datatype * obj) {
-	unsigned int start_ix = hash_code(obj) % htbl->tablesize;
-	unsigned int i;
-	for(i = 0; i < htbl->tablesize; ++i) {
-		unsigned int ix = (start_ix + i) % htbl->tablesize;
-		if ( htbl->table[ix] == NULL ) {
-			//fprintf(stdout, "found NULL @ %d\n", ix);
+unsigned int OAHashtable_linearProbe_for(OAHashtable * htbl, const datatype * dataptr) {
+	unsigned int start = hash_code(dataptr) % htbl->tablesize;
+	unsigned int i = 0;
+	for( ; i < htbl->tablesize; ++i) {
+		unsigned int ix = (start + i) % htbl->tablesize;
+		if ( htbl->table[ix] == NULL )
 			return ix;
-		}
-		if ( equals(htbl->table[ix], obj) ) {
-			//fprintf(stdout, "found the obj @ %d\n", ix);
+		if ( equals(htbl->table[ix], dataptr) )
 			return ix;
-		}
 	}
-	// error. table[] has no NULL!
-	return i;
+	return i; // table has no NULL error, returns impossible value
 }
 
-bool OAHashtable_add(OAHashtable * htbl, datatype * obj) {
-	unsigned int find_ix = OAHashtable_find_or_NULL(htbl, obj);
+bool OAHashtable_add(OAHashtable * htbl, datatype * dataptr) {
+	unsigned int ix = OAHashtable_linearProbe_for(htbl, dataptr);
+	if ( htbl->table[ix] != NULL )
+		return true;
+
 	if ( htbl->count >= htbl->tablesize - 1 ) {
-		fprintf(stdout, "Error: Hashtable is full!!\n");
+		fprintf(stderr, "Error: Hashtable is full!!\n");
 		return false;
 	}
 
-	if ( htbl->table[find_ix] == NULL ) {
-		htbl->table[find_ix] = obj;
-		++htbl->count;
-		//fprintf(stdout, "%d is filled\n", find_ix);
-	}
-	// If != NULL, obj is already included. Do nothing.
+	htbl->table[ix] = dataptr;
+	++htbl->count;
+
 	return true;
 }
 
-bool OAHashtable_remove(OAHashtable * htbl, datatype * obj) {
-	unsigned int startix = OAHashtable_find_or_NULL(htbl, obj);
+bool OAHashtable_remove(OAHashtable * htbl, datatype * dataptr) {
+	unsigned int ix = OAHashtable_linearProbe_for(htbl, dataptr);
 
-	if ( htbl->table[startix] == NULL )
-		return false; 	// obj is not included, do nothing.
+	if ( htbl->table[ix] == NULL )
+		return false; 	// *dataptr is not included. Do nothing.
 
+	htbl->table[ix] = NULL; 	// made the space empty
 	--htbl->count;
+	// table has at least two empty cell
 
-	htbl->table[startix] = NULL; 	// made the space empty
-	// table has at least one empty cell
-	for (unsigned int i = 1; htbl->table[(startix + i) % htbl->tablesize] != NULL ; ++i ) {
+	// fix collisions from ix
+	unsigned int i = 1;
+	while ( i < htbl->tablesize ) {
+		unsigned int iy = (ix + i) % htbl->tablesize;
+		if ( htbl->table[iy] == NULL )
+			return true;
 
-		unsigned int h = hash_code(htbl->table[(startix + i) % htbl->tablesize]) ;
-		for (unsigned int j = 0; j < htbl->tablesize; ++j) {
-			if ( (h + j) % htbl->tablesize == startix ) {
-				htbl->table[startix] = htbl->table[(startix + i) % htbl->tablesize];
-				startix = (startix + i) % htbl->tablesize;
-				htbl->table[startix] = NULL;
+		unsigned int h = hash_code(htbl->table[iy]);
+		for (unsigned int j = 1; j < htbl->tablesize ; ++j ) {
+			if ( ix == (h + j) % htbl->tablesize ) {
+				htbl->table[ix] = htbl->table[iy];
+				htbl->table[iy] = NULL;
+				ix = iy;
+				i = 0;
 				break;
 			}
-			if ( htbl->table[(h + j) % htbl->tablesize] == NULL ) {
-				fprintf(stdout, "found NULL error at %d\n", (h + j) % htbl->tablesize);
-				return false;
-			}
-			if ( (h + j) % htbl->tablesize == (startix + i) % htbl->tablesize )
+			if ( htbl->table[(h + j) % htbl->tablesize] == NULL )
 				break;
+			// ignore the data same with htbl->table[iy], thus do not use OAHashtable_linearProbe_for().
 		}
+
+		++i;
 	}
 	return true;
 }

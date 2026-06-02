@@ -9,6 +9,7 @@
 #define DATATYPE_H_
 
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct {
 	char id[12];
@@ -17,7 +18,7 @@ typedef struct {
 
 
 unsigned int hash_code(const datatype * d);
-int equals(const datatype * d1, const datatype * d2);
+bool equals(const datatype * d1, const datatype * d2);
 size_t printOn(FILE * stream, const datatype * d);
 
 #endif /* DATATYPE_H_ */

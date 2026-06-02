@@ -22,7 +22,7 @@ typedef struct OAHashtable {
 OAHashtable * OAHashtable_allocate(unsigned int size);
 void OAHashtable_free(OAHashtable * htbl);
 
-unsigned int OAHashtable_find_or_NULL(OAHashtable * htbl, datatype * obj);
+unsigned int OAHashtable_linearProbe_for(OAHashtable * htbl, const datatype * dataptr);
 bool OAHashtable_add(OAHashtable * htbl, datatype * obj);
 bool OAHashtable_remove(OAHashtable * htbl, datatype * obj);
 int OAHashtable_fprintf(FILE *, OAHashtable * htbl, const char *);
