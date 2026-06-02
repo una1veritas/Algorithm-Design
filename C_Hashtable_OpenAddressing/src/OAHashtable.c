@@ -66,18 +66,26 @@ bool OAHashtable_remove(OAHashtable * htbl, datatype * obj) {
 	if ( htbl->table[startix] == NULL )
 		return false; 	// obj is not included, do nothing.
 
-	htbl->table[startix] = NULL; 	// made the space empty
 	--htbl->count;
 
-	// startix indicates the original empty cell.
-	for (unsigned int i = 1; htbl->table[(startix + i) % htbl->tablesize] != NULL ; ++i) {
-		unsigned int left = hash_code(htbl->table[(startix + i) % htbl->tablesize]) % htbl->tablesize;
-		fprintf(stdout, "startix = %d, i = %d, left = %d\n", startix, i, left);
-		if ( left <= startix ) {
-			fprintf(stdout, "move from %d\n", (startix + i) % htbl->tablesize);
-			htbl->table[startix] = htbl->table[(startix + i) % htbl->tablesize];
-			htbl->table[(startix + i) % htbl->tablesize] = NULL;
-			startix = (startix + i) % htbl->tablesize;
+	htbl->table[startix] = NULL; 	// made the space empty
+	for (unsigned int i = 1; i < htbl->tablesize; ++i ) {
+		if ( htbl->table[(startix + i) % htbl->tablesize] == NULL )
+			return true;
+		unsigned int h = hash_code(htbl->table[(startix + i) % htbl->tablesize]) ;
+		for (unsigned int j = 0; j < htbl->tablesize; ++j) {
+			if ( (h + j) % htbl->tablesize == startix ) {
+				htbl->table[startix] = htbl->table[(startix + i) % htbl->tablesize];
+				startix = (startix + i) % htbl->tablesize;
+				htbl->table[startix] = NULL;
+				break;
+			}
+			if ( htbl->table[(h + j) % htbl->tablesize] == NULL ) {
+				fprintf(stdout, "found NULL error at %d\n", (h + j) % htbl->tablesize);
+				return false;
+			}
+			if ( (h + j) % htbl->tablesize == (startix + i) % htbl->tablesize )
+				break;
 		}
 	}
 	return true;
@@ -88,7 +96,7 @@ int OAHashtable_fprintf(FILE * fp, OAHashtable * htbl, const char * fmt) {
 	for(int i = 0; i < htbl->tablesize; ++i) {
 		if ( htbl->table[i] != NULL ) {
 			sum += printOn(fp, htbl->table[i]);
-			sum += fprintf(fp, " %u", hash_code(htbl->table[i]) % htbl->tablesize );
+			sum += fprintf(fp, "hashcode = %u, mod %u =  %u", hash_code(htbl->table[i]), htbl->tablesize, hash_code(htbl->table[i]) % htbl->tablesize );
 		} else {
 			sum += fprintf(fp, "(NULL)");
 		}

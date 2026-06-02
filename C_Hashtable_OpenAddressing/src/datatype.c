@@ -27,6 +27,6 @@ int equals(const datatype * d1, const datatype * d2) {
 
 size_t printOn(FILE * stream, const datatype * d) {
 	char buf[256];
-	snprintf(buf, 255, "(%s: %s) hash = %u", d->id, d->name, hash_code(d));
+	snprintf(buf, 255, "(%s: %s) ", d->id, d->name);
 	return fputs(buf, stream);
 }
