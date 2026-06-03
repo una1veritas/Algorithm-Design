@@ -72,18 +72,13 @@ bool OAHashtable_remove(OAHashtable * htbl, datatype * dataptr) {
 		if ( htbl->table[iy] == NULL )
 			return true;
 
-		unsigned int h = hash_code(htbl->table[iy]);
-		for (unsigned int j = 1; j < htbl->tablesize ; ++j ) {
-			if ( ix == (h + j) % htbl->tablesize ) {
-				htbl->table[ix] = htbl->table[iy];
-				htbl->table[iy] = NULL;
-				ix = iy;
-				i = 0;
-				break;
-			}
-			if ( htbl->table[(h + j) % htbl->tablesize] == NULL )
-				break;
-			// ignore the data same with htbl->table[iy], thus do not use OAHashtable_linearProbe_for().
+		unsigned int h = OAHashtable_linearProbe_for(htbl, htbl->table[iy]);
+		if ( h != iy && htbl->table[h] == NULL ) {
+			// h == ix
+			htbl->table[ix] = htbl->table[iy];
+			htbl->table[iy] = NULL;
+			ix = iy;
+			i = 0;
 		}
 
 		++i;
@@ -96,7 +91,7 @@ int OAHashtable_fprintf(FILE * fp, OAHashtable * htbl, const char * fmt) {
 	for(int i = 0; i < htbl->tablesize; ++i) {
 		if ( htbl->table[i] != NULL ) {
 			sum += printOn(fp, htbl->table[i]);
-			sum += fprintf(fp, "hashcode = %u, mod %u =  %u", hash_code(htbl->table[i]), htbl->tablesize, hash_code(htbl->table[i]) % htbl->tablesize );
+			sum += fprintf(fp, "hashcode = %u / %u", hash_code(htbl->table[i]), hash_code(htbl->table[i]) % htbl->tablesize );
 		} else {
 			sum += fprintf(fp, "(NULL)");
 		}

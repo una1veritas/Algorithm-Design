@@ -11,9 +11,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct {
-	char id[12];
-	char name[32];
+typedef struct PersonalData {
+	char givenname[12];
+	char surname[32];
 } datatype;
 
 

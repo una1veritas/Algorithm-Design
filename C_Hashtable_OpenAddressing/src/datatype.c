@@ -14,20 +14,28 @@
 // calculate unsigned int hash code by id (32 bit in Win 64) from id (char [8]).
 unsigned int hash_code(const datatype * d) {
 	unsigned int sum = 0;
-	//unsigned long hi8;
-	for(int i = 0; d->name[i] != 0; ++i) {
+
+	for(int i = 0; d->surname[i] != 0; ++i) {
 		sum *= 31;
-		sum += d->name[i];
+		sum += d->surname[i];
 	}
+
+	for(int i = 0; d->givenname[i] != 0; ++i) {
+		sum *= 31;
+		sum += d->givenname[i];
+	}
+
 	return sum;
 }
 
 bool equals(const datatype * d1, const datatype * d2) {
-	return strncmp(d1->id, d2->id, 8) == 0;
+	return (strcmp(d1->surname, d2->surname) == 0) && (strcmp(d1->givenname, d2->givenname) == 0);
 }
 
 size_t printOn(FILE * stream, const datatype * d) {
 	char buf[256];
-	snprintf(buf, 255, "(%s: %s) ", d->id, d->name);
+	char lastname[64];
+	snprintf(lastname, 63, "%s,", d->surname);
+	snprintf(buf, 255, "%-10s %-10s ", lastname, d->givenname);
 	return fputs(buf, stream);
 }

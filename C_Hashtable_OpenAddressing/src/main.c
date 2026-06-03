@@ -17,18 +17,18 @@
 
 int main(const int argc, const char * argv[]) {
 	OAHashtable * htbl;
-	long tblsize = 11;
+	long tblsize = 13;
 	datatype entry[] = {
-			{ "242G1022", "Takako"},
-			{ "242G1103", "Hiroto"},
-			{ "242G1039", "Fuyumi"},
-			{ "242G1209", "Shouichi"},
-			{ "242G1376", "Akio"},
-			{ "242G1211", "Natsu"},
-			{ "242G1371", "Haruyo"},
-			{ "242G1201", "Tomoya"},
-			{ "242G1183", "Shiori"},
-			//{ "", "" },
+			{ "Takako", "Kawazu" },
+			{ "Hiroto", "Nishimachi" },
+			{ "Fuyumi", "Katsumori" },
+			{ "Ryuji", "Tateiwa" },
+			{ "Shouichi", "Koubukuro" },
+			{ "Akio", "Futase" },
+			{ "Natsu", "Takao" },
+			{ "Haruyo", "Igisu" },
+			{ "Tomoya", "Yokota" },
+			{ "Shiori", "Miyamachi" },
 	};
 	int n = sizeof(entry)/sizeof(datatype);
 	printf("entry size = %u\n", n);
@@ -55,10 +55,11 @@ int main(const int argc, const char * argv[]) {
 	printf("\nthe number of entries = %d\n", htbl->count);
 	OAHashtable_fprintf(stdout, htbl, "%s, ");
 
+	datatype remove_data = { "Natsu", "Takao" };
 	fputs("\nremove element ", stdout);
-	printOn(stdout, &entry[0]);
+	printOn(stdout, &remove_data);
 	fputs("\n", stdout);
-	OAHashtable_remove(htbl, &entry[0]);
+	OAHashtable_remove(htbl, &remove_data);
 	OAHashtable_fprintf(stdout, htbl, "%s, ");
 
 	OAHashtable_free(htbl);
