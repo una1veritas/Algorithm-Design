@@ -26,6 +26,7 @@ void OAHashtable_free(OAHashtable * h) {
 	free(h);
 }
 
+// searches the same data or NULL from hashed 2position
 unsigned int OAHashtable_linearProbe_for(OAHashtable * htbl, const datatype * dataptr) {
 	unsigned int start = hash_code(dataptr) % htbl->tablesize;
 	unsigned int i = 0;
