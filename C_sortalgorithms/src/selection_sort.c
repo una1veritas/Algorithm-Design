@@ -9,7 +9,7 @@
 #include "datadef.h"
 
 
-void selection_sort(data * d[], long n, compfunc less) {
+void selection_sort(data * d[], long n, lessfunc less) {
 	data * t;
 	for (long i = 0; i < n; ++i) {
 		for (long j = i + 1; j < n; ++j) {
@@ -24,21 +24,22 @@ void selection_sort(data * d[], long n, compfunc less) {
 	return;
 }
 
-void selection_sort_reverse(data * d[], long n, compfunc less) {
-	data * t;
-	for (long i = n - 1; i > 0; --i) {
-		for (long j = 0; j < i; ++j) {
-			if ( less(d[i], d[j]) ) {
-				printf("0: %ld, %ld\n", i, j);
-				t = d[i];
-				d[i] = d[j];
-				d[j] = t;
-			} else {
-				printf("1: %ld, %ld\n", i, j);
-			}
-		}
-	}
-	return;
+void selection_sort_reverse(data * d[], long n, lessfunc less) {
+   data * t;
+   for (long i = n - 1; i > 0; --i) {
+	  int max = i;
+      for (long j = 0; j < i; ++j) {
+         if ( less(d[max], d[j]) )
+        	 max = j;
+      }
+      t = d[max], d[max] = d[i], d[i] = t;
+      for(long ix = 0; ix < n; ++ix) {
+         fprintf_data(stdout, d[ix]);
+         fprintf(stdout,", ");
+      }
+      printf("\n");
+   }
+   return;
 }
 
 /*

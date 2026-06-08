@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 #include <string.h>
 
 //#include "binsearch.h"
@@ -17,6 +19,7 @@
 #include "sort_algorithms.h"
 
 long passcount[] = { 0, 0 };
+/*
 
 // compfunc
 int equals(const void * x, const void * y) {
@@ -39,27 +42,41 @@ int keyval(const void * x) {
 	}
 	return t;
 }
+*/
+
+// eqfunc
+bool equals(const void * left, const void * right) {
+	const data * a = (const data *) left, * b = (const data *) right;
+	return ( a->x == b->x ) && ( a->y == b->y ) ;
+}
+
+// lessfunc
+bool lessthan(const void * left, const void * right) {
+	const data * a = (const data *) left, * b = (const data *) right;
+	return ( a->x < b->x ) || ( (a->x == b->x) && (a->y < b->y) ) ;
+}
+
 
 int  fprintf_data(FILE * fp, const data * d) {
-	return fprintf(fp, "%s ", d->name);
+	return fprintf(fp, "(%d, %d) ", d->x, d->y);
 	//return fprintf(fp, "%s: %s", d->id, d->name);
 }
 
-int strpbrkncpy(char * dst, char * src, int n, const char * delimchars) {
+/*int strpbrkncpy(char * dst, char * src, int n, const char * delimchars) {
 	char * ptr = strpbrk(src, delimchars);
 	int l = ptr - src;
 	l = l > n ? n : l ;
 	strncpy(dst, src, l);
 	dst[l] = '\0';
 	return l;
-}
+}*/
 
 int main(int argc, char **argv) {
-	long num = argc - 1;
+	long num = (argc - 1)>>1;
 	data db[num];
 	data * a[num];
 
-	printf("Input: \n");
+/*	printf("Input: \n");
 	for(long i = 0; i < num; ++i) {
 		char * id = argv[1+i];
 		char * name;
@@ -72,12 +89,29 @@ int main(int argc, char **argv) {
 		fprintf_data(stdout, a[i]);
 		printf(",\n");
 	}
-	printf("\n");
+	printf("\n");*/
+
+	printf("Input: \n");
+
+	for(int i = 0; i < num; ++i) {
+		int x = strtol(argv[1 + (i<<1)], NULL, 10);
+		int y = strtol(argv[2 + (i<<1)], NULL, 10);
+		db[i].x = x;
+		db[i].y = y;
+		a[i] = &db[i];
+	}
+
+	for(int i = 0; i < num; ++i) {
+		fprintf_data(stdout, a[i]);
+		printf(", ");
+	}
+	printf("\n\n");
 
 	//long range = 100;
 	//insertion_sort(a, num, lessthan);
 	//selection_sort(a, num, lessthan);
-	shell_sort(a, num, lessthan);
+	selection_sort_reverse(a, num, lessthan);
+	//shell_sort(a, num, lessthan);
 	//heap_sort(a, num, lessthan);
 	//merge_sort_recursive(a, num, lessthan);
 	//merge_sort_doubles(a, num, lessthan);
@@ -86,14 +120,30 @@ int main(int argc, char **argv) {
 	//counting_sort(a, num, 0, 101, keyval);
 	//qsort(a, num, sizeof(a[0]), lessthan);
 
-	printf("result:\n");
+	printf("\nresult:\n");
 	for(long i = 0; i < num; ++i) {
 		fprintf_data(stdout, a[i]);
-		fprintf(stdout,",\n");
+		fprintf(stdout,", ");
 	}
 	printf("\n");
 
 	//printf("passcount [0] = %ld, [1] = %ld\n", passcount[0], passcount[1]);
+
+	for(int i = 0; i < num; ++i) {
+		int x = strtol(argv[1 + (i<<1)], NULL, 10);
+		int y = strtol(argv[2 + (i<<1)], NULL, 10);
+		db[i].x = x;
+		db[i].y = y;
+		a[i] = &db[i];
+	}
+	heap_sort(a, num, lessthan);
+
+	printf("\nresult 2:\n");
+	for(long i = 0; i < num; ++i) {
+		fprintf_data(stdout, a[i]);
+		fprintf(stdout,", ");
+	}
+	printf("\n");
 
 	return EXIT_SUCCESS;
 }

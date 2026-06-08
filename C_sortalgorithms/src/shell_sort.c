@@ -8,7 +8,7 @@
 #include "datadef.h"
 #include "sort_algorithms.h"
 
-void shell_sort(data * a[], long n, int (* less)(const void *, const void *)) {
+void shell_sort(data * a[], long n, lessfunc less) {
     // Start with a large gap, then reduce it step by step
     for (long gap = n>>1; gap > 0; gap >>= 1) {
         fprintf(stdout, "gap = %ld\n", gap);

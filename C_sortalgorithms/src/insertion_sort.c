@@ -14,7 +14,7 @@
 #include "datadef.h"
 #include "sort_algorithms.h"
 
-void insertion_sort(data * a[], long n, int (* less)(const void *, const void *)) {
+void insertion_sort(data * a[], long n, lessfunc less) {
 	long i;
 	data * t;
 	for (long sorted_end = 1; sorted_end < n; ++sorted_end) {

@@ -10,7 +10,7 @@
 /*
  * 長さ l の昇順列 a と長さ m の昇順列 b を dst に併合する
  */
-void merge(data * dst[], data * a[], long l, data * b[], long m, compfunc less) {
+void merge(data * dst[], data * a[], long l, data * b[], long m,  lessfunc less) {
 	long i, j, t;
 
 	// a[i] が列 a の先頭，l が a の長さ，b[j] が列 b の先頭，m が b の長さ，dst[t] が併合列 dst の末尾を表す．
@@ -33,7 +33,7 @@ void merge(data * dst[], data * a[], long l, data * b[], long m, compfunc less) 
 	}
 }
 
-void merge_sort_recursive(data * array[], long n, compfunc less) {
+void merge_sort_recursive(data * array[], long n,  lessfunc less) {
 	long i, l = n/2, m = n - l;
 	if (n <= 1)
 		return;
@@ -49,7 +49,7 @@ void merge_sort_recursive(data * array[], long n, compfunc less) {
 }
 
 
-void merge_sort_doubles(data * array[], long n, compfunc less) {
+void merge_sort_doubles(data * array[], long n,  lessfunc less) {
 	data * tmp[n];
 	long l, i, right_begin, right_length;
 
