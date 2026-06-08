@@ -23,6 +23,7 @@ typedef struct LList {
 
 LList * LList_init(LList *);
 void LList_free(LList *);
+
 void LList_fprintf(FILE *, LList *, const char * fmt);
 
 //int LList_length(LList * );

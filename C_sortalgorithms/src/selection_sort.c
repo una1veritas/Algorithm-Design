@@ -12,14 +12,12 @@
 void selection_sort(data * d[], long n, lessfunc less) {
 	data * t;
 	for (long i = 0; i < n; ++i) {
+		long maxix = i;
 		for (long j = i + 1; j < n; ++j) {
-			if ( less(d[j], d[i]) ) {
-			//if ( d[j] < d[i] ) {
-				t = d[i];
-				d[i] = d[j];
-				d[j] = t;
-			}
+			if ( less(d[maxix], d[j]) )
+				maxix = j;
 		}
+		t = d[maxix], d[maxix] = d[i], d[i] = t;
 	}
 	return;
 }
@@ -27,8 +25,9 @@ void selection_sort(data * d[], long n, lessfunc less) {
 void selection_sort_reverse(data * d[], long n, lessfunc less) {
    data * t;
    for (long i = n - 1; i > 0; --i) {
-	  int max = i;
-      for (long j = 0; j < i; ++j) {
+	  long max = i;
+      for (long j = i; j > 0; ) {
+    	  --j;
          if ( less(d[max], d[j]) )
         	 max = j;
       }

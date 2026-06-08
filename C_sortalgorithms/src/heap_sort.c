@@ -13,7 +13,6 @@ int down_to_leaf(data * a[], long i, long n, lessfunc less) {
 	int j;
 	data * t;
 	for ( ;(j = (i<<1) + 1) < n ; i = j) {
-		//printf("%s ", data[a[i]]);
 		if ( (j + 1 < n) ) {
 			if ( less(a[j], a[j+1]) ) {
 				j += 1;
@@ -21,7 +20,6 @@ int down_to_leaf(data * a[], long i, long n, lessfunc less) {
 		}
 		if ( less(a[j], a[i]) )
 			break;
-		//printf("a[%d] %d <--> a[%d] = %d\n", (int) i, (int) *a[i], (int) j, (int) *a[j]);
 		t = a[i], a[i] = a[j], a[j] = t;
 	}
 	return 1;

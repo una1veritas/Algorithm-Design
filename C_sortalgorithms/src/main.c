@@ -21,7 +21,7 @@
 long passcount[] = { 0, 0 };
 /*
 
-// compfunc
+// compare func
 int equals(const void * x, const void * y) {
 	const data * a = (const data *)x, * b = (const data *) y;
 	return strcmp(a->name, b->name) == 0;
