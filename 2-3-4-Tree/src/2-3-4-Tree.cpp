@@ -47,11 +47,9 @@ public:
 	}
 
 	~Node234() {
-		for(unsigned int i = 0; i < keycount; ++i) {
+		for(unsigned int i = 0; i < keycount + 1; ++i) {
 			delete childptr[i];
 		}
-		delete childptr[keycount];
-		keycount = 0;
 	}
 
 	bool is_empty() const {
