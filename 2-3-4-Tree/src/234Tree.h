@@ -10,10 +10,14 @@
 
 #include <iostream>
 
+#include "DataType.h"
+
+// bi-directional node of rooted tree
+// data are managed in the array (keys) in ascending order with the number of data (keycount)
 struct Node234 {
 private:
 	Node234 * parent;
-	const MyDataType * keyptr[3];
+	DataType keys[3];
 	unsigned int keycount;  // == nodecount - 1
 	Node234 * childptr[4];
 
@@ -21,16 +25,16 @@ private:
 	constexpr static unsigned int children_max_size = 4;
 
 public:
+	// empty node
 	Node234() : parent(NULL), keycount(0) {
-		keyptr[0] = NULL;
-		childptr[0] = NULL;
+		childptr[0] = NULL; // represents no children exist.
 	}
 
-	Node234(const MyDataType & k, Node234 * par = NULL, Node234 * left = NULL, Node234 * right = NULL)
+	Node234(const DataType & key, Node234 * par = NULL, Node234 * left = NULL, Node234 * right = NULL)
 	: parent(par), keycount(0) {
 		// construct a 2-node.
 		// NULL, NULL, NULL makes a root-leaf.
-		keyptr[keycount++] = &k;
+		keys[keycount++] = key;
 		childptr[0] = left;
 		if (left != NULL) {
 			childptr[0]->parent = this;
@@ -43,6 +47,7 @@ public:
 	}
 
 	~Node234() {
+		// strings in keys are part of the node.
 		for(unsigned int i = 0; i < keycount + 1; ++i) {
 			delete childptr[i];
 		}
@@ -57,11 +62,10 @@ public:
 	}
 
 	bool is_leaf() const {
-		if (childptr[0] == NULL)
-			return true;
-		return false;
+		return childptr[0] == NULL;
 	}
 
+	// is key_max_size ( = 4) node
 	bool is_full() const {
 		return keycount == key_max_size;
 	}
@@ -71,11 +75,11 @@ public:
 	}
 
 private:
-	unsigned int key_ub_index(const MyDataType & k) {
-		// assuming one or more key(s) exist(s).
+	unsigned int key_ub_index(const DataType & k) const {
+		// assuming one or more keys(s) exist(s).
 		unsigned int i;
 		for (i = 0 ; i < keycount ; ++i) {
-			if ( k <= *keyptr[i] )
+			if ( k <= keys[i] )
 				break;
 		}
 		return i;
@@ -83,45 +87,46 @@ private:
 
 	// insert the pointer of given key at an appropriate position
 	// to keyptr[i] and copy the childptr[i] as its left and right
-	unsigned int insert_key_to_node(const MyDataType & k) {
+	unsigned int insert_key_to_node(const DataType & k) {
 		if ( is_full() ) {
-			cerr << "error: insert_in_data234 failure." << endl;
+			std::cerr << "error: insert_in_data234 failure." << std::endl;
 			return key_max_size;
 		}
-		//cout << *this << ", " << k << endl;
+		//std::cout << *this << ", " << k << endl;
 		if (keycount == 0) { // empty root
-			keyptr[0] = &k;
+			keys[keycount++] = k;
 			childptr[0] = NULL;
 			childptr[1] = NULL;
-			keycount = 1;
 			return 0;
 		}
 		unsigned int i = key_ub_index(k);
 		childptr[keycount+1] = childptr[keycount];
 		for(unsigned int j = keycount; j > i; --j) {
-			keyptr[j] = keyptr[j-1];
+			keys[j] = keys[j-1];
 			childptr[j] = childptr[j-1];
 		}
-		keyptr[i] = &k;
+		keys[i] = k;
 		++keycount;
-		//cout << *this << endl;
+		//std::cout << *this << endl;
 		return i;
 	}
 
-	Node234 * find_leaf_or_node(const MyDataType & k, const bool leaf = true, const bool split = true) {
+	// finds k, ignore data equals k if leaf == true and the containing node is internal one,
+	// splits every encountered node if split == true and it is 4 node.
+	Node234 * find_leaf_or_node(const DataType & k, const bool leaf = true, const bool split = true) {
 		Node234 * att = this;
 		for(;;) {
-			//cout << "going to find " << k << " in " << *att << std::endl;
+			//std::cout << "going to find " << k << " in " << *att << std::endl;
 			if (att->is_full() and split) {
-				//std::cout << "encountered a node must be splitted." << std::endl;
+				//std::std::cout << "encountered a node must be splitted." << std::endl;
 				att = att->split();
-				//cout << *att << endl;
+				//std::cout << *att << endl;
 			}
 			if ( att->is_leaf() )
 				break;
 			unsigned int i = att->key_ub_index(k);
 			//std::cout << "att = " << *att << " pos = " << i << std::endl;
-			if ( i < att->keycount and *(att->keyptr[i]) == k) {
+			if ( i < att->keycount and att->keys[i] == k) {
 				if (! leaf) break;
 			}
 			att = att->childptr[i];
@@ -129,16 +134,16 @@ private:
 		return att;
 	}
 
-	Node234 * find_remove_leaf(const MyDataType & k) {
+	Node234 * find_remove_leaf(const DataType & k) {
 		Node234 * att = this;
 		Node234 * keynode = NULL;
 		unsigned int keypos, i;
 		for(;;) {
 			att = att->find_leaf_or_node(k, false, false);
-			cout << *att << endl;
+			std::cout << *att << std::endl;
 			i = att->key_ub_index(k);
 			std::cout << *att << " pos = " << i << std::endl;
-			if ( i < att->keycount and *(att->keyptr[i]) == k) {
+			if ( i < att->keycount and att->keys[i] == k) {
 				keynode = att;
 				keypos = i;
 			}
@@ -147,9 +152,9 @@ private:
 			att = att->childptr[i];
 		}
 		if (keynode != NULL and !keynode->is_leaf()) {
-			const MyDataType * tptr = keynode->keyptr[keypos];
-			keynode->keyptr[keypos] = att->keyptr[att->keycount - 1];
-			att->keyptr[att->keycount - 1] = tptr;
+			const DataType tkey = keynode->keys[keypos];
+			keynode->keys[keypos] = att->keys[att->keycount - 1];
+			att->keys[att->keycount - 1] = tkey;
 		}
 		return att;
 	}
@@ -161,64 +166,64 @@ private:
 		}
 		Node234 * left, *right;
 		if ( is_root() ) {
-			//cout << "going to split the root." << endl;
-			//cout << this << endl;
-			right = new Node234(*keyptr[2], this, childptr[2], childptr[3]);
-			left= new Node234(*keyptr[0], this, childptr[0], childptr[1]);
+			//std::cout << "going to split the root." << endl;
+			//std::cout << this << std::endl;
+			right = new Node234(keys[2], this, childptr[2], childptr[3]);
+			left= new Node234(keys[0], this, childptr[0], childptr[1]);
 			//if (left != NULL and right != NULL)
-			//	cout << "left = " << *left << " right = " << *right << endl;
-			keyptr[0] = keyptr[1];
+			//	std::cout << "left = " << *left << " right = " << *right << endl;
+			keys[0] = keys[1];
 			childptr[0] = left;
 			childptr[1] = right;
 			keycount = 1;
-			//cout << " this = " << *this << endl;
+			//std::cout << " this = " << *this << endl;
 			return this;
 		} else {
-			right = new Node234(*keyptr[2], parent, childptr[2], childptr[3]);
-			unsigned int pos = parent->insert_key_to_node(*keyptr[1]);
+			right = new Node234(keys[2], parent, childptr[2], childptr[3]);
+			unsigned int pos = parent->insert_key_to_node(keys[1]);
 			keycount = 1;
-			//cout << "left = " << *this << " right = " << *right << " parent = " << *parent << endl;
+			//std::cout << "left = " << *this << " right = " << *right << " parent = " << *parent << std::endl;
 			parent->childptr[pos+1] = right;
-			//cout << "parent = " << *parent << endl;
+			//std::cout << "parent = " << *parent << std::endl;
 			return parent;
 		}
 	}
 
-	const MyDataType * rotate_into() {
+	bool rotate_into() {
 		unsigned int ix;
 		Node234 * sibling;
 		for(ix = 0; parent->childptr[ix] != this and ix < parent->keycount; ++ix);
-		cout << *parent << endl;
+		std::cout << *parent << std::endl;
 		if (ix > 0 and ! parent->childptr[ix-1]->is_2node()) {
 			sibling = parent->childptr[ix-1];  // use left sibgling
-			const MyDataType & parentkey = * parent->keyptr[ix-1];
-			cout << *sibling << ", " << *this << endl;
-			const MyDataType & slastkey = * sibling->keyptr[sibling->keycount - 1];
+			DataType parentkey = parent->keys[ix-1];
+			std::cout << *sibling << ", " << *this << std::endl;
+			DataType slastkey = sibling->keys[sibling->keycount - 1];
 			Node234 * slastchild = sibling->childptr[sibling->keycount];
 			sibling->remove_key_from_node(slastkey);
-			parent->keyptr[ix-1] = &slastkey;
+			parent->keys[ix-1] = slastkey;
 			insert_key_to_node(parentkey);
 			childptr[0] = slastchild;
-			cout << *parent << endl;
-			return &parentkey;
+			std::cout << *parent << std::endl;
+			return true;
 		} else if (ix < parent->keycount and ! parent->childptr[ix+1]->is_2node()) {
 			sibling = parent->childptr[ix+1];  // use right sibgling
-			const MyDataType & parentkey = * parent->keyptr[ix];
-			cout << *sibling << endl;
-			const MyDataType & sfirstkey = * sibling->keyptr[0];
+			DataType parentkey = parent->keys[ix];
+			std::cout << *sibling << std::endl;
+			DataType sfirstkey = sibling->keys[0];
 			Node234 * sfirstchild = sibling->childptr[0];
 			sibling->remove_key_from_node(sfirstkey);
-			parent->keyptr[ix] = &sfirstkey;
+			parent->keys[ix] = sfirstkey;
 			insert_key_to_node(parentkey);
 			childptr[keycount] = sfirstchild;
-			cout << *parent << endl;
-			return &parentkey;
+			std::cout << *parent << std::endl;
+			return true;
 		}
-		return NULL;
+		return false;
 	}
 
 public:
-	Node234 * insert(const MyDataType & k) {
+	Node234 * insert(const DataType & k) {
 		// std::cout << "inserting " << d << std::endl;
 		Node234 * node = this->find_leaf_or_node(k, true, true);
 
@@ -232,47 +237,47 @@ public:
 		return NULL;
 	}
 
-	const MyDataType * remove_key_from_node(const MyDataType & k) {
-		const MyDataType * ptr = NULL;
+	DataType remove_key_from_node(const DataType & k) {
+		DataType removed_key;
 		bool found = false;
 		for(unsigned int i = 0; i < keycount - 1; ++i) {
-			if (k == *keyptr[i]) {
+			if (k == keys[i]) {
 				found = true;
-				ptr = keyptr[i];
+				removed_key = keys[i];
 			}
 			if (found) {
-				keyptr[i] = keyptr[i+1];
+				keys[i] = keys[i+1];
 			}
 		}
 		--keycount;
-		return ptr;
+		return removed_key;
 	}
 
-	Node234 * remove(const MyDataType & k) {
+	Node234 * remove(const DataType & k) {
 		Node234 * node = this->find_remove_leaf(k);
 		unsigned int ix = node->key_ub_index(k);
-		cout << *node << endl;
+		std::cout << *node << std::endl;
 		if (ix > node->keycount)
 			return this;  // no need to remove
 		if ( ! node->is_2node() ) {
 			node->remove_key_from_node(k);
 			return node;
 		} else {
-			cout << "encountered a 2-leaf." << endl;
-			if ( node->rotate_into() != NULL ) {
+			std::cout << "encountered a 2-leaf." << std::endl;
+			if ( node->rotate_into() ) {
 				// use a rotation.
-				cout << * node << ", " << ix << endl;
+				std::cout << * node << ", " << ix << std::endl;
 				node->remove_key_from_node(k);
-				cout << * node << endl;
-			} else if ( true ) {
+				std::cout << * node << std::endl;
+			} else {
 				// use a merge.
-				cout << "use merge " << endl;
+				std::cout << "use merge " << std::endl;
 			}
 			return node;
 		}
 	}
 
-	friend ostream & operator<<(ostream & out, const Node234 & node) {
+	friend std::ostream & operator<<(std::ostream & out, const Node234 & node) {
 		out << "(";
 		//out << "[" << node.parent << "]";
 		for(unsigned int i = 0; i < node.keycount; ++i) {
@@ -280,7 +285,7 @@ public:
 				out << * node.childptr[i];
 				out << ", ";
 			}
-			out << * node.keyptr[i] << ",";
+			out << node.keys[i] << ",";
 		}
 		if (node.childptr[node.keycount] != NULL)
 			out << * node.childptr[node.keycount];
@@ -297,15 +302,15 @@ public:
 
 	Tree234() : root() {}
 
-	void insert(const MyDataType & k) {
+	void insert(const DataType & k) {
 		root.insert(k);
 	}
 
-	void remove(const MyDataType & k) {
+	void remove(const DataType & k) {
 		root.remove(k);
 	}
 
-	friend ostream & operator<<(ostream & out, const Tree234 & tree) {
+	friend std::ostream & operator<<(std::ostream & out, const Tree234 & tree) {
 		out << "234Tree" << tree.root ;
 		return out;
 	}

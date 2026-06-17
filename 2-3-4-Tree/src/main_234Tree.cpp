@@ -10,21 +10,19 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
-typedef std::string MyDataType;
+#include "DataType.h"
 
 #include "234Tree.h"
 
 int main(int argc, char * argv[]) {
 	std::string * args;
 	unsigned int idx, count;
-	cout << "Hello!" << endl;
+	std::cout << "Hello!" << std::endl;
 	if ( argc == 1 ) {
-		cout << "Argument(s) required." << endl;
+		std::cout << "Argument(s) required." << std::endl;
 		return -1;
 	}
-	args = new std::string [argc-1];
+	args = new DataType [argc-1];
 	for(idx = 1, count = 0; idx < (unsigned int) argc; ++idx, ++count){
 		if ( std::string("-r") == argv[idx] )
 			break;
@@ -34,19 +32,19 @@ int main(int argc, char * argv[]) {
 	Tree234 tree234;
 
 	for(unsigned int i = 0; i < count; ++i){
-		cout << "Inserting " << args[i] << " to the tree." << endl;
+		std::cout << "Inserting " << args[i] << "." << std::endl;
 		tree234.insert(args[i]);
-		cout << tree234 << endl << endl;
+		std::cout << tree234 << std::endl << std::endl;
 	}
 
-	cout << "done." << std::endl;
+	std::cout << "done." << std::endl;
 
-	if ( string("-r") == argv[idx]) {
+	if ( std::string("-r") == argv[idx]) {
 		++idx;
 		for ( ; idx < (unsigned int) argc; ++idx) {
-			cout << "Removing " << argv[idx] << endl;
-			tree234.remove(std::string(argv[idx]));
-			cout << tree234 << endl << endl;
+			std::cout << "Removing " << argv[idx] << "." << std::endl;
+			tree234.remove(DataType(argv[idx]));
+			std::cout << tree234 << std::endl << std::endl;
 		}
 	}
 	delete [] args;
