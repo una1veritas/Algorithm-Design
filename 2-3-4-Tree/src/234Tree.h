@@ -225,6 +225,8 @@ private:
 	bool rotate_into() {
 		unsigned int ix;
 		Node234 * sibling;
+
+		// find the index ix of children that pointing me.
 		for(ix = 0; parent->childptr[ix] != this and ix < parent->keycount; ++ix);
 
 		std::cout << *parent << std::endl;
@@ -263,6 +265,28 @@ private:
 			return true;
 		}
 		return false;
+	}
+
+	bool merge() {
+		unsigned int ix;
+
+		if ( parent->is_2node() )
+			return false;
+
+		for(ix = 0; parent->childptr[ix] != this and ix < parent->keycount; ++ix);
+
+		if ( ix == 0 ) {
+			// merge with right sibling
+			keys[keycount++] = parent->keys[ix];
+			keys[keycount++] = parent->childptr[ix+1]->keys[0];
+			delete parent->childptr[ix+1];
+			unsigned int iy;
+			for (iy = ix; iy + 1 < parent->keycount; ++iy) {
+				parent->keys[iy] = parent->keys[iy+1];
+				parent->childptr[iy+1] = parent->childptr[iy+2];
+			}
+		}
+		return true;
 	}
 
 public:
@@ -313,9 +337,13 @@ public:
 				std::cout << * node << ", " << ix << std::endl;
 				node->remove_key_from_node(k);
 				std::cout << * node << std::endl;
-			} else {
+			} else if ( node->merge() ){
 				// use a merge.
 				std::cout << "use merge " << std::endl;
+				node->remove_key_from_node(k);
+				std::cout << * node << std::endl;
+			} else {
+				std::cout << "error! no way to remove!" << std::endl;
 			}
 			return node;
 		}
