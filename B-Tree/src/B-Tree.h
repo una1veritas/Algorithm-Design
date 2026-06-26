@@ -21,18 +21,18 @@ typedef string Key;
 
 struct BTreeNode {
 private:
-	static constexpr unsigned int MINIMUM_DEGREE = 2;
+	static constexpr unsigned int MINIMUM_DEGREE = 3;
 	static constexpr unsigned int MIN_KEYS = MINIMUM_DEGREE - 1;
 	static constexpr unsigned int MAX_KEYS = 2*MINIMUM_DEGREE - 1;
 
 private:
-	const Key * key[MAX_KEYS];
+	/* const */ Key key[MAX_KEYS];
 	BTreeNode * child[MAX_KEYS+1];
 	unsigned int keycount;
 
 public:
 	BTreeNode(void) : keycount(0) {
-		key[0] = NULL;
+		//key[0] = NULL;
 		child[0] = NULL;
 	}
 

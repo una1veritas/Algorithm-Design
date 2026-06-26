@@ -26,7 +26,7 @@ BTreeNode::BTreeNode(const BTreeNode & node) : keycount(node.keycount) {
 }
 
 BTreeNode::BTreeNode(const Key & k, BTreeNode * l, BTreeNode * r) : keycount(1) {
-	key[0] = &k;
+	key[0] = k;
 	child[0] = l;
 	child[1] = r;
 	if (keycount+1 < MAX_KEYS)
@@ -86,7 +86,7 @@ BTreeNode * BTreeNode::right_sibling_of(const unsigned int & cix) {
 unsigned int BTreeNode::key_index(const Key & k) {
 	unsigned int ix;
 	for(ix = 0; ix < keycount; ++ix)
-		if ( k <= *key[ix] )
+		if ( k <= key[ix] )
 			break;
 	return ix;
 }
@@ -97,7 +97,7 @@ BTreeNode * BTreeNode::split_child(const unsigned int &cix) {
 	//cout << *this << ", " << *node << endl;
 	unsigned int midix = node->keycount/2;
 	BTreeNode * rchild = new BTreeNode(node, midix+1, node->keycount);
-	key_insert(*node->key[midix], cix, node, rchild);
+	key_insert(node->key[midix], cix, node, rchild);
 	node->keycount = midix;
 	//cout << "after split " << *this << endl;
 	return this;
@@ -109,20 +109,20 @@ const Key & BTreeNode::key_insert(const Key & k, const unsigned int & ix, BTreeN
 		key[i] = key[i-1];
 		child[i+1] = child[i];
 	}
-	key[ix] = &k;
+	key[ix] = k;
 	child[ix] = left;
 	child[ix+1] = right;
 	++keycount;
 	if (keycount < MAX_KEYS)
 		child[keycount+1] = NULL;
-	return *key[ix];
+	return key[ix];
 }
 
 const Key & BTreeNode::key_remove(const unsigned int & ix) {
 	if (ix >= keycount)
-		return *key[ix]; // raise error.
+		return key[ix]; // raise error.
 	unsigned int i;
-	const Key & k = *key[ix];
+	const Key & k = key[ix];
 	if (ix < keycount - 1) {
 		// except the right-most key and the right most child
 		for(i = ix; i < keycount; ++i) {
@@ -138,27 +138,27 @@ const Key & BTreeNode::key_remove(const unsigned int & ix) {
 void BTreeNode::shift_to_right(const unsigned int & cix) {
 	BTreeNode * left = child[cix], * right = child[cix+1];
 	//cout << "right shift: left = " << *left << " right = " << *right << endl;
-	const Key * mykey = key[cix];
-	right->key_insert(*mykey, 0, left->child[left->keycount], right->child[0]);
+	const Key & mykey = key[cix];
+	right->key_insert(mykey, 0, left->child[left->keycount], right->child[0]);
 	//cout << *left << endl;
-	key[cix] = &left->key_remove(left->keycount-1);
+	key[cix] = left->key_remove(left->keycount-1);
 	//cout << "right shitt finished: left = "  << *left << " right = " << *right << endl;
 }
 
 void BTreeNode::shift_to_left(const unsigned int & cix) {
 	BTreeNode * left = child[cix], * right = child[cix+1];
 	//cout << "left shift " << *left << " <- " << *right << " @ " << *this << endl;
-	const Key * mykey = key[cix];
-	left->key_insert(*mykey, left->keycount, left->child[left->keycount], right->child[0]);
-	key[cix] = &right->key_remove(0);
+	const Key & mykey = key[cix];
+	left->key_insert(mykey, left->keycount, left->child[left->keycount], right->child[0]);
+	key[cix] =right->key_remove(0);
 	//cout << "left shitt finished " << *this << endl;
 }
 
 BTreeNode * BTreeNode::merge_into_left(const unsigned int & cix) {
 	BTreeNode * left = child[cix], * right = child[cix+1];
 	//cout << "merge left " << * left << ", right " << *right << " at " << * this << endl;
-	const Key * mykey = key[cix];
-	left->key_insert(*mykey,left->keycount,left->child[left->keycount],right->child[0]);
+	const Key & mykey = key[cix];
+	left->key_insert(mykey,left->keycount,left->child[left->keycount],right->child[0]);
 	for(unsigned int i = 0; i < right->keycount; ++i) {
 		left->key[left->keycount] = right->key[i];
 		left->child[left->keycount+1] = right->child[i+1];
@@ -178,13 +178,13 @@ std::ostream & operator<<(std::ostream & out, const BTreeNode & node) {
 	out << "(";
 	if (node.is_leaf()) {
 		for(unsigned int i = 0; i < node.keycount; ++i) {
-			out << *node.key[i] << " ";
+			out << node.key[i] << " ";
 		}
 	} else {
 		if (node.keycount > 0) {
 			for(unsigned int i = 0; i < node.keycount; ++i) {
 				out << *(node.child[i]) << " ";
-				out << *(node.key[i]) << " ";
+				out << (node.key[i]) << " ";
 			}
 			out << *(node.child[node.keycount]);
 		} else if (node.keycount == 0 and node.child[0] != NULL) {
@@ -218,8 +218,8 @@ const Key * BTree::find(const Key & k) const {
 	unsigned int ix;
 	for(;node != NULL;) {
 		ix = node->key_index(k);
-		if (k == *node->key[ix])
-			return node->key[ix];
+		if (k == node->key[ix])
+			return &node->key[ix];
 		node = node->child[ix];
 	}
 	return NULL;
@@ -261,7 +261,7 @@ vector<BTreeNode *> BTree::remove_in_leaf(const Key & k) {
 	for(;;) {
 		ix = node->key_index(k);
 		path.push_back(node);
-		if (ix < node->keycount and *node->key[ix] == k) {
+		if (ix < node->keycount and node->key[ix] == k) {
 			lowestpt = {node, ix};
 		}
 		if (node->is_leaf())
@@ -273,7 +273,7 @@ vector<BTreeNode *> BTree::remove_in_leaf(const Key & k) {
 		path.clear();
 		return path;
 	} else if ( ! lowestpt.first->is_leaf() ) {
-		const Key * the_key = lowestpt.first->key[lowestpt.second];
+		const Key & the_key = lowestpt.first->key[lowestpt.second];
 		ix = node->keycount - 1;
 		lowestpt.first->key[lowestpt.second] = node->key[ix]; // substitute predecessor
 		node->key[ix] = the_key;
