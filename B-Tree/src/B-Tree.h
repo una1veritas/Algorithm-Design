@@ -88,7 +88,13 @@ public:
 
 private:
 	bool has_min_keys(BTreeNode * node) const;
-	vector<BTreeNode *> remove_in_leaf(const Key & k);
+
+	struct NodeIndexPair {
+		BTreeNode * node;
+		unsigned int index;
+	};
+
+	vector<NodeIndexPair> find_and_remove_in_leaf(const Key & k);
 
 	void delete_node(BTreeNode * node);
 

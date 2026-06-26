@@ -253,29 +253,29 @@ bool BTree::insert(const Key & k) {
 	return true;
 }
 
-vector<BTreeNode *> BTree::remove_in_leaf(const Key & k) {
+vector<BTree::NodeIndexPair> BTree::find_and_remove_in_leaf(const Key & k) {
 	BTreeNode * node = root;
-	std::pair<BTreeNode *,unsigned int> lowestpt = {NULL,0}; // lowest node having k
-	std::vector<BTreeNode *> path;
+	NodeIndexPair found_at = {NULL,0}; // the most tip-side node having k
+	std::vector<NodeIndexPair> path;
 	unsigned int ix;
 	for(;;) {
 		ix = node->key_index(k);
-		path.push_back(node);
+		path.push_back(NodeIndexPair{node,0});
 		if (ix < node->keycount and node->key[ix] == k) {
-			lowestpt = {node, ix};
+			found_at = {node, ix};
 		}
 		if (node->is_leaf())
 			break;
 		node = node->child[ix];
 	}
-	if ( lowestpt.first == NULL ) {
+	if ( found_at.node == NULL ) {
 		// the key not found.
 		path.clear();
 		return path;
-	} else if ( ! lowestpt.first->is_leaf() ) {
-		const Key & the_key = lowestpt.first->key[lowestpt.second];
+	} else if ( ! found_at.node->is_leaf() ) {
+		const Key & the_key = found_at.node->key[found_at.index];
 		ix = node->keycount - 1;
-		lowestpt.first->key[lowestpt.second] = node->key[ix]; // substitute predecessor
+		found_at.node->key[found_at.index] = node->key[ix]; // substitute predecessor
 		node->key[ix] = the_key;
 	}
 	node->key_remove(ix);
@@ -286,10 +286,10 @@ bool BTree::remove(const Key & k) {
 	BTreeNode * parent;
 	BTreeNode * node;
 	unsigned int cix;
-	std::vector<BTreeNode *> path = remove_in_leaf(k);
+	std::vector<NodeIndexPair> path = find_and_remove_in_leaf(k);
 	if (path.empty())
 		return false;
-	node = path.back();
+	node = path.back().node;
 	if ( has_min_keys(node) ) {
 		--count;
 		return true;
@@ -299,19 +299,12 @@ bool BTree::remove(const Key & k) {
 		return true;
 	}
 
-	node = path.back();
+	node = path.back().node;
 	path.pop_back();
-	parent = path.back();
+	parent = path.back().node;
 	BTreeNode * leftsib;
 	BTreeNode * rightsib;
 	for(;;) {
-		/*
-		if (node != NULL and parent != NULL) {
-			cout << "node = " << *node << endl;
-			cout << "parent = " << *parent << endl;
-			cout << "root = " << *root << endl;
-		}
-		*/
 		cix = parent->child_index(node);
 		leftsib = parent->left_sibling_of(cix);
 		rightsib = parent->right_sibling_of(cix);
@@ -339,7 +332,7 @@ bool BTree::remove(const Key & k) {
 		}
 		node = parent;
 		path.pop_back();
-		parent = path.back();
+		parent = path.back().node;
 	}
 	--count;
 	return true;
