@@ -26,13 +26,12 @@ private:
 	static constexpr unsigned int MAX_KEYS = 2*MINIMUM_DEGREE - 1;
 
 private:
-	/* const */ Key key[MAX_KEYS];
+	Key key[MAX_KEYS];
 	BTreeNode * child[MAX_KEYS+1];
 	unsigned int keycount;
 
 public:
 	BTreeNode(void) : keycount(0) {
-		//key[0] = NULL;
 		child[0] = NULL;
 	}
 
