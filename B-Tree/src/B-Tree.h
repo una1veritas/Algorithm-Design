@@ -17,16 +17,18 @@ using std::pair;
 using std::string;
 using std::vector;
 
-typedef string Key;
+#include "DataType.h"
 
 struct BTreeNode {
+	// class constants
 private:
 	static constexpr unsigned int MINIMUM_DEGREE = 3;
 	static constexpr unsigned int MIN_KEYS = MINIMUM_DEGREE - 1;
 	static constexpr unsigned int MAX_KEYS = 2*MINIMUM_DEGREE - 1;
 
+	// member filed values
 private:
-	Key key[MAX_KEYS];
+	DataType data[MAX_KEYS];
 	BTreeNode * child[MAX_KEYS+1];
 	unsigned int keycount;
 
@@ -39,7 +41,7 @@ public:
 
 	// copy constructor
 	BTreeNode(const BTreeNode & node);
-	BTreeNode(const Key & k, BTreeNode * l = NULL, BTreeNode * r = NULL);
+	BTreeNode(const DataType & k, BTreeNode * l = NULL, BTreeNode * r = NULL);
 	BTreeNode(const BTreeNode * node, const unsigned int & from, const unsigned int & to);
 
 	void clear();
@@ -48,6 +50,9 @@ public:
 	bool is_empty() const;
 	bool is_leaf() const;
 
+	static unsigned int max_number() { return MAX_KEYS; }
+
+
 private:
 	unsigned int child_index(const BTreeNode * node);
 
@@ -55,14 +60,14 @@ private:
 
 	BTreeNode * right_sibling_of(const unsigned int &);
 
-	unsigned int key_index(const Key & k);
+	unsigned int key_index(const DataType & k);
 
 	// split at the middle
 	BTreeNode * split_child(const unsigned int &);
 
-	const Key & key_insert(const Key & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL);
-	const Key & key_remove(const unsigned int & ix);
-	const Key & key_remove(const Key & k);
+	const DataType & key_insert(const DataType & k, const unsigned int & ix, BTreeNode * left = NULL, BTreeNode * right = NULL);
+	const DataType & key_remove(const unsigned int & ix);
+	const DataType & key_remove(const DataType & k);
 
 	void shift_to_right(const unsigned int & cix);
 	void shift_to_left(const unsigned int & ix);
@@ -93,7 +98,7 @@ private:
 		unsigned int index;
 	};
 
-	vector<NodeIndexPair> find_and_remove_in_leaf(const Key & k);
+	vector<NodeIndexPair> find_and_remove_in_leaf(const DataType & k);
 
 	void delete_node(BTreeNode * node);
 
@@ -101,9 +106,9 @@ public:
 	unsigned int size(void) const {
 		return count;
 	}
-	const Key * find(const Key & k) const;
-	bool insert(const Key & k);
-	bool remove(const Key & k);
+	const DataType * find(const DataType & k) const;
+	bool insert(const DataType & k);
+	bool remove(const DataType & k);
 
 	friend std::ostream & operator<<(std::ostream & out, const BTree & tree);
 

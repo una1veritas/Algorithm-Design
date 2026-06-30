@@ -12,7 +12,9 @@
 #include <set>
 #include <sstream>
 #include <random>
+
 #include "B-Tree.h"
+#include "DataType.h"
 
 using std::cout;
 using std::endl;
@@ -21,8 +23,9 @@ using std::string;
 using std::vector;
 
 int main(const int argc, const char * argv[]) {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 
+	cout << "BTreeNode size = " << sizeof(BTreeNode) << " bytes." << endl;
+	cout << "The maximum number of data in a BTreeNode is " << BTreeNode::max_number() << ". " << endl;
 	BTree tree;
 
 	enum {
