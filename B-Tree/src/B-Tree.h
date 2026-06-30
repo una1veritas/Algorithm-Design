@@ -48,6 +48,9 @@ public:
 	bool is_empty() const;
 	bool is_leaf() const;
 
+	static unsigned int min_keys() { return MIN_KEYS; }
+	static unsigned int max_keys() { return MAX_KEYS; }
+
 private:
 	unsigned int child_index(const BTreeNode * node);
 
