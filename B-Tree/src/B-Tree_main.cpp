@@ -23,7 +23,8 @@ using std::vector;
 #include "DataType.h"
 
 int main(const int argc, const char * argv[]) {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+	cout << "MIN " << BTreeNode::min_keys() << " MAX " << BTreeNode::max_keys() << endl; // prints !!!Hello World!!!
+	cout << "Node size in bytes = " << sizeof(BTreeNode) << endl; // prints !!!Hello World!!!
 
 	BTree tree;
 
@@ -38,7 +39,6 @@ int main(const int argc, const char * argv[]) {
 	int seed = 1123; //rnd();
 	std::mt19937 mt(seed);
 
-	std::vector<string *> keys;
 	std::ostringstream osstream;
 
 	for(unsigned int i = 1; i < (unsigned int)argc; ++i) {
@@ -59,9 +59,9 @@ int main(const int argc, const char * argv[]) {
 				osstream.clear();
 				osstream << val; //std::setw(3) << std::setfill('0') << val;
 				if (mode == INSERT_FOLLOWING) {
-					keys.push_back(new string(osstream.str()));
-					cout << "insert " << *keys.back() << endl;
-					tree.insert(*keys.back());
+					string key(osstream.str());
+					cout << "insert " << key << endl;
+					tree.insert(key);
 					cout << tree << endl << endl;
 				} else if (mode == REMOVE_FOLLOWING) {
 					cout << "remove " << osstream.str() << endl;
@@ -69,35 +69,9 @@ int main(const int argc, const char * argv[]) {
 						cout << tree << endl << endl;
 					}
 				}
-			}else {
-				/*
-				for(unsigned int i = 0; i < val; ++i) {
-					osstream.str("");
-					osstream.clear();
-					unsigned int r = mt() % 129;;
-					osstream << std::setw(3) << std::setfill('0') << r;
-					if (mode == RANDOM_INSERT) {
-						keys.push_back(new string(osstream.str()));
-						cout << "insert " << *keys.back() << endl;
-						tree.insert(*keys.back());
-						cout << tree << endl << endl;
-					} else if (mode == RANDOM_REMOVE) {
-						if (! keys.empty()) {
-							unsigned int x = mt() % keys.size();
-							cout << "remove " << *keys[x] << endl;
-							if ( tree.remove(*keys[x]) ) {
-								cout << tree << endl << endl;
-							}
-						}
-					}
-				}
-				*/
 			}
 		}
 	}
 	cout << tree.size() << " done." << endl;
-	for(auto & k : keys) {
-		delete k;
-	}
 	return 0;
 }
