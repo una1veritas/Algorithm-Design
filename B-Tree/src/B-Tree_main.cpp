@@ -20,6 +20,8 @@ using std::pair;
 using std::string;
 using std::vector;
 
+#include "DataType.h"
+
 int main(const int argc, const char * argv[]) {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 
@@ -55,7 +57,7 @@ int main(const int argc, const char * argv[]) {
 			if (mode == INSERT_FOLLOWING or mode == REMOVE_FOLLOWING) {
 				osstream.str("");
 				osstream.clear();
-				osstream << std::setw(3) << std::setfill('0') << val;
+				osstream << val; //std::setw(3) << std::setfill('0') << val;
 				if (mode == INSERT_FOLLOWING) {
 					keys.push_back(new string(osstream.str()));
 					cout << "insert " << *keys.back() << endl;
