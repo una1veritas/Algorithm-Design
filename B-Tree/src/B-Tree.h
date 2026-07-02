@@ -22,7 +22,7 @@ using std::vector;
 
 struct BTreeNode {
 private:
-	static constexpr unsigned int MINIMUM_DEGREE = 3;
+	static constexpr unsigned int MINIMUM_DEGREE = 4;
 	static constexpr unsigned int MIN_DATA_NUMBER = MINIMUM_DEGREE - 1;
 	static constexpr unsigned int MAX_DATA_NUMBER = 2*MINIMUM_DEGREE - 1;
 
@@ -49,8 +49,8 @@ public:
 	bool is_empty() const;
 	bool is_leaf() const;
 
-	static unsigned int min_keys() { return MIN_KEYS; }
-	static unsigned int max_keys() { return MAX_KEYS; }
+	static unsigned int min_keys() { return MIN_DATA_NUMBER; }
+	static unsigned int max_keys() { return MAX_DATA_NUMBER; }
 
 private:
 	unsigned int child_index(const BTreeNode * node);

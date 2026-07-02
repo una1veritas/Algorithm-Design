@@ -25,6 +25,7 @@ using std::vector;
 int main(const int argc, const char * argv[]) {
 	cout << "MIN " << BTreeNode::min_keys() << " MAX " << BTreeNode::max_keys() << endl; // prints !!!Hello World!!!
 	cout << "Node size in bytes = " << sizeof(BTreeNode) << endl; // prints !!!Hello World!!!
+	cout << "Data size in bytes = " << sizeof(Data) << endl; // prints !!!Hello World!!!
 
 	BTree tree;
 
