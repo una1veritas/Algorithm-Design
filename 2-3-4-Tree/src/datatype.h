@@ -10,7 +10,7 @@
 
 #include <string>
 
-typedef std::string DataType;
+typedef std::string Data;
 
 // required operators or functions are supported by class std::string.
 

@@ -10,9 +10,8 @@
 #include <vector>
 #include <string>
 
-#include "DataType.h"
-
 #include "234Tree.h"
+#include "datatype.h"
 
 int main(int argc, char * argv[]) {
 	std::string * args;
@@ -22,7 +21,7 @@ int main(int argc, char * argv[]) {
 		std::cout << "Argument(s) required." << std::endl;
 		return -1;
 	}
-	args = new DataType [argc-1];
+	args = new Data [argc-1];
 	for(idx = 1, count = 0; idx < (unsigned int) argc; ++idx, ++count){
 		if ( std::string("-r") == argv[idx] )
 			break;
@@ -43,7 +42,7 @@ int main(int argc, char * argv[]) {
 		++idx;
 		for ( ; idx < (unsigned int) argc; ++idx) {
 			std::cout << "Removing " << argv[idx] << "." << std::endl;
-			tree234.remove(DataType(argv[idx]));
+			tree234.remove(Data(argv[idx]));
 			std::cout << tree234 << std::endl << std::endl;
 		}
 	}
