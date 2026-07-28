@@ -86,7 +86,7 @@ private:
 	unsigned int insert_key_to_node(const Data & k) {
 		if ( is_full() ) {
 			std::cerr << "error: insert_in_data234 failure." << std::endl;
-			return data_max_count;
+			return data_max_num;
 		}
 		//std::cout << *this << ", " << k << endl;
 		if (data_count == 0) { // empty root
