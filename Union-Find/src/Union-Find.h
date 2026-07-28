@@ -11,17 +11,25 @@
 class UnionFindSet {
 	unsigned int * parent;
 	unsigned char * rank;
+	unsigned int start;
 	unsigned int number;
 
 public:
-	UnionFindSet(const unsigned int & n);
+	UnionFindSet(const unsigned int & first, const unsigned int & last);
 
 	virtual ~UnionFindSet();
+
+	unsigned int first() const {
+		return start;
+	}
 
 	unsigned int size() const {
 		return number;
 	}
 
+	unsigned int element_parent(unsigned int & x) const {
+		return parent[x];
+	}
 	unsigned int element_rank(unsigned int & x) const {
 		return rank[x];
 	}
@@ -39,23 +47,21 @@ public:
 	*/
 
 	// path compression
-	unsigned int find_set(unsigned int x);
-	unsigned int find_set(unsigned int x) const;
+	unsigned int find(unsigned int x);
+	unsigned int find_nocompression(unsigned int x) const;
 
 	unsigned int union_set(unsigned int x, unsigned int y);
-	bool in_the_same(const unsigned int & x, const unsigned int & y);
-	bool in_the_same(const unsigned int & x, const unsigned int & y) const;
 
 	std::ostream & node_str(std::ostream & out, const unsigned int & x) const;
 
 	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs) {
 		out << "UnionFindSet(";
-		for(unsigned int x = 0; x < ufs.number; ++x) {
+		for(unsigned int x = ufs.start; x < ufs.start + ufs.number; ++x) {
 			if ( ufs.parent[x] == x ) {
 				// root
 				out << "{" << x << ":" << int(ufs.rank[x]);
-				for(unsigned int y = 0; y < ufs.number; ++y) {
-					if (x != y and ufs.in_the_same(x, y) ) {
+				for(unsigned int y = ufs.start; y < ufs.start + ufs.number; ++y) {
+					if (x != y and ufs.find_nocompression(x) == ufs.find_nocompression(y) ) {
 						out << ", " << y  << ":" << int(ufs.rank[y]);
 					}
 				}

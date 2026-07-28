@@ -8,10 +8,10 @@
 
 #include "Union-Find.h"
 
-UnionFindSet::UnionFindSet(const unsigned int & n) : number(n) {
-	parent = new unsigned int [number];
-	rank = new unsigned char [number];
-	for(unsigned int i = 0; i < number; ++i) {
+UnionFindSet::UnionFindSet(const unsigned int & first, const unsigned int & last) : start(first), number(last - first + 1) {
+	parent = new unsigned int [start + number - 1];
+	rank = new unsigned char [start + number - 1];
+	for(unsigned int i = start; i < start + number; ++i) {
 		parent[i] = i;
 		rank[i] = 0;
 	}
@@ -37,7 +37,7 @@ virtual unsigned int find_set(unsigned int x) {
 */
 
 // path compression
-unsigned int UnionFindSet::find_set(unsigned int x) {
+unsigned int UnionFindSet::find(unsigned int x) {
 	unsigned int root = x;
 	while (root != parent[root])
 		root = parent[root];
@@ -50,15 +50,15 @@ unsigned int UnionFindSet::find_set(unsigned int x) {
 	return x;
 }
 
-unsigned int UnionFindSet::find_set(unsigned int x) const {
+unsigned int UnionFindSet::find_nocompression(unsigned int x) const {
 	while ( parent[x] != x)
 		x = parent[x];
 	return x;
 }
 
 unsigned int UnionFindSet::union_set(unsigned int x, unsigned int y) {
-	x = find_set(x);
-	y = find_set(y);
+	x = find(x);
+	y = find(y);
 	if (x == y) // no need to merge;
 		return parent[x];
 	if (rank[x] == rank[y]) {
@@ -77,13 +77,11 @@ unsigned int UnionFindSet::union_set(unsigned int x, unsigned int y) {
 	return parent[x];
 }
 
-bool UnionFindSet::in_the_same(const unsigned int & x, const unsigned int & y) {
-	return find_set(x) == find_set(y);
-}
-
+/*
 bool UnionFindSet::in_the_same(const unsigned int & x, const unsigned int & y) const {
 	return find_set(x) == find_set(y);
 }
+*/
 
 std::ostream & UnionFindSet::node_str(std::ostream & out, const unsigned int & x) const {
 	out << x; // << "[" << parent[x] << ":" << int(rank[x]) << "] ";

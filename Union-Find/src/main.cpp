@@ -25,53 +25,41 @@ using std::endl;
 #include <stdlib.h>
 */
 
-static int r;
+static int r = 99;
 
 int rnd() {
-	//static int r = 1102; /* 自分の学生番号の下4 桁に書き換える */
-	// 2022 ver. r = ((r + 1013) * 171) % 1331;
-	r = ((r + 1019) * 173) % 1331;
-	return r;
+	r = ((r + 1019) * 179) % 1331;
+	return (r % 16) + 1;
 }
 
-int main(const int argc, const char * const argv[]) {
+int main(void) {
 
-	if (argc <= 1) {
-		cerr << "Supply a seed number." << endl;
-		return EXIT_FAILURE;
-	}
-	r = std::stoi(argv[1]);
-	if (!r) {
-		cerr << "Supply a number." << endl;
-		return EXIT_FAILURE;
-	}
 	cout << "Seed " << r << " will be used." << endl;
 
-	UnionFindSet ufs(17);
+	UnionFindSet ufs(1, 16);
 	cout << ufs << endl << endl;
 
-	int tp, arg1, arg2;
-	for(int i = 0; i < 16; ++i) {
-		tp = rnd() % 2;
-		arg1 = rnd() % 17;
-		arg2 = rnd() % 17;
+	int arg1, arg2;
+	for(int i = 0; i < 11; ++i) {
+		arg1 = rnd();
+		arg2 = rnd();
 
-		if (tp) {
-			cout << "Find(" << arg1 << ")" << endl;
-			ufs.find_set(arg1);
-		} else {
-			cout << "Union(" << arg1 << ", " << arg2 << ")" << endl;
-			ufs.union_set(arg1, arg2);
-		}
+		cout << i << ": " << "Union(" << arg1 << ", " << arg2 << ")" << endl;
+
+		ufs.union_set(arg1, arg2);
 		cout << ufs << endl << endl;
 	}
 
 	unsigned int hirank = 0;
-	for(unsigned int i = 0; i < ufs.size(); ++i) {
+	for(unsigned int i = ufs.first(); i < ufs.first() + ufs.size(); ++i) {
 		cout << std::setw(3) << i << " |";
 	}
 	cout << endl;
-	for(unsigned int i = 0; i < ufs.size(); ++i) {
+	for(unsigned int i = ufs.first(); i < ufs.first() + ufs.size(); ++i) {
+		cout << std::setw(3) << ufs.element_parent(i) << " |";
+	}
+	cout << endl;
+	for(unsigned int i = ufs.first(); i < ufs.first() + ufs.size(); ++i) {
 		cout << std::setw(3) << ufs.element_rank(i) << " |";
 		hirank = std::max(ufs.element_rank(i),hirank);
 	}
