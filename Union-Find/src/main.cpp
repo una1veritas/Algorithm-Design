@@ -25,7 +25,7 @@ using std::endl;
 #include <stdlib.h>
 */
 
-static int r = 99;
+static int r = 32;
 
 int rnd() {
 	r = ((r + 1019) * 179) % 1331;
@@ -36,19 +36,39 @@ int main(void) {
 
 	cout << "Seed " << r << " will be used." << endl;
 
+	int rnum[22] = {
+			13,5,11,10,7,14,1,13,11,1,13,14,3,3,16,7,8,2,12,3,1,10,
+	};
+
 	UnionFindSet ufs(1, 16);
 	cout << ufs << endl << endl;
 
 	int arg1, arg2;
 	for(int i = 0; i < 11; ++i) {
-		arg1 = rnd();
-		arg2 = rnd();
+		if (false) {
+			arg1 = rnum[i*2];
+			arg2 = rnum[i*2+1];
+		} else {
+			arg1 = rnd();
+			arg2 = rnd();
+		}
+		rnum[i*2] = arg1;
+		rnum[i*2+1] = arg2;
 
 		cout << i << ": " << "Union(" << arg1 << ", " << arg2 << ")" << endl;
 
 		ufs.union_set(arg1, arg2);
 		cout << ufs << endl << endl;
 	}
+
+	cout << "Random numbers used : ";
+	for(int i = 0; i < 22; ++i) {
+		cout << rnum[i];
+		if (i < 21) {
+			cout << ", ";
+		}
+	}
+	cout << endl << endl;
 
 	unsigned int hirank = 0;
 	for(unsigned int i = ufs.first(); i < ufs.first() + ufs.size(); ++i) {

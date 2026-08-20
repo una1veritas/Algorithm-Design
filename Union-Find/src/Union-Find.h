@@ -30,9 +30,11 @@ public:
 	unsigned int element_parent(unsigned int & x) const {
 		return parent[x];
 	}
+
 	unsigned int element_rank(unsigned int & x) const {
 		return rank[x];
 	}
+
 	// path halving
 	/*
 	virtual unsigned int find_set(unsigned int x) {
@@ -54,23 +56,7 @@ public:
 
 	std::ostream & node_str(std::ostream & out, const unsigned int & x) const;
 
-	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs) {
-		out << "UnionFindSet(";
-		for(unsigned int x = ufs.start; x < ufs.start + ufs.number; ++x) {
-			if ( ufs.parent[x] == x ) {
-				// root
-				out << "{" << x << ":" << int(ufs.rank[x]);
-				for(unsigned int y = ufs.start; y < ufs.start + ufs.number; ++y) {
-					if (x != y and ufs.find_nocompression(x) == ufs.find_nocompression(y) ) {
-						out << ", " << y  << ":" << int(ufs.rank[y]);
-					}
-				}
-				out << "}, ";
-			}
-		}
-		out << ") ";
-		return out;
-	}
+	friend std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs);
 };
 
 /*

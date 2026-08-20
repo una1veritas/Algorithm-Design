@@ -46,6 +46,9 @@ unsigned int UnionFindSet::find(unsigned int x) {
 		t = x;
 		x = parent[x];
 		parent[t] = root;
+//		if (root == 65545) {
+//			std::cerr << "root = " << root << ", t = " << t << ", x = " << x << std::endl;
+//		}
 	}
 	return x;
 }
@@ -59,6 +62,7 @@ unsigned int UnionFindSet::find_nocompression(unsigned int x) const {
 unsigned int UnionFindSet::union_set(unsigned int x, unsigned int y) {
 	x = find(x);
 	y = find(y);
+	//std::cout << "union_set(" << x << ", " << y << ")" << std::endl;
 	if (x == y) // no need to merge;
 		return parent[x];
 	if (rank[x] == rank[y]) {
@@ -85,5 +89,25 @@ bool UnionFindSet::in_the_same(const unsigned int & x, const unsigned int & y) c
 
 std::ostream & UnionFindSet::node_str(std::ostream & out, const unsigned int & x) const {
 	out << x; // << "[" << parent[x] << ":" << int(rank[x]) << "] ";
+	return out;
+}
+
+std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs) {
+	out << "UnionFindSet(";
+	//out << "start + number=" << ufs.start + ufs.number << ", ";
+	for(unsigned int x = ufs.start; x < ufs.start + ufs.number; ++x) {
+		//out << x << "->" << ufs.parent[x] << ", ";
+		if ( ufs.parent[x] == x ) {
+			// root
+			out << "{" << x << ":" << int(ufs.rank[x]);
+			for(unsigned int y = ufs.start; y < ufs.start + ufs.number; ++y) {
+				if (x != y and ufs.find_nocompression(x) == ufs.find_nocompression(y) ) {
+					out << ", " << y  << ":" << int(ufs.rank[y]);
+				}
+			}
+			out << "}, ";
+		}
+	}
+	out << ") ";
 	return out;
 }
