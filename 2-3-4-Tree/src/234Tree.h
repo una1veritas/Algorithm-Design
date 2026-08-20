@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include "DataType.h"
+#include "datatype.h"
 
 // bi-directional node of rooted tree
 // data are managed in the array (keys) in ascending order with the number of data (keycount)

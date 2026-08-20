@@ -30,6 +30,10 @@ static int r = 32;
 int rnd() {
 	r = ((r + 1019) * 179) % 1331;
 	return (r % 16) + 1;
+	/* 追レポート
+	r = ((r + 1031) * 191) % 1361;
+	return (r % 16) + 1;
+	 */
 }
 
 int main(void) {

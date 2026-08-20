@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 
-#include "DataType.h"
+#include "datatype.h"
 
 #include "234Tree.h"
 
