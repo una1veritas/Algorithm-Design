@@ -93,21 +93,29 @@ std::ostream & UnionFindSet::node_str(std::ostream & out, const unsigned int & x
 }
 
 std::ostream & operator<<(std::ostream & out, const UnionFindSet & ufs) {
+	bool * marked = new bool[ufs.size()];
 	out << "UnionFindSet(";
 	//out << "start + number=" << ufs.start + ufs.number << ", ";
+
 	for(unsigned int x = ufs.start; x < ufs.start + ufs.number; ++x) {
-		//out << x << "->" << ufs.parent[x] << ", ";
-		if ( ufs.parent[x] == x ) {
-			// root
-			out << "{" << x << ":" << int(ufs.rank[x]);
-			for(unsigned int y = ufs.start; y < ufs.start + ufs.number; ++y) {
-				if (x != y and ufs.find_nocompression(x) == ufs.find_nocompression(y) ) {
-					out << ", " << y  << ":" << int(ufs.rank[y]);
-				}
-			}
-			out << "}, ";
+		marked[x - ufs.start] = false;
+	}
+	for(unsigned int x = ufs.start; x < ufs.start + ufs.number; ++x) {
+		// in the same group with x, and not marked yet
+		if (marked[x - ufs.start]) {
+			continue;
 		}
+		out << "{" << x ;
+		marked[x - ufs.start] = true;
+		for(unsigned int y = ufs.start; y < ufs.start + ufs.number; ++y) {
+			if (ufs.find_nocompression(x) == ufs.find_nocompression(y) and ! marked[y - ufs.start]) {
+				out << ", " << y;
+				marked[y - ufs.start] = true;
+			}
+		}
+		out << "}, ";
 	}
 	out << ") ";
+	delete [] marked;
 	return out;
 }

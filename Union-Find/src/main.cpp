@@ -25,7 +25,7 @@ using std::endl;
 #include <stdlib.h>
 */
 
-static int r = 32;
+static int r = 61;
 
 int rnd() {
 	r = ((r + 1019) * 179) % 1331;
@@ -36,7 +36,11 @@ int rnd() {
 	 */
 }
 
-int main(void) {
+int main(const int argc, const char * argv[]) {
+
+	if (argc > 1) {
+		r = std::strtol(argv[1], NULL, 10);
+	}
 
 	cout << "Seed " << r << " will be used." << endl;
 
