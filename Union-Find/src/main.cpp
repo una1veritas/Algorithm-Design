@@ -25,15 +25,15 @@ using std::endl;
 #include <stdlib.h>
 */
 
-static int r = 61;
+static int r = 24;
 
 int rnd() {
-	r = ((r + 1019) * 179) % 1331;
-	return (r % 16) + 1;
-	/* 追レポート
+//	r = ((r + 1019) * 179) % 1331;
+//	return (r % 16) + 1;
+	/* 追レポート */
 	r = ((r + 1031) * 191) % 1361;
 	return (r % 16) + 1;
-	 */
+	/* */
 }
 
 int main(const int argc, const char * argv[]) {
