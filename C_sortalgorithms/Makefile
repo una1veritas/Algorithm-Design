@@ -1,11 +1,11 @@
 CC = gcc
 CXX = g++
 
-OBJS =  selection_sort.o heap_sort.o insertion_sort.o merge_sort.o counting_sort.o shell_sort.o
+OBJS = 
+#OBJS =  selection_sort.o heap_sort.o insertion_sort.o merge_sort.o counting_sort.o shell_sort.o
 #OBJS =	insertion_sort.o heap_sort.o selection_sort.o counting_sort.o main_test.o
 #OBJS += binsearch.o 
 MAINOBJ = main.o
-#MAINOBJ = test.o
 
 LIBS = 
 INCLUDES = ../C_LinkedDeque/ldeque.h 
@@ -26,10 +26,11 @@ llist.o:../C_LinkedList/llist.c $(INCLUDES)
 	$(CC) -c $< 
 
 #TARGET =	countingsort.exe
-TARGET =	sortalgs.exe
+#TARGET =	sortalgs.exe
 #TARGET =	test.exe
 #TARGET =	libcqsort.exe
 #TARGET =	sortalgorithms.exe
+TARGET =	samplesort.exe
 
 #$(TARGET):	$(OBJS)
 #	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
@@ -37,8 +38,8 @@ TARGET =	sortalgs.exe
 $(TARGET): $(OBJS) $(MAINOBJ)
 	$(CC) -o $(TARGET) $(OBJS) $(MAINOBJ) 
 
-test.exe: $(MAINOBJ)
-	$(CC) -o test.exe $(MAINOBJ)
+samplesort.exe: 
+	$(CC) -o samplesort.exe ./src/samplesort.c
 
 main.o: ./src/main.c $(OBJS)
 	$(CC) -c -o main.o ./src/main.c 

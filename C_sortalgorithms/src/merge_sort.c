@@ -10,7 +10,7 @@
 /*
  * 長さ l の昇順列 a と長さ m の昇順列 b を dst に併合する
  */
-void merge(data * dst[], data * a[], long l, data * b[], long m,  lessfunc less) {
+void merge(data * dst[], data * a[], long l, data * b[], long m, lessfunc less) {
 	long i, j, t;
 
 	// a[i] が列 a の先頭，l が a の長さ，b[j] が列 b の先頭，m が b の長さ，dst[t] が併合列 dst の末尾を表す．
